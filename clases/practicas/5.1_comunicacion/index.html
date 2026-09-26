@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="NTiCx 4.º año — Unidad interactiva: comunicación digital, modelos comunicativos, medios técnicos y ubicuidad. Optimizada para imprimir en A4.">
+<title>NTiCx 4.º año · Hardware y Comunicación Digital</title>
+
+<!--
+================================================================================
+  NTiCx · NUEVAS TECNOLOGÍAS DE LA INFORMACIÓN Y LA CONECTIVIDAD — 4.º AÑO
+  Unidad: "El hardware que soporta la comunicación"
+--------------------------------------------------------------------------------
+  Archivo único · HTML5 + CSS3 (variables, Flexbox, Grid) + JavaScript vanilla
+  Sin librerías ni frameworks. Funciona abriendo el archivo (file://) y offline.
+  Incluye hoja de estilo @media print para imprimir en A4 sin cortes.
+================================================================================
+-->
+
+<style>
+/* =====================================================================
+   1. VARIABLES DE DISEÑO (tokens)
+   ===================================================================== */
+:root{
+  /* Superficies claras: se imprimen sin gastar tinta */
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --surface2:#F0F3F8;
+  --ink:#111827;
+  --muted:#5B6478;
+  --line:#E1E6EF;
+  --line2:#C7CFDC;
+
+  /* Acento por pestaña */
+  --a1:#0E7490;   /* T1 · Comunicación digital   */
+  --a2:#4338CA;   /* T2 · Modelos y componentes  */
+  --a3:#7C3AED;   /* T3 · Medios técnicos        */
+  --a4:#0F766E;   /* T4 · Ubicuidad              */
+  --acc:var(--a1);
+
+  /* Semánticos */
+  --ok:#047857;
+  --warn:#B45309;
+  --bad:#BE123C;
+
+  --r:10px;
+  --sh:0 1px 2px rgba(16,24,40,.05), 0 8px 22px -16px rgba(16,24,40,.35);
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+body[data-tab="1"]{--acc:var(--a1)}
+body[data-tab="2"]{--acc:var(--a2)}
+body[data-tab="3"]{--acc:var(--a3)}
+body[data-tab="4"]{--acc:var(--a4)}
+
+/* =====================================================================
+   2. BASE
+   ===================================================================== */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.62;
+}
+h1,h2,h3,h4,h5{line-height:1.22;margin:0 0 .5em;letter-spacing:-.012em;font-weight:700}
+h1{font-size:clamp(1.5rem,3.6vw,2.1rem)}
+h2{font-size:1.32rem}
+h3{font-size:1.06rem}
+h4{font-size:.95rem}
+p{margin:0 0 .85em}
+a{color:var(--acc)}
+svg{display:block;max-width:100%}
+code,kbd{font-family:var(--mono);font-size:.88em;background:var(--surface2);
+  border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.app{max-width:1140px;margin:0 auto;padding:0 18px}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.center{text-align:center}
+.measure{max-width:74ch}
+
+/* =====================================================================
+   3. CABECERA Y PESTAÑAS
+   ===================================================================== */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.topbar-in{display:flex;align-items:center;gap:14px;padding:11px 18px;max-width:1140px;margin:0 auto;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .logo{width:40px;height:40px;flex:0 0 auto;border-radius:10px;background:var(--ink);
+  display:grid;place-items:center;color:#fff}
+.brand .logo svg{width:23px;height:23px}
+.brand b{display:block;font-size:1rem;line-height:1.15;letter-spacing:-.01em}
+.brand span{display:block;font-size:.72rem;color:var(--muted);font-family:var(--mono);letter-spacing:.02em}
+.spacer{flex:1}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font-family:inherit;font-size:.85rem;font-weight:600;padding:.55rem 1rem;
+  border-radius:8px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);
+  cursor:pointer;transition:.16s;text-decoration:none;line-height:1.25}
+.btn:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:3px solid rgba(67,56,202,.35);outline-offset:2px}
+.btn-p{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-p:hover{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn-sm{padding:.4rem .75rem;font-size:.78rem;border-radius:7px}
+
+.tabs{position:sticky;top:63px;z-index:55;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs-in{display:flex;gap:6px;max-width:1140px;margin:0 auto;padding:8px 18px;
+  overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.tabs-in::-webkit-scrollbar{height:4px}
+.tabs-in::-webkit-scrollbar-thumb{background:var(--line2);border-radius:9px}
+.tab{flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:.6rem .95rem;border-radius:9px;
+  border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;
+  font-family:inherit;font-size:.87rem;font-weight:600;white-space:nowrap;transition:.18s;text-align:left}
+.tab .n{width:24px;height:24px;flex:0 0 auto;border-radius:7px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:.7rem;font-weight:700;background:var(--surface2);
+  border:1px solid var(--line);color:var(--muted);transition:.18s}
+.tab:hover{color:var(--ink);background:var(--surface);border-color:var(--line)}
+.tab[aria-selected="true"]{color:var(--c);background:var(--surface);border-color:var(--line);
+  box-shadow:inset 0 -3px 0 0 var(--c)}
+.tab[aria-selected="true"] .n{background:var(--c);border-color:var(--c);color:#fff}
+.tab:focus-visible{outline:3px solid rgba(67,56,202,.35);outline-offset:2px}
+
+main{padding:26px 0 50px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* =====================================================================
+   4. COMPONENTES
+   ===================================================================== */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.card.flat{box-shadow:none}
+.g2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.g3{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g4{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
+.mt{margin-top:16px}.mt-s{margin-top:10px}.mb0{margin-bottom:0}
+
+.sec-head{margin-bottom:22px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.66rem;
+  font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:9px}
+.eyebrow::before{content:"";width:20px;height:2px;background:var(--acc);border-radius:2px}
+.lead{color:var(--muted);max-width:82ch}
+.objs{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.66rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;padding:.22rem .55rem;border-radius:5px;
+  border:1px solid var(--line2);background:var(--surface2);color:var(--muted)}
+.tag.a{background:var(--acc);border-color:var(--acc);color:#fff}
+.tag.ok{background:#ECFDF5;border-color:#A7F3D0;color:var(--ok)}
+.tag.warn{background:#FFFBEB;border-color:#FDE68A;color:var(--warn)}
+.tag.bad{background:#FFF1F2;border-color:#FECDD3;color:var(--bad)}
+
+.note{border-left:3px solid var(--acc);background:var(--surface2);border-radius:0 8px 8px 0;
+  padding:12px 14px;margin:14px 0;font-size:.92rem}
+.note b:first-child{display:block;margin-bottom:2px}
+.note.warn{border-color:var(--warn);background:#FFFBEB}
+.note.ok{border-color:var(--ok);background:#ECFDF5}
+.note.bad{border-color:var(--bad);background:#FFF1F2}
+ul.clean{margin:0 0 .85em;padding-left:1.15em}
+ul.clean li{margin-bottom:.4em}
+dl.defs dt{font-weight:700;margin-top:9px;color:var(--ink)}
+dl.defs dd{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.87rem;margin:8px 0}
+.tbl th,.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:var(--surface2);font-weight:700;font-size:.8rem}
+.tbl td{color:var(--muted)}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+
+/* Botones y controles */
+.seg{display:inline-flex;flex-wrap:wrap;gap:3px;padding:4px;border-radius:9px;
+  background:var(--surface2);border:1px solid var(--line)}
+.seg button{border:0;background:transparent;color:var(--muted);font-family:inherit;font-weight:600;
+  font-size:.8rem;padding:.45rem .85rem;border-radius:6px;cursor:pointer;transition:.18s;white-space:nowrap}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--acc);
+  box-shadow:0 1px 3px rgba(16,24,40,.14)}
+.seg button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+
+label.fld{display:block;font-family:var(--mono);font-size:.64rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.sel,.inp{width:100%;padding:.55rem .75rem;border-radius:8px;border:1px solid var(--line2);
+  background:var(--surface);color:var(--ink);font-family:inherit;font-size:.88rem}
+.sel:focus,.inp:focus{outline:3px solid rgba(67,56,202,.28);outline-offset:1px}
+.rng{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;
+  background:var(--surface2);border:1px solid var(--line2);outline:none}
+.rng::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--acc);border:3px solid #fff;cursor:grab;box-shadow:0 1px 6px rgba(16,24,40,.3)}
+.rng::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--acc);border:3px solid #fff;cursor:grab}
+.rng:focus-visible{box-shadow:0 0 0 4px rgba(67,56,202,.25)}
+
+.sw{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);font-size:.86rem;transition:.18s;position:relative;user-select:none}
+.sw:hover{border-color:var(--acc)}
+.sw input{position:absolute;opacity:0;pointer-events:none}
+.sw .tr{width:36px;height:20px;flex:0 0 auto;border-radius:99px;background:var(--line2);position:relative;transition:.22s}
+.sw .tr::after{content:"";position:absolute;top:2px;left:3px;width:16px;height:16px;border-radius:50%;
+  background:#fff;transition:.22s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw input:checked + .tr{background:var(--acc)}
+.sw input:checked + .tr::after{transform:translateX(15px)}
+.sw.on{border-color:var(--acc);background:#F5F8FF}
+
+.bar{height:8px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;width:0;border-radius:99px;background:var(--acc);
+  transition:width .55s cubic-bezier(.4,0,.2,1)}
+
+.kpi{display:flex;flex-direction:column;gap:2px;padding:11px 13px;border-radius:9px;
+  border:1px solid var(--line);background:var(--surface2)}
+.kpi b{font-size:1.28rem;font-weight:700;line-height:1.1;font-family:var(--mono);letter-spacing:-.02em}
+.kpi span{font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* Acordeón (se abre por completo al imprimir) */
+.acc{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.acc-h{width:100%;display:flex;align-items:center;gap:11px;padding:12px 14px;background:none;border:0;
+  cursor:pointer;font:inherit;color:inherit;text-align:left;transition:.16s}
+.acc-h:hover{background:var(--surface2)}
+.acc-h .chev{margin-left:auto;flex:0 0 auto;color:var(--muted);transition:transform .28s}
+.acc.open .acc-h .chev{transform:rotate(180deg)}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc.open .acc-b{max-height:1600px}
+.acc-bi{padding:14px;border-top:1px solid var(--line)}
+.acc .code{width:38px;height:38px;flex:0 0 auto;border-radius:8px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.03em;
+  background:var(--surface2);border:1px solid var(--line2);color:var(--ink)}
+
+/* Contenido revelable (visible al imprimir) */
+.rv{display:none}
+.rv.on{display:block}
+
+/* Actividad de cierre */
+.act{border:1px dashed var(--line2);border-radius:var(--r);padding:16px;background:var(--surface)}
+.act .h{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.act .h .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  background:var(--acc);color:#fff;font-size:.95rem;flex:0 0 auto}
+
+/* Pie */
+.foot{border-top:1px solid var(--line);padding:18px 0 30px;color:var(--muted);font-size:.82rem}
+.foot .app{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+
+/* =====================================================================
+   5. GRÁFICOS INTERACTIVOS
+   ===================================================================== */
+/* 5.1 · Cabecera de figura */
+.fig{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.fig-h{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  padding:11px 14px;border-bottom:1px solid var(--line);background:var(--surface2)}
+.fig-h .t{font-family:var(--mono);font-size:.64rem;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted)}
+.fig-h .t b{color:var(--acc)}
+.fig-b{padding:16px}
+.fig-f{padding:9px 14px;border-top:1px solid var(--line);background:var(--surface2);
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+
+/* 5.2 · Onda analógica / digital */
+.wave{width:100%;height:auto;background:
+  linear-gradient(var(--surface2) 1px,transparent 1px) 0 0/100% 20px,
+  linear-gradient(90deg,var(--surface2) 1px,transparent 1px) 0 0/20px 100%;
+  border:1px solid var(--line);border-radius:8px}
+.wave .an{stroke:var(--acc);stroke-width:2;fill:none}
+.wave .dg{stroke:var(--bad);stroke-width:2;fill:none;stroke-linejoin:round}
+.wave .dot{fill:var(--bad)}
+.wave .grid{stroke:var(--line2);stroke-width:.6;stroke-dasharray:2 3}
+
+/* 5.3 · Explícito / implícito */
+.msg-card{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden;
+  transition:.22s}
+.msg-card .top{padding:16px;text-align:center;background:var(--surface2);border-bottom:1px solid var(--line)}
+.msg-card .top .txt{font-size:1.35rem;font-weight:700;letter-spacing:-.01em}
+.msg-card .body{padding:14px 16px;min-height:112px}
+.msg-card .lay{display:none}
+.msg-card .lay.on{display:block;animation:fade .3s}
+.msg-card .lay h5{margin:0 0 5px;font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;
+  text-transform:uppercase;font-weight:700}
+.msg-card.exp .lay h5{color:var(--a1)}
+.msg-card.imp .lay h5{color:var(--bad)}
+.msg-card .body p{margin:0;font-size:.9rem;color:var(--muted)}
+
+/* 5.4 · Cadena del proceso comunicativo */
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.node{flex:1 1 118px;min-width:112px;border:1.5px solid var(--line2);border-radius:9px;
+  background:var(--surface);padding:10px 9px;cursor:pointer;transition:.2s;text-align:center;position:relative}
+.node:hover{border-color:var(--acc);transform:translateY(-2px)}
+.node .ic{font-size:1.15rem;line-height:1;margin-bottom:5px;display:block}
+.node b{display:block;font-size:.78rem;line-height:1.2;margin-bottom:2px}
+.node small{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);line-height:1.3}
+.node.lit{border-color:var(--acc);background:#F3F6FF;box-shadow:0 0 0 3px rgba(67,56,202,.14);transform:translateY(-3px)}
+.node.sel{border-color:var(--ink);background:var(--surface2)}
+.node.noise{border-color:var(--bad);background:#FFF1F2}
+.arrow{align-self:center;color:var(--line2);font-size:1rem;flex:0 0 auto}
+.log{border:1px solid var(--line);border-radius:8px;background:#FBFCFE;padding:11px 13px;
+  font-family:var(--mono);font-size:.72rem;line-height:1.75;min-height:120px;max-height:210px;overflow:auto}
+.log .l{display:flex;gap:8px}
+.log .l i{font-style:normal;color:var(--muted);flex:0 0 auto}
+.log .l.bad i{color:var(--bad)}
+.log .l.ok i{color:var(--ok)}
+
+/* 5.5 · Juego sincrónico / asincrónico */
+.sa-pool{display:flex;flex-wrap:wrap;gap:7px;min-height:44px;padding:11px;border:1px dashed var(--line2);
+  border-radius:9px;background:var(--surface2)}
+.sa-item{border:1px solid var(--line2);background:var(--surface);border-radius:99px;padding:.4rem .85rem;
+  font-size:.82rem;font-weight:600;cursor:pointer;transition:.16s;font-family:inherit;color:var(--ink)}
+.sa-item:hover{border-color:var(--acc);color:var(--acc)}
+.sa-item.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.sa-item.done{opacity:.42;cursor:default;pointer-events:none;text-decoration:line-through}
+.sa-item.err{animation:shk .4s;border-color:var(--bad);color:var(--bad)}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.sa-zone{border:2px dashed var(--line2);border-radius:9px;padding:12px;min-height:118px;background:var(--surface);transition:.18s}
+.sa-zone h4{margin:0 0 8px;font-size:.85rem;display:flex;align-items:center;gap:7px}
+.sa-zone:hover{border-color:var(--acc)}
+.sa-zone .chips{display:flex;flex-wrap:wrap;gap:6px}
+.sa-zone .chips span{font-size:.78rem;border:1px solid var(--line);background:var(--surface2);
+  border-radius:99px;padding:.22rem .65rem}
+
+/* 5.6 · Hardware de red */
+.hw-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,148px),1fr))}
+.hw{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px 10px;
+  cursor:pointer;transition:.18s;text-align:center;font-family:inherit;color:var(--ink)}
+.hw:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--sh)}
+.hw[aria-pressed="true"]{border-color:var(--acc);background:#F3F6FF;box-shadow:inset 0 0 0 1px var(--acc)}
+.hw .code{width:46px;height:46px;margin:0 auto 8px;border-radius:10px;display:grid;place-items:center;
+  font-family:var(--mono);font-size:.72rem;font-weight:700;background:var(--surface2);
+  border:1px solid var(--line2);color:var(--acc)}
+.hw b{display:block;font-size:.82rem;line-height:1.25}
+.hw small{display:block;font-size:.68rem;color:var(--muted);margin-top:2px}
+
+/* 5.7 · Comparador de medios */
+.metric{display:grid;grid-template-columns:118px 1fr 62px;gap:9px;align-items:center;
+  font-size:.8rem;padding:5px 0}
+.metric .v{font-family:var(--mono);font-size:.74rem;text-align:right;font-weight:700}
+
+/* 5.8 · Mapa de ubicuidad */
+.day{position:relative;border:1px solid var(--line);border-radius:9px;background:var(--surface2);overflow:hidden}
+.day svg{width:100%;height:auto;display:block}
+.day .hs{cursor:pointer;transition:.2s}
+.day .hs circle{transition:.2s}
+.day .hs:hover circle{r:15}
+.day .hs.on circle{fill:var(--a4);stroke:#fff;stroke-width:2.5}
+.day .hs text{font-family:var(--mono);font-size:9px;font-weight:700;fill:#fff;pointer-events:none}
+
+/* 5.9 · Documento colaborativo */
+.doc{border:1px solid var(--line2);border-radius:var(--r);overflow:hidden;background:#fff}
+.doc-bar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:9px 12px;
+  border-bottom:1px solid var(--line);background:var(--surface2)}
+.avatars{display:flex}
+.av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.66rem;
+  font-weight:700;color:#fff;border:2px solid var(--surface2);margin-left:-7px;transition:.2s}
+.av:first-child{margin-left:0}
+.av.pulse{transform:scale(1.18);box-shadow:0 0 0 4px rgba(15,118,110,.22)}
+.doc-body{padding:14px;min-height:190px;outline:none;font-size:.92rem;line-height:1.7}
+.doc-body:focus{background:#FCFDFF}
+.doc-body p{margin:0 0 .7em}
+.doc-body .peer{border-left:2px solid #7C3AED;padding-left:9px;color:#4C1D95;background:#FAF5FF}
+.doc-body .peer2{border-left:2px solid #0E7490;padding-left:9px;color:#155E75;background:#ECFEFF}
+.doc-off{padding:8px 12px;background:#FFFBEB;border-bottom:1px solid #FDE68A;
+  font-size:.78rem;color:var(--warn);display:none}
+.doc-off.on{display:block}
+.ver{font-size:.78rem;color:var(--muted);border-bottom:1px solid var(--line);padding:6px 0}
+.ver b{color:var(--ink);font-weight:600}
+
+/* =====================================================================
+   6. IMPRESIÓN · Formato A4 estricto
+   ===================================================================== */
+.only-print{display:none}
+
+@media print{
+  @page{size:A4 portrait;margin:15mm 14mm}
+
+  /* Reinicio de color: nada de fondos oscuros, ahorro de tinta */
+  *{background:transparent!important;box-shadow:none!important;text-shadow:none!important;
+    transition:none!important;animation:none!important;color:#000!important;
+    border-color:#8A8F99!important}
+  html,body{background:#fff!important;font-family:Georgia,"Times New Roman",serif;
+    font-size:9.9pt;line-height:1.42}
+  h1,h2,h3,h4,h5,.tab,.btn,.tag,.kpi b,.fig-h .t,.acc .code,.hw .code{font-family:Arial,Helvetica,sans-serif!important}
+  p,li,td,th,.lead,.small{orphans:3;widows:3}
+
+  /* Se oculta toda la interfaz interactiva */
+  .topbar,.tabs,.foot,.no-print,.only-screen{display:none!important}
+  .app{max-width:none!important;padding:0!important;margin:0!important}
+  main{padding:0!important}
+
+  /* Se muestran TODAS las pestañas, una por hoja */
+  .panel{display:block!important}
+  .sec{break-before:page;page-break-before:always}
+  .sec.first{break-before:auto;page-break-before:auto}
+
+  /* Encabezado formal de la guía */
+  .doc-head{display:block!important;border-bottom:1.4pt solid #000;padding-bottom:3mm;margin-bottom:4mm}
+  .dh-top{display:flex;justify-content:space-between;gap:6mm;align-items:flex-start}
+  .dh-school{font-size:7pt;letter-spacing:.09em;text-transform:uppercase;font-family:Arial,sans-serif}
+  .dh-title{font-size:15pt;font-weight:700;line-height:1.14;margin:1.4mm 0;font-family:Arial,sans-serif}
+  .dh-sub{font-size:8.4pt;font-family:Arial,sans-serif}
+  .dh-fields{display:grid;grid-template-columns:2.2fr .9fr .9fr;gap:2.4mm 6mm;margin:3.4mm 0 2mm}
+  .dh-f{font-size:8.2pt;display:flex;align-items:flex-end;gap:1.6mm;font-family:Arial,sans-serif}
+  .dh-f span{white-space:nowrap;font-weight:700}
+  .dh-f i{flex:1;border-bottom:.7pt dotted #000;height:4mm}
+  .dh-note{font-size:7.4pt;font-style:italic;border-top:.5pt solid #000;padding-top:1.4mm;font-family:Arial,sans-serif}
+
+  /* Encabezado corriente de cada sección */
+  .sec-tag{display:block!important;font-family:Arial,sans-serif;font-size:7pt;letter-spacing:.14em;
+    text-transform:uppercase;border-bottom:.6pt solid #000;padding-bottom:1mm;margin-bottom:3.5mm}
+
+  /* Estructura tipográfica */
+  h1{font-size:15pt;margin:0 0 2.5mm;break-after:avoid;page-break-after:avoid}
+  h2{font-size:11.6pt;margin:5mm 0 2mm;break-after:avoid;page-break-after:avoid}
+  h3{font-size:10pt;margin:4mm 0 1.6mm;break-after:avoid;page-break-after:avoid}
+  h4{font-size:9.2pt;margin:3mm 0 1.2mm;break-after:avoid;page-break-after:avoid}
+  .eyebrow{display:block;font-size:7pt;letter-spacing:.16em;margin-bottom:1.6mm}
+  .lead{font-size:9.6pt;color:#000!important}
+  .card,.fig,.acc,.act{border:.6pt solid #8A8F99!important;border-radius:0!important;
+    padding:3mm!important;margin:0 0 3.2mm!important;break-inside:avoid;page-break-inside:avoid}
+  .g2,.g3,.g4,.grid{display:block!important}
+  .note{border:.6pt solid #8A8F99!important;border-left:2.4pt solid #000!important;
+    border-radius:0!important;padding:2.6mm 3mm!important;margin:2.6mm 0!important;
+    font-size:9pt;break-inside:avoid;page-break-inside:avoid}
+  .tbl{font-size:8.4pt;margin:2mm 0 3mm;break-inside:avoid;page-break-inside:avoid}
+  .tbl th,.tbl td{border:.5pt solid #555!important;padding:1.4mm 2mm!important;color:#000!important}
+  .tbl th{background:#EDEDED!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  ul.clean,ol{margin:0 0 2.6mm;padding-left:5mm}
+  ul.clean li{margin-bottom:.9mm}
+  .tag{border:.5pt solid #000!important;padding:.2mm 1.4mm!important;font-size:6.6pt!important;
+    margin:0 1.2mm 1.2mm 0!important;display:inline-block!important}
+  .kpi{border:.6pt solid #8A8F99!important;padding:2mm!important;margin:0 0 2mm!important;
+    display:inline-block!important;min-width:38mm}
+  .kpi b{font-size:12pt}
+  .kpi span{font-size:6.4pt}
+
+  /* Acordeones y revelables: todo el contenido queda visible */
+  .acc-b{max-height:none!important;overflow:visible!important}
+  .acc-h .chev,.acc-h{display:none!important}
+  .acc-bi{border-top:0!important;padding:0!important}
+  .acc{padding:0!important;border:0!important;margin:0 0 3mm!important}
+  .acc-h-print{display:block!important;font-family:Arial,sans-serif;font-weight:700;font-size:9.4pt;
+    margin:3.4mm 0 1.4mm;break-after:avoid;page-break-after:avoid}
+  .rv{display:block!important}
+
+  /* Interactivos: se ocultan los controles, queda la información */
+  .fig-h,.fig-f,.seg,.rng,.sel,.inp,.sw,.bar,.chain,.sa-pool,.sa-zone,.hw-grid,
+  .doc,.day,.wave,.log,.only-screen{display:none!important}
+  .print-list{display:block!important}
+
+  /* Actividades: espacio pautado para resolver a mano */
+  .act{border:.9pt solid #000!important;padding:3mm!important}
+  .act .h{display:block!important;margin-bottom:1.6mm}
+  .act .h .ic{display:none!important}
+  .lines{display:block!important;margin-top:2mm}
+  .lines i{display:block;border-bottom:.6pt dotted #555;height:6.8mm}
+
+  a[href]::after{content:""}
+}
+
+/* =====================================================================
+   7. RESPONSIVE (netbooks 1366×768 y celulares)
+   ===================================================================== */
+@media (max-width:720px){
+  body{font-size:15.4px}
+  .topbar-in{padding:9px 14px;gap:10px}
+  .brand b{font-size:.94rem}
+  .app{padding:0 14px}
+  .tabs{top:59px}
+  .tabs-in{padding:7px 14px}
+  .card{padding:15px}
+  .fig-b{padding:13px}
+  .metric{grid-template-columns:96px 1fr 54px;font-size:.76rem}
+  .node{flex:1 1 46%;min-width:0}
+}
+@media (max-width:420px){
+  .tab{font-size:.8rem;padding:.55rem .7rem}
+  .tab .n{width:21px;height:21px;font-size:.64rem}
+}
+</style>
+</head>
+
+<body data-tab="1">
+
+<!-- =====================================================================
+     ENCABEZADO FORMAL · Visible únicamente al imprimir
+     ===================================================================== -->
+<div class="only-print doc-head">
+  <div class="dh-top">
+    <div>
+      <div class="dh-school">Escuela de Educación Secundaria · NTiCx — Nuevas Tecnologías de la Información y la Conectividad</div>
+      <div class="dh-title">Unidad: El hardware que soporta la comunicación</div>
+      <div class="dh-sub">4.º año · Ciclo Orientado · República Argentina — Comunicación digital, modelos comunicativos, medios técnicos y ubicuidad</div>
+    </div>
+  </div>
+  <div class="dh-fields">
+    <div class="dh-f"><span>Nombre y Apellido:</span><i></i></div>
+    <div class="dh-f"><span>Curso:</span><i></i></div>
+    <div class="dh-f"><span>Fecha:</span><i></i></div>
+  </div>
+  <div class="dh-note">
+    Material de estudio y trabajo. Las cuatro secciones se imprimen en hojas A4 independientes.
+    Los espacios punteados están destinados a la resolución manuscrita de las actividades.
+  </div>
+</div>
+
+<!-- =====================================================================
+     BARRA SUPERIOR
+     ===================================================================== -->
+<header class="topbar no-print">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>
+          <path d="M7.5 10.5h2M11 10.5h2M14.5 10.5h2M7.5 13h9"/>
+        </svg>
+      </div>
+      <div>
+        <b>NTiCx · 4.º año</b>
+        <span>Hardware y comunicación digital</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn" id="btnPrintTop" title="Imprimir toda la unidad en A4">🖨️ Imprimir unidad (A4)</button>
+  </div>
+</header>
+
+<!-- =====================================================================
+     PESTAÑAS
+     ===================================================================== -->
+<nav class="tabs no-print" aria-label="Contenidos de la unidad">
+  <div class="tabs-in" id="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-1" data-tab="1" aria-controls="p1" aria-selected="true" style="--c:var(--a1)">
+      <span class="n">01</span> Comunicación digital
+    </button>
+    <button class="tab" role="tab" id="tab-2" data-tab="2" aria-controls="p2" aria-selected="false" tabindex="-1" style="--c:var(--a2)">
+      <span class="n">02</span> Modelos y componentes
+    </button>
+    <button class="tab" role="tab" id="tab-3" data-tab="3" aria-controls="p3" aria-selected="false" tabindex="-1" style="--c:var(--a3)">
+      <span class="n">03</span> Medios técnicos
+    </button>
+    <button class="tab" role="tab" id="tab-4" data-tab="4" aria-controls="p4" aria-selected="false" tabindex="-1" style="--c:var(--a4)">
+      <span class="n">04</span> Ubicuidad
+    </button>
+  </div>
+</nav>
+
+<main class="app">
+
+<!-- =========================================================================
+     PESTAÑA 1 · CONCEPTO DE COMUNICACIÓN DIGITAL
+     ========================================================================= -->
+<section class="panel sec first active" id="p1" role="tabpanel" aria-labelledby="tab-1">
+  <div class="only-print sec-tag">Sección 1 de 4 · Concepto de comunicación digital — NTiCx 4.º año</div>
+
+  <header class="sec-head">
+    <span class="eyebrow">Sección 01 · Fundamentos</span>
+    <h1>Concepto de comunicación digital</h1>
+    <p class="lead">Comunicar es <strong>poner en común</strong>. Durante miles de años eso exigía estar cerca:
+      la voz sólo llegaba a pocos metros y la escritura viajaba a la velocidad de un caballo o de un camión.
+      La comunicación digital rompe ese límite: convierte cualquier mensaje —una voz, una foto, un video— en
+      <strong>números</strong>, y los números pueden viajar a la velocidad de la luz por un cable de cobre,
+      un hilo de vidrio o el aire.</p>
+    <div class="objs">
+      <span class="tag a">Objetivo: comprender qué es la comunicación digital</span>
+      <span class="tag">Analógico vs. digital</span>
+      <span class="tag">Lenguaje explícito e implícito</span>
+      <span class="tag">Mass media y nuevos medios</span>
+    </div>
+  </header>
+
+  <!-- 1.1 · Definiciones -->
+  <div class="g2">
+    <div class="card">
+      <h3>1.1 · Comunicar, informar, conectar</h3>
+      <dl class="defs">
+        <dt>Comunicación</dt>
+        <dd>Proceso por el cual dos o más personas comparten un mensaje y construyen un sentido común.
+          No es sólo “transmitir”: es <b>negociar significados</b>.</dd>
+        <dt>Comunicación digital</dt>
+        <dd>Comunicación <b>mediada por dispositivos electrónicos</b> en la que el mensaje se representa
+          mediante dígitos binarios (0 y 1) y se transmite por redes de datos.</dd>
+        <dt>Dato · Información · Conocimiento</dt>
+        <dd>El <b>dato</b> es un símbolo suelto (“38”). La <b>información</b> es el dato con contexto
+          (“38 °C de temperatura”). El <b>conocimiento</b> es la información interpretada y útil para decidir
+          (“hoy hace mucho calor, llevo agua”).</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>1.2 · Por qué “digital” y no “electrónico”</h3>
+      <p class="small">Un casete y una notebook son ambos aparatos electrónicos, pero guardan la información de manera
+        completamente distinta:</p>
+      <table class="tbl">
+        <tr><th></th><th>Analógico</th><th>Digital</th></tr>
+        <tr><td>Representación</td><td>Magnitud física continua (voltaje, surco, campo magnético)</td><td>Números discretos: ceros y unos</td></tr>
+        <tr><td>Copias</td><td>Cada copia pierde calidad</td><td>La copia es <b>idéntica</b> al original</td></tr>
+        <tr><td>Ruido</td><td>Se acumula y degrada</td><td>Se puede <b>detectar y corregir</b></td></tr>
+        <tr><td>Edición</td><td>Difícil y destructiva</td><td>Total y no destructiva</td></tr>
+        <tr><td>Ejemplos</td><td>Disco de vinilo, casete, foto química, TV analógica, radio AM/FM</td><td>MP3, MP4, JPG, streaming, WhatsApp, TDT, 5G</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 1.3 · INTERACTIVO: de la onda al bit -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 1.1 · <b>Interactivo</b> — De la onda analógica al bit</span>
+      <span class="tag only-screen">Mové los dos controles</span>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure mb0">La voz y la música son ondas <b>continuas</b>. Para guardarlas en una computadora hay que
+        <b>medirlas</b> muchas veces por segundo y anotar cada medición como un número. Ese proceso tiene tres pasos:
+        <b>muestreo</b> (cada cuánto mido), <b>cuantificación</b> (con cuánta precisión) y <b>codificación</b> (cómo lo escribo en binario).
+        Cuanto más fino sea el muestreo y la precisión, más se parece la copia al original… y más pesado es el archivo.</p>
+
+      <div class="g2 mt">
+        <div>
+          <svg class="wave" id="wAnalog" viewBox="0 0 600 130" role="img" aria-label="Onda analógica continua"></svg>
+          <div class="tag mt-s">Señal analógica · continua</div>
+        </div>
+        <div>
+          <svg class="wave" id="wDigital" viewBox="0 0 600 130" role="img" aria-label="Señal digital muestreada y cuantificada"></svg>
+          <div class="tag mt-s">Señal digital · muestreada y cuantificada</div>
+        </div>
+      </div>
+
+      <div class="g2 mt">
+        <div>
+          <label class="fld" for="sRate">Frecuencia de muestreo · <b id="vRate">44 muestras</b></label>
+          <input class="rng" id="sRate" type="range" min="6" max="120" value="44">
+          <p class="small muted mb0 mt-s">Teorema de Nyquist: para reproducir un sonido hay que muestrearlo al menos
+            <b>el doble</b> de veces que su frecuencia más alta. Por eso el CD usa <b>44.100 muestras por segundo</b>
+            (el oído humano llega hasta ~20 kHz).</p>
+        </div>
+        <div>
+          <label class="fld" for="sBits">Profundidad de bits · <b id="vBits">8 bits (256 niveles)</b></label>
+          <input class="rng" id="sBits" type="range" min="2" max="16" value="8">
+          <p class="small muted mb0 mt-s">Cada bit extra <b>duplica</b> la precisión. Con 16 bits hay 65.536 niveles
+            posibles por muestra: ése es el estándar del CD de audio.</p>
+        </div>
+      </div>
+
+      <div class="g4 mt">
+        <div class="kpi"><b id="kSamples">—</b><span>Muestras por ciclo</span></div>
+        <div class="kpi"><b id="kLevels">—</b><span>Niveles de cuantificación</span></div>
+        <div class="kpi"><b id="kError">—</b><span>Error de cuantificación</span></div>
+        <div class="kpi"><b id="kSize">—</b><span>Peso relativo del archivo</span></div>
+      </div>
+
+      <div class="note mt-s mb0"><b>Conclusión del experimento</b>
+        Toda comunicación digital paga un precio: <b>aproxima</b> la realidad. Nunca guardamos la onda completa,
+        guardamos una cantidad enorme de mediciones. Cuando esa cantidad es suficiente, la diferencia es imperceptible;
+        cuando es baja, aparecen los “escalones” que ves en el gráfico de abajo.</div>
+    </div>
+    <div class="fig-f only-screen">Los valores mostrados se calculan en el navegador</div>
+  </div>
+
+  <!-- Versión imprimible del experimento -->
+  <div class="only-print print-list">
+    <h3>Figura 1.1 · De la onda analógica al bit (versión escrita)</h3>
+    <p>La digitalización consta de tres operaciones sucesivas:</p>
+    <ul class="clean">
+      <li><b>Muestreo:</b> se mide la amplitud de la onda a intervalos regulares. El teorema de Nyquist establece que la
+        frecuencia de muestreo debe ser, como mínimo, el doble de la frecuencia más alta de la señal. El CD de audio emplea
+        44.100 muestras por segundo; el video, 24, 25, 30 o 60 cuadros por segundo.</li>
+      <li><b>Cuantificación:</b> cada medición se redondea a un nivel disponible. Con 8 bits hay 256 niveles; con 16 bits,
+        65.536. La diferencia entre el valor real y el nivel asignado es el <b>error de cuantificación</b>.</li>
+      <li><b>Codificación:</b> los niveles se escriben en binario y se comprimen (MP3, AAC, H.264, AV1).</li>
+    </ul>
+  </div>
+
+  <!-- 1.4 · Rasgos de la comunicación digital -->
+  <div class="card mt">
+    <h3>1.3 · Los siete rasgos de la comunicación digital</h3>
+    <p class="small muted">Cada rasgo tiene una contraparte <b>técnica</b>: no son propiedades mágicas de internet,
+      son consecuencias del hardware y de los protocolos que lo hacen posible.</p>
+    <table class="tbl">
+      <tr><th>Rasgo</th><th>Qué significa</th><th>Qué hardware/protocolo lo hace posible</th></tr>
+      <tr><td>Multimedialidad</td><td>Texto, imagen, audio y video conviven en un mismo mensaje</td><td>Todo se reduce a bits: la misma red transporta cualquier medio</td></tr>
+      <tr><td>Hipertextualidad</td><td>El mensaje no es lineal: se navega por enlaces</td><td>Protocolo HTTP y direcciones URL resueltas por DNS</td></tr>
+      <tr><td>Interactividad</td><td>El receptor responde y modifica el mensaje</td><td>Conexión bidireccional full-dúplex (TCP/IP)</td></tr>
+      <tr><td>Desintermediación</td><td>Cualquiera puede publicar sin pasar por un medio tradicional</td><td>Servidores, hosting y plataformas en la nube</td></tr>
+      <tr><td>Memoria permanente</td><td>Lo publicado queda almacenado y es recuperable</td><td>Discos, SSD y centros de datos con copias replicadas</td></tr>
+      <tr><td>Escalabilidad</td><td>El mismo mensaje puede llegar a 5 o a 5 millones</td><td>Redes de distribución de contenido (CDN)</td></tr>
+      <tr><td>Ubicuidad</td><td>Se puede comunicar desde y hacia cualquier lugar</td><td>Redes móviles 4G/5G, Wi-Fi, satélites (Sección 4)</td></tr>
+    </table>
+  </div>
+
+  <!-- 1.5 · INTERACTIVO: explícito / implícito -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 1.2 · <b>Interactivo</b> — Lenguaje explícito e implícito</span>
+      <div class="seg only-screen" role="group" aria-label="Capa de análisis">
+        <button id="bExp" aria-pressed="true">Lo que dice</button>
+        <button id="bImp" aria-pressed="false">Lo que significa</button>
+      </div>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure">En la comunicación digital gran parte del sentido <b>no está en las palabras</b>:
+        está en el emoji, en la puntuación, en el tiempo de respuesta y en lo que <i>no</i> se dice.
+        A eso lo llamamos <b>lenguaje implícito</b>. Cambiá la capa con los botones y recorré los seis casos.</p>
+      <div id="msgNav" class="seg mt-s only-screen" role="group" aria-label="Elegir mensaje"></div>
+      <div id="msgBox" class="mt"></div>
+      <div class="note mb0 mt"><b>Para pensar</b>
+        El punto final en un chat dejó de ser neutro: hoy connota seriedad, distancia o enojo.
+        Un signo que sólo marcaba el final de una oración adquirió un <b>segundo significado</b> por uso social.
+        Eso muestra que los códigos digitales también se aprenden y cambian.</div>
+    </div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 1.2 · Lenguaje explícito e implícito (los seis casos)</h3>
+    <div id="msgPrint"></div>
+  </div>
+
+  <!-- 1.6 · Mass media vs. nuevos medios -->
+  <div class="card mt">
+    <h3>1.4 · De los medios masivos a los nuevos medios</h3>
+    <p class="small muted">Los <b>mass media</b> (gráfica, radio, televisión, cine) son <b>unidireccionales</b>:
+      pocos emiten para muchos y el público no puede responder por el mismo canal.
+      Internet transformó ese esquema: hoy cada persona es a la vez receptora y emisora.</p>
+    <table class="tbl">
+      <tr><th>Dimensión</th><th>Mass media (broadcast)</th><th>Nuevos medios (red)</th></tr>
+      <tr><td>Dirección</td><td>Uno → muchos</td><td>Muchos → muchos</td></tr>
+      <tr><td>Emisor</td><td>Empresas y Estados con infraestructura costosa</td><td>Cualquier persona con un dispositivo y conexión</td></tr>
+      <tr><td>Receptor</td><td>Público anónimo, masivo y pasivo</td><td>Audiencia activa: comenta, comparte, remezcla</td></tr>
+      <tr><td>Tiempo</td><td>Programación fija</td><td>Bajo demanda y en cualquier momento</td></tr>
+      <tr><td>Alcance</td><td>Nacional o regional</td><td>Global y, a la vez, hiperlocal</td></tr>
+      <tr><td>Medición</td><td>Rating y tirada, estimados</td><td>Métricas exactas y en tiempo real por usuario</td></tr>
+      <tr><td>Costo de producir</td><td>Alto</td><td>Muy bajo</td></tr>
+      <tr><td>Riesgo</td><td>Concentración de voces, agenda única</td><td>Desinformación, cámaras de eco, vigilancia de datos</td></tr>
+    </table>
+    <div class="note mb0"><b>Concepto clave · Manuel Castells</b>
+      Castells llama <b>“autocomunicación de masas”</b> a esta nueva forma: es <i>de masas</i> porque puede alcanzar
+      a millones, y es <i>auto</i> porque la genera el propio individuo, sin intermediarios.
+      El hardware que la hace posible es exactamente el mismo que estudiaremos en la Sección 3.</div>
+  </div>
+
+  <!-- ACTIVIDAD -->
+  <div class="act mt">
+    <div class="h"><span class="ic">✎</span><h4 class="mb0">Actividad de la Sección 1 · Debate en el aula</h4></div>
+    <p class="small mb0"><b>Consigna 1 (individual).</b> Tomá el último mensaje de chat que hayas enviado.
+      Escribí su <b>lectura explícita</b> (qué dice literalmente) y su <b>lectura implícita</b> (qué quiso decir realmente,
+      qué emojis o signos usaste y por qué).</p>
+    <p class="small mt-s mb0"><b>Consigna 2 (grupal).</b> Discutan: si cualquiera puede publicar, ¿por qué seguimos diciendo
+      que “lo que sale en la tele es verdad”? Armen una lista de <b>cinco criterios</b> para verificar una noticia
+      antes de compartirla y preséntenla al curso.</p>
+    <div class="lines only-print"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     PESTAÑA 2 · MODELOS Y COMPONENTES DEL PROCESO COMUNICATIVO DIGITAL
+     ========================================================================= -->
+<section class="panel sec" id="p2" role="tabpanel" aria-labelledby="tab-2">
+  <div class="only-print sec-tag">Sección 2 de 4 · Modelos y componentes del proceso comunicativo digital — NTiCx 4.º año</div>
+
+  <header class="sec-head">
+    <span class="eyebrow">Sección 02 · Modelos teóricos</span>
+    <h1>Modelos y componentes del proceso comunicativo digital</h1>
+    <p class="lead">Un <strong>modelo</strong> es un dibujo simplificado de la realidad que nos permite entenderla y analizarla.
+      Los modelos de la comunicación nacieron en la ingeniería de telecomunicaciones y después se ampliaron con aportes de la
+      sociología y la semiótica. Ninguno es “el verdadero”: cada uno <strong>ilumina una parte</strong> del proceso.</p>
+    <div class="objs">
+      <span class="tag a">Objetivo: identificar los componentes del proceso</span>
+      <span class="tag">Shannon y Weaver</span>
+      <span class="tag">Berlo</span>
+      <span class="tag">Modelos de red</span>
+      <span class="tag">Ruido · redundancia · cifrado</span>
+    </div>
+  </header>
+
+  <!-- 2.1 · Los tres modelos -->
+  <div class="fig">
+    <div class="fig-h">
+      <span class="t">Figura 2.1 · <b>Interactivo</b> — Comparador de modelos comunicativos</span>
+      <div class="seg only-screen" role="group" aria-label="Elegir modelo">
+        <button data-m="sw" aria-pressed="true">Shannon y Weaver</button>
+        <button data-m="berlo" aria-pressed="false">Berlo</button>
+        <button data-m="red" aria-pressed="false">Red / Castells</button>
+      </div>
+    </div>
+    <div class="fig-b">
+      <div id="modelZone"></div>
+      <div class="g2 mt">
+        <div class="card flat" style="background:var(--surface2)">
+          <h4 class="mb0" id="mName">—</h4>
+          <p class="small mb0" id="mDesc">—</p>
+          <div class="mt-s" id="mMeta"></div>
+        </div>
+        <div class="card flat" style="background:var(--surface2)">
+          <h4>Aporte y límite del modelo</h4>
+          <p class="small mb0" id="mCrit">—</p>
+        </div>
+      </div>
+    </div>
+    <div class="fig-f only-screen">Clic en cada bloque para ver su equivalente en hardware</div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 2.1 · Los tres modelos (versión escrita)</h3>
+    <div id="modelPrint"></div>
+  </div>
+
+  <!-- 2.2 · INTERACTIVO: la cadena completa -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 2.2 · <b>Simulador</b> — El viaje de un mensaje de voz por WhatsApp</span>
+      <div class="flex only-screen" style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-p" id="btnPlay">▶ Reproducir transmisión</button>
+        <button class="btn btn-sm" id="btnResetChain">↺ Reiniciar</button>
+      </div>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure">Este diagrama sigue <b>un mensaje de voz real</b> desde tu boca hasta el oído de tu compañero,
+        bloque por bloque. Hacé clic en cualquier bloque para ver su ficha técnica. Activá las condiciones de la red y
+        observá qué le pasa al mensaje.</p>
+
+      <div class="chain mt" id="chain"></div>
+
+      <div class="g3 mt">
+        <label class="sw" id="swNoise"><input type="checkbox" id="cbNoise"><span class="tr"></span>
+          <span>📡 <b>Ruido</b> en el canal<small class="d-block muted" style="font-size:.72rem">Interferencias, pérdida de paquetes</small></span></label>
+        <label class="sw" id="swRed"><input type="checkbox" id="cbRed" checked><span class="tr"></span>
+          <span>🔁 <b>Redundancia</b> y corrección<small class="d-block muted" style="font-size:.72rem">Retransmisión TCP, códigos correctores</small></span></label>
+        <label class="sw" id="swEnc"><input type="checkbox" id="cbEnc" checked><span class="tr"></span>
+          <span>🔒 <b>Cifrado</b> de extremo a extremo<small class="d-block muted" style="font-size:.72rem">Nadie del medio puede leerlo</small></span></label>
+      </div>
+
+      <div class="g2 mt">
+        <div>
+          <label class="fld">Registro de la transmisión</label>
+          <div class="log" id="log">Presioná <b>Reproducir transmisión</b> para ver el recorrido del mensaje.</div>
+        </div>
+        <div>
+          <label class="fld">Ficha del bloque seleccionado</label>
+          <div class="card flat" id="nodeInfo" style="background:var(--surface2);min-height:150px">
+            <p class="small muted mb0">Elegí un bloque del diagrama…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="note mb0 mt-s"><b>Conceptos que aparecen en el registro</b>
+        <b>Ruido:</b> cualquier interferencia que altera el mensaje (eléctrico, semántico o técnico).
+        <b>Redundancia:</b> información repetida a propósito que permite detectar y corregir errores; TCP retransmite
+        todo paquete que no llega. <b>Cifrado:</b> transformación del mensaje para que sólo emisor y receptor puedan leerlo.</div>
+    </div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 2.2 · Componentes del proceso comunicativo digital (fichas técnicas)</h3>
+    <div id="chainPrint"></div>
+  </div>
+
+  <!-- 2.3 · INTERACTIVO: sincrónico / asincrónico -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 2.3 · <b>Mini-desafío</b> — ¿Sincrónico o asincrónico?</span>
+      <span class="tag only-screen" id="saScore">Aciertos 0 / 0</span>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure mb0">Tocá un canal de la lista y después elegí en qué columna lo ubicarías.
+        La <b>sincronía</b> no depende del dispositivo sino del <b>tiempo</b>: ¿las dos personas necesitan estar
+        conectadas al mismo tiempo para que el mensaje funcione?</p>
+      <div class="sa-pool mt only-screen" id="saPool"></div>
+      <div class="g2 mt only-screen">
+        <div class="sa-zone" id="zoneS"><h4><span class="tag ok">Sincrónico</span> Coinciden en el tiempo</h4><div class="chips"></div></div>
+        <div class="sa-zone" id="zoneA"><h4><span class="tag warn">Asincrónico</span> Tiempos diferidos</h4><div class="chips"></div></div>
+      </div>
+      <div class="note mt-s mb0" id="saFeedback"><b>Empezá eligiendo un canal de la lista.</b></div>
+    </div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 2.3 · Clasificación de canales según su sincronía</h3>
+    <table class="tbl" id="saPrint"></table>
+  </div>
+
+  <!-- 2.4 · Comunicación colaborativa -->
+  <div class="card mt">
+    <h3>2.4 · Comunicación digital colaborativa</h3>
+    <p class="small muted">Comunicar en red no es solamente “hablar con alguien”: es <b>producir juntos</b>.
+      El trabajo colaborativo digital exige tres competencias además de las técnicas.</p>
+    <div class="g3">
+      <div class="card flat" style="background:var(--surface2)">
+        <h4>Coordinación</h4>
+        <p class="small mb0">Acordar quién hace qué y para cuándo. Herramientas: tareas compartidas, calendarios,
+          tableros tipo Trello o Classroom.</p>
+      </div>
+      <div class="card flat" style="background:var(--surface2)">
+        <h4>Comunicación clara</h4>
+        <p class="small mb0">Escribir para que se entienda sin tono de voz ni gestos. Asunto preciso, una idea por mensaje,
+          confirmar lo entendido.</p>
+      </div>
+      <div class="card flat" style="background:var(--surface2)">
+        <h4>Convivencia digital</h4>
+        <p class="small mb0">Netiqueta, respeto por los tiempos del otro, cuidado de los datos ajenos y
+          reconocimiento de la autoría.</p>
+      </div>
+    </div>
+    <div class="note mb0"><b>Dato técnico</b>
+      Un documento compartido no “viaja” entero cada vez que escribís: el servidor envía sólo los
+      <b>cambios</b> (deltas) y los aplica sobre la versión común. Por eso ves el cursor de tu compañero moverse
+      letra por letra con apenas décimas de segundo de demora. Eso se llama <b>edición colaborativa en tiempo real</b>
+      y depende de conexiones de baja latencia (Sección 3).</div>
+  </div>
+
+  <div class="act mt">
+    <div class="h"><span class="ic">✎</span><h4 class="mb0">Actividad de la Sección 2 · Producción colaborativa</h4></div>
+    <p class="small mb0"><b>Consigna 1.</b> En grupos de tres, elijan <b>un</b> acto de comunicación real de la escuela
+      (un aviso por el grupo de WhatsApp del curso, un cartel, un video institucional) y dibujen el modelo completo
+      identificando: emisor, receptor, mensaje, canal, código, contexto, ruido y redundancia.</p>
+    <p class="small mt-s mb0"><b>Consigna 2.</b> Respondan: ¿ese mismo acto hubiera sido posible hace 20 años?
+      ¿Qué componente <b>técnico</b> lo habilita hoy y cuál lo impedía antes?</p>
+    <p class="small mt-s mb0"><b>Consigna 3.</b> Identifiquen un caso de <b>ruido semántico</b> en el grupo de WhatsApp del curso
+      (un mensaje malinterpretado) y propongan qué redundancia hubiera evitado el malentendido.</p>
+    <div class="lines only-print"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     PESTAÑA 3 · MEDIOS TÉCNICOS Y COMPETENCIA COMUNICATIVA
+     ========================================================================= -->
+<section class="panel sec" id="p3" role="tabpanel" aria-labelledby="tab-3">
+  <div class="only-print sec-tag">Sección 3 de 4 · Medios técnicos y competencia comunicativa — NTiCx 4.º año</div>
+
+  <header class="sec-head">
+    <span class="eyebrow">Sección 03 · Infraestructura</span>
+    <h1>Medios técnicos y competencia comunicativa</h1>
+    <p class="lead">Ningún mensaje viaja solo: viaja por <strong>algo</strong>. Ese “algo” es el <strong>medio técnico</strong>:
+      un cable de cobre, un hilo de vidrio por el que rebota la luz, o una antena que agita electrones en el aire.
+      Conocer el medio es entender por qué tu videollamada se corta, por qué el video tarda en cargar o
+      por qué en el campo no hay señal.</p>
+    <div class="objs">
+      <span class="tag a">Objetivo: reconocer el hardware de la comunicación</span>
+      <span class="tag">Medios guiados y no guiados</span>
+      <span class="tag">Protocolos</span>
+      <span class="tag">Ancho de banda y latencia</span>
+      <span class="tag">Competencia comunicativa</span>
+    </div>
+  </header>
+
+  <div class="card">
+    <h3>3.1 · El medio es el mensaje… y también es hardware</h3>
+    <p class="small mb0">Marshall McLuhan escribió en 1964 que <i>“el medio es el mensaje”</i>: cada tecnología modifica
+      la manera en que pensamos y nos relacionamos, más allá del contenido que transporte. En NTiCx lo llevamos a lo concreto:
+      <b>cada medio técnico tiene capacidades y límites físicos</b> que condicionan qué podemos comunicar, con qué calidad,
+      a qué velocidad y a qué costo.</p>
+    <div class="g2 mt">
+      <div class="card flat" style="background:var(--surface2)">
+        <h4>Medios guiados (cableados)</h4>
+        <ul class="clean small mb0">
+          <li><b>Par trenzado (UTP):</b> cables de cobre trenzados para anular interferencias. Conector RJ-45. El estándar de las redes LAN.</li>
+          <li><b>Coaxial:</b> conductor central y malla. Usado por el cableoperador.</li>
+          <li><b>Fibra óptica:</b> un hilo de vidrio por el que viaja <b>luz</b>. Inmune al ruido eléctrico, alcanza cientos de kilómetros sin repetir la señal.</li>
+        </ul>
+      </div>
+      <div class="card flat" style="background:var(--surface2)">
+        <h4>Medios no guiados (inalámbricos)</h4>
+        <ul class="clean small mb0">
+          <li><b>Wi-Fi:</b> ondas de radio en 2,4 GHz y 5 GHz. Cómodo, pero se degrada con paredes y distancia.</li>
+          <li><b>Bluetooth:</b> corto alcance y bajo consumo, para periféricos.</li>
+          <li><b>Redes móviles 4G / 5G:</b> antenas celulares que dividen el territorio en “celdas”.</li>
+          <li><b>Satélite:</b> cubre cualquier punto del planeta, pero con mucha latencia (la señal viaja 36.000 km ida y vuelta).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 · INTERACTIVO: hardware de red -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 3.1 · <b>Interactivo</b> — Laboratorio de hardware de red</span>
+      <span class="tag only-screen">Clic en cada componente</span>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure mb0">Estos son los diez componentes que hacen posible que un mensaje salga de tu dispositivo
+        y llegue a otro. Tocá uno para abrir su ficha técnica con función, dato de especificación y micro-desafío.</p>
+      <div class="hw-grid mt" id="hwGrid"></div>
+      <div class="card flat mt" id="hwInfo" style="background:var(--surface2);min-height:170px">
+        <p class="small muted mb0">Seleccioná un componente del laboratorio…</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 3.1 · Fichas técnicas del hardware de red</h3>
+    <div id="hwPrint"></div>
+  </div>
+
+  <!-- 3.3 · INTERACTIVO: comparador de medios -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 3.2 · <b>Interactivo</b> — Comparador de medios de transmisión</span>
+      <div class="only-screen"><select class="sel" id="medSel" style="min-width:210px"></select></div>
+    </div>
+    <div class="fig-b">
+      <div class="grid" style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
+        <div>
+          <div id="medBars"></div>
+          <div class="only-print" id="medPrint"></div>
+        </div>
+        <div class="card flat" style="background:var(--surface2)">
+          <h4 id="medName">—</h4>
+          <p class="small mb0" id="medDesc">—</p>
+          <table class="tbl mt-s" id="medSpec"></table>
+          <div class="note mb0" id="medUse" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fig-f only-screen">Valores típicos orientativos; el rendimiento real depende del operador y del entorno</div>
+  </div>
+
+  <!-- 3.4 · Protocolos -->
+  <div class="card mt">
+    <h3>3.3 · Protocolos: la gramática acordada entre las máquinas</h3>
+    <p class="small muted">Un <b>protocolo</b> es un conjunto de reglas que dos dispositivos acuerdan para entenderse.
+      Sin protocolo no hay comunicación posible, igual que sin código compartido no hay lenguaje humano.</p>
+    <table class="tbl">
+      <tr><th>Protocolo</th><th>Función</th><th>Analogía cotidiana</th></tr>
+      <tr><td>IP</td><td>Direcciona y enruta los paquetes entre redes</td><td>El sistema de calles y direcciones postales</td></tr>
+      <tr><td>TCP</td><td>Garantiza entrega ordenada y retransmite lo perdido</td><td>Una carta certificada con acuse de recibo</td></tr>
+      <tr><td>UDP</td><td>Envía sin confirmar: rápido pero puede perder datos</td><td>Un grito: no sabés si lo escucharon</td></tr>
+      <tr><td>HTTP / HTTPS</td><td>Transfiere páginas y recursos; la “S” agrega cifrado TLS</td><td>El idioma en que tu navegador pide una página</td></tr>
+      <tr><td>DNS</td><td>Traduce nombres a números IP</td><td>La guía telefónica de internet</td></tr>
+      <tr><td>SMTP / IMAP</td><td>Envían y reciben correo electrónico</td><td>El cartero y el buzón</td></tr>
+      <tr><td>RTP / WebRTC</td><td>Transportan audio y video en tiempo real</td><td>La línea telefónica de una videollamada</td></tr>
+    </table>
+    <div class="note mb0"><b>Dato</b> Los mensajes no viajan enteros: se dividen en <b>paquetes</b> de unos 1.500 bytes,
+      cada uno con la dirección de destino. Pueden tomar caminos distintos y llegar desordenados; TCP los vuelve a armar.
+      Por eso, cuando se corta internet a mitad de una descarga, no “se pierde todo”: se pierden paquetes.</div>
+  </div>
+
+  <!-- 3.5 · INTERACTIVO: calculadora de latencia -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 3.3 · <b>Simulador</b> — Ancho de banda, latencia y tiempo de transferencia</span>
+    </div>
+    <div class="fig-b">
+      <div class="g3">
+        <div>
+          <label class="fld" for="calcMed">Medio de transmisión</label>
+          <select class="sel" id="calcMed"></select>
+        </div>
+        <div>
+          <label class="fld" for="calcDist">Distancia al servidor · <b id="vDist">30 km</b></label>
+          <input class="rng" id="calcDist" type="range" min="1" max="18000" value="30">
+        </div>
+        <div>
+          <label class="fld" for="calcSize">Tamaño del archivo · <b id="vSize">50 MB</b></label>
+          <input class="rng" id="calcSize" type="range" min="1" max="4000" value="50">
+        </div>
+      </div>
+      <div class="g4 mt">
+        <div class="kpi"><b id="kPing">—</b><span>Latencia estimada (ping)</span></div>
+        <div class="kpi"><b id="kBw">—</b><span>Ancho de banda</span></div>
+        <div class="kpi"><b id="kTime">—</b><span>Tiempo de descarga</span></div>
+        <div class="kpi"><b id="kVerdict">—</b><span>¿Sirve para videollamada?</span></div>
+      </div>
+      <div class="note mb0 mt-s" id="calcNote"></div>
+      <div class="note warn mb0"><b>Confusión frecuente</b>
+        <b>Ancho de banda</b> es cuánta información puede pasar por segundo (el grosor del caño).
+        <b>Latencia</b> es cuánto tarda en llegar el primer dato (el largo del caño).
+        Para descargar una película importa el ancho de banda; para una videollamada o un juego en línea,
+        importa sobre todo la <b>latencia</b>. Un satélite puede tener buen ancho de banda y, aun así,
+        ser pésimo para jugar en línea.</div>
+    </div>
+  </div>
+
+  <!-- 3.6 · INTERACTIVO: competencia comunicativa -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 3.4 · <b>Autoevaluación</b> — Mi competencia comunicativa digital</span>
+      <span class="tag only-screen" id="compScore">Sin responder</span>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure mb0">Tener el hardware no alcanza: hace falta <b>saber usarlo para comunicar</b>.
+        Respondé con sinceridad del 1 al 4 y mirá tu perfil en las cinco dimensiones. No es una nota:
+        es un punto de partida para saber qué practicar.</p>
+      <div id="compItems" class="mt"></div>
+      <div class="g3 mt" id="compBars"></div>
+      <div class="note mb0 mt" id="compMsg"><b>Respondé las afirmaciones para ver tu perfil.</b></div>
+    </div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 3.4 · Dimensiones de la competencia comunicativa digital</h3>
+    <table class="tbl" id="compPrint"></table>
+  </div>
+
+  <div class="act mt">
+    <div class="h"><span class="ic">✎</span><h4 class="mb0">Actividad de la Sección 3 · Investigación de campo</h4></div>
+    <p class="small mb0"><b>Consigna 1.</b> Averiguá cómo llega internet a tu casa y a tu escuela: ¿fibra óptica, cable coaxial,
+      radioenlace, 4G? Identificá y dibujá el recorrido desde la calle hasta tu dispositivo nombrando
+      <b>todos</b> los equipos que atraviesa (módem, router, switch, access point, placa de red).</p>
+    <p class="small mt-s mb0"><b>Consigna 2.</b> Medí la latencia: abrí una consola y ejecutá <code>ping 8.8.8.8</code>.
+      Anotá el promedio en milisegundos y comparalo con un compañero que use datos móviles. ¿Cuál es la diferencia y por qué?</p>
+    <p class="small mt-s mb0"><b>Consigna 3 (debate).</b> ¿Internet debe considerarse un servicio esencial y un derecho,
+      o un bien de mercado? Busquen un argumento técnico y uno social para cada postura.</p>
+    <div class="lines only-print"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- =========================================================================
+     PESTAÑA 4 · UBICUIDAD: UNA NUEVA FORMA DE COMUNICACIÓN
+     ========================================================================= -->
+<section class="panel sec" id="p4" role="tabpanel" aria-labelledby="tab-4">
+  <div class="only-print sec-tag">Sección 4 de 4 · Ubicuidad: una nueva forma de comunicación — NTiCx 4.º año</div>
+
+  <header class="sec-head">
+    <span class="eyebrow">Sección 04 · Ubicuidad</span>
+    <h1>Ubicuidad: una nueva forma de comunicación</h1>
+    <p class="lead"><strong>Ubicuo</strong> significa “presente en todas partes al mismo tiempo”.
+      Durante toda la historia humana, comunicar exigía <b>coincidir</b>: en el espacio (estar frente a frente)
+      o en el tiempo (estar conectados a la misma hora). La ubicuidad digital rompe las dos exigencias a la vez:
+      el mensaje nos encuentra donde estemos y cuando queramos.</p>
+    <div class="objs">
+      <span class="tag a">Objetivo: comprender la ubicuidad y el trabajo colaborativo</span>
+      <span class="tag">Computación ubicua</span>
+      <span class="tag">Convergencia</span>
+      <span class="tag">IoT y nube</span>
+      <span class="tag">Brecha digital</span>
+      <span class="tag">Derecho a la desconexión</span>
+    </div>
+  </header>
+
+  <div class="g2">
+    <div class="card">
+      <h3>4.1 · De dónde viene la idea</h3>
+      <p class="small">En 1991 el investigador <b>Mark Weiser</b>, del centro Xerox PARC, publicó el artículo
+        <i>“The Computer for the 21st Century”</i>. Su predicción fue contraintuitiva: la computadora más importante
+        no sería la más potente, sino la que <b>dejara de notarse</b>, integrada a los objetos y al ambiente.</p>
+      <dl class="defs">
+        <dt>Era de las mainframes</dt><dd>Muchas personas compartían una sola computadora enorme (1950-1970).</dd>
+        <dt>Era de la PC personal</dt><dd>Una computadora por persona, en un escritorio (1980-2005).</dd>
+        <dt>Era de la computación ubicua</dt><dd>Muchas computadoras por persona, invisibles, en todos lados:
+          teléfono, reloj, televisor, auriculares, heladera, auto, medidor de luz (2005 → hoy).</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>4.2 · Convergencia: todo en un solo aparato</h3>
+      <p class="small mb0">El celular <b>convergió</b> funciones que antes exigían aparatos separados. Cada una tiene su
+        hardware específico adentro:</p>
+      <table class="tbl">
+        <tr><th>Función absorbida</th><th>Componente que la reemplaza</th></tr>
+        <tr><td>Teléfono fijo y contestador</td><td>Módem celular + antena + micrófono</td></tr>
+        <tr><td>Cámara de fotos y filmadora</td><td>Sensor CMOS + procesador de imagen (ISP)</td></tr>
+        <tr><td>Reproductor de música</td><td>Memoria flash + DAC + salida de audio</td></tr>
+        <tr><td>Mapa y brújula</td><td>Receptor GPS + magnetómetro</td></tr>
+        <tr><td>Agenda, álbum y biblioteca</td><td>Almacenamiento + sincronización en la nube</td></tr>
+        <tr><td>Linterna, control remoto, billetera</td><td>LED, infrarrojo/NFC</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4.3 · INTERACTIVO: un día ubicado -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 4.1 · <b>Interactivo</b> — Un día de comunicación ubicua</span>
+      <span class="tag only-screen">Tocá cada momento del día</span>
+    </div>
+    <div class="fig-b">
+      <div class="day" id="dayMap"></div>
+      <div class="card flat mt" id="dayInfo" style="background:var(--surface2);min-height:130px">
+        <p class="small muted mb0">Elegí un momento del recorrido…</p>
+      </div>
+    </div>
+    <div class="fig-f only-screen">Cada punto indica un acto de comunicación distinto con hardware distinto</div>
+  </div>
+
+  <div class="only-print print-list">
+    <h3>Figura 4.1 · Un día de comunicación ubicua (detalle por momento)</h3>
+    <div id="dayPrint"></div>
+  </div>
+
+  <!-- 4.4 · INTERACTIVO: documento colaborativo -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 4.2 · <b>Simulador</b> — Trabajo colaborativo en tiempo real</span>
+      <div class="only-screen" style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-sm" id="btnShare">🔗 Compartir</button>
+        <button class="btn btn-sm" id="btnOffline">📴 Simular sin conexión</button>
+      </div>
+    </div>
+    <div class="fig-b">
+      <p class="small muted measure mb0">Escribí en el documento. Vas a ver cómo tus compañeras <b>editan al mismo tiempo</b>,
+      con su propio cursor y su color. Probá también el botón “sin conexión” y después reconectá: eso es exactamente
+      lo que pasa cuando te quedás sin señal en el colectivo.</p>
+
+      <div class="doc mt">
+        <div class="doc-bar">
+          <b class="small">Trabajo práctico · NTiCx — La ubicuidad</b>
+          <span class="tag" id="saveState">Guardado</span>
+          <span class="tag" id="latBadge">Latencia 24 ms</span>
+          <div class="spacer" style="flex:1"></div>
+          <div class="avatars">
+            <div class="av" id="av0" style="background:#0F766E" title="Vos">VO</div>
+            <div class="av" id="av1" style="background:#7C3AED" title="Micaela">MI</div>
+            <div class="av" id="av2" style="background:#0E7490" title="Agustín">AG</div>
+          </div>
+        </div>
+        <div class="doc-off" id="docOff">📴 <b>Sin conexión.</b> Los cambios se guardan en este dispositivo y se sincronizarán automáticamente al reconectar.</div>
+        <div class="doc-body" id="docBody" contenteditable="true" spellcheck="false">
+          <p><b>La ubicuidad</b> es la posibilidad de comunicarnos desde y hacia cualquier lugar, en cualquier momento.</p>
+          <p>Escribí acá tu parte del trabajo…</p>
+        </div>
+      </div>
+
+      <div class="g2 mt">
+        <div>
+          <label class="fld">Historial de versiones</label>
+          <div class="card flat" id="verList" style="background:var(--surface2);max-height:190px;overflow:auto"></div>
+        </div>
+        <div>
+          <label class="fld">¿Qué hardware hace esto posible?</label>
+          <ul class="clean small mb0">
+            <li><b>Servidor en la nube</b> que guarda la versión única y autorizada del documento.</li>
+            <li><b>Conexión persistente</b> (WebSocket) que mantiene abiertos los canales con cada participante.</li>
+            <li><b>Algoritmo de fusión</b> que combina ediciones simultáneas sin que se pisen (OT / CRDT).</li>
+            <li><b>Caché local</b> del dispositivo para seguir trabajando sin conexión.</li>
+            <li><b>Sincronización por diferencias</b>: sólo viajan los cambios, no el archivo completo.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note mb0 mt-s"><b>Concepto</b>
+        El trabajo colaborativo ubicuo cambia la idea de <b>autoría</b>: el documento ya no tiene un dueño único
+        ni una versión definitiva. Tiene <b>historial</b>. Por eso las plataformas registran quién cambió qué y cuándo:
+        es la única forma de trabajar sobre un archivo que varias personas modifican a la vez desde lugares distintos.</div>
+    </div>
+  </div>
+
+  <!-- 4.5 · Mass media en la era de internet -->
+  <div class="card mt">
+    <h3>4.3 · Los medios masivos en la era de internet</h3>
+    <div class="g2">
+      <div>
+        <p class="small">Los mass media no desaparecieron: <b>se transformaron</b>. La televisión ahora también es una app,
+          la radio es un podcast, el diario es un portal con notificaciones push. Lo que cambió es la
+          <b>direccionalidad</b> y el <b>control de la agenda</b>.</p>
+        <ul class="clean small">
+          <li><b>De la programación al bajo demanda:</b> el público decide cuándo ver.</li>
+          <li><b>Del rating al dato individual:</b> se sabe exactamente qué se vio, cuánto y desde dónde.</li>
+          <li><b>Del público masivo al microsegmento:</b> cada persona recibe un contenido distinto.</li>
+          <li><b>Del emisor profesional al prosumidor:</b> quien consume también produce y publica.</li>
+          <li><b>De la agenda editorial al algoritmo:</b> un sistema de recomendación decide qué vemos.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="note warn"><b>Riesgo · Cámara de eco y burbuja de filtro</b>
+          Si un algoritmo sólo te muestra lo que ya te gustó, tu visión del mundo se estrecha y desaparece el disenso.
+          La ubicuidad multiplica el acceso, pero no garantiza automáticamente la <b>pluralidad</b>.</div>
+        <div class="note bad"><b>Riesgo · Desinformación a escala</b>
+          Un mensaje falso se comparte más rápido que su corrección porque apela a la emoción.
+          La ubicuidad acelera tanto la verdad como la mentira: por eso la <b>verificación</b> es hoy una
+          competencia comunicativa básica.</div>
+        <div class="note ok mb0"><b>Oportunidad</b>
+          Por primera vez, una escuela de cualquier punto del país puede publicar, colaborar con otra escuela
+          y llegar a una audiencia global sin intermediarios y sin costo de infraestructura.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.6 · Brecha digital -->
+  <div class="card mt">
+    <h3>4.4 · Ubicuidad real y brecha digital en Argentina</h3>
+    <p class="small muted">La ubicuidad es una <b>promesa técnica</b>, no una realidad uniforme. Entre “estar conectado”
+      y “estar conectado bien” hay diferencias enormes.</p>
+    <div class="g4">
+      <div class="kpi"><b>≈ 9 de 10</b><span>Hogares con algún acceso a internet</span></div>
+      <div class="kpi"><b>≈ 7 de 10</b><span>Hogares con conexión fija (cable o fibra)</span></div>
+      <div class="kpi"><b>Celular</b><span>Principal —y a veces único— dispositivo de acceso adolescente</span></div>
+      <div class="kpi"><b>Rural</b><span>Donde la brecha es mayor: cobertura y calidad</span></div>
+    </div>
+    <p class="small muted mt-s mb0">Cifras orientativas basadas en informes de ENACOM y de organismos como UNICEF Argentina.
+      Verificar los datos actualizados antes de citar.</p>
+    <div class="note mb0"><b>Tres niveles de brecha</b>
+      <b>1. De acceso:</b> tener o no dispositivo y conexión. <b>2. De uso:</b> saber usarlo para algo valioso
+      (estudiar, producir, tramitar) y no sólo para consumir. <b>3. De calidad:</b> ancho de banda y latencia suficientes.
+      Un plan de datos limitado con señal débil <i>es</i> acceso… pero no habilita una videollamada de clase.</div>
+  </div>
+
+  <!-- 4.7 · INTERACTIVO: bienestar digital -->
+  <div class="fig mt">
+    <div class="fig-h">
+      <span class="t">Figura 4.3 · <b>Simulador</b> — Índice de bienestar digital</span>
+    </div>
+    <div class="fig-b">
+      <div class="g2">
+        <div>
+          <label class="fld" for="bScreen">Horas de pantalla por día · <b id="vScreen">6 h</b></label>
+          <input class="rng" id="bScreen" type="range" min="0" max="14" value="6" step="0.5">
+          <label class="fld mt-s" for="bNotif">Notificaciones por hora · <b id="vNotif">12</b></label>
+          <input class="rng" id="bNotif" type="range" min="0" max="120" value="12">
+          <label class="fld mt-s" for="bSleep">Horas de sueño perdidas por la pantalla · <b id="vSleep">1 h</b></label>
+          <input class="rng" id="bSleep" type="range" min="0" max="4" value="1" step="0.5">
+          <label class="fld mt-s" for="bOff">Momentos del día sin dispositivos · <b id="vOff">2</b></label>
+          <input class="rng" id="bOff" type="range" min="0" max="6" value="2">
+        </div>
+        <div>
+          <div class="kpi" style="margin-bottom:10px"><b id="bIdx" style="font-size:2.2rem">—</b><span>Índice de bienestar digital (0-100)</span></div>
+          <div class="bar" style="height:12px"><i id="bBar"></i></div>
+          <div class="note mb0 mt-s" id="bMsg"></div>
+        </div>
+      </div>
+      <div class="note warn mb0 mt"><b>Derecho a la desconexión</b>
+        En Argentina, la <b>Ley 27.555 de Teletrabajo</b> reconoce el derecho de la persona trabajadora a no ser
+        contactada fuera de su jornada laboral y durante licencias. No es un capricho: es el reconocimiento legal de que
+        la ubicuidad —estar siempre disponible— tiene un costo sobre la salud. Lo mismo aplica al aula:
+        acordar horarios y tiempos de respuesta es parte de la <b>convivencia digital</b>.</div>
+    </div>
+  </div>
+
+  <div class="act mt">
+    <div class="h"><span class="ic">✎</span><h4 class="mb0">Actividad de la Sección 4 · Proyecto colaborativo</h4></div>
+    <p class="small mb0"><b>Consigna 1 (individual).</b> Durante 24 horas registrá cada acto de comunicación digital que realices:
+      hora, dispositivo, medio técnico (Wi-Fi, datos, cable), si fue sincrónico o asincrónico y con quién.
+      Al final, calculá cuántos fueron <b>ubicuos</b> (posibles sólo por estar conectado en movimiento).</p>
+    <p class="small mt-s mb0"><b>Consigna 2 (grupal).</b> Usando un documento compartido, elaboren entre cuatro una
+      <b>“Carta de convivencia digital del curso”</b> con diez acuerdos sobre tiempos de respuesta, uso del grupo de WhatsApp,
+      horarios sin notificaciones y cuidado de los datos de los compañeros.</p>
+    <p class="small mt-s mb0"><b>Consigna 3 (debate).</b> La ubicuidad ¿nos libera o nos vuelve permanentemente disponibles?
+      Defiendan una postura con al menos <b>un argumento técnico</b> (latencia, always-on, notificaciones push) y
+      <b>uno social</b> (trabajo, escuela, vínculos).</p>
+    <div class="lines only-print"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot no-print">
+  <div class="app">
+    <div>
+      <strong>NTiCx · Nuevas Tecnologías de la Información y la Conectividad</strong><br>
+      Unidad: El hardware que soporta la comunicación · 4.º año · Educación Secundaria · Argentina
+    </div>
+    <div style="text-align:right">
+      Archivo único HTML · Sin dependencias externas<br>
+      Imprimible en A4 · <button class="btn btn-sm" id="btnPrintFoot">🖨️ Imprimir unidad</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   NTiCx 4.º AÑO · LÓGICA DE LA APLICACIÓN (JavaScript vanilla)
+   ---------------------------------------------------------------------
+   0) Utilidades                4) Hardware y medios técnicos
+   1) Pestañas                  5) Ubicuidad y colaboración
+   2) Comunicación digital      6) Impresión
+   3) Modelos comunicativos
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  /* ===================================================================
+     0. UTILIDADES
+     =================================================================== */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function num(n, d) { return n.toLocaleString('es-AR', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+
+  /* ===================================================================
+     1. SISTEMA DE PESTAÑAS
+     =================================================================== */
+  function showTab(id) {
+    $$('.tab').forEach(function (b) {
+      var on = b.dataset.tab === id;
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    $$('.panel').forEach(function (p) { p.classList.toggle('active', p.id === 'p' + id); });
+    document.body.setAttribute('data-tab', id);
+    if (window.history && history.replaceState) history.replaceState(null, '', '#s' + id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function initTabs() {
+    $$('.tab').forEach(function (b) {
+      b.addEventListener('click', function () { showTab(b.dataset.tab); });
+    });
+    /* Navegación por teclado dentro del tablist (flechas, Inicio, Fin) */
+    $('#tabs').addEventListener('keydown', function (e) {
+      var btns = $$('.tab'), i = btns.indexOf(document.activeElement), j = -1;
+      if (i < 0) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % btns.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + btns.length) % btns.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = btns.length - 1;
+      if (j >= 0) { e.preventDefault(); btns[j].focus(); showTab(btns[j].dataset.tab); }
+    });
+    var h = (location.hash || '').replace('#s', '');
+    showTab(['1', '2', '3', '4'].indexOf(h) >= 0 ? h : '1');
+  }
+
+  /* Acordeones genéricos */
+  function initAccordions() {
+    $$('.acc-h').forEach(function (h) {
+      h.addEventListener('click', function () {
+        var acc = h.closest('.acc');
+        var open = acc.classList.toggle('open');
+        h.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+  }
+
+  /* ===================================================================
+     2. SECCIÓN 1 · COMUNICACIÓN DIGITAL
+     =================================================================== */
+
+  /* --- 2.1 Onda analógica vs. digital (muestreo y cuantificación) --- */
+  function waveY(x, W, H) {
+    /* Señal de prueba: dos senoides superpuestas */
+    return H / 2
+      - Math.sin((x / W) * Math.PI * 4) * (H * 0.30)
+      - Math.sin((x / W) * Math.PI * 9.3) * (H * 0.10);
+  }
+
+  function drawWaves() {
+    var W = 600, H = 130;
+    var N = +$('#sRate').value;                 /* muestras a lo ancho del gráfico */
+    var bits = +$('#sBits').value;
+    var levels = Math.pow(2, bits);
+
+    /* --- Onda analógica --- */
+    var pa = '';
+    for (var x = 0; x <= W; x += 2) pa += (x === 0 ? 'M' : 'L') + x + ' ' + waveY(x, W, H).toFixed(1);
+    $('#wAnalog').innerHTML =
+      '<line class="grid" x1="0" y1="' + (H / 2) + '" x2="' + W + '" y2="' + (H / 2) + '"/>' +
+      '<path class="an" d="' + pa + '"/>';
+
+    /* --- Onda digital: muestras + escalera cuantificada --- */
+    var step = H / (levels - 1);
+    var g = '';
+    /* Líneas de cuantificación (sólo si hay pocas, para no saturar) */
+    if (levels <= 32) {
+      for (var l = 0; l < levels; l++) {
+        g += '<line class="grid" x1="0" y1="' + (l * step).toFixed(1) + '" x2="' + W + '" y2="' + (l * step).toFixed(1) + '"/>';
+      }
+    }
+    var pd = '', dots = '', errSum = 0;
+    var dx = W / (N - 1);
+    for (var i = 0; i < N; i++) {
+      var xx = i * dx;
+      var real = waveY(xx, W, H);
+      var q = Math.round(real / step) * step;         /* cuantificación */
+      errSum += Math.abs(real - q);
+      var x0 = xx.toFixed(1), x1 = (i === N - 1 ? W : xx + dx).toFixed(1), yq = q.toFixed(1);
+      pd += (i === 0 ? 'M' : 'L') + x0 + ' ' + yq + ' L' + x1 + ' ' + yq;
+      dots += '<circle class="dot" cx="' + x0 + '" cy="' + yq + '" r="2.4"/>';
+    }
+    $('#wDigital').innerHTML = g + '<path class="dg" d="' + pd + '"/>' + dots;
+
+    /* --- Indicadores --- */
+    var err = (errSum / N) / (H / 2) * 100;           /* error relativo al pico */
+    var weight = N * bits;                            /* peso proporcional del archivo */
+    $('#vRate').textContent = N + ' muestras';
+    $('#vBits').textContent = bits + ' bits (' + num(levels) + ' niveles)';
+    $('#kSamples').textContent = N;
+    $('#kLevels').textContent = num(levels);
+    $('#kError').textContent = err.toFixed(2) + ' %';
+    $('#kSize').textContent = num(weight / 100, 1) + '×';
+  }
+
+  /* --- 2.2 Lenguaje explícito e implícito --- */
+  var MSGS = [
+    { t: 'ok.', exp: 'Un monosílabo de conformidad seguido de punto.',
+      imp: 'El punto final y la minúscula suelen leerse como <b>sequedad o enojo</b>. En chat, “ok.” no equivale a “¡ok!” ni a “Ok 😊”.' },
+    { t: 'Jajaja', exp: 'Onomatopeya de la risa escrita seis veces.',
+      imp: 'Risa genuina y abundante. Si fuera “jaja” a secas, probablemente sea <b>cortesía</b>; si fuera “jajajajajaja”, puede ser exageración irónica.' },
+    { t: '🙂', exp: 'Emoji estándar de cara sonriente leve.',
+      imp: 'Entre adolescentes funciona muchas veces como <b>ironía o sarcasmo</b>, no como alegría. El mismo signo cambia de sentido según la generación.' },
+    { t: 'Visto 21:47', exp: 'Marca técnica del sistema: el mensaje fue entregado y abierto a esa hora.',
+      imp: '<b>No hay texto, pero hay mensaje.</b> Que no respondan durante horas después del visto connota desinterés, enojo o juego de poder.' },
+    { t: 'Perdón la demora', exp: 'Disculpa explícita por responder tarde.',
+      imp: 'Reconoce que existe una <b>norma implícita de inmediatez</b>. La ubicuidad creó la expectativa de respuesta rápida.' },
+    { t: '👍', exp: 'Emoji de pulgar hacia arriba.',
+      imp: 'Conforma sin compromiso: “leí, estoy de acuerdo, no quiero seguir la conversación”. Es un <b>cierre</b>, no una apertura.' }
+  ];
+  var msgLayer = 'exp', msgIdx = 0;
+
+  function paintMsg() {
+    var nav = '', box = '';
+    MSGS.forEach(function (m, i) {
+      nav += '<button data-i="' + i + '" aria-pressed="' + (i === msgIdx) + '">' + (i + 1) + '</button>';
+    });
+    $('#msgNav').innerHTML = nav;
+    $$('#msgNav button').forEach(function (b) {
+      b.addEventListener('click', function () { msgIdx = +b.dataset.i; paintMsg(); });
+    });
+
+    var m = MSGS[msgIdx];
+    box += '<div class="msg-card ' + (msgLayer === 'exp' ? 'exp' : 'imp') + '">' +
+      '<div class="top"><div class="txt">' + esc(m.t) + '</div>' +
+      '<div class="tag mt-s">' + (msgLayer === 'exp' ? 'Capa explícita' : 'Capa implícita') + '</div></div>' +
+      '<div class="body">' +
+        '<div class="lay ' + (msgLayer === 'exp' ? 'on' : '') + '"><h5>Lo que dice literalmente</h5><p>' + m.exp + '</p></div>' +
+        '<div class="lay ' + (msgLayer === 'imp' ? 'on' : '') + '"><h5>Lo que realmente significa</h5><p>' + m.imp + '</p></div>' +
+      '</div></div>';
+    box += '<div class="mt-s" style="display:flex;gap:7px;flex-wrap:wrap">' +
+      '<button class="btn btn-sm" id="msgPrev">← Anterior</button>' +
+      '<button class="btn btn-sm" id="msgNext">Siguiente →</button></div>';
+    $('#msgBox').innerHTML = box;
+    $('#msgPrev').addEventListener('click', function () { msgIdx = (msgIdx - 1 + MSGS.length) % MSGS.length; paintMsg(); });
+    $('#msgNext').addEventListener('click', function () { msgIdx = (msgIdx + 1) % MSGS.length; paintMsg(); });
+
+    /* Versión imprimible: todas las capas, siempre visibles */
+    $('#msgPrint').innerHTML = MSGS.map(function (x, i) {
+      return '<div class="acc open" style="margin-bottom:2.5mm"><h4>' + (i + 1) + '. «' + esc(x.t) + '»</h4>' +
+        '<p style="margin:0 0 1.5mm"><b>Explícito:</b> ' + x.exp + '</p>' +
+        '<p style="margin:0"><b>Implícito:</b> ' + x.imp + '</p></div>';
+    }).join('');
+  }
+
+  function initSection1() {
+    $('#sRate').addEventListener('input', drawWaves);
+    $('#sBits').addEventListener('input', drawWaves);
+    drawWaves();
+
+    function setLayer(l) {
+      msgLayer = l;
+      $('#bExp').setAttribute('aria-pressed', l === 'exp' ? 'true' : 'false');
+      $('#bImp').setAttribute('aria-pressed', l === 'imp' ? 'true' : 'false');
+      paintMsg();
+    }
+    $('#bExp').addEventListener('click', function () { setLayer('exp'); });
+    $('#bImp').addEventListener('click', function () { setLayer('imp'); });
+    paintMsg();
+  }
+
+  /* ===================================================================
+     3. SECCIÓN 2 · MODELOS Y COMPONENTES
+     =================================================================== */
+  var MODELS = {
+    sw: {
+      nombre: 'Shannon y Weaver (1948)',
+      tipo: 'Modelo lineal · matemático de la información',
+      desc: 'Nació en los laboratorios Bell para resolver un problema de ingeniería: transmitir señales por teléfono con el menor error posible. No le interesa qué significa el mensaje, sino <b>cuántos bits llegan bien</b>. Es el modelo del que derivan todos los conceptos técnicos que usamos hoy: canal, ruido, redundancia y ancho de banda.',
+      crit: '<b>Aporte:</b> introdujo la idea de <b>ruido</b> y de <b>redundancia</b> como corrector, y permitió medir la comunicación. ' +
+            '<b>Límite:</b> es lineal y unidireccional; no contempla la respuesta del receptor ni el contexto cultural. ' +
+            'Sirve para pensar el hardware, no para pensar el vínculo.',
+      forma: 'lineal',
+      bloques: [
+        { id: 'fuente', ic: '🗣️', n: 'Fuente', s: 'Origen', h: 'Tu cerebro y tus cuerdas vocales', d: 'Quien produce la idea que se va a transmitir. En el modelo técnico es simplemente el origen de la señal.', r: '¿La fuente y el destino comparten el mismo código? ¿Qué pasa cuando no?' },
+        { id: 'transmisor', ic: '🎙️', n: 'Transmisor', s: 'Codifica', h: 'Micrófono MEMS + ADC + códec + CPU + placa de red', d: 'Convierte el mensaje en señales transmisibles. El micrófono transforma la onda sonora en señal eléctrica; el conversor analógico-digital la vuelve números; el códec la comprime.', r: 'Buscá en tu netbook el dispositivo de entrada de audio: ¿qué modelo de micrófono tiene?' },
+        { id: 'canal', ic: '🌐', n: 'Canal', s: 'Medio', h: 'Wi-Fi, cable UTP, fibra óptica, antena 4G/5G', d: 'El medio físico por el que viaja la señal. Es el único componente que no podemos controlar del todo y donde aparece el ruido.', r: 'Anotá tres fuentes de ruido posibles en el Wi-Fi de tu escuela.' },
+        { id: 'receptor', ic: '🔊', n: 'Receptor', s: 'Decodifica', h: 'Antena o NIC + decodificador + DAC + parlante', d: 'Hace el camino inverso del transmisor: reconstruye el mensaje a partir de la señal recibida.', r: '¿Qué pasa si el receptor no conoce el códec que usó el transmisor?' },
+        { id: 'destino', ic: '👂', n: 'Destino', s: 'Interpreta', h: 'Oído y cerebro de quien recibe', d: 'La persona para quien iba dirigido el mensaje. Aquí ocurre la interpretación, que ya no es un problema técnico sino humano.', r: 'El modelo termina acá. ¿Qué le falta para describir una conversación real?' }
+      ],
+      ruido: true
+    },
+    berlo: {
+      nombre: 'David Berlo (1960)',
+      tipo: 'Modelo SMCR · psicosocial',
+      desc: 'Berlo amplió el modelo técnico agregando lo <b>humano</b>. Para él cada componente está atravesado por factores que condicionan la comunicación: las <b>habilidades comunicativas</b>, las <b>actitudes</b>, el <b>conocimiento</b>, el <b>sistema social</b> y la <b>cultura</b>. El mensaje, además, tiene contenido, estructura, código y tratamiento.',
+      crit: '<b>Aporte:</b> muestra que el mismo mensaje cambia según quién lo emite y quién lo recibe. Introduce el <b>código</b> como elemento explícito. ' +
+            '<b>Límite:</b> sigue siendo lineal y no incorpora la retroalimentación ni el medio técnico. Por eso hoy se combina con los modelos de red.',
+      forma: 'lineal',
+      bloques: [
+        { id: 'b-fuente', ic: '🧑', n: 'Fuente', s: 'Emisor', h: 'Dispositivo + persona', d: 'Quien codifica. Sus habilidades para escribir, hablar y dibujar, sus actitudes hacia el tema y su cultura determinan <b>qué</b> mensaje puede producir.', r: 'Pensá un tema del que no podrías hablar bien por falta de vocabulario. ¿Qué factor de Berlo te limita?' },
+        { id: 'b-cod', ic: '✍️', n: 'Codificador', s: 'Lenguaje', h: 'Teclado, micrófono, cámara, editor', d: 'El instrumento que traduce la idea a un formato transmisible. En lo digital es también literal: teclado, cámara y software de edición.', r: 'Escribí la misma idea con un emoji, con una foto y con una frase. ¿Qué se pierde en cada caso?' },
+        { id: 'b-msg', ic: '💬', n: 'Mensaje', s: 'Contenido', h: 'Archivo de texto, audio, imagen o video', d: 'El producto concreto. Berlo distingue su <b>contenido</b>, su <b>estructura</b>, su <b>código</b> y su <b>tratamiento</b> (el tono elegido).', r: 'Un mismo contenido con distinto tratamiento cambia el sentido. Escribí un ejemplo.' },
+        { id: 'b-can', ic: '📡', n: 'Canal', s: 'Sentidos + medio', h: 'Vista, oído, tacto + pantalla, parlante, red', d: 'Berlo habla de los canales <b>sensoriales</b> (ver, oír, tocar). En lo digital se suma el canal técnico: la red que transporta el archivo.', r: '¿Qué canal sensorial predomina en TikTok? ¿Y en un podcast?' },
+        { id: 'b-dec', ic: '🧠', n: 'Decodificador', s: 'Interpretación', h: 'Pantalla, parlante + cerebro del receptor', d: 'Quien recibe traduce el código a ideas. Si no comparte el código (idioma, jerga, memes), la comunicación falla aunque el archivo llegue perfecto.', r: 'Explicale un meme a alguien de otra generación y anotá dónde se rompe el código.' },
+        { id: 'b-rec', ic: '👥', n: 'Receptor', s: 'Destino', h: 'Persona o grupo', d: 'También condicionado por habilidades, actitudes, conocimiento, sistema social y cultura. No es un recipiente pasivo.', r: '¿Por qué el mismo mensaje puede ofender a una persona y no a otra?' }
+      ],
+      ruido: false
+    },
+    red: {
+      nombre: 'Modelos de red · Castells (2009)',
+      tipo: 'Modelo reticular · autocomunicación de masas',
+      desc: 'En internet ya no hay un emisor y un receptor fijos: hay <b>nodos</b> que emiten y reciben a la vez, conectados entre sí sin centro. Castells lo llamó <b>autocomunicación de masas</b>: es de masas porque puede llegar a millones, y es auto porque la genera el propio usuario, sin pasar por un medio tradicional.',
+      crit: '<b>Aporte:</b> describe con precisión la comunicación digital contemporánea: multidireccional, desintermediada, archivada y medible. ' +
+            '<b>Límite:</b> la apariencia horizontal convive con una fuerte <b>centralización real</b>: pocas plataformas concentran la infraestructura y los algoritmos que deciden qué se ve.',
+      forma: 'red',
+      nodos: [
+        { id: 'r-vo', n: 'Vos', ic: '🧑', x: 50, y: 14, d: 'Nodo que produce y consume al mismo tiempo: <b>prosumidor</b>. Tu dispositivo es a la vez cámara, editor, antena y pantalla.', r: '¿Cuántos mensajes produciste hoy y cuántos sólo consumiste?' },
+        { id: 'r-pl', n: 'Plataforma', ic: '🏢', x: 50, y: 50, d: 'El nodo que parece neutral pero no lo es: define el <b>algoritmo</b>, las normas y el formato. Concentra la audiencia y los datos.', r: '¿Quién decide qué ves primero en tu feed? ¿Con qué criterio?' },
+        { id: 'r-am', n: 'Contactos', ic: '👥', x: 15, y: 34, d: 'Tu red cercana. Cada uno es a la vez emisor y receptor, y puede reenviar tu mensaje amplificándolo.', r: 'Contá cuántas personas recibieron tu último mensaje reenviado.' },
+        { id: 'r-des', n: 'Desconocidos', ic: '🌍', x: 85, y: 34, d: 'Audiencia potencial ilimitada. Lo público ya no requiere un medio masivo: alcanza con una cuenta.', r: '¿Qué dato tuyo queda visible para personas que no conocés?' },
+        { id: 'r-med', n: 'Medios', ic: '📺', x: 15, y: 76, d: 'Los mass media tradicionales, que hoy también son nodos de la red y compiten con cualquier usuario.', r: '¿Un medio tradicional y un influencer compiten en igualdad de condiciones?' },
+        { id: 'r-srv', n: 'Servidores', ic: '🖥️', x: 85, y: 76, d: 'La infraestructura física: data centers, cables submarinos y antenas. La red es <b>material</b>, no etérea.', r: 'Investigá por dónde entra a Argentina el cable submarino que trae internet.' }
+      ]
+    }
+  };
+  var curModel = 'sw', curNode = null;
+
+  function paintModel() {
+    var m = MODELS[curModel];
+    $('#mName').textContent = m.nombre;
+    $('#mDesc').innerHTML = m.desc;
+    $('#mCrit').innerHTML = m.crit;
+    $('#mMeta').innerHTML = '<span class="tag">' + m.tipo + '</span> <span class="tag">' +
+      (m.forma === 'red' ? 'Reticular' : 'Lineal') + '</span>' +
+      (m.ruido ? ' <span class="tag bad">Incluye ruido</span>' : '');
+
+    var zone = $('#modelZone');
+    if (m.forma === 'lineal') {
+      var h = '<div class="chain" id="modelChain">';
+      m.bloques.forEach(function (b, i) {
+        if (i) h += '<span class="arrow">→</span>';
+        h += '<button class="node" data-nid="' + b.id + '"><span class="ic">' + b.ic + '</span><b>' + b.n + '</b><small>' + b.s + '</small></button>';
+      });
+      h += '</div>';
+      if (m.ruido) h += '<div class="center mt-s"><span class="tag bad">⚡ Ruido: se inyecta sobre el canal</span></div>';
+      zone.innerHTML = h;
+      $$('#modelChain .node').forEach(function (el) {
+        el.addEventListener('click', function () {
+          $$('#modelChain .node').forEach(function (x) { x.classList.remove('sel'); });
+          el.classList.add('sel');
+          var b = m.bloques.filter(function (x) { return x.id === el.dataset.nid; })[0];
+          $('#modelZone').insertAdjacentHTML('beforeend', '');
+          paintNodeInfo(b, '#modelZoneInfo');
+        });
+      });
+      zone.insertAdjacentHTML('beforeend', '<div class="card flat mt" id="modelZoneInfo" style="background:var(--surface2)"><p class="small muted mb0">Elegí un bloque del modelo…</p></div>');
+    } else {
+      /* Modelo reticular: nodos sobre un SVG */
+      var s = '<svg viewBox="0 0 100 92" style="width:100%;max-height:330px" role="img" aria-label="Modelo de red con nodos interconectados">';
+      var links = [['r-vo', 'r-am'], ['r-vo', 'r-des'], ['r-vo', 'r-pl'], ['r-am', 'r-pl'], ['r-des', 'r-pl'],
+        ['r-med', 'r-pl'], ['r-srv', 'r-pl'], ['r-am', 'r-med'], ['r-des', 'r-srv'], ['r-vo', 'r-med'], ['r-vo', 'r-srv']];
+      var byId = {};
+      m.nodos.forEach(function (n) { byId[n.id] = n; });
+      links.forEach(function (l) {
+        s += '<line x1="' + byId[l[0]].x + '" y1="' + byId[l[0]].y + '" x2="' + byId[l[1]].x + '" y2="' + byId[l[1]].y +
+          '" stroke="currentColor" stroke-opacity=".28" stroke-width=".5" stroke-dasharray="1.6 1.4"/>';
+      });
+      m.nodos.forEach(function (n) {
+        s += '<g class="hs" data-nid="' + n.id + '" style="cursor:pointer">' +
+          '<circle cx="' + n.x + '" cy="' + n.y + '" r="9.5" fill="#fff" stroke="currentColor" stroke-opacity=".45" stroke-width=".7"/>' +
+          '<text x="' + n.x + '" y="' + (n.y + 3.4) + '" text-anchor="middle" style="font-size:8px">' + n.ic + '</text>' +
+          '<text x="' + n.x + '" y="' + (n.y + 17.5) + '" text-anchor="middle" style="font-family:ui-monospace,monospace;font-size:4.4px;fill:currentColor;opacity:.75">' + esc(n.n.toUpperCase()) + '</text></g>';
+      });
+      s += '</svg>';
+      zone.innerHTML = '<div style="color:var(--acc)">' + s + '</div>' +
+        '<div class="card flat mt" id="modelZoneInfo" style="background:var(--surface2)"><p class="small muted mb0">Elegí un nodo del modelo de red…</p></div>';
+      $$('#modelZone .hs').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var n = m.nodos.filter(function (x) { return x.id === el.dataset.nid; })[0];
+          paintNodeInfo(n, '#modelZoneInfo');
+        });
+      });
+    }
+
+    /* Versión imprimible con todos los modelos y sus fichas */
+    $('#modelPrint').innerHTML = Object.keys(MODELS).map(function (k) {
+      var mm = MODELS[k];
+      var items = mm.forma === 'lineal' ? mm.bloques : mm.nodos;
+      return '<h3>' + esc(mm.nombre) + '</h3>' +
+        '<p>' + mm.desc + '</p>' +
+        '<p><b>Aporte y límite:</b> ' + mm.crit + '</p>' +
+        '<table class="tbl"><tr><th>Componente</th><th>Función</th><th>Hardware equivalente</th></tr>' +
+        items.map(function (b) {
+          return '<tr><td>' + esc(b.n) + '</td><td>' + esc(b.d.replace(/<[^>]+>/g, '')) + '</td><td>' + esc(b.h || '—') + '</td></tr>';
+        }).join('') + '</table>';
+    }).join('');
+  }
+
+  function paintNodeInfo(b, target) {
+    $(target).innerHTML =
+      '<div style="display:flex;gap:10px;align-items:flex-start">' +
+        '<span style="font-size:1.4rem">' + (b.ic || '•') + '</span>' +
+        '<div style="flex:1;min-width:0"><h4 style="margin:0 0 3px">' + esc(b.n) + '</h4>' +
+        '<div class="tag mb0" style="margin-bottom:8px">Hardware: ' + esc(b.h || '—') + '</div></div>' +
+      '</div>' +
+      '<p class="small mb0">' + b.d + '</p>' +
+      '<div class="note warn mb0" style="margin-top:10px"><b>🎯 Micro-desafío</b>' + esc(b.r || '—') + '</div>';
+  }
+
+  /* --- Cadena de transmisión del mensaje de voz --- */
+  var CHAIN = [
+    { id: 'voz', ic: '🗣️', n: 'Voz', s: 'Onda sonora', estado: 'Onda sonora analógica en el aire (20 Hz – 20 kHz).',
+      h: 'Cuerdas vocales, cavidad bucal', d: 'El mensaje original. Todavía no es digital: es una variación continua de la presión del aire.',
+      r: '¿Cuántos bits por segundo harían falta para representar tu voz sin perder nada?' },
+    { id: 'mic', ic: '🎙️', n: 'Micrófono', s: 'Transductor', estado: 'El micrófono MEMS convierte la presión del aire en una señal eléctrica analógica.',
+      h: 'Micrófono MEMS + preamplificador', d: 'Un <b>transductor</b> cambia una forma de energía por otra. Aquí: energía acústica → eléctrica.',
+      r: 'Compará el micrófono de tu celular con el de unos auriculares con cable. ¿Cuál capta menos ruido ambiente y por qué?' },
+    { id: 'adc', ic: '🔢', n: 'Conversor A/D', s: 'Muestreo', estado: 'Se muestrea a 16 kHz y se cuantifica a 16 bits: la voz ya es una serie de números.',
+      h: 'ADC integrado en el códec de audio', d: 'Acá ocurre la <b>digitalización</b>: muestreo, cuantificación y codificación binaria (Sección 1).',
+      r: 'Una llamada de voz usa 16 kHz; un CD de audio, 44,1 kHz. ¿Por qué alcanza con menos para la voz?' },
+    { id: 'codec', ic: '🗜️', n: 'Códec', s: 'Compresión', estado: 'El códec Opus comprime el audio: de 512 kbps crudos a unos 24 kbps.',
+      h: 'CPU / DSP del teléfono', d: 'Comprime eliminando lo que el oído no percibe (modelo psicoacústico). Sin compresión, internet colapsaría.',
+      r: 'Si un minuto de audio sin comprimir pesa ~3,8 MB, ¿cuánto pesa comprimido a 24 kbps?' },
+    { id: 'cif', ic: '🔒', n: 'Cifrado', s: 'Seguridad', estado: 'Se cifra con una clave que sólo tienen los dos extremos.',
+      h: 'CPU (instrucciones AES) + generador de claves', d: 'El <b>cifrado de extremo a extremo</b> hace que ni la empresa, ni el proveedor de internet, ni quien intercepte el paquete puedan leerlo.',
+      r: 'Si el mensaje está cifrado de extremo a extremo, ¿puede la plataforma leerlo? ¿Y saber con quién hablás?' },
+    { id: 'nic', ic: '🧩', n: 'Placa de red', s: 'Paquetes', estado: 'El audio se divide en paquetes IP con la dirección de destino.',
+      h: 'NIC Wi-Fi o Ethernet', d: 'Fragmenta el mensaje en <b>paquetes</b> y les agrega cabeceras con origen, destino y número de orden.',
+      r: '¿Por qué conviene dividir en paquetes en lugar de enviar un solo archivo grande?' },
+    { id: 'canal', ic: '📡', n: 'Canal', s: 'Medio físico', estado: 'Los paquetes viajan por Wi-Fi, fibra o red móvil hasta el servidor.',
+      h: 'Antena Wi-Fi, cable UTP, fibra óptica, antena 4G/5G', d: 'El único tramo expuesto al <b>ruido</b>: interferencias, distancia, obstáculos, congestión de la celda.',
+      r: 'Anotá tres causas físicas por las que se degrada el Wi-Fi en tu casa.' },
+    { id: 'srv', ic: '🖥️', n: 'Servidor', s: 'Enrutado', estado: 'El servidor recibe, verifica la integridad y reenvía al destinatario.',
+      h: 'Data center con miles de servidores y conexión de fibra troncal', d: 'Aunque el cifrado sea de extremo a extremo, los paquetes <b>pasan</b> por servidores: saben quién, cuándo y cuánto, aunque no el contenido.',
+      r: '¿Qué información queda registrada aunque el contenido esté cifrado? Se llama <b>metadato</b>.' },
+    { id: 'tcp', ic: '🔁', n: 'Control TCP', s: 'Redundancia', estado: 'Se detectan paquetes perdidos y se piden de nuevo.',
+      h: 'Pila de red del sistema operativo', d: 'La <b>redundancia</b> es información de control agregada a propósito para detectar y corregir errores. TCP no da por entregado un paquete hasta recibir confirmación.',
+      r: 'En una videollamada se usa UDP, no TCP. ¿Por qué a veces conviene perder un cuadro antes que esperar?' },
+    { id: 'dec', ic: '🔓', n: 'Decodificador', s: 'Reconstrucción', estado: 'Se descifra, se descomprime y se reconvierte a señal analógica (DAC).',
+      h: 'CPU + DAC + amplificador', d: 'El camino inverso exacto del transmisor. Si el código no coincide, hay ruido semántico o técnico.',
+      r: '¿Qué pasa si el receptor no soporta el códec que usó el emisor?' },
+    { id: 'par', ic: '🔊', n: 'Parlante', s: 'Transductor', estado: 'El parlante vuelve a convertir la señal eléctrica en ondas sonoras.',
+      h: 'Altavoz + auriculares', d: 'Segundo transductor: energía eléctrica → acústica. Cierra la cadena física.',
+      r: 'Compará la calidad de un parlante de celular y uno de auriculares. ¿Dónde se pierde información?' },
+    { id: 'oido', ic: '👂', n: 'Receptor', s: 'Interpretación', estado: 'Tu compañero escucha e interpreta el mensaje.',
+      h: 'Oído + cerebro', d: 'Último eslabón y el único <b>no técnico</b>: acá aparecen el contexto, el tono percibido y los malentendidos.',
+      r: 'El archivo llegó bit a bit idéntico. ¿Puede igual haber fallado la comunicación? ¿Por qué?' }
+  ];
+  var chainTimer = null, chainIdx = 0;
+
+  function paintChain() {
+    var h = '';
+    CHAIN.forEach(function (c, i) {
+      if (i) h += '<span class="arrow">→</span>';
+      h += '<button class="node" data-cid="' + c.id + '" title="' + esc(c.n) + '">' +
+        '<span class="ic">' + c.ic + '</span><b>' + c.n + '</b><small>' + c.s + '</small></button>';
+    });
+    $('#chain').innerHTML = h;
+    $$('#chain .node').forEach(function (el) {
+      el.addEventListener('click', function () {
+        $$('#chain .node').forEach(function (x) { x.classList.remove('sel'); });
+        el.classList.add('sel');
+        var c = CHAIN.filter(function (x) { return x.id === el.dataset.cid; })[0];
+        $('#nodeInfo').innerHTML =
+          '<h4 style="margin:0 0 4px">' + c.ic + ' ' + esc(c.n) + '</h4>' +
+          '<div class="tag" style="margin-bottom:9px">Hardware: ' + esc(c.h) + '</div>' +
+          '<p class="small mb0">' + c.d + '</p>' +
+          '<div class="note warn mb0" style="margin-top:10px"><b>🎯 Micro-desafío</b> ' + esc(c.r) + '</div>';
+      });
+    });
+
+    /* Versión imprimible */
+    $('#chainPrint').innerHTML = CHAIN.map(function (c, i) {
+      return '<div class="acc open"><h4>' + (i + 1) + '. ' + c.ic + ' ' + esc(c.n) + ' <span style="font-weight:400">— ' + esc(c.s) + '</span></h4>' +
+        '<p style="margin:0 0 1.5mm"><b>Qué ocurre:</b> ' + esc(c.estado) + '</p>' +
+        '<p style="margin:0 0 1.5mm"><b>Hardware:</b> ' + esc(c.h) + '</p>' +
+        '<p style="margin:0">' + c.d + '</p></div>';
+    }).join('');
+  }
+
+  function resetChain() {
+    if (chainTimer) { clearInterval(chainTimer); chainTimer = null; }
+    chainIdx = 0;
+    $$('#chain .node').forEach(function (x) { x.classList.remove('lit', 'noise'); });
+    $('#log').innerHTML = 'Presioná <b>Reproducir transmisión</b> para ver el recorrido del mensaje.';
+    $('#btnPlay').textContent = '▶ Reproducir transmisión';
+  }
+
+  function playChain() {
+    if (chainTimer) { clearInterval(chainTimer); chainTimer = null; $('#btnPlay').textContent = '▶ Reproducir transmisión'; return; }
+    resetChainSilent();
+    var noise = $('#cbNoise').checked, red = $('#cbRed').checked, enc = $('#cbEnc').checked;
+    var nodes = $$('#chain .node');
+    var t0 = Date.now();
+    $('#btnPlay').textContent = '⏸ Detener';
+
+    chainTimer = setInterval(function () {
+      if (chainIdx >= CHAIN.length) {
+        clearInterval(chainTimer); chainTimer = null;
+        $('#btnPlay').textContent = '▶ Reproducir transmisión';
+        addLog('ok', '✔', noise && !red
+          ? 'Mensaje entregado con degradación audible. Sin redundancia, el ruido llegó al receptor.'
+          : 'Mensaje entregado. El receptor escucha el audio completo.');
+        return;
+      }
+      var c = CHAIN[chainIdx];
+      var el = nodes[chainIdx];
+      $$('#chain .node').forEach(function (x) { x.classList.remove('lit'); });
+      el.classList.add('lit');
+      var secs = ((Date.now() - t0) / 1000).toFixed(2);
+
+      if (c.id === 'cif') {
+        addLog(enc ? 'ok' : 'bad', secs + 's', enc ? '🔒 Cifrado activo (extremo a extremo).' : '⚠ Mensaje SIN cifrar: cualquiera en el camino puede leerlo.');
+      } else if (c.id === 'canal') {
+        addLog(noise ? 'bad' : 'ok', secs + 's', noise
+          ? '📡 Ruido en el canal: se pierden y corrompen paquetes (~3 %).'
+          : '📡 Canal limpio: todos los paquetes llegan en orden.');
+        if (noise) el.classList.add('noise');
+      } else if (c.id === 'tcp') {
+        addLog(noise && red ? 'ok' : 'ok', secs + 's', noise && red
+          ? '🔁 Redundancia activa: TCP detecta la pérdida y solicita retransmisión. Se recupera el 100 %.'
+          : noise && !red
+            ? '⚠ Sin control de errores: los paquetes perdidos no se recuperan.'
+            : '🔁 Verificación de integridad: checksum correcto, no hace falta retransmitir.');
+      } else {
+        addLog('', secs + 's', esc(c.estado));
+      }
+      chainIdx++;
+    }, 780);
+  }
+
+  function resetChainSilent() {
+    chainIdx = 0;
+    $$('#chain .node').forEach(function (x) { x.classList.remove('lit', 'noise'); });
+    $('#log').innerHTML = '';
+  }
+
+  function addLog(kind, tag, txt) {
+    var d = document.createElement('div');
+    d.className = 'l ' + (kind || '');
+    d.innerHTML = '<i>' + tag + '</i><span>' + txt + '</span>';
+    var l = $('#log');
+    l.appendChild(d);
+    l.scrollTop = l.scrollHeight;
+  }
+
+  /* --- Juego sincrónico / asincrónico --- */
+  var SA = [
+    { n: 'Llamada telefónica', a: 's', e: 'Ambas personas deben estar conectadas al mismo tiempo: la respuesta es inmediata.' },
+    { n: 'Videollamada de clase', a: 's', e: 'Coincidencia temporal obligatoria; usa RTP/WebRTC, que prioriza la baja latencia.' },
+    { n: 'Transmisión en vivo (streaming)', a: 's', e: 'El emisor está en vivo: aunque el chat vaya con retraso, el hecho es simultáneo.' },
+    { n: 'Nota de voz de WhatsApp', a: 'a', e: 'Se graba en un momento y se escucha en otro. No exige coincidencia.' },
+    { n: 'Correo electrónico', a: 'a', e: 'El paradigma de la asincronía: se responde cuando se puede, no cuando llega.' },
+    { n: 'Foro o muro de Classroom', a: 'a', e: 'Las intervenciones se acumulan y cada uno participa en su horario.' },
+    { n: 'Historia de Instagram', a: 'a', e: 'Queda publicada 24 horas: el receptor la ve cuando quiere.' },
+    { n: 'Podcast', a: 'a', e: 'Se graba una vez y se consume infinitas veces, en cualquier momento.' },
+    { n: 'Documento compartido en edición simultánea', a: 'a', e: '<b>Caso trampa:</b> hay <i>simultaneidad</i> (varios a la vez) pero no necesariamente <i>sincronía</i>: cada uno entra cuando puede y el historial registra todo.' },
+    { n: 'Chat de texto en vivo', a: 's', e: 'Aunque sea escrito, exige presencia simultánea: se responde en segundos.' }
+  ];
+  var saSel = null, saOk = 0, saTotal = 0;
+
+  function initSA() {
+    $('#saPool').innerHTML = SA.map(function (x, i) {
+      return '<button class="sa-item" data-i="' + i + '">' + esc(x.n) + '</button>';
+    }).join('');
+    $$('#saPool .sa-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (b.classList.contains('done')) return;
+        $$('#saPool .sa-item').forEach(function (x) { x.classList.remove('sel'); });
+        b.classList.add('sel'); saSel = +b.dataset.i;
+        $('#saFeedback').innerHTML = '<b>«' + esc(SA[saSel].n) + '» seleccionado.</b> Ahora tocá la columna donde lo ubicarías.';
+      });
+    });
+    $('#zoneS').addEventListener('click', function () { answer('s'); });
+    $('#zoneA').addEventListener('click', function () { answer('a'); });
+
+    /* Tabla imprimible */
+    var s = SA.filter(function (x) { return x.a === 's'; });
+    var a = SA.filter(function (x) { return x.a === 'a'; });
+    $('#saPrint').innerHTML =
+      '<tr><th>Canal sincrónico</th><th>Canal asincrónico</th></tr>' +
+      '<tr><td>' + s.map(function (x) { return esc(x.n); }).join('<br>') + '</td>' +
+      '<td>' + a.map(function (x) { return esc(x.n); }).join('<br>') + '</td></tr>' +
+      '<tr><th colspan="2">Justificación de cada caso</th></tr>' +
+      SA.map(function (x) { return '<tr><td>' + esc(x.n) + '</td><td>' + x.e + '</td></tr>'; }).join('');
+  }
+
+  function answer(v) {
+    if (saSel === null) { $('#saFeedback').innerHTML = '<b>Primero elegí un canal de la lista.</b>'; return; }
+    var it = SA[saSel], b = $('#saPool .sa-item[data-i="' + saSel + '"]');
+    saTotal++;
+    if (it.a === v) {
+      saOk++;
+      b.classList.add('done'); b.classList.remove('sel');
+      $(v === 's' ? '#zoneS' : '#zoneA').querySelector('.chips').insertAdjacentHTML('beforeend', '<span>' + esc(it.n) + '</span>');
+      $('#saFeedback').innerHTML = '<b style="color:var(--ok)">✔ Correcto.</b> ' + it.e;
+    } else {
+      b.classList.add('err');
+      setTimeout(function () { b.classList.remove('err'); }, 420);
+      $('#saFeedback').innerHTML = '<b style="color:var(--bad)">✘ Revisá.</b> ' + it.e;
+    }
+    $('#saScore').textContent = 'Aciertos ' + saOk + ' / ' + saTotal;
+    saSel = null;
+  }
+
+  function initSection2() {
+    $$('[data-m]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $$('[data-m]').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+        curModel = b.dataset.m;
+        paintModel();
+      });
+    });
+    paintModel();
+    paintChain();
+    $('#btnPlay').addEventListener('click', playChain);
+    $('#btnResetChain').addEventListener('click', resetChain);
+    ['#cbNoise', '#cbRed', '#cbEnc'].forEach(function (id) {
+      $(id).addEventListener('change', function () {
+        this.closest('.sw').classList.toggle('on', this.checked);
+        resetChain();
+      });
+    });
+    $('#swRed').classList.add('on'); $('#swEnc').classList.add('on');
+    initSA();
+  }
+
+  /* ===================================================================
+     4. SECCIÓN 3 · MEDIOS TÉCNICOS Y COMPETENCIA COMUNICATIVA
+     =================================================================== */
+  var HW = [
+    { c: 'NIC', n: 'Placa de red', s: 'Ethernet / Wi-Fi',
+      d: 'Es la puerta de salida de tu dispositivo. Convierte los datos del procesador en señales eléctricas (cable) o electromagnéticas (Wi-Fi) y viceversa.',
+      t: 'Las placas Ethernet suelen ser de 100 Mbps o 1 Gbps; las Wi-Fi, 802.11ac (Wi-Fi 5) o 802.11ax (Wi-Fi 6). Cada placa tiene una dirección física única llamada <b>MAC</b>.',
+      r: 'Averiguá la dirección MAC de la placa Wi-Fi de tu netbook. ¿Por qué se dice que es “física” si se puede cambiar por software?' },
+    { c: 'MDM', n: 'Módem', s: 'Modula / demodula',
+      d: 'Traduce entre la señal de tu proveedor (que viene por cable, fibra, teléfono o radio) y la señal digital que entiende tu red local. Su nombre viene de <b>MOD</b>ulador-<b>DEM</b>odulador.',
+      t: 'Sin módem no hay salida a internet: el router solo reparte lo que el módem le entrega. Muchos equipos domésticos integran ambas funciones en uno solo.',
+      r: 'En tu casa, ¿el aparato que parpadea es un módem, un router o las dos cosas? ¿Cómo lo comprobarías?' },
+    { c: 'RTR', n: 'Router', s: 'Enruta y asigna IP',
+      d: 'Es el “director de tránsito” de la red: decide por dónde sale cada paquete y conecta tu red local con internet. Además asigna direcciones IP internas mediante <b>DHCP</b>.',
+      t: 'Trabaja en la capa 3 del modelo OSI. La mayoría incluye cortafuegos básico y NAT, que permite que decenas de dispositivos compartan una sola IP pública.',
+      r: 'Entrá a la configuración del router (192.168.0.1 o 192.168.1.1) y contá cuántos dispositivos tiene conectados tu red ahora mismo.' },
+    { c: 'SW', n: 'Switch', s: 'Conecta equipos LAN',
+      d: 'Conecta varios dispositivos entre sí dentro de una red local y envía cada trama sólo al puerto donde está el destinatario, a diferencia del antiguo hub, que la difundía a todos.',
+      t: 'Opera en la capa 2 usando las direcciones MAC. En las escuelas suele haber switches de 24 o 48 puertos en el rack.',
+      r: '¿Por qué un switch es más seguro y eficiente que un hub? Averiguá qué es el “modo promiscuo”.' },
+    { c: 'AP', n: 'Access Point', s: 'Punto de acceso Wi-Fi',
+      d: 'Convierte la red cableada en ondas de radio para que se conecten los dispositivos inalámbricos. Los repetidores y sistemas mesh amplían esa cobertura.',
+      t: 'Trabaja en 2,4 GHz (mayor alcance, menor velocidad, más interferencias) y 5 GHz (más velocidad, menos alcance). El Wi-Fi 6 agrega 6 GHz.',
+      r: 'Caminá por tu escuela con el celular y anotá dónde baja la señal. ¿Qué obstáculos la atenúan más: paredes, vidrio o personas?' },
+    { c: 'SRV', n: 'Servidor', s: 'Atiende pedidos',
+      d: 'Una computadora siempre encendida que <b>espera pedidos</b> y responde: sirve páginas, archivos, correo, video o documentos compartidos.',
+      t: 'Se mide por disponibilidad (uptime). Un servicio “99,9 % disponible” puede estar caído casi 9 horas al año.',
+      r: 'Cuando abrís una página, ¿tu computadora es cliente o servidor? ¿Y cuando compartís un archivo por Bluetooth?' },
+    { c: 'DC', n: 'Data center', s: 'La “nube” física',
+      d: 'Edificios con miles de servidores, almacenamiento, refrigeración y grupos electrógenos. La nube no está en el cielo: está en lugares concretos con dirección postal.',
+      t: 'Argentina tiene data centers propios, pero gran parte del tráfico sale por <b>cables submarinos</b> hacia Estados Unidos y Brasil.',
+      r: 'Investigá qué cables submarinos llegan a la Argentina y por qué ciudades. ¿Qué pasaría si se cortara uno?' },
+    { c: 'UTP', n: 'Par trenzado', s: 'Cable + conector RJ-45',
+      d: 'Ocho hilos de cobre agrupados en cuatro pares <b>trenzados</b> entre sí. El trenzado hace que las interferencias electromagnéticas se cancelen mutuamente.',
+      t: 'Categoría 5e: hasta 1 Gbps a 100 m. Categoría 6 y 6a: hasta 10 Gbps en distancias menores. Es el cableado de casi todas las aulas.',
+      r: '¿Por qué el largo máximo de un tramo UTP es de 100 metros? ¿Qué se usa para superar esa distancia?' },
+    { c: 'FO', n: 'Fibra óptica', s: 'Luz en un hilo de vidrio',
+      d: 'Un filamento de vidrio o plástico por el que viajan <b>pulsos de luz</b>. La información se transmite haciendo parpadear un láser miles de millones de veces por segundo.',
+      t: 'Inmune al ruido electromagnético, con atenuación mínima: permite enlaces de cientos de kilómetros sin repetidores. Es la columna vertebral de internet.',
+      r: 'La luz tarda unos 5 µs por kilómetro en la fibra. Calculá la latencia mínima de un viaje Buenos Aires–Madrid (10.000 km) ida y vuelta.' },
+    { c: 'ANT', n: 'Antena / radioenlace', s: 'Wi-Fi, 4G, 5G, satélite',
+      d: 'Convierte la corriente eléctrica en ondas electromagnéticas y viceversa. Es el componente que permite la comunicación sin cables.',
+      t: 'Las redes móviles dividen el territorio en <b>celdas</b>, cada una con su antena. Al desplazarte, el teléfono hace un <b>handover</b> de una celda a otra sin cortar la llamada.',
+      r: '¿Por qué en un recital con mucha gente el celular tiene señal pero no puede enviar mensajes?' }
+  ];
+
+  function initHW() {
+    $('#hwGrid').innerHTML = HW.map(function (h, i) {
+      return '<button class="hw" data-i="' + i + '" aria-pressed="false">' +
+        '<span class="code">' + h.c + '</span><b>' + esc(h.n) + '</b><small>' + esc(h.s) + '</small></button>';
+    }).join('');
+    $$('#hwGrid .hw').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $$('#hwGrid .hw').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+        var h = HW[+b.dataset.i];
+        $('#hwInfo').innerHTML =
+          '<div style="display:flex;gap:11px;align-items:center;margin-bottom:8px">' +
+            '<span class="code" style="width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-family:var(--mono);font-size:.72rem;font-weight:700;border:1px solid var(--line2);color:var(--acc)">' + h.c + '</span>' +
+            '<div><h4 style="margin:0">' + esc(h.n) + '</h4><div class="tag">' + esc(h.s) + '</div></div>' +
+          '</div>' +
+          '<p class="small mb0"><b>Función:</b> ' + h.d + '</p>' +
+          '<p class="small mb0"><b>Dato técnico:</b> ' + h.t + '</p>' +
+          '<div class="note warn mb0"><b>🎯 Micro-desafío</b> ' + h.r + '</div>';
+      });
+    });
+
+    /* Versión imprimible */
+    $('#hwPrint').innerHTML = HW.map(function (h, i) {
+      return '<div class="acc open"><h4>' + (i + 1) + '. ' + esc(h.n) + ' <span style="font-weight:400">(' + h.c + ' · ' + esc(h.s) + ')</span></h4>' +
+        '<p style="margin:0 0 1.5mm"><b>Función:</b> ' + h.d + '</p>' +
+        '<p style="margin:0 0 1.5mm"><b>Dato técnico:</b> ' + h.t + '</p>' +
+        '<p style="margin:0"><b>Micro-desafío:</b> ' + h.r + '</p></div>';
+    }).join('');
+  }
+
+  /* --- Comparador de medios de transmisión --- */
+  var MEDIOS = [
+    { id: 'utp', n: 'Par trenzado UTP Cat 6', desc: 'El cableado estándar de las redes locales (LAN) y de las aulas. Ocho hilos de cobre trenzados con conector RJ-45.',
+      m: { vel: 55, lat: 92, alc: 12, cos: 90, rui: 62, mov: 0 },
+      spec: [['Velocidad típica', '1 Gbps (hasta 10 Gbps en tramos cortos)'], ['Latencia', 'Muy baja, < 1 ms en red local'],
+             ['Alcance máximo', '100 metros por tramo'], ['Costo', 'Bajo'], ['Inmunidad al ruido', 'Media (el trenzado la mejora)'], ['Movilidad', 'Nula']],
+      use: '<b>Cuándo usarlo:</b> conexiones fijas que exigen estabilidad y baja latencia: PC de escritorio, servidor del aula, consola de juegos, televisor.' },
+    { id: 'fo', n: 'Fibra óptica', desc: 'Un hilo de vidrio por el que viajan pulsos de luz. Es la columna vertebral de internet y la conexión domiciliaria de mayor calidad.',
+      m: { vel: 98, lat: 96, alc: 98, cos: 40, rui: 99, mov: 0 },
+      spec: [['Velocidad típica', '300 Mbps a 1 Gbps (FTTH); troncales de terabits'], ['Latencia', 'Mínima: ~5 µs por kilómetro'],
+             ['Alcance', 'Cientos de kilómetros sin repetidores'], ['Costo', 'Medio-alto en instalación'], ['Inmunidad al ruido', 'Total: no la afecta la interferencia eléctrica'], ['Movilidad', 'Nula']],
+      use: '<b>Cuándo usarla:</b> siempre que esté disponible. Es la mejor opción para videollamadas, streaming y trabajo en la nube.' },
+    { id: 'w5', n: 'Wi-Fi 5 / 6', desc: 'Ondas de radio en 2,4 y 5 GHz. Es la forma habitual de conectarse en la escuela y en el hogar.',
+      m: { vel: 62, lat: 74, alc: 18, cos: 82, rui: 45, mov: 78 },
+      spec: [['Velocidad típica', '100 a 600 Mbps reales según distancia y obstáculos'], ['Latencia', 'Baja, 5 a 20 ms'],
+             ['Alcance', '20 a 40 metros en interiores'], ['Costo', 'Bajo (ya viene en el router)'], ['Inmunidad al ruido', 'Baja: paredes, microondas y otras redes interfieren'], ['Movilidad', 'Alta dentro de la cobertura']],
+      use: '<b>Cuándo usarlo:</b> dispositivos móviles dentro del edificio. Si hay muchas paredes o muchos usuarios, la calidad cae rápido.' },
+    { id: 'g4', n: 'Red móvil 4G LTE', desc: 'Antenas celulares que dividen el territorio en celdas. Es la conexión principal de la mayoría de los adolescentes.',
+      m: { vel: 38, lat: 48, alc: 78, cos: 55, rui: 40, mov: 96 },
+      spec: [['Velocidad típica', '10 a 50 Mbps, muy variable'], ['Latencia', '35 a 60 ms'],
+             ['Alcance', 'Kilómetros por celda'], ['Costo', 'Plan de datos limitado'], ['Inmunidad al ruido', 'Baja: se degrada con la congestión de usuarios'], ['Movilidad', 'Total: funciona en movimiento']],
+      use: '<b>Cuándo usarlo:</b> fuera de casa o de la escuela. Ojo con el límite de datos: una videollamada consume ~500 MB por hora.' },
+    { id: 'g5', n: 'Red móvil 5G', desc: 'La generación actual: más ancho de banda, mucha menos latencia y capacidad para conectar miles de dispositivos por antena.',
+      m: { vel: 82, lat: 88, alc: 55, cos: 35, rui: 48, mov: 92 },
+      spec: [['Velocidad típica', '100 Mbps a 1 Gbps'], ['Latencia', '10 a 20 ms (teórica: 1 ms)'],
+             ['Alcance', 'Menor que 4G: necesita muchas más antenas'], ['Costo', 'Alto: requiere dispositivo y plan compatibles'], ['Inmunidad al ruido', 'Media'], ['Movilidad', 'Total']],
+      use: '<b>Cuándo usarlo:</b> videollamadas en movimiento, streaming en alta definición y aplicaciones de IoT masivo. Su cobertura aún es limitada en Argentina.' },
+    { id: 'sat', n: 'Satélite', desc: 'Antenas que apuntan a satélites en órbita. Única opción en muchas zonas rurales y aisladas.',
+      m: { vel: 55, lat: 8, alc: 100, cos: 15, rui: 55, mov: 30 },
+      spec: [['Velocidad típica', '50 a 250 Mbps (órbita baja)'], ['Latencia', 'Muy alta: 25 a 60 ms en órbita baja; ~600 ms en geoestacionaria'],
+             ['Alcance', 'Cualquier punto del planeta con cielo visible'], ['Costo', 'Alto: antena y abono'], ['Inmunidad al ruido', 'Media: la lluvia fuerte degrada la señal'], ['Movilidad', 'Limitada']],
+      use: '<b>Cuándo usarlo:</b> donde no llega el cable. Sirve para navegar y ver video, pero <b>no</b> para juegos en línea ni videollamadas fluidas si la órbita es geoestacionaria.' },
+    { id: 'bt', n: 'Bluetooth', desc: 'Radio de corto alcance y bajísimo consumo. Conecta periféricos, no da acceso a internet.',
+      m: { vel: 8, lat: 60, alc: 4, cos: 98, rui: 50, mov: 70 },
+      spec: [['Velocidad típica', '1 a 2 Mbps'], ['Latencia', 'Media'],
+             ['Alcance', '1 a 10 metros (clase 2)'], ['Costo', 'Incluido en el dispositivo'], ['Inmunidad al ruido', 'Media: salta de frecuencia para evitar interferencias'], ['Movilidad', 'Alta en distancias cortas']],
+      use: '<b>Cuándo usarlo:</b> auriculares, relojes, teclados, mouse y parlantes. No sirve para transmitir video ni archivos grandes.' }
+  ];
+  var MET = [
+    { k: 'vel', n: 'Velocidad (ancho de banda)' }, { k: 'lat', n: 'Baja latencia' },
+    { k: 'alc', n: 'Alcance / cobertura' }, { k: 'cos', n: 'Bajo costo' },
+    { k: 'rui', n: 'Inmunidad al ruido' }, { k: 'mov', n: 'Movilidad' }
+  ];
+
+  function initMedios() {
+    var opts = MEDIOS.map(function (m, i) { return '<option value="' + i + '">' + esc(m.n) + '</option>'; }).join('');
+    $('#medSel').innerHTML = opts;
+    $('#medSel').addEventListener('change', function () { paintMedio(+this.value); });
+    paintMedio(0);
+
+    /* Tabla imprimible comparativa */
+    $('#medPrint').innerHTML =
+      '<table class="tbl"><tr><th>Medio</th><th>Velocidad</th><th>Latencia</th><th>Alcance</th><th>Costo</th><th>Uso recomendado</th></tr>' +
+      MEDIOS.map(function (m) {
+        return '<tr><td>' + esc(m.n) + '</td><td>' + esc(m.spec[0][1]) + '</td><td>' + esc(m.spec[1][1]) + '</td>' +
+          '<td>' + esc(m.spec[2][1]) + '</td><td>' + esc(m.spec[3][1]) + '</td><td>' + m.use.replace(/<[^>]+>/g, '') + '</td></tr>';
+      }).join('') + '</table>';
+  }
+
+  function paintMedio(i) {
+    var m = MEDIOS[i];
+    $('#medBars').innerHTML = MET.map(function (x) {
+      return '<div class="metric"><span>' + x.n + '</span><div class="bar"><i style="width:' + m.m[x.k] + '%"></i></div>' +
+        '<span class="v">' + m.m[x.k] + '</span></div>';
+    }).join('');
+    $('#medName').textContent = m.n;
+    $('#medDesc').textContent = m.desc;
+    $('#medSpec').innerHTML = m.spec.map(function (s) { return '<tr><td>' + esc(s[0]) + '</td><td>' + esc(s[1]) + '</td></tr>'; }).join('');
+    $('#medUse').innerHTML = m.use;
+  }
+
+  /* --- Calculadora de latencia y transferencia --- */
+  var CALCMED = [
+    { n: 'Fibra óptica (FTTH)', bw: 300, base: 2, perKm: 0.010 },
+    { n: 'Cable UTP en red local', bw: 1000, base: 0.4, perKm: 0.011 },
+    { n: 'Wi-Fi 5', bw: 120, base: 8, perKm: 0.012 },
+    { n: '4G LTE', bw: 25, base: 45, perKm: 0.006 },
+    { n: '5G', bw: 300, base: 15, perKm: 0.006 },
+    { n: 'Satélite (órbita baja)', bw: 120, base: 40, perKm: 0.004 },
+    { n: 'Satélite geoestacionario', bw: 60, base: 600, perKm: 0 }
+  ];
+
+  function calcNet() {
+    var m = CALCMED[+$('#calcMed').value];
+    var dist = +$('#calcDist').value;
+    var size = +$('#calcSize').value;
+    $('#vDist').textContent = dist >= 1000 ? num(dist / 1000, 1) + ' mil km' : dist + ' km';
+    $('#vSize').textContent = size >= 1000 ? num(size / 1000, 2) + ' GB' : size + ' MB';
+
+    var ping = m.base + dist * m.perKm;
+    if (m.n.indexOf('geoestacionario') >= 0) ping = 600 + dist * 0.0001;
+    var rtt = ping * 2;
+    var bwReal = m.bw * 0.75;                              /* eficiencia real típica */
+    var seg = (size * 8) / bwReal + rtt / 1000;
+    var tTxt = seg < 60 ? seg.toFixed(1) + ' s' : seg < 3600 ? (seg / 60).toFixed(1) + ' min' : (seg / 3600).toFixed(1) + ' h';
+    var sirve = rtt < 50 ? 'Sí, óptimo' : rtt < 150 ? 'Sí, con retraso' : rtt < 400 ? 'Regular' : 'No';
+
+    $('#kPing').textContent = rtt.toFixed(0) + ' ms';
+    $('#kBw').textContent = m.bw + ' Mbps';
+    $('#kTime').textContent = tTxt;
+    $('#kVerdict').textContent = sirve;
+    $('#kVerdict').style.color = rtt < 50 ? 'var(--ok)' : rtt < 150 ? 'var(--warn)' : 'var(--bad)';
+
+    $('#calcNote').innerHTML = '<b>Lectura del resultado</b> Con <b>' + esc(m.n) + '</b> a <b>' +
+      (dist >= 1000 ? num(dist / 1000, 1) + ' mil kilómetros' : dist + ' km') + '</b> del servidor, un archivo de <b>' +
+      (size >= 1000 ? num(size / 1000, 2) + ' GB' : size + ' MB') + '</b> tardaría aproximadamente <b>' + tTxt +
+      '</b>, con una latencia de ida y vuelta de <b>' + rtt.toFixed(0) + ' ms</b>. ' +
+      (rtt < 50 ? 'Excelente para videollamadas y juegos en línea.'
+        : rtt < 150 ? 'Aceptable para videollamadas; en juegos se nota un poco de retraso.'
+        : rtt < 400 ? 'Las videollamadas se vuelven incómodas: se pisan las voces.'
+        : 'Impracticable para cualquier comunicación en tiempo real.');
+  }
+
+  function initCalc() {
+    $('#calcMed').innerHTML = CALCMED.map(function (m, i) { return '<option value="' + i + '">' + esc(m.n) + '</option>'; }).join('');
+    ['#calcMed', '#calcDist', '#calcSize'].forEach(function (id) { $(id).addEventListener('input', calcNet); });
+    calcNet();
+  }
+
+  /* --- Competencia comunicativa digital --- */
+  var COMP = [
+    { dim: 'Técnica', t: 'Sé conectar un dispositivo a una red y reconocer si el problema es del Wi-Fi, del cable o de los datos.' },
+    { dim: 'Técnica', t: 'Elijo el formato de archivo adecuado según lo que necesito (foto, logo, video, audio).' },
+    { dim: 'Expresiva', t: 'Puedo explicar una idea compleja combinando texto, imagen y audio.' },
+    { dim: 'Expresiva', t: 'Adapto mi mensaje al destinatario: no escribo igual a un docente que a un amigo.' },
+    { dim: 'Crítica', t: 'Verifico la fuente de una noticia antes de compartirla.' },
+    { dim: 'Crítica', t: 'Distingo lo que una imagen muestra (denotación) de lo que sugiere (connotación).' },
+    { dim: 'Colaborativa', t: 'Trabajo en documentos compartidos respetando los aportes de los demás.' },
+    { dim: 'Colaborativa', t: 'Cumplo los plazos y aviso con tiempo si no voy a poder entregar.' },
+    { dim: 'Ética', t: 'Pido permiso antes de publicar fotos o datos de otras personas.' },
+    { dim: 'Ética', t: 'Cuido mi huella digital: sé que lo que publico queda registrado.' },
+    { dim: 'Ética', t: 'Respeto los horarios de descanso ajenos al enviar mensajes.' },
+    { dim: 'Técnica', t: 'Comprendo qué es la latencia y por qué afecta una videollamada.' }
+  ];
+  var DIMS = ['Técnica', 'Expresiva', 'Crítica', 'Colaborativa', 'Ética'];
+  var compAns = {};
+
+  function initComp() {
+    var h = '';
+    COMP.forEach(function (c, i) {
+      h += '<div class="card flat mb0" style="background:var(--surface2);padding:11px 13px;margin-bottom:8px">' +
+        '<div style="display:flex;gap:9px;align-items:flex-start;flex-wrap:wrap">' +
+          '<span class="tag">' + esc(c.dim) + '</span>' +
+          '<span class="small" style="flex:1;min-width:180px">' + esc(c.t) + '</span>' +
+        '</div>' +
+        '<div class="seg mt-s" role="group" aria-label="Escala de la afirmación ' + (i + 1) + '">' +
+          [1, 2, 3, 4].map(function (v) { return '<button data-i="' + i + '" data-v="' + v + '" aria-pressed="false">' + v + '</button>'; }).join('') +
+        '</div></div>';
+    });
+    $('#compItems').innerHTML = h;
+    $$('#compItems .seg button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = +b.dataset.i;
+        compAns[i] = +b.dataset.v;
+        $$('#compItems .seg[data-x]').forEach(function () {});
+        $$('button[data-i="' + i + '"]', b.parentNode).forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+        paintComp();
+      });
+    });
+
+    $('#compBars').innerHTML = DIMS.map(function (d) {
+      return '<div class="kpi"><b id="cb-' + d + '">—</b><span>' + d + '</span><div class="bar mt-s"><i id="bb-' + d + '"></i></div></div>';
+    }).join('');
+
+    /* Tabla imprimible */
+    $('#compPrint').innerHTML = '<tr><th>Dimensión</th><th>Qué implica</th><th>Afirmaciones</th></tr>' +
+      DIMS.map(function (d) {
+        var items = COMP.filter(function (c) { return c.dim === d; });
+        var txt = { 'Técnica': 'Manejar dispositivos, redes, formatos y diagnosticar problemas básicos de conectividad.',
+          'Expresiva': 'Producir mensajes claros y adecuados al destinatario usando varios lenguajes.',
+          'Crítica': 'Analizar fuentes, distinguir denotación de connotación y detectar manipulación.',
+          'Colaborativa': 'Trabajar con otros en entornos digitales compartiendo autoría y respetando plazos.',
+          'Ética': 'Cuidar los datos propios y ajenos, respetar la autoría y los tiempos de los demás.' }[d];
+        return '<tr><td>' + d + '</td><td>' + txt + '</td><td>' + items.map(function (c) { return esc(c.t); }).join('<br>') + '</td></tr>';
+      }).join('');
+  }
+
+  function paintComp() {
+    var total = 0, n = 0, per = {};
+    DIMS.forEach(function (d) { per[d] = { s: 0, n: 0 }; });
+    COMP.forEach(function (c, i) {
+      if (compAns[i]) { total += compAns[i]; n++; per[c.dim].s += compAns[i]; per[c.dim].n++; }
+    });
+    DIMS.forEach(function (d) {
+      var v = per[d].n ? Math.round(per[d].s / (per[d].n * 4) * 100) : 0;
+      var b = $('#cb-' + d), bar = $('#bb-' + d);
+      if (b) b.textContent = per[d].n ? v + '%' : '—';
+      if (bar) bar.style.width = v + '%';
+    });
+    if (!n) { $('#compScore').textContent = 'Sin responder'; return; }
+    var pct = Math.round(total / (COMP.length * 4) * 100);
+    $('#compScore').textContent = pct + '% · ' + n + '/' + COMP.length + ' respondidas';
+    var perfil = pct >= 85 ? 'Perfil <b>avanzado</b>: dominás las cinco dimensiones. El desafío ahora es ayudar a otros y analizar casos complejos de manipulación.'
+      : pct >= 65 ? 'Perfil <b>intermedio</b>: buena base. Mirá la dimensión más baja y proponete practicarla durante esta semana.'
+      : pct >= 45 ? 'Perfil <b>en desarrollo</b>: conviene repasar las secciones 2 y 3, y trabajar especialmente la dimensión con menor puntaje.'
+      : 'Perfil <b>inicial</b>: la competencia se construye. Empezá por la dimensión técnica y por la crítica, que son la base de las demás.';
+    var baja = DIMS.slice().sort(function (a, b) {
+      var pa = per[a].n ? per[a].s / per[a].n : 9, pb = per[b].n ? per[b].s / per[b].n : 9;
+      return pa - pb;
+    })[0];
+    $('#compMsg').innerHTML = '<b>Tu perfil: ' + pct + '%</b><br>' + perfil +
+      (per[baja].n ? '<br>Dimensión a fortalecer: <b>' + baja + '</b>.' : '');
+  }
+
+  function initSection3() { initHW(); initMedios(); initCalc(); initComp(); }
+
+  /* ===================================================================
+     5. SECCIÓN 4 · UBICUIDAD
+     =================================================================== */
+  var DAY = [
+    { id: 'd1', h: '07:00', n: 'Suena la alarma', x: 7, y: 40, dev: 'Smartphone',
+      red: 'Ninguna: proceso local', tipo: 'No hay comunicación', sinc: '—',
+      d: 'El primer contacto del día ya es con una computadora. Aunque no haya red, el dispositivo procesa datos localmente.',
+      dato: 'El promedio de consultas al celular en Argentina supera las 80 veces por día.' },
+    { id: 'd2', h: '07:30', n: 'Mensaje al grupo del curso', x: 20, y: 62, dev: 'Smartphone',
+      red: 'Wi-Fi doméstico → router → módem → fibra', tipo: 'Interpersonal mediada', sinc: 'Asincrónica',
+      d: 'Un mensaje de texto viaja cifrado hasta los servidores y queda almacenado hasta que el destinatario lo descargue.',
+      dato: 'Aunque el receptor esté apagado, el mensaje ya viajó: la red guarda el estado por vos.' },
+    { id: 'd3', h: '08:10', n: 'Viaje en colectivo', x: 33, y: 34, dev: 'Smartphone + auriculares',
+      red: 'Antena 4G → núcleo de red → internet', tipo: 'Consumo de medios', sinc: 'Asincrónica (bajo demanda)',
+      d: 'El teléfono hace <b>handover</b> entre celdas mientras se mueve: cambia de antena varias veces por minuto sin cortar la reproducción.',
+      dato: 'Una hora de video en calidad estándar consume alrededor de 500 MB a 1 GB.' },
+    { id: 'd4', h: '09:00', n: 'Clase con netbook', x: 46, y: 66, dev: 'Netbook escolar',
+      red: 'Access point de la escuela → switch → router → salida a internet', tipo: 'Colaborativa y educativa', sinc: 'Sincrónica y asincrónica',
+      d: 'En el aula conviven decenas de dispositivos en la misma red. El access point debe repartir el aire disponible entre todos.',
+      dato: 'El Wi-Fi es un medio <b>compartido</b>: cuantos más usuarios, menos velocidad para cada uno.' },
+    { id: 'd5', h: '11:30', n: 'Trabajo en documento compartido', x: 59, y: 36, dev: 'Netbook + servidor en la nube',
+      red: 'Conexión persistente (WebSocket) con el servidor', tipo: 'Colaborativa en tiempo real', sinc: 'Simultánea',
+      d: 'Varias personas editan el mismo archivo a la vez. El servidor fusiona los cambios y los redistribuye en décimas de segundo.',
+      dato: 'El documento no “está” en tu netbook: está en un data center. Vos ves una copia sincronizada.' },
+    { id: 'd6', h: '15:00', n: 'Videollamada familiar', x: 72, y: 68, dev: 'Smartphone o notebook',
+      red: 'Wi-Fi o 4G → WebRTC → servidores de medios', tipo: 'Interpersonal sincrónica', sinc: 'Sincrónica',
+      d: 'Audio y video viajan en tiempo real por UDP: se prioriza la velocidad sobre la perfección. Por eso a veces se pixela en lugar de congelarse.',
+      dato: 'Para que una videollamada sea cómoda la latencia debe estar por debajo de 150 ms.' },
+    { id: 'd7', h: '18:00', n: 'Reloj inteligente en el club', x: 84, y: 38, dev: 'Smartwatch + banda',
+      red: 'Bluetooth al teléfono → datos móviles a la nube', tipo: 'Máquina a máquina (IoT)', sinc: 'Automática',
+      d: 'Sensores miden pulso y movimiento; los datos se sincronizan con el teléfono y suben a la nube. Ni te diste cuenta de que te comunicaste.',
+      dato: 'Esto es <b>Internet de las Cosas</b>: objetos cotidianos que producen y transmiten datos sin intervención humana.' },
+    { id: 'd8', h: '22:30', n: 'Streaming en la cama', x: 94, y: 64, dev: 'Smart TV o celular',
+      red: 'Wi-Fi → CDN (servidor de contenido cercano)', tipo: 'Consumo masivo bajo demanda', sinc: 'Asincrónica',
+      d: 'El video no llega desde un estudio: se sirve desde un nodo de CDN cercano, que tiene copias del contenido para acelerar la entrega.',
+      dato: 'El streaming representa la mayor parte del tráfico mundial de internet en horario nocturno.' }
+  ];
+  var daySel = 'd1';
+
+  function initDay() {
+    var s = '<svg viewBox="0 0 100 84" role="img" aria-label="Recorrido de un día de comunicación ubicua">';
+    s += '<defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="0">' +
+      '<stop offset="0" stop-color="#0F766E" stop-opacity=".18"/><stop offset="1" stop-color="#4338CA" stop-opacity=".18"/></linearGradient></defs>';
+    s += '<rect x="0" y="0" width="100" height="84" fill="url(#dg)"/>';
+    /* Línea del día */
+    var path = 'M' + DAY[0].x + ' ' + DAY[0].y;
+    for (var i = 1; i < DAY.length; i++) {
+      var a = DAY[i - 1], b = DAY[i];
+      path += ' Q' + ((a.x + b.x) / 2) + ' ' + (Math.min(a.y, b.y) - 9) + ' ' + b.x + ' ' + b.y;
+    }
+    s += '<path d="' + path + '" fill="none" stroke="currentColor" stroke-opacity=".4" stroke-width=".7" stroke-dasharray="2 1.6"/>';
+    DAY.forEach(function (n) {
+      s += '<g class="hs' + (n.id === daySel ? ' on' : '') + '" data-d="' + n.id + '">' +
+        '<circle cx="' + n.x + '" cy="' + n.y + '" r="7.5" fill="#0F766E" stroke="#fff" stroke-width="1.2"/>' +
+        '<text x="' + n.x + '" y="' + (n.y + 3) + '" text-anchor="middle">' + n.h.slice(0, 2) + '</text>' +
+        '<text x="' + n.x + '" y="' + (n.y + 15) + '" text-anchor="middle" style="font-family:ui-monospace,monospace;font-size:3.4px;fill:currentColor;opacity:.8">' + esc(n.n) + '</text></g>';
+    });
+    s += '<text x="3" y="7" style="font-family:ui-monospace,monospace;font-size:3.6px;fill:currentColor;opacity:.6">MAÑANA</text>';
+    s += '<text x="46" y="7" style="font-family:ui-monospace,monospace;font-size:3.6px;fill:currentColor;opacity:.6">TARDE</text>';
+    s += '<text x="88" y="7" style="font-family:ui-monospace,monospace;font-size:3.6px;fill:currentColor;opacity:.6">NOCHE</text>';
+    s += '</svg>';
+    $('#dayMap').innerHTML = s;
+    $$('#dayMap .hs').forEach(function (g) {
+      g.addEventListener('click', function () {
+        daySel = g.dataset.d;
+        $$('#dayMap .hs').forEach(function (x) { x.classList.remove('on'); });
+        g.classList.add('on');
+        paintDay();
+      });
+    });
+    paintDay();
+
+    /* Versión imprimible */
+    $('#dayPrint').innerHTML = '<table class="tbl"><tr><th>Hora</th><th>Situación</th><th>Dispositivo</th><th>Medio técnico</th><th>Tipo de comunicación</th><th>Sincronía</th></tr>' +
+      DAY.map(function (n) {
+        return '<tr><td>' + n.h + '</td><td>' + esc(n.n) + '</td><td>' + esc(n.dev) + '</td><td>' + esc(n.red) +
+          '</td><td>' + esc(n.tipo) + '</td><td>' + esc(n.sinc) + '</td></tr>';
+      }).join('') + '</table>' +
+      DAY.map(function (n) { return '<p style="margin:0 0 2mm"><b>' + n.h + ' · ' + esc(n.n) + ':</b> ' + n.d + ' <i>' + esc(n.dato) + '</i></p>'; }).join('');
+  }
+
+  function paintDay() {
+    var n = DAY.filter(function (x) { return x.id === daySel; })[0];
+    $('#dayInfo').innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:8px">' +
+        '<b style="font-family:var(--mono);color:var(--a4)">' + n.h + '</b>' +
+        '<h4 style="margin:0">' + esc(n.n) + '</h4></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px">' +
+        '<span class="tag">📱 ' + esc(n.dev) + '</span>' +
+        '<span class="tag">📡 ' + esc(n.red) + '</span>' +
+        '<span class="tag ' + (n.sinc === 'Sincrónica' || n.sinc === 'Simultánea' ? 'ok' : 'warn') + '">⏱ ' + esc(n.sinc) + '</span>' +
+      '</div>' +
+      '<p class="small mb0">' + n.d + '</p>' +
+      '<div class="note mb0" style="margin-top:10px"><b>Dato</b>' + esc(n.dato) + '</div>';
+  }
+
+  /* --- Documento colaborativo simulado --- */
+  var PEERS = [
+    { who: 'Micaela', cls: 'peer', txt: 'Agregué la definición de computación ubicua de Mark Weiser.' },
+    { who: 'Agustín', cls: 'peer2', txt: 'Sumé el ejemplo del handover entre antenas cuando viajamos en colectivo.' },
+    { who: 'Micaela', cls: 'peer', txt: '¿Agregamos algo sobre la brecha digital en zonas rurales?' },
+    { who: 'Agustín', cls: 'peer2', txt: 'Puse la fuente en la última línea: informe de ENACOM.' },
+    { who: 'Micaela', cls: 'peer', txt: 'Corregí la conclusión. Revisala cuando puedas.' }
+  ];
+  var peerIdx = 0, offline = false, pending = 0, versions = [];
+
+  function addVersion(txt, who) {
+    versions.unshift({ t: new Date(), txt: txt, who: who || 'Vos' });
+    if (versions.length > 14) versions.pop();
+    $('#verList').innerHTML = versions.map(function (v) {
+      return '<div class="ver"><b>' + esc(v.who) + '</b> · ' + esc(v.txt) + ' · <span style="font-family:var(--mono);font-size:.7rem">' +
+        v.t.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</span></div>';
+    }).join('') || '<p class="small muted mb0">Todavía no hay cambios registrados.</p>';
+  }
+
+  function initDoc() {
+    var body = $('#docBody'), saveT = null, peerT = null;
+    addVersion('Creó el documento', 'Vos');
+
+    function setSave(st) {
+      var el = $('#saveState');
+      el.textContent = st;
+      el.className = 'tag ' + (st === 'Guardado' ? 'ok' : st === 'Sin conexión' ? 'warn' : '');
+    }
+    body.addEventListener('input', function () {
+      setSave(offline ? 'Sin conexión' : 'Guardando…');
+      if (offline) pending++;
+      clearTimeout(saveT);
+      saveT = setTimeout(function () {
+        if (offline) { setSave('Sin conexión · ' + pending + ' cambio(s) en cola'); return; }
+        setSave('Guardado');
+        addVersion('Editó el documento', 'Vos');
+        maybePeer();
+      }, 700);
+    });
+
+    function maybePeer() {
+      if (offline || peerIdx >= PEERS.length) return;
+      if (Math.random() > 0.55) return;
+      clearTimeout(peerT);
+      peerT = setTimeout(function () {
+        var p = PEERS[peerIdx];
+        var el = document.createElement('p');
+        el.className = p.cls;
+        el.textContent = p.txt;
+        body.appendChild(el);
+        peerIdx++;
+        addVersion('Editó el documento', p.who);
+        var av = p.who === 'Micaela' ? $('#av1') : $('#av2');
+        av.classList.add('pulse');
+        setTimeout(function () { av.classList.remove('pulse'); }, 900);
+        $('#latBadge').textContent = 'Latencia ' + (18 + Math.floor(Math.random() * 30)) + ' ms';
+      }, 1400);
+    }
+
+    $('#btnShare').addEventListener('click', function () {
+      var link = 'https://docs.ejemplo.edu.ar/d/' + Math.random().toString(36).slice(2, 10);
+      var html = '<div style="margin-top:10px" id="shareBox">' +
+        '<label class="fld">Enlace generado para compartir</label>' +
+        '<div style="display:flex;gap:7px;flex-wrap:wrap">' +
+          '<input class="inp" readonly value="' + link + '" style="flex:1;min-width:200px;font-family:var(--mono);font-size:.8rem">' +
+          '<select class="sel" style="width:auto"><option>Cualquiera con el enlace</option><option>Sólo personas de la escuela</option><option>Sólo quienes yo invite</option></select>' +
+        '</div>' +
+        '<p class="small muted mb0 mt-s">Compartir un documento es dar acceso a un archivo que vive en un <b>servidor</b>, no en tu dispositivo. ' +
+        'Por eso podés abrirlo desde cualquier lugar: eso es ubicuidad.</p></div>';
+      var old = $('#shareBox'); if (old) old.remove();
+      this.parentNode.insertAdjacentHTML('afterend', '');
+      $('.doc').parentNode.insertAdjacentHTML('beforeend', html);
+    });
+
+    $('#btnOffline').addEventListener('click', function () {
+      offline = !offline;
+      $('#docOff').classList.toggle('on', offline);
+      this.textContent = offline ? '📶 Reconectar' : '📴 Simular sin conexión';
+      if (offline) { pending = 0; $('#saveState').textContent = 'Sin conexión'; $('#saveState').className = 'tag warn'; }
+      else {
+        $('#saveState').textContent = 'Sincronizando…';
+        setTimeout(function () {
+          $('#saveState').textContent = 'Guardado'; $('#saveState').className = 'tag ok';
+          if (pending) addVersion('Sincronizó ' + pending + ' cambio(s) pendiente(s)', 'Vos');
+          pending = 0;
+        }, 1100);
+      }
+    });
+  }
+
+  /* --- Índice de bienestar digital --- */
+  function calcWell() {
+    var s = +$('#bScreen').value, n = +$('#bNotif').value, sl = +$('#bSleep').value, o = +$('#bOff').value;
+    $('#vScreen').textContent = s + ' h';
+    $('#vNotif').textContent = n;
+    $('#vSleep').textContent = sl + ' h';
+    $('#vOff').textContent = o;
+    var pen = clamp((s - 4) * 6.5, 0, 45) + clamp(n / 120 * 26, 0, 26) + sl * 8;
+    var bon = o * 4.5;
+    var idx = Math.round(clamp(100 - pen + bon, 0, 100));
+    $('#bIdx').textContent = idx;
+    $('#bBar').style.width = idx + '%';
+    $('#bBar').style.background = idx >= 70 ? 'var(--ok)' : idx >= 45 ? 'var(--warn)' : 'var(--bad)';
+    var msg;
+    if (idx >= 70) msg = '<b>Equilibrio saludable.</b> La ubicuidad te sirve sin dominarte. Sostené los momentos sin dispositivo: son los que más suman al índice.';
+    else if (idx >= 45) msg = '<b>Atención: hiperconexión moderada.</b> Probá agrupar las notificaciones, silenciar el celular mientras estudiás y dejarlo fuera del dormitorio.';
+    else msg = '<b>Riesgo de hiperconexión alta.</b> Con este perfil la disponibilidad permanente afecta el sueño y la concentración. Elegí <b>una</b> medida concreta para esta semana: por ejemplo, sin pantallas desde una hora fija.';
+    $('#bMsg').innerHTML = msg;
+  }
+
+  function initSection4() {
+    initDay();
+    initDoc();
+    ['#bScreen', '#bNotif', '#bSleep', '#bOff'].forEach(function (id) { $(id).addEventListener('input', calcWell); });
+    calcWell();
+  }
+
+  /* ===================================================================
+     6. IMPRESIÓN
+     =================================================================== */
+  function initPrint() {
+    function go() { window.print(); }
+    $('#btnPrintTop').addEventListener('click', go);
+    $('#btnPrintFoot').addEventListener('click', go);
+  }
+
+  /* ===================================================================
+     ARRANQUE
+     =================================================================== */
+  function boot() {
+    initTabs();
+    initAccordions();
+    initSection1();
+    initSection2();
+    initSection3();
+    initSection4();
+    initPrint();
+    /* Al redimensionar, recalculamos el comparador de medios (barras) */
+    window.addEventListener('resize', function () { paintMedio(+$('#medSel').value); });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>
+
