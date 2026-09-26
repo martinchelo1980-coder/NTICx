@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTiCx 4to Año - Nuevas Tecnologías de la Información y la Conectividad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #8B5CF6;
+            --bg: #FFFFFF;
+            --accent-green: #22C55E;
+            --accent-yellow: #EAB308;
+            --pastel-violet: #F3E8FF;
+        }
+
+        body {
+            font-family: 'Inter', 'Nunito', sans-serif;
+            background-color: #FAFAFA;
+            color: #1F2937;
+        }
+
+        .font-dyslexia {
+            font-family: 'Comic Sans MS', 'OpenDyslexic', sans-serif !important;
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+        }
+
+        .high-contrast {
+            background-color: #000000 !important;
+            color: #FFFF00 !important;
+        }
+        .high-contrast .bg-white, .high-contrast .bg-purple-50, .high-contrast .bg-gray-50 {
+            background-color: #111111 !important;
+            color: #FFFFFF !important;
+            border-color: #FFFF00 !important;
+        }
+        .high-contrast .text-gray-700, .high-contrast .text-gray-800, .high-contrast .text-purple-900 {
+            color: #FFFFFF !important;
+        }
+        .high-contrast .border-purple-200, .high-contrast .border-gray-200 {
+            border-color: #FFFF00 !important;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.2s;
+            background: white;
+            color: #6C5CE7;
+            border: 2px solid transparent;
+        }
+        .tab-btn.active {
+            background: #6C5CE7;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(108, 92, 231, 0.3);
+        }
+        .tab-btn:hover:not(.active) {
+            background: #F3E8FF;
+        }
+
+        .bento-card {
+            border-radius: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Print Styles */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1.5cm;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-report-only {
+                display: block !important;
+            }
+            .bento-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                break-inside: avoid;
+            }
+            * {
+                color: black !important;
+                background: white !important;
+            }
+            .print-header {
+                text-align: center;
+                border-bottom: 2px solid black;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+            }
+        }
+
+        .print-only, .print-report-only {
+            display: none;
+        }
+
+        /* Simulator Styles */
+        .sim-wave {
+            transition: all 0.3s ease;
+        }
+        .pixelated {
+            image-rendering: pixelated;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .close-modal {
+            position: absolute;
+            top: 1rem; right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #6C5CE7;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- HEADER / TOP ACTIONS -->
+    <header class="bg-white shadow-md p-4 flex flex-wrap justify-between items-center gap-4 no-print sticky top-0 z-50 border-b-4 border-purple-600">
+        <div class="flex gap-2 flex-wrap">
+            <button onclick="openModal('reporteModal')" class="bg-purple-600 text-white px-4 py-2 rounded-2xl font-bold hover:bg-purple-700 transition shadow-md flex items-center gap-2">
+                📄 Mi Reporte
+            </button>
+            <button onclick="openModal('teoriaModal')" class="bg-green-500 text-white px-4 py-2 rounded-2xl font-bold hover:bg-green-600 transition shadow-md flex items-center gap-2">
+                📚 Teoría
+            </button>
+            <button onclick="openModal('glosarioModal')" class="bg-yellow-400 text-purple-900 px-4 py-2 rounded-2xl font-bold hover:bg-yellow-500 transition shadow-md flex items-center gap-2">
+                📖 Glosario
+            </button>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleDyslexia()" id="btnDyslexia" class="border-2 border-purple-600 text-purple-600 px-4 py-2 rounded-2xl font-bold hover:bg-purple-50 transition flex items-center gap-2">
+                🧠 Dislexia
+            </button>
+            <button onclick="toggleContrast()" id="btnContrast" class="border-2 border-purple-600 text-purple-600 px-4 py-2 rounded-2xl font-bold hover:bg-purple-50 transition flex items-center gap-2">
+                🌓 Contraste
+            </button>
+        </div>
+    </header>
+
+    <!-- TAB NAVIGATION -->
+    <nav class="flex overflow-x-auto bg-purple-50 p-3 gap-2 no-print sticky top-[88px] z-40 border-b border-purple-100">
+        <button onclick="showTab('tab1', this)" class="tab-btn active">1. Digitalización</button>
+        <button onclick="showTab('tab2', this)" class="tab-btn">2. Organización Web</button>
+        <button onclick="showTab('tab3', this)" class="tab-btn">3. Buscadores</button>
+        <button onclick="showTab('tab4', this)" class="tab-btn">4. Folcsonomía</button>
+        <button onclick="showTab('tab5', this)" class="tab-btn bg-purple-100">🏆 Evaluación Final</button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="p-4 md:p-8 max-w-7xl mx-auto">
+
+        <!-- TAB 1: DIGITALIZACIÓN -->
+        <section id="tab1" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Teoría -->
+                <div class="bento-card bg-purple-50 p-6 border-2 border-purple-100">
+                    <h2 class="text-2xl font-extrabold text-purple-800 mb-4 flex items-center gap-2">💾 Digitalización de la Información</h2>
+                    <p class="mb-3 text-gray-700 leading-relaxed">
+                        ¡Hola! ¿Alguna vez te preguntaste cómo tu música favorita o esas fotos re lindas que subís a Instagram pueden guardarse en el celular? La clave está en la <strong>digitalización</strong>.
+                    </p>
+                    <p class="mb-3 text-gray-700 leading-relaxed">
+                        En el mundo analógico, la información es continua (como una onda de sonido o la temperatura). Pero las computadoras solo entienden dos estados: <strong>encendido (1)</strong> y <strong>apagado (0)</strong>. A cada uno de estos ceros y unos lo llamamos <strong>BIT</strong> (Binary Digit).
+                    </p>
+                    <div class="bg-white p-4 rounded-2xl mt-4 border border-purple-200">
+                        <h3 class="font-bold text-purple-700 mb-2">🔑 Conceptos Clave:</h3>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Bit:</strong> La unidad más pequeña (0 o 1).</li>
+                            <li><strong>Byte:</strong> Conjunto de 8 bits. (Ej: una letra).</li>
+                            <li><strong>ADC/DAC:</strong> Conversores Analógico-Digital y Digital-Analógico.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Simulador -->
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🎛️ Simulador: De Analógico a Digital</h3>
+                    <p class="text-sm text-gray-600 mb-4">Mové el slider para ver cómo la señal continua se "pica" en datos digitales (bits).</p>
+                    <div class="bg-gray-50 p-4 rounded-2xl flex flex-col items-center gap-4">
+                        <div id="simVisual" class="w-full h-32 bg-purple-100 rounded-xl flex items-center justify-center overflow-hidden relative transition-all duration-300">
+                            <svg id="waveSvg" class="w-full h-full" viewBox="0 0 200 100">
+                                <path d="M0,50 Q25,0 50,50 T100,50 T150,50 T200,50" fill="none" stroke="#6C5CE7" stroke-width="3" class="sim-wave"/>
+                            </svg>
+                        </div>
+                        <div class="w-full flex items-center gap-3">
+                            <span class="text-xs font-bold text-gray-500">Analógico</span>
+                            <input type="range" id="digitalSlider" min="0" max="10" value="0" class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                            <span class="text-xs font-bold text-gray-500">Digital</span>
+                        </div>
+                        <p id="simText" class="text-center text-sm font-semibold text-purple-700">Señal 100% continua (Analógica)</p>
+                    </div>
+                </div>
+
+                <!-- Trivia 1 -->
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🧠 Mini-Trivia: Digitalización</h3>
+                    <form id="trivia1Form" class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">1. ¿Qué es un bit?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q1" value="a" class="accent-purple-600"> La unidad mínima de información digital.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q1" value="b" class="accent-purple-600"> Un tipo de archivo de audio comprimido.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q1" value="c" class="accent-purple-600"> La velocidad de conexión a internet.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q1" value="d" class="accent-purple-600"> Un protocolo de transferencia de datos.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">2. ¿Qué proceso transforma una señal continua en datos digitales?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q2" value="a" class="accent-purple-600"> Digitalización o conversión A/D.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q2" value="b" class="accent-purple-600"> Compresión de archivos ZIP.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q2" value="c" class="accent-purple-600"> Encriptación de claves RSA.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q2" value="d" class="accent-purple-600"> Modulación de frecuencia FM.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">3. ¿Cuántos bits conforman un byte?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q3" value="a" class="accent-purple-600"> 8 bits.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q3" value="b" class="accent-purple-600"> 16 bits.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q3" value="c" class="accent-purple-600"> 4 bits.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t1q3" value="d" class="accent-purple-600"> 10 bits.</label>
+                            </div>
+                        </div>
+                        <button type="button" onclick="checkTrivia(1)" class="w-full bg-green-500 text-white font-bold py-3 rounded-2xl hover:bg-green-600 transition shadow-md">Verificar Respuestas</button>
+                        <div id="trivia1Result" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ORGANIZACIÓN WEB -->
+        <section id="tab2" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bento-card bg-purple-50 p-6 border-2 border-purple-100">
+                    <h2 class="text-2xl font-extrabold text-purple-800 mb-4 flex items-center gap-2">🌐 Organización en la Web</h2>
+                    <p class="mb-3 text-gray-700 leading-relaxed">
+                        La <strong>World Wide Web (WWW)</strong> no es lo mismo que Internet. Internet es la red de redes (la infraestructura), y la WWW es el sistema de información organizado mediante <strong>hipertexto</strong>.
+                    </p>
+                    <div class="bg-white p-4 rounded-2xl mt-4 border border-purple-200">
+                        <h3 class="font-bold text-purple-700 mb-2">🔑 El ecosistema Web:</h3>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>HTML:</strong> Lenguaje de marcas para estructurar páginas.</li>
+                            <li><strong>HTTP/HTTPS:</strong> Protocolo de transferencia de hipertexto.</li>
+                            <li><strong>Hipervínculo:</strong> Conexión entre documentos. <strong>Hipermedia:</strong> Incluye audio, video, etc.</li>
+                            <li><strong>Correo/Chat/Podcast:</strong> Medios de comunicación sincrónicos y asincrónicos.</li>
+                            <li><strong>RSS:</strong> Sindicación de contenidos (te avisa cuando hay novedades).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🔄 Simulador: Petición HTTP</h3>
+                    <p class="text-sm text-gray-600 mb-4">Hacé clic en "Navegar" para ver cómo tu navegador pide una página y el servidor le responde con HTML.</p>
+                    <div class="bg-gray-50 p-4 rounded-2xl flex flex-col items-center gap-4">
+                        <div class="flex justify-between w-full items-center">
+                            <div class="bg-purple-100 p-3 rounded-xl text-center">
+                                <p class="text-xs font-bold text-purple-800">Navegador</p>
+                                <p class="text-2xl">💻</p>
+                            </div>
+                            <div id="httpArrow" class="text-3xl text-gray-300 transition-all duration-500">➡️</div>
+                            <div class="bg-green-100 p-3 rounded-xl text-center">
+                                <p class="text-xs font-bold text-green-800">Servidor</p>
+                                <p class="text-2xl">🗄️</p>
+                            </div>
+                        </div>
+                        <button onclick="simulateHTTP()" class="bg-purple-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-purple-700 transition">Navegar a nticx.edu.ar</button>
+                        <div id="httpLog" class="w-full bg-white p-3 rounded-xl border border-gray-200 text-xs font-mono text-gray-600 h-20 overflow-y-auto">
+                            > Esperando acción del usuario...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🧠 Mini-Trivia: Organización Web</h3>
+                    <form id="trivia2Form" class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">1. ¿Cuál es la función principal del protocolo HTTP?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q1" value="a" class="accent-purple-600"> Transferir hipertexto entre cliente y servidor.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q1" value="b" class="accent-purple-600"> Encriptar contraseñas de usuarios.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q1" value="c" class="accent-purple-600"> Conectar la placa de red con el router.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q1" value="d" class="accent-purple-600"> Crear bases de datos relacionales.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">2. ¿Qué diferencia al hipertexto de la hipermedia?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q2" value="a" class="accent-purple-600"> La hipermedia integra audio, video y gráficos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q2" value="b" class="accent-purple-600"> El hipertexto es más rápido que la hipermedia.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q2" value="c" class="accent-purple-600"> La hipermedia solo funciona sin conexión.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q2" value="d" class="accent-purple-600"> El hipertexto incluye enlaces de red social.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">3. ¿Para qué sirve principalmente un feed RSS?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q3" value="a" class="accent-purple-600"> Para recibir actualizaciones de contenidos web.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q3" value="b" class="accent-purple-600"> Para enviar correos electrónicos masivos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q3" value="c" class="accent-purple-600"> Para comprimir archivos de audio.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t2q3" value="d" class="accent-purple-600"> Para bloquear publicidad en navegadores.</label>
+                            </div>
+                        </div>
+                        <button type="button" onclick="checkTrivia(2)" class="w-full bg-green-500 text-white font-bold py-3 rounded-2xl hover:bg-green-600 transition shadow-md">Verificar Respuestas</button>
+                        <div id="trivia2Result" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: BUSCADORES -->
+        <section id="tab3" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bento-card bg-purple-50 p-6 border-2 border-purple-100">
+                    <h2 class="text-2xl font-extrabold text-purple-800 mb-4 flex items-center gap-2">🔍 Buscadores de Información</h2>
+                    <p class="mb-3 text-gray-700 leading-relaxed">
+                        Internet es un océano de datos. Para no ahogarnos, usamos <strong>buscadores</strong> (como Google o Bing), que indexan la web mediante "spiders" o arañas web.
+                    </p>
+                    <div class="bg-white p-4 rounded-2xl mt-4 border border-purple-200">
+                        <h3 class="font-bold text-purple-700 mb-2">🔑 Herramientas de Búsqueda:</h3>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Meta-buscadores:</strong> Buscan en varios motores a la vez (ej: Dogpile).</li>
+                            <li><strong>Operadores Booleanos:</strong> Palabras clave para filtrar.</li>
+                            <li><strong>AND:</strong> Ambos términos deben estar.</li>
+                            <li><strong>OR:</strong> Al menos uno de los términos.</li>
+                            <li><strong>NOT / -:</strong> Excluye un término.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🎯 Simulador: Operadores Booleanos</h3>
+                    <p class="text-sm text-gray-600 mb-4">Probá escribir en el buscador usando AND, OR o NOT para filtrar los resultados.</p>
+                    <div class="bg-gray-50 p-4 rounded-2xl flex flex-col gap-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="searchInput" placeholder="Ej: gatos AND perros" class="flex-1 p-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none">
+                            <button onclick="searchSim()" class="bg-purple-600 text-white px-4 rounded-xl font-bold hover:bg-purple-700">Buscar</button>
+                        </div>
+                        <div id="searchResults" class="bg-white p-3 rounded-xl border border-gray-200 text-sm space-y-2 h-40 overflow-y-auto">
+                            <p class="text-gray-400 text-center mt-10">Los resultados aparecerán aquí...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🧠 Mini-Trivia: Buscadores</h3>
+                    <form id="trivia3Form" class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">1. ¿Qué es un meta-buscador?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q1" value="a" class="accent-purple-600"> Un motor que consulta a otros buscadores simultáneamente.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q1" value="b" class="accent-purple-600"> Un navegador web de código abierto.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q1" value="c" class="accent-purple-600"> Un programa para descargar videos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q1" value="d" class="accent-purple-600"> Un diccionario de términos técnicos.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">2. Si busco "manzanas NOT rojas", ¿qué obtengo?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q2" value="a" class="accent-purple-600"> Páginas con "manzanas" pero sin la palabra "rojas".</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q2" value="b" class="accent-purple-600"> Solo páginas que contengan "rojas".</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q2" value="c" class="accent-purple-600"> Páginas que tengan ambas palabras.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q2" value="d" class="accent-purple-600"> Imágenes de frutas en general.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">3. ¿Qué función cumple el operador booleano OR?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q3" value="a" class="accent-purple-600"> Amplía la búsqueda incluyendo cualquiera de los términos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q3" value="b" class="accent-purple-600"> Restringe la búsqueda a una frase exacta.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q3" value="c" class="accent-purple-600"> Excluye resultados no deseados.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t3q3" value="d" class="accent-purple-600"> Busca solo en el título de la página.</label>
+                            </div>
+                        </div>
+                        <button type="button" onclick="checkTrivia(3)" class="w-full bg-green-500 text-white font-bold py-3 rounded-2xl hover:bg-green-600 transition shadow-md">Verificar Respuestas</button>
+                        <div id="trivia3Result" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: FOLCSONOMÍA -->
+        <section id="tab4" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bento-card bg-purple-50 p-6 border-2 border-purple-100">
+                    <h2 class="text-2xl font-extrabold text-purple-800 mb-4 flex items-center gap-2">🏷️ Folcsonomía y Marcadores Sociales</h2>
+                    <p class="mb-3 text-gray-700 leading-relaxed">
+                        Antes, los sitios se organizaban con <strong>taxonomías</strong> (categorías rígidas creadas por expertos). Hoy usamos <strong>folcsonomías</strong>: clasificación colaborativa mediante <strong>etiquetas (tags)</strong> creadas por los usuarios.
+                    </p>
+                    <div class="bg-white p-4 rounded-2xl mt-4 border border-purple-200">
+                        <h3 class="font-bold text-purple-700 mb-2">🔑 Conceptos Clave:</h3>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Marcadores sociales:</strong> Guardar y compartir enlaces (ej: Del.icio.us, Pinterest).</li>
+                            <li><strong>Tags:</strong> Palabras clave libres para clasificar.</li>
+                            <li><strong>Intoxicación informativa:</strong> Exceso de datos que dificulta la toma de decisiones.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🔖 Simulador: Etiquetado Colaborativo</h3>
+                    <p class="text-sm text-gray-600 mb-4">Hacé clic en las etiquetas para "guardar" este enlace y ver cómo crece la folcsonomía.</p>
+                    <div class="bg-gray-50 p-4 rounded-2xl flex flex-col gap-3">
+                        <div class="bg-white p-3 rounded-xl border border-gray-200">
+                            <p class="text-xs text-gray-500 mb-1">Enlace guardado:</p>
+                            <p class="font-bold text-purple-700">🔗 www.recetascocina.ar/empanadas</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2" id="tagContainer">
+                            <button onclick="addTag(this)" class="bg-gray-200 hover:bg-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold transition">comida</button>
+                            <button onclick="addTag(this)" class="bg-gray-200 hover:bg-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold transition">argentina</button>
+                            <button onclick="addTag(this)" class="bg-gray-200 hover:bg-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold transition">recetas</button>
+                            <button onclick="addTag(this)" class="bg-gray-200 hover:bg-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold transition">salado</button>
+                            <button onclick="addTag(this)" class="bg-gray-200 hover:bg-purple-100 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold transition">cocina</button>
+                        </div>
+                        <div id="selectedTags" class="bg-white p-3 rounded-xl border border-green-200 min-h-[40px] flex flex-wrap gap-2 items-center">
+                            <span class="text-xs text-gray-400">Tus etiquetas:</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card bg-white p-6 shadow-lg border border-gray-100 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">🧠 Mini-Trivia: Folcsonomía</h3>
+                    <form id="trivia4Form" class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">1. ¿Qué es la folcsonomía?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q1" value="a" class="accent-purple-600"> Clasificación colaborativa mediante etiquetas libres.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q1" value="b" class="accent-purple-600"> Un sistema de carpetas rígido creado por expertos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q1" value="c" class="accent-purple-600"> Un lenguaje de programación para bases de datos.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q1" value="d" class="accent-purple-600"> El estudio de los virus informáticos.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">2. ¿Qué plataforma fue pionera en marcadores sociales?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q2" value="a" class="accent-purple-600"> Del.icio.us.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q2" value="b" class="accent-purple-600"> Microsoft Word.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q2" value="c" class="accent-purple-600"> Winamp.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q2" value="d" class="accent-purple-600"> Mozilla Firefox.</label>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-2xl">
+                            <p class="font-bold mb-2">3. ¿Qué es la "intoxicación informativa"?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q3" value="a" class="accent-purple-600"> Exceso de información que dificulta decidir.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q3" value="b" class="accent-purple-600"> Un virus que borra el disco rígido.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q3" value="c" class="accent-purple-600"> La falta total de conexión a internet.</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="t4q3" value="d" class="accent-purple-600"> Leer noticias solo en papel.</label>
+                            </div>
+                        </div>
+                        <button type="button" onclick="checkTrivia(4)" class="w-full bg-green-500 text-white font-bold py-3 rounded-2xl hover:bg-green-600 transition shadow-md">Verificar Respuestas</button>
+                        <div id="trivia4Result" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: EVALUACIÓN FINAL -->
+        <section id="tab5" class="tab-content hidden">
+            <div class="bento-card bg-white p-6 shadow-lg border border-gray-100">
+                <h2 class="text-2xl font-extrabold text-purple-800 mb-2 flex items-center gap-2">🏆 Evaluación Final Integradora</h2>
+                <p class="text-gray-600 mb-6">Respondé las 15 preguntas. Al finalizar, podrás ver tu puntaje e imprimir tu certificado en A4.</p>
+                
+                <form id="finalExamForm" class="space-y-6">
+                    <!-- Questions will be injected by JS or hardcoded here for simplicity and performance -->
+                    <div id="examQuestionsContainer"></div>
+                    
+                    <button type="button" onclick="gradeFinalExam()" class="w-full bg-purple-600 text-white font-bold py-4 rounded-2xl hover:bg-purple-700 transition shadow-lg text-lg">Finalizar y Ver Resultado</button>
+                    
+                    <div id="finalExamResult" class="hidden p-6 rounded-2xl text-center bg-purple-50 border-2 border-purple-200">
+                        <h3 class="text-2xl font-bold text-purple-800 mb-2">Tu Puntaje</h3>
+                        <p id="finalScore" class="text-4xl font-extrabold text-green-600 mb-4"></p>
+                        <button onclick="printCertificate()" class="bg-yellow-400 text-purple-900 px-6 py-3 rounded-2xl font-bold hover:bg-yellow-500 transition shadow-md">🖨️ Imprimir Certificado A4</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS -->
+    <!-- Modal: Mi Reporte -->
+    <div id="reporteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal no-print" onclick="closeModal('reporteModal')">&times;</span>
+            
+            <!-- Screen View -->
+            <div class="no-print">
+                <h2 class="text-2xl font-bold text-purple-800 mb-4">📄 Mi Reporte de Progreso</h2>
+                <p class="text-gray-600 mb-4">Completá tus datos para generar el reporte. El año y la división se escriben manualmente.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input type="text" id="userName" placeholder="Nombre y Apellido" class="p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none">
+                    <input type="text" id="userSchool" placeholder="Escuela" class="p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none">
+                    <input type="text" id="userYear" placeholder="Año (Ej: 4to)" class="p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none">
+                    <input type="text" id="userDiv" placeholder="División (Ej: 1ra)" class="p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none">
+                </div>
+                <button onclick="generateReport()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-2xl hover:bg-purple-700 transition">Generar Reporte</button>
+                <div id="reportPreview" class="hidden mt-6 p-4 bg-gray-50 rounded-2xl">
+                    <h3 class="font-bold mb-2">Resumen de Trivias:</h3>
+                    <div id="reportContent"></div>
+                    <button onclick="window.print()" class="mt-4 w-full bg-green-500 text-white font-bold py-3 rounded-2xl hover:bg-green-600 transition">🖨️ Imprimir Reporte A4</button>
+                </div>
+            </div>
+
+            <!-- Print View for Report -->
+            <div class="print-report-only">
+                <div class="print-header">
+                    <h1>REPORTE DE PROGRESO - NTiCx 4to Año</h1>
+                </div>
+                <div id="printReportData"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Teoría -->
+    <div id="teoriaModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal no-print" onclick="closeModal('teoriaModal')">&times;</span>
+            <div class="no-print flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-purple-800">📚 Compilado Teórico</h2>
+                <button onclick="window.print()" class="bg-green-500 text-white px-4 py-2 rounded-xl font-bold hover:bg-green-600">🖨️ Imprimir A4</button>
+            </div>
+            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                <h3 class="text-xl font-bold text-purple-700 mt-4">1. Digitalización de la Información</h3>
+                <p>La digitalización es el proceso de convertir información analógica (continua) en digital (discreta, ceros y unos). La unidad mínima es el bit. Ocho bits forman un byte. Este proceso permite el almacenamiento, procesamiento y transmisión de datos en sistemas informáticos sin pérdida de calidad por copia.</p>
+                
+                <h3 class="text-xl font-bold text-purple-700 mt-6">2. Organización de la Información en la Web</h3>
+                <p>La WWW es un sistema de documentos de hipertexto/hypermedia interconectados vía HTTP. HTML es el lenguaje de marcado estándar. Los hipervínculos permiten la navegación. Otros servicios incluyen correo electrónico (asincrónico), chat (sincrónico), podcasts (audio bajo demanda) y RSS (sindicación de contenidos).</p>
+                
+                <h3 class="text-xl font-bold text-purple-700 mt-6">3. Buscadores de Información</h3>
+                <p>Los buscadores indexan la web mediante algoritmos. Los meta-buscadores consultan múltiples motores simultáneamente. Para refinar búsquedas se usan operadores booleanos: AND (intersección), OR (unión), NOT (exclusión) y comillas para frases exactas.</p>
+                
+                <h3 class="text-xl font-bold text-purple-700 mt-6">4. Folcsonomía y Marcadores Sociales</h3>
+                <p>La folcsonomía es la clasificación colaborativa mediante etiquetas (tags) creadas por usuarios, a diferencia de la taxonomía rígida. Plataformas como Del.icio.us permitieron guardar y compartir enlaces. El exceso de información disponible puede generar "intoxicación informativa", dificultando la toma de decisiones.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Glosario -->
+    <div id="glosarioModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal no-print" onclick="closeModal('glosarioModal')">&times;</span>
+            <h2 class="text-2xl font-bold text-purple-800 mb-4">📖 Glosario Interactivo NTiCx</h2>
+            <input type="text" id="glossarySearch" onkeyup="filterGlossary()" placeholder="Buscar término..." class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 outline-none mb-4">
+            <div id="glossaryList" class="space-y-3 max-h-96 overflow-y-auto">
+                <!-- Items injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT CERTIFICATE VIEW -->
+    <div class="print-only" id="printCertificateView">
+        <div style="text-align: center; border: 5px double #6C5CE7; padding: 40px; margin: 20px;">
+            <h1 style="color: #6C5CE7; font-size: 32pt;">CERTIFICADO DE APROBACIÓN</h1>
+            <h2 style="font-size: 24pt; margin-top: 20px;">NTiCx - Nuevas Tecnologías de la Información y la Conectividad</h2>
+            <p style="font-size: 18pt; margin-top: 40px;">Se otorga el presente certificado a:</p>
+            <h3 id="certName" style="font-size: 28pt; color: #1F2937; border-bottom: 2px solid #1F2937; display: inline-block; padding: 0 20px; margin: 20px 0;">---</h3>
+            <p style="font-size: 16pt;">Por haber completado y aprobado la Evaluación Final Integradora</p>
+            <p style="font-size: 16pt;">con una calificación de:</p>
+            <h2 id="certScore" style="font-size: 40pt; color: #22C55E; margin: 20px 0;">---</h2>
+            <p style="font-size: 14pt; margin-top: 40px;">Escuela: <span id="certSchool">---</span> | Año: <span id="certYear">---</span> | División: <span id="certDiv">---</span></p>
+            <p style="font-size: 12pt; margin-top: 60px; color: #6B7280;">Fecha de emisión: <span id="certDate"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const triviaAnswers = {
+            1: { q1: 'a', q2: 'a', q3: 'a' },
+            2: { q1: 'a', q2: 'a', q3: 'a' },
+            3: { q1: 'a', q2: 'a', q3: 'a' },
+            4: { q1: 'a', q2: 'a', q3: 'a' }
+        };
+
+        const triviaQuestionsText = {
+            1: [
+                { q: "¿Qué es un bit?", correct: "La unidad mínima de información digital." },
+                { q: "¿Qué proceso transforma una señal continua en datos digitales?", correct: "Digitalización o conversión A/D." },
+                { q: "¿Cuántos bits conforman un byte?", correct: "8 bits." }
+            ],
+            2: [
+                { q: "¿Cuál es la función principal del protocolo HTTP?", correct: "Transferir hipertexto entre cliente y servidor." },
+                { q: "¿Qué diferencia al hipertexto de la hipermedia?", correct: "La hipermedia integra audio, video y gráficos." },
+                { q: "¿Para qué sirve principalmente un feed RSS?", correct: "Para recibir actualizaciones de contenidos web." }
+            ],
+            3: [
+                { q: "¿Qué es un meta-buscador?", correct: "Un motor que consulta a otros buscadores simultáneamente." },
+                { q: "Si busco 'manzanas NOT rojas', ¿qué obtengo?", correct: "Páginas con 'manzanas' pero sin la palabra 'rojas'." },
+                { q: "¿Qué función cumple el operador booleano OR?", correct: "Amplía la búsqueda incluyendo cualquiera de los términos." }
+            ],
+            4: [
+                { q: "¿Qué es la folcsonomía?", correct: "Clasificación colaborativa mediante etiquetas libres." },
+                { q: "¿Qué plataforma fue pionera en marcadores sociales?", correct: "Del.icio.us." },
+                { q: "¿Qué es la 'intoxicación informativa'?", correct: "Exceso de información que dificulta decidir." }
+            ]
+        };
+
+        const finalExamData = [
+            { q: "1. ¿Qué unidad de información está compuesta por 8 bits?", opts: ["Byte", "Kilobyte", "Megabyte", "Bit"], ans: 0 },
+            { q: "2. ¿Qué significa ADC?", opts: ["Conversor Analógico-Digital", "Algoritmo de Cifrado Datos", "Arquitectura de Computación Digital", "Acesso a Datos Centralizados"], ans: 0 },
+            { q: "3. ¿Cuál es una ventaja clave de la información digital?", opts: ["No se degrada al copiarse", "Requiere más espacio físico", "Es más lenta de procesar", "Solo se puede leer en papel"], ans: 0 },
+            { q: "4. ¿Qué lenguaje se usa para estructurar páginas web?", opts: ["HTML", "HTTP", "FTP", "SMTP"], ans: 0 },
+            { q: "5. ¿Qué es un hipervínculo?", opts: ["Una conexión a otro documento", "Un tipo de virus", "Un protocolo de red", "Una imagen animada"], ans: 0 },
+            { q: "6. La hipermedia se diferencia del hipertexto porque:", opts: ["Incluye audio y video", "Solo usa texto plano", "No tiene enlaces", "Funciona sin internet"], ans: 0 },
+            { q: "7. ¿Qué es un Podcast?", opts: ["Audio digital bajo demanda", "Un chat en tiempo real", "Un correo masivo", "Un buscador web"], ans: 0 },
+            { q: "8. ¿Para qué sirve el RSS?", opts: ["Sindicar y recibir actualizaciones", "Encriptar correos", "Diseñar páginas web", "Conectar hardware"], ans: 0 },
+            { q: "9. ¿Qué hace un meta-buscador?", opts: ["Busca en varios motores a la vez", "Bloquea publicidad", "Traduce idiomas", "Diseña gráficos"], ans: 0 },
+            { q: "10. El operador booleano AND sirve para:", opts: ["Exigir que ambos términos estén", "Excluir un término", "Buscar sinónimos", "Traducir la búsqueda"], ans: 0 },
+            { q: "11. Si uso comillas en una búsqueda (\"exacta\"), busco:", opts: ["La frase exacta", "Cualquier palabra", "Solo imágenes", "Archivos PDF"], ans: 0 },
+            { q: "12. La folcsonomía se basa en:", opts: ["Etiquetas libres de usuarios", "Carpetas de sistema operativo", "Reglas de expertos", "Bases de datos SQL"], ans: 0 },
+            { q: "13. ¿Qué es un marcador social?", opts: ["Herramienta para guardar/compartir enlaces", "Un tipo de malware", "Un lenguaje de programación", "Un hardware de red"], ans: 0 },
+            { q: "14. La diferencia entre taxonomía y folcsonomía es:", opts: ["La primera es rígida, la segunda colaborativa", "Son exactamente lo mismo", "La folcsonomía es más antigua", "La taxonomía usa tags"], ans: 0 },
+            { q: "15. La intoxicación informativa ocurre cuando:", opts: ["Hay exceso de datos y cuesta decidir", "No hay internet", "Se borra el disco rígido", "Se usa mucho el correo"], ans: 0 }
+        ];
+
+        const glossaryData = [
+            { term: "Bit", def: "Unidad mínima de información digital (0 o 1)." },
+            { term: "Byte", def: "Conjunto de 8 bits. Representa un carácter." },
+            { term: "HTML", def: "Lenguaje de marcas para crear páginas web." },
+            { term: "HTTP", def: "Protocolo de transferencia de hipertexto." },
+            { term: "Hipertexto", def: "Texto con enlaces a otros textos." },
+            { term: "Hipermedia", def: "Hipertexto que incluye audio, video e imágenes." },
+            { term: "Hipervínculo", def: "Elemento que conecta un documento con otro." },
+            { term: "RSS", def: "Formato para sindicación de contenidos web." },
+            { term: "Podcast", def: "Archivo de audio digital disponible para descarga." },
+            { term: "Meta-buscador", def: "Herramienta que busca en múltiples motores simultáneamente." },
+            { term: "Operadores Booleanos", def: "Palabras (AND, OR, NOT) para filtrar búsquedas." },
+            { term: "Folcsonomía", def: "Clasificación colaborativa mediante etiquetas (tags)." },
+            { term: "Marcador Social", def: "Servicio para guardar, organizar y compartir enlaces." },
+            { term: "Intoxicación Informativa", def: "Exceso de información que paraliza la toma de decisiones." }
+        ];
+
+        // --- STATE ---
+        let triviaScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+        let triviaUserAnswers = { 1: [], 2: [], 3: [], 4: [] };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGlossary();
+            renderFinalExam();
+        });
+
+        // --- TABS ---
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+        }
+
+        // --- ACCESSIBILITY ---
+        function toggleDyslexia() {
+            document.body.classList.toggle('font-dyslexia');
+            const btn = document.getElementById('btnDyslexia');
+            btn.classList.toggle('bg-purple-600');
+            btn.classList.toggle('text-white');
+        }
+
+        function toggleContrast() {
+            document.body.classList.toggle('high-contrast');
+            const btn = document.getElementById('btnContrast');
+            btn.classList.toggle('bg-purple-600');
+            btn.classList.toggle('text-white');
+        }
+
+        // --- MODALS ---
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // --- SIMULATORS ---
+        // Sim 1: Digitalization
+        const slider = document.getElementById('digitalSlider');
+        if(slider) {
+            slider.addEventListener('input', (e) => {
+                const val = e.target.value;
+                const wave = document.getElementById('waveSvg');
+                const text = document.getElementById('simText');
+                wave.style.filter = `contrast(${1 + val * 0.5}) brightness(${1 - val * 0.05})`;
+                wave.style.opacity = 1 - (val * 0.05);
+                
+                if(val == 0) text.innerText = "Señal 100% continua (Analógica)";
+                else if(val < 5) text.innerText = "Muestreando... obteniendo valores discretos";
+                else text.innerText = "¡Digitalizado! Solo 0s y 1s (Bits)";
+            });
+        }
+
+        // Sim 2: HTTP
+        function simulateHTTP() {
+            const log = document.getElementById('httpLog');
+            const arrow = document.getElementById('httpArrow');
+            log.innerHTML = "> Enviando petición GET / HTTP/1.1...";
+            arrow.innerText = "⏳";
+            arrow.classList.add('text-yellow-500');
+            
+            setTimeout(() => {
+                log.innerHTML += "<br>> Servidor responde: 200 OK";
+                arrow.innerText = "➡️";
+                arrow.classList.remove('text-yellow-500');
+                setTimeout(() => {
+                    log.innerHTML += "<br>> Descargando HTML, CSS, JS...";
+                    setTimeout(() => {
+                        log.innerHTML += "<br>> ¡Página renderizada en tu navegador! 🎉";
+                        arrow.innerText = "✅";
+                    }, 800);
+                }, 800);
+            }, 1000);
+        }
+
+        // Sim 3: Search
+        const mockResults = [
+            "gatos persas", "perros callejeros", "gatos y perros jugando", "alimentación de gatos", "razas de perros", "gatos NOT perros", "adopción de animales"
+        ];
+        function searchSim() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('searchResults');
+            container.innerHTML = "";
+            
+            if(!query) {
+                container.innerHTML = "<p class='text-gray-400 text-center mt-10'>Escribí algo para buscar...</p>";
+                return;
+            }
+
+            let filtered = mockResults;
+            
+            if(query.includes(' and ') || query.includes(' ')) {
+                const terms = query.replace(' and ', ' ').split(' ').filter(t => t !== 'and' && t !== 'or' && t !== 'not' && t !== '-');
+                if(query.includes('not') || query.includes('-')) {
+                    const exclude = query.includes('not') ? query.split('not')[1].trim() : query.split('-')[1].trim();
+                    filtered = mockResults.filter(r => !r.includes(exclude));
+                } else if(query.includes('or')) {
+                    const terms = query.split('or');
+                    filtered = mockResults.filter(r => terms.some(t => r.includes(t.trim())));
+                } else {
+                    filtered = mockResults.filter(r => terms.every(t => r.includes(t)));
+                }
+            }
+
+            if(filtered.length === 0) {
+                container.innerHTML = "<p class='text-red-500 text-center mt-10'>No se encontraron resultados.</p>";
+            } else {
+                filtered.forEach(r => {
+                    container.innerHTML += `<div class="p-2 bg-purple-50 rounded-lg border border-purple-100">🔗 www.ejemplo.com/<span class="text-purple-700 font-bold">${r}</span></div>`;
+                });
+            }
+        }
+
+        // Sim 4: Tags
+        function addTag(btn) {
+            const tag = btn.innerText;
+            const container = document.getElementById('selectedTags');
+            if(!container.innerText.includes(tag)) {
+                const span = document.createElement('span');
+                span.className = "bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-bold";
+                span.innerText = `#${tag}`;
+                container.appendChild(span);
+                btn.classList.remove('bg-gray-200');
+                btn.classList.add('bg-purple-200', 'text-purple-800');
+            }
+        }
+
+        // --- TRIVIAS ---
+        function checkTrivia(num) {
+            const form = document.getElementById(`trivia${num}Form`);
+            const resultDiv = document.getElementById(`trivia${num}Result`);
+            let score = 0;
+            let userAns = [];
+            
+            for(let i=1; i<=3; i++) {
+                const selected = form.querySelector(`input[name="t${num}q${i}"]:checked`);
+                const correct = triviaAnswers[num][`q${i}`];
+                if(selected) {
+                    if(selected.value === correct) {
+                        score++;
+                        userAns.push({ q: triviaQuestionsText[num][i-1].q, ans: selected.parentElement.innerText.trim(), isCorrect: true });
+                    } else {
+                        userAns.push({ q: triviaQuestionsText[num][i-1].q, ans: selected.parentElement.innerText.trim(), isCorrect: false });
+                    }
+                } else {
+                    userAns.push({ q: triviaQuestionsText[num][i-1].q, ans: "Sin responder", isCorrect: false });
+                }
+            }
+            
+            triviaScores[num] = score;
+            triviaUserAnswers[num] = userAns;
+            
+            resultDiv.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800');
+            if(score === 3) {
+                resultDiv.classList.add('bg-green-100', 'text-green-800');
+                resultDiv.innerText = `¡Excelente! 🎉 Respondiste todo correcto (${score}/3).`;
+            } else if(score >= 1) {
+                resultDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+                resultDiv.innerText = `¡Buen intento! 🤔 Acertaste ${score}/3. Revisá la teoría.`;
+            } else {
+                resultDiv.classList.add('bg-red-100', 'text-red-800');
+                resultDiv.innerText = `¡Ups! 😅 0/3. Te recomendamos releer el módulo.`;
+            }
+        }
+
+        // --- FINAL EXAM ---
+        function renderFinalExam() {
+            const container = document.getElementById('examQuestionsContainer');
+            let html = '';
+            finalExamData.forEach((item, idx) => {
+                html += `<div class="bg-gray-50 p-4 rounded-2xl">
+                    <p class="font-bold mb-2">${item.q}</p>
+                    <div class="space-y-2">`;
+                item.opts.forEach((opt, optIdx) => {
+                    html += `<label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="examQ${idx}" value="${optIdx}" class="accent-purple-600"> ${opt}
+                    </label>`;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function gradeFinalExam() {
+            let score = 0;
+            finalExamData.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="examQ${idx}"]:checked`);
+                if(selected && parseInt(selected.value) === item.ans) score++;
+            });
+            
+            const resultDiv = document.getElementById('finalExamResult');
+            const scoreText = document.getElementById('finalScore');
+            resultDiv.classList.remove('hidden');
+            scoreText.innerText = `${score} / 15`;
+            
+            if(score >= 9) {
+                scoreText.classList.remove('text-red-600', 'text-yellow-600');
+                scoreText.classList.add('text-green-600');
+            } else if(score >= 6) {
+                scoreText.classList.remove('text-green-600', 'text-red-600');
+                scoreText.classList.add('text-yellow-600');
+            } else {
+                scoreText.classList.remove('text-green-600', 'text-yellow-600');
+                scoreText.classList.add('text-red-600');
+            }
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- GLOSSARY ---
+        function renderGlossary() {
+            const list = document.getElementById('glossaryList');
+            let html = '';
+            glossaryData.forEach(item => {
+                html += `<div class="glossary-item bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                    <h4 class="font-bold text-purple-800">${item.term}</h4>
+                    <p class="text-gray-700 text-sm">${item.def}</p>
+                </div>`;
+            });
+            list.innerHTML = html;
+        }
+
+        function filterGlossary() {
+            const query = document.getElementById('glossarySearch').value.toLowerCase();
+            const items = document.querySelectorAll('.glossary-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // --- REPORT & PRINT ---
+        function generateReport() {
+            const name = document.getElementById('userName').value;
+            const school = document.getElementById('userSchool').value;
+            const year = document.getElementById('userYear').value;
+            const div = document.getElementById('userDiv').value;
+
+            if(!name || !school || !year || !div) {
+                alert("Por favor, completá todos los datos manualmente.");
+                return;
+            }
+
+            const preview = document.getElementById('reportPreview');
+            const content = document.getElementById('reportContent');
+            const printData = document.getElementById('printReportData');
+            
+            let html = `<div class="mb-4 p-3 bg-white rounded-xl border">
+                <p><strong>Alumno:</strong> ${name}</p>
+                <p><strong>Escuela:</strong> ${school}</p>
+                <p><strong>Año:</strong> ${year} | <strong>División:</strong> ${div}</p>
+            </div>`;
+            
+            let printHtml = `<h3 style="margin-bottom: 10px;">Datos del Alumno</h3>
+                <p>Nombre: ${name}</p>
+                <p>Escuela: ${school}</p>
+                <p>Curso: ${year} ${div}</p>
+                <hr style="margin: 15px 0;">
+                <h3 style="margin-bottom: 10px;">Resultados de Trivias</h3>`;
+
+            for(let i=1; i<=4; i++) {
+                html += `<div class="mb-2 p-3 bg-white rounded-xl border">
+                    <p class="font-bold">Módulo ${i}: ${triviaScores[i]}/3 Correctas</p>
+                </div>`;
+                
+                printHtml += `<h4>Módulo ${i} (Puntaje: ${triviaScores[i]}/3)</h4>`;
+                if(triviaUserAnswers[i].length > 0) {
+                    triviaUserAnswers[i].forEach(ans => {
+                        const icon = ans.isCorrect ? '✅' : '❌';
+                        printHtml += `<p style="margin: 5px 0; font-size: 10pt;">${icon} <strong>${ans.q}</strong><br>Tu respuesta: ${ans.ans}</p>`;
+                    });
+                } else {
+                    printHtml += `<p style="font-style: italic; color: #666;">No se respondieron preguntas.</p>`;
+                }
+                printHtml += `<hr style="margin: 10px 0;">`;
+            }
+
+            content.innerHTML = html;
+            printData.innerHTML = printHtml;
+            preview.classList.remove('hidden');
+        }
+
+        function printCertificate() {
+            const name = document.getElementById('userName').value || "Alumno/a";
+            const school = document.getElementById('userSchool').value || "Escuela Secundaria";
+            const year = document.getElementById('userYear').value || "4to";
+            const div = document.getElementById('userDiv').value || "División";
+            const score = document.getElementById('finalScore').innerText;
+            
+            document.getElementById('certName').innerText = name;
+            document.getElementById('certSchool').innerText = school;
+            document.getElementById('certYear').innerText = year;
+            document.getElementById('certDiv').innerText = div;
+            document.getElementById('certScore').innerText = score;
+            document.getElementById('certDate').innerText = new Date().toLocaleDateString('es-AR');
+            
+            // Trigger print
+            window.print();
+        }
+
+    </script>
+</body>
+</html>
