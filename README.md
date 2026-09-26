@@ -53,13 +53,13 @@
         <li><a href="./clases/crucigramas/2.redes/">Ir Crucigrama Redes</a></li>
 
         <!-- MODULOS DIDACTICOS -->
-    <p>Módulos Didacticos</p>
-    <li><a href="./modulosdidacticos/alfabetizacion/">Ir Alfabetización Digital</a></li>
-    <li><a href="./modulosdidacticos/convivencia/">Ir Convivencia Digital</a></li>
-    <li><a href="./modulosdidacticos/ema/">Ir Guía EMA</a></li>
-    <li><a href="./modulosdidacticos/ia/">Ir Alfabetización en Inteligencia Artificial y Ciudadanía Digital Crítica</a></li>
-    <li><a href="./modulosdidacticos/inclusiontec/">Ir Innovación educativa con TIC y creación de contenidos accesibles</a></li>
-    <li><a href="./modulosdidacticos/interculturidad/">Ir a La interculturalidad en los entornos digitales</a></li>
+        <p>Módulos Didacticos</p>
+        <li><a href="./modulosdidacticos/alfabetizacion/">Ir Alfabetización Digital</a></li>
+        <li><a href="./modulosdidacticos/convivencia/">Ir Convivencia Digital</a></li>
+        <li><a href="./modulosdidacticos/ema/">Ir Guía EMA</a></li>
+        <li><a href="./modulosdidacticos/ia/">Ir Alfabetización en Inteligencia Artificial y Ciudadanía Digital Crítica</a></li>
+        <li><a href="./modulosdidacticos/inclusiontec/">Ir Innovación educativa con TIC y creación de contenidos accesibles</a></li>
+        <li><a href="./modulosdidacticos/interculturidad/">Ir a La interculturalidad en los entornos digitales</a></li>
         
     </ul>
     <p style="font-style: italic; color: #666; margin-top: 30px;">Prof. Martín Espinosa</p>
