@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tecnologías para la Inclusión · Módulo Didáctico Interactivo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.0.8/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/atkinson-hyperlegible@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@5.0.8/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@5.0.8/800.css">
+<style>
+:root{
+  --bg:#f4f6fb; --surface:#ffffff; --ink:#182338; --ink-soft:#4a5a77; --line:#dfe5f0;
+  --blue:#1e40af; --blue-deep:#16307f; --blue-soft:#e8edfb;
+  --teal:#0d9488; --teal-soft:#e0f3f0;
+  --amber:#b45309; --amber-soft:#fdf0dc;
+  --rose:#be185d; --rose-soft:#fce8f1;
+  --green:#047857; --green-soft:#e0f5ea;
+  --purple:#6d28d9; --purple-soft:#efe8fc;
+  --radius:16px; --shadow:0 10px 30px rgba(24,35,56,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Atkinson Hyperlegible',system-ui,Segoe UI,sans-serif;line-height:1.65;font-size:1rem}
+h1,h2,h3,h4{font-family:'Outfit',system-ui,sans-serif;line-height:1.25;color:var(--blue-deep)}
+a{color:var(--blue)}
+img{max-width:100%;display:block}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.container{max-width:1140px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-999px;top:0;background:var(--blue);color:#fff;padding:10px 16px;border-radius:0 0 10px 0;z-index:200}
+.skip:focus{left:0}
+#progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--blue),var(--teal));width:0;z-index:120}
+/* ===== Topbar ===== */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 20px;max-width:1140px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Outfit';font-weight:800;font-size:1.15rem;box-shadow:0 4px 12px rgba(30,64,175,.35)}
+.brand-text strong{display:block;font-family:'Outfit';font-weight:800;font-size:1.02rem;color:var(--blue-deep);line-height:1.1}
+.brand-text span{font-size:.78rem;color:var(--ink-soft)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.font-ctrl{display:flex;border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.font-ctrl button{border:none;background:#fff;padding:7px 12px;cursor:pointer;font-weight:700;color:var(--ink);transition:.2s}
+.font-ctrl button:hover{background:var(--blue-soft)}
+.font-ctrl button.active{background:var(--blue);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:12px 22px;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;box-shadow:0 6px 18px rgba(30,64,175,.3)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.btn-ghost:hover{background:var(--blue-soft)}
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;max-width:1140px;margin:0 auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 18px;font-weight:700;font-size:.9rem;color:var(--ink-soft);cursor:pointer;transition:.2s;display:flex;gap:8px;align-items:center}
+.tab-btn:hover{border-color:var(--blue);color:var(--blue)}
+.tab-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(30,64,175,.35)}
+.tab-num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.25);display:inline-flex;align-items:center;justify-content:center;font-size:.75rem}
+.tab-btn:not(.active) .tab-num{background:var(--blue-soft);color:var(--blue)}
+/* ===== Views ===== */
+.view{display:none;padding:26px 0 60px}
+.view.active{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.view.active{animation:none}}
+/* ===== Banner ===== */
+.banner{display:grid;grid-template-columns:1.25fr .9fr;gap:0;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px;border:1px solid var(--line)}
+.banner-info{padding:34px 36px;background:linear-gradient(135deg,#16307f 0%,#1e40af 55%,#0d9488 130%);color:#fff}
+.banner-info .kicker{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:4px 14px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.banner-info h1{color:#fff;font-size:clamp(1.5rem,3.4vw,2.3rem);font-weight:800;margin-bottom:12px}
+.banner-info p{color:#e6ecff;font-size:1rem;max-width:56ch}
+.banner-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.bchip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:5px 13px;font-size:.8rem;font-weight:700}
+.banner-img{position:relative;min-height:260px;background:#f6f1e7}
+.banner-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+@media(max-width:860px){.banner{grid-template-columns:1fr}.banner-img{min-height:220px;order:-1;position:relative}.banner-img img{position:absolute}}
+/* ===== Topics ===== */
+.topic{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;margin:20px 0;box-shadow:var(--shadow)}
+.topic>h3{display:flex;align-items:flex-start;gap:12px;font-size:1.22rem;margin-bottom:14px}
+.tnum{flex:0 0 auto;background:var(--blue);color:#fff;font-family:'Outfit';font-weight:800;font-size:.85rem;padding:5px 11px;border-radius:9px;margin-top:2px}
+.topic h4{font-size:1.02rem;margin:18px 0 8px;color:var(--teal)}
+.topic p{margin-bottom:10px}
+ul.clean{list-style:none;margin:6px 0}
+ul.clean li{position:relative;padding-left:26px;margin-bottom:8px}
+ul.clean li::before{content:"✓";position:absolute;left:0;top:0;color:var(--teal);font-weight:700}
+ul.dots li::before{content:"•";color:var(--blue);font-size:1.3rem;line-height:1.1}
+.quote{border-left:5px solid var(--teal);background:var(--teal-soft);border-radius:0 12px 12px 0;padding:16px 20px;margin:14px 0;font-style:italic}
+.quote small{display:block;margin-top:8px;font-style:normal;font-weight:700;color:var(--teal)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fbfcff}
+.card h5{font-family:'Outfit';font-size:.95rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card p,.card li{font-size:.92rem}
+.card ul{padding-left:18px}
+.card li{margin-bottom:5px}
+/* level colors */
+.lv-exp{border-top:4px solid var(--teal)} .lv-exp h5{color:var(--teal)}
+.lv-int{border-top:4px solid var(--blue)} .lv-int h5{color:var(--blue)}
+.lv-inn{border-top:4px solid var(--purple)} .lv-inn h5{color:var(--purple)}
+.lv-per{border-top:4px solid var(--teal)} .lv-per h5{color:var(--teal)}
+.lv-est{border-top:4px solid var(--blue)} .lv-est h5{color:var(--blue)}
+.lv-afe{border-top:4px solid var(--rose)} .lv-afe h5{color:var(--rose)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:700}
+.chip-explorador{background:var(--teal-soft);color:var(--teal)}
+.chip-integrador{background:var(--blue-soft);color:var(--blue)}
+.chip-innovador{background:var(--purple-soft);color:var(--purple)}
+.chip-principiante{background:var(--green-soft);color:var(--green)}
+.chip-intermedio{background:var(--amber-soft);color:var(--amber)}
+.chip-avanzado{background:var(--rose-soft);color:var(--rose)}
+/* Ruta innovación */
+.ruta{display:flex;gap:0;flex-wrap:wrap;margin:16px 0}
+.ruta-step{flex:1 1 170px;position:relative;padding:16px 14px 14px;background:#fbfcff;border:1px solid var(--line);border-radius:14px;margin:6px}
+.ruta-step .rn{position:absolute;top:-14px;left:14px;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Outfit';box-shadow:0 4px 10px rgba(30,64,175,.35)}
+.ruta-step h5{margin:6px 0 6px;font-size:.95rem}
+.ruta-step p{font-size:.82rem;color:var(--ink-soft)}
+/* Diagrama práctica */
+.practica{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:16px 0}
+.prac-node{background:var(--blue);color:#fff;font-weight:700;padding:12px 20px;border-radius:12px;font-size:.92rem}
+.prac-node.alt{background:var(--teal)}
+.prac-arrow{font-size:1.3rem;color:var(--ink-soft)}
+.prac-base{width:100%;text-align:center;background:var(--amber-soft);border:2px dashed var(--amber);color:var(--amber);font-weight:700;border-radius:12px;padding:10px;margin-top:6px}
+/* Checklist */
+.check-wrap{margin-top:14px}
+.check-group{margin:14px 0 6px;display:flex;align-items:center;gap:10px}
+.check-group .cg-tag{font-family:'Outfit';font-weight:700;font-size:.85rem;color:#fff;background:var(--blue);padding:4px 12px;border-radius:999px}
+.check-item{display:flex;justify-content:space-between;gap:14px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:8px 0;background:#fbfcff;transition:.2s}
+.check-item[data-state="si"]{border-color:var(--green);background:var(--green-soft)}
+.check-item[data-state="no"]{border-color:var(--rose);background:var(--rose-soft)}
+.ci-text{font-size:.92rem}
+.ci-n{font-weight:800;color:var(--blue);margin-right:6px}
+.ci-btns{display:flex;gap:6px;flex:0 0 auto}
+.ci-btn{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 16px;font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;color:var(--ink-soft)}
+.ci-btn:hover{border-color:var(--blue)}
+.ci-btn.si.on{background:var(--green);border-color:var(--green);color:#fff}
+.ci-btn.no.on{background:var(--rose);border-color:var(--rose);color:#fff}
+.check-summary{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--blue-soft);border-radius:14px;padding:16px 20px;margin-top:16px}
+.check-summary strong{font-family:'Outfit';font-size:1.1rem;color:var(--blue-deep)}
+#checkVerdict{font-weight:700}
+/* Tablas */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+th{background:var(--blue);color:#fff;text-align:left;padding:10px 14px;font-family:'Outfit'}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#f7f9fe}
+/* Conceptos */
+.concepts{margin-top:30px}
+.concepts-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.concepts-head .ic{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--amber),#f59e0b);display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 5px 14px rgba(180,83,9,.3)}
+.concept{border-left:5px solid var(--blue);background:#fbfcff;border-radius:0 14px 14px 0;padding:14px 18px}
+.concept:nth-child(3n){border-left-color:var(--teal)}
+.concept:nth-child(3n+1){border-left-color:var(--amber)}
+.concept h5{font-family:'Outfit';font-size:.98rem;color:var(--blue-deep);margin-bottom:4px}
+.concept p{font-size:.9rem;color:var(--ink-soft)}
+/* Recursos */
+.res-list a{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border:1px solid var(--line);border-radius:12px;margin:8px 0;text-decoration:none;color:var(--ink);background:#fbfcff;transition:.2s;font-size:.92rem}
+.res-list a:hover{border-color:var(--teal);background:var(--teal-soft);transform:translateX(4px)}
+.res-list a::before{content:"🔗";flex:0 0 auto}
+/* ===== Quiz ===== */
+.quiz-toolbar{position:sticky;top:118px;z-index:40;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 18px;box-shadow:var(--shadow);margin-bottom:18px}
+.qfilters{display:flex;gap:8px;flex-wrap:wrap}
+.qf-btn{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--ink-soft);transition:.15s}
+.qf-btn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.q-card{background:#fff;border:2px solid var(--line);border-radius:16px;padding:24px;margin:16px 0;transition:border-color .2s}
+.q-card.correct{border-color:var(--green)}
+.q-card.incorrect{border-color:var(--rose)}
+.q-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.q-num{font-family:'Outfit';font-weight:800;background:var(--blue-deep);color:#fff;padding:4px 12px;border-radius:9px;font-size:.85rem}
+.q-pts{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--ink-soft)}
+.q-text{font-size:1.05rem;font-weight:700;margin-bottom:14px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;background:#fbfcff}
+.opt:hover{border-color:var(--blue)}
+.opt input{accent-color:var(--blue);width:19px;height:19px;margin-top:2px;flex:0 0 auto;cursor:pointer}
+.opt .letter{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--blue-soft);color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-family:'Outfit'}
+.opt span.txt{font-size:.95rem}
+.opt.selected{border-color:var(--blue);background:var(--blue-soft)}
+.q-card.correct .opt.selected{border-color:var(--green);background:var(--green-soft)}
+.q-card.incorrect .opt.selected{border-color:var(--rose);background:var(--rose-soft)}
+.q-card.incorrect .opt.right{border-color:var(--green);background:var(--green-soft)}
+.q-card.graded .opt{cursor:default}
+.feedback{display:none;margin-top:14px;border-radius:12px;padding:12px 16px;font-size:.92rem}
+.feedback.show{display:block;animation:fadeUp .35s ease}
+.feedback.ok{background:var(--green-soft);border:1px solid var(--green);color:#065f46}
+.feedback.bad{background:var(--rose-soft);border:1px solid var(--rose);color:#9d174d}
+/* Resultados */
+.results{display:none;background:linear-gradient(135deg,#16307f,#1e40af 60%,#0d9488 140%);border-radius:20px;color:#fff;padding:32px;margin:24px 0;box-shadow:0 16px 40px rgba(22,48,127,.35)}
+.results.show{display:block;animation:fadeUp .5s ease}
+.results-inner{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+@media(max-width:760px){.results-inner{grid-template-columns:1fr;text-align:center}}
+.gauge-wrap{position:relative;width:170px;height:170px;margin:0 auto}
+.gauge-wrap svg{transform:rotate(-90deg)}
+.gauge-bg{fill:none;stroke:rgba(255,255,255,.2);stroke-width:12}
+.gauge-arc{fill:none;stroke:#4ade80;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease,stroke .5s}
+.gauge-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge-txt strong{font-family:'Outfit';font-size:2.4rem;font-weight:800}
+.gauge-txt span{font-size:.8rem;opacity:.85}
+.res-msg h3{color:#fff;font-size:1.5rem;margin-bottom:8px}
+.res-msg p{color:#dbe6ff;margin-bottom:14px}
+.res-level{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:6px 16px;font-weight:700;font-size:.9rem;margin-bottom:16px}
+.bars{display:grid;gap:10px;max-width:520px}
+@media(max-width:760px){.bars{margin:0 auto}}
+.bar-row{display:grid;grid-template-columns:120px 1fr 70px;gap:10px;align-items:center;font-size:.85rem}
+.bar-track{background:rgba(255,255,255,.18);border-radius:999px;height:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#4ade80,#facc15);width:0;transition:width 1s ease .3s}
+.res-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+@media(max-width:760px){.res-actions{justify-content:center}}
+/* Next nav */
+.next-nav{display:flex;justify-content:space-between;gap:12px;margin-top:34px;flex-wrap:wrap}
+/* Footer */
+footer{background:var(--blue-deep);color:#c9d6ff;margin-top:40px;padding:36px 0}
+footer .container{display:grid;gap:14px}
+footer h4{color:#fff}
+footer p,footer li{font-size:.88rem}
+footer a{color:#8fd8cd}
+@media(max-width:640px){.topbar-inner{flex-direction:column;align-items:stretch}.top-actions{justify-content:space-between}.quiz-toolbar{top:0}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Ir al contenido principal</a>
+<div id="progress" role="presentation"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">T+</div>
+      <div class="brand-text">
+        <strong>Tecnologías para la Inclusión</strong>
+        <span>Módulo didáctico · Informática y Pedagogía · Pcia. de Buenos Aires, Argentina</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="font-ctrl" role="group" aria-label="Tamaño de texto">
+        <button id="fsMinus" aria-label="Reducir tamaño de texto">A−</button>
+        <button id="fsReset" class="active" aria-label="Tamaño de texto normal">A</button>
+        <button id="fsPlus" aria-label="Aumentar tamaño de texto">A+</button>
+      </div>
+      <button class="btn btn-primary" id="goQuizTop">📝 Autoevaluación</button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Secciones del módulo">
+    <button class="tab-btn active" role="tab" aria-selected="true" data-tab="inicio">🏠 Inicio</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="s1"><span class="tab-num">1</span> Innovación Educativa con TIC</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="s2"><span class="tab-num">2</span> Contenidos Accesibles</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="s3"><span class="tab-num">3</span> Entornos Virtuales</button>
+    <button class="tab-btn" role="tab" aria-selected="false" data-tab="quiz"><span class="tab-num">✎</span> Autoevaluación</button>
+  </nav>
+</header>
+
+<main id="main" class="container">
+
+<!-- ================= INICIO ================= -->
+<section class="view active" data-view="inicio">
+  <div class="banner reveal">
+    <div class="banner-info">
+      <span class="kicker">Módulo didáctico interactivo</span>
+      <h1>Innovación educativa con TIC y creación de contenidos accesibles</h1>
+      <p>Recorrido formativo basado en la guía «Tecnologías para la inclusión» (Fundación Saldarriaga Concha, 2021), diseñado para docentes, educadores en formación, familias y comunidad educativa. Tres secciones temáticas, conceptos fundamentales y una autoevaluación de 20 preguntas (100/100) con niveles principiante, intermedio y avanzado.</p>
+      <div class="banner-chips">
+        <span class="bchip">📚 3 secciones</span>
+        <span class="bchip">🧠 Conceptos fundamentales</span>
+        <span class="bchip">✅ 20 preguntas · 100/100</span>
+        <span class="bchip">♿ Enfoque DUA y accesibilidad</span>
+      </div>
+    </div>
+    <div class="banner-img"><img src="https://image.qwenlm.ai/public_source/dd47d5c1-b567-48a7-bb05-e25125e9a149/1c63b93d5-8607-4a28-97ab-160fb2b766cd.png" alt="Ilustración de estudiantes diversos, docente y símbolos de accesibilidad y tecnología"></div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">✦</span> Presentación del módulo</h3>
+    <p>El uso de las TIC posibilitó grandes transformaciones en la educación: disminuyó barreras para aprender y promovió el acceso al conocimiento, la comunicación y la participación de toda la comunidad educativa. En línea con el ODS 4 y la Declaración de Incheon (UNESCO, 2015), este módulo te propone:</p>
+    <div class="grid g3">
+      <div class="card lv-exp"><h5>1 · Innovar</h5><p>Conocer qué es y qué caracteriza la innovación educativa con uso de TIC, y una ruta con lista de chequeo para identificarla.</p></div>
+      <div class="card lv-int"><h5>2 · Incluir</h5><p>Aplicar orientaciones de accesibilidad web, DUA y creación de documentos accesibles en Word, PowerPoint, PDF y correos.</p></div>
+      <div class="card lv-inn"><h5>3 · Acompañar</h5><p>Organizar entornos virtuales de aprendizaje con momentos sincrónicos y asincrónicos, evaluación diversa y acompañamiento a distancia.</p></div>
+    </div>
+    <h4>¿Cómo se evalúa?</h4>
+    <ul class="clean">
+      <li>Autoevaluación multiple choice de <strong>20 preguntas</strong> (5 pts c/u) = <strong>100/100</strong>.</li>
+      <li>Tres niveles de dificultad: <span class="chip chip-principiante">Principiante · 7 preguntas</span> <span class="chip chip-intermedio">Intermedio · 7 preguntas</span> <span class="chip chip-avanzado">Avanzado · 6 preguntas</span>.</li>
+      <li>Aprobación con <strong>60/100</strong>. Al finalizar cada sección encontrarás los <strong>conceptos fundamentales</strong> para repasar antes de responder.</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">✦</span> ¿Qué encontrarás en cada sección?</h3>
+    <table>
+      <thead><tr><th>Sección</th><th>Contenidos</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · Innovación Educativa con Uso de TIC</strong></td><td>Definición y características; TIC en planificación, desarrollo y evaluación; ruta para la innovación; lista de chequeo interactiva de 20 preguntas.</td></tr>
+        <tr><td><strong>2 · Contenidos accesibles</strong></td><td>Accesibilidad web (WCAG 2.0), DUA, alternativas de percepción, navegación y comprensión; accesibilidad en Word, PowerPoint, PDF y correos electrónicos; herramientas de apoyo.</td></tr>
+        <tr><td><strong>3 · Entornos virtuales</strong></td><td>Dimensiones del aula virtual; aprendizaje sincrónico y asincrónico; formas de valorar el aprendizaje; acompañamiento a distancia.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">✦</span> Glosario · Tecnologías para la Inclusión</h3>
+    <div class="grid g2 concepts" style="margin-top:0">
+      <div class="concept"><h5>Educación Inclusiva</h5><p>Proceso permanente que reconoce, valora y responde a la diversidad de los estudiantes, sin discriminación ni exclusión.</p></div>
+      <div class="concept"><h5>Diseño Universal para el Aprendizaje (DUA)</h5><p>Diseño de entornos, currículos y servicios educativos accesibles y significativos para todos, desde sus capacidades y realidades.</p></div>
+      <div class="concept"><h5>Accesibilidad</h5><p>Medidas para asegurar el acceso en igualdad de condiciones, identificando y eliminando obstáculos y barreras.</p></div>
+      <div class="concept"><h5>Estándares WCAG 2.0</h5><p>Pautas de Accesibilidad para el Contenido Web (NTC 5854): perceptible, operable, comprensible y robusto.</p></div>
+      <div class="concept"><h5>Texto alternativo (Alt Text)</h5><p>Descripción con palabras de un elemento no textual, esencial para lectores de pantalla.</p></div>
+      <div class="concept"><h5>Lectores de pantalla</h5><p>Software que interpreta la pantalla mediante síntesis de voz, íconos sonoros o dispositivos braille.</p></div>
+      <div class="concept"><h5>Macrotipo</h5><p>Tamaño de letra más grande del acostumbrado, utilizado por personas con baja visión.</p></div>
+      <div class="concept"><h5>H5P</h5><p>Herramienta de Moodle para crear contenidos interactivos: arrastrar y soltar, opción múltiple, videos interactivos, juegos de memoria.</p></div>
+      <div class="concept"><h5>Screencast</h5><p>Grabación digital de pantalla que, en ocasiones, se convierte a voz.</p></div>
+      <div class="concept"><h5>Sistemas de comunicación aumentativa y alternativa (SAC)</h5><p>Programas, estrategias y herramientas que permiten expresarse a personas con dificultades en la comunicación oral.</p></div>
+    </div>
+  </div>
+
+  <div class="next-nav">
+    <span></span>
+    <button class="btn btn-primary" data-goto="s1">Comenzar Sección 1 →</button>
+  </div>
+</section>
+
+<!-- ================= SECCIÓN 1 ================= -->
+<section class="view" data-view="s1">
+  <div class="banner reveal">
+    <div class="banner-info">
+      <span class="kicker">Sección 1</span>
+      <h1>Innovación Educativa con Uso de TIC</h1>
+      <p>Conceptos y aspectos clave, ejemplos de uso de TIC en los momentos de la práctica educativa (planificación, implementación y evaluación), y una ruta con lista de chequeo para identificar si tu práctica es una innovación pedagógica.</p>
+      <div class="banner-chips"><span class="bchip">🚀 8 temas</span><span class="bchip">🗺️ Ruta de innovación</span><span class="bchip">☑️ Lista de chequeo interactiva</span></div>
+    </div>
+    <div class="banner-img"><img src="https://image.qwenlm.ai/public_source/dd47d5c1-b567-48a7-bb05-e25125e9a149/14c6a131a-63c4-4698-afb0-264b9933daae.png" alt="Docente presentando con pizarra digital frente a estudiantes con dispositivos"></div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.1</span> ¿Qué es y qué caracteriza la Innovación Educativa con Uso de TIC?</h3>
+    <p>Como plantea Serres (2013): <em>«El mundo cambió tanto que los jóvenes deben reinventar todo: una manera de vivir juntos, instituciones, una manera de ser y de conocer»</em>. En ese escenario, las TIC son la palanca de transformación de la educación y de la práctica pedagógica.</p>
+    <div class="quote">«(…) un proceso en el que la práctica educativa se reconfigura para dar respuesta a una necesidad, expectativa o problemática, desde lo que es pertinente y particular de un contexto, propiciando la disposición permanente al aprendizaje y la generación de mejores condiciones en las realidades de los actores educativos.»<small>Ministerio de Educación Nacional (MEN, 2013, p. 18)</small></div>
+    <h4>Características</h4>
+    <ul class="clean">
+      <li>Propicia la disposición permanente al aprendizaje y cobra relevancia por su <strong>uso, apropiación y difusión</strong> en la comunidad educativa.</li>
+      <li>Favorece la <strong>equidad</strong> y el acceso a las fuentes de conocimiento e información.</li>
+      <li>Fomenta el <strong>pensamiento crítico, creativo y autónomo</strong>, el trabajo en equipo y el uso de herramientas tecnológicas.</li>
+      <li>Los ambientes con TIC favorecen la cooperación, el logro de objetivos y la motivación para aprender a lo largo de la vida.</li>
+      <li>Incentivan el análisis del contexto, la planificación, la valoración y la circulación de la experiencia: elementos estructurales de una práctica innovadora.</li>
+    </ul>
+    <h4>Reflexiones para tu práctica</h4>
+    <ul class="dots clean">
+      <li>¿Qué acciones innovadoras que incluyen TIC he realizado y cómo las he caracterizado?</li>
+      <li>¿Cómo puedo fortalecer mi práctica innovadora con el uso de TIC?</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.2</span> ¿Cómo puedo usar las TIC en mi práctica educativa?</h3>
+    <p>La práctica educativa es <em>«una actividad dinámica, reflexiva, que debe incluir la intervención pedagógica ocurrida antes y después de los procesos interactivos en el aula»</em> (García-Cabrero et al., 2008). Se organiza en tres momentos que se realimentan, unidos a la difusión de la experiencia:</p>
+    <div class="practica" role="img" aria-label="Diagrama: planificación, desarrollo y evaluación, con difusión o circulación como base">
+      <span class="prac-node">PLANIFICACIÓN</span><span class="prac-arrow">⇄</span>
+      <span class="prac-node alt">DESARROLLO</span><span class="prac-arrow">⇄</span>
+      <span class="prac-node">EVALUACIÓN</span>
+      <span class="prac-base">DIFUSIÓN O CIRCULACIÓN → comunidades de aprendizaje</span>
+    </div>
+    <h4>Niveles de desarrollo de competencias TIC (MEN, 2013)</h4>
+    <div class="grid g3">
+      <div class="card lv-exp"><h5>🔍 Explorador</h5><p>Acercamiento a un conjunto de conocimientos que constituyen la posibilidad de acceder a estados de mayor elaboración conceptual.</p></div>
+      <div class="card lv-int"><h5>🔗 Integrador</h5><p>Uso de los conocimientos ya apropiados para la resolución de problemas en contextos diversos.</p></div>
+      <div class="card lv-inn"><h5>💡 Innovador</h5><p>Énfasis en ejercicios de creación: ir más allá del conocimiento aprendido e imaginar nuevas posibilidades de acción.</p></div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.3</span> Uso de TIC en la planificación de la clase</h3>
+    <p>El diseño y preparación de la clase conlleva un ejercicio reflexivo sobre propósitos formativos, competencias, contenidos, actividades, interacciones y evaluación.</p>
+    <div class="grid g2">
+      <div class="card lv-exp"><h5><span class="chip chip-explorador">Soy explorador</span></h5>
+        <ul><li>Identifico dispositivos y herramientas TIC disponibles (computador, pizarra digital, celular, apps, plataformas).</li>
+        <li>Busco recursos en portales educativos (Colombia Aprende, Khan Academy, Didactalia, Biblioteca Digital Mundial, Maguared) y evalúo su pertinencia.</li>
+        <li>Diseño actividades con dispositivos/apps (p. ej., WhatsApp) y recursos digitales (podcast de introducción).</li>
+        <li>Diseño o adapto guías en formato digital y las comparto por correo, WhatsApp o plataformas (Classroom, Edmodo, Teams).</li>
+        <li>Selecciono recursos con características de accesibilidad (historias en lengua de señas, videos con subtítulos).</li></ul>
+      </div>
+      <div class="card lv-int"><h5><span class="chip chip-integrador">Soy integrador</span></h5>
+        <ul><li>Propongo actividades que combinan diversos recursos digitales con aplicaciones y herramientas.</li>
+        <li>Integro un video explicativo de una temática compleja con laboratorios virtuales o simulaciones.</li>
+        <li>Para un hecho histórico, selecciono una película y creo un mapa conceptual colaborativo en línea.</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.4</span> Uso de TIC en el desarrollo e implementación de la clase</h3>
+    <p>En la interacción docente–estudiante se generan posibilidades que facilitan la comunicación, el aprendizaje activo y colaborativo, el pensamiento crítico y computacional y el acceso a la información en igualdad de condiciones.</p>
+    <div class="grid g3">
+      <div class="card lv-exp"><h5><span class="chip chip-explorador">Explorador</span></h5>
+        <ul><li>Me comunico de forma sincrónica y asincrónica (WhatsApp, Telegram, Meet, Zoom, Teams, correo, redes).</li>
+        <li>Uso recursos digitales previamente valorados (fotos, audios, videos, infografías, juegos).</li>
+        <li>Empleo dispositivos personales o institucionales (computador, video beam, tablero digital).</li></ul>
+      </div>
+      <div class="card lv-int"><h5><span class="chip chip-integrador">Integrador</span></h5>
+        <ul><li>Construyo recursos propios: presentaciones (Prezi, Genially), videos (Powtoon, Canva), audios, infografías (Piktochart), cuestionarios-juego (Kahoot, Quizizz).</li>
+        <li>Dispongo contenidos y evaluaciones en ambientes virtuales (Classroom, Moodle, Teams, Symbaloo).</li>
+        <li>Diseño proyectos con metodologías activas: Design thinking, ABP, aula invertida, pensamiento computacional, enfoque STEM.</li></ul>
+      </div>
+      <div class="card lv-inn"><h5><span class="chip chip-innovador">Innovador</span></h5>
+        <ul><li>Participo en redes, comunidades de aprendizaje y proyectos colaborativos (eTwinning, Zooniverse).</li>
+        <li>Exploro con visualización 3D (Google Earth) y museos en línea (Louvre, Frida Kahlo).</li>
+        <li>Incursiono en programación y robótica (Scratch Jr, Arduino), tecnologías 3D (Tinkercad), realidad aumentada y gamificación.</li>
+        <li>Acompaño proyectos que promueven competencias del siglo XXI.</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.5</span> Uso de TIC en el proceso de evaluación</h3>
+    <p>Evaluar conlleva un ejercicio sistemático de análisis y reflexión sobre la propia práctica y la valoración integral de los avances de los estudiantes.</p>
+    <div class="grid g3">
+      <div class="card lv-exp"><h5><span class="chip chip-explorador">Explorador</span></h5>
+        <ul><li>Evalúo información de internet con criterios de veracidad, pertinencia, vigencia, objetividad, accesibilidad y autoría.</li>
+        <li>Valoro el uso responsable y seguro de mensajería y redes sociales por parte de mis estudiantes.</li>
+        <li>Elaboro cuestionarios con procesador de texto y registro calificaciones en hojas de cálculo.</li></ul>
+      </div>
+      <div class="card lv-int"><h5><span class="chip chip-integrador">Integrador</span></h5>
+        <ul><li>Uso Google Forms, Microsoft Forms, QuizBuilder o Socrative para sondeos y cuestionarios.</li>
+        <li>Represento gráficamente resultados e interpreto pruebas estandarizadas (SABER, PISA, TALIS).</li>
+        <li>Gestiono derechos de autor y referenciación con Mendeley, Zotero, EasyBib.</li></ul>
+      </div>
+      <div class="card lv-inn"><h5><span class="chip chip-innovador">Innovador</span></h5>
+        <ul><li>Uso herramientas interactivas, gamificación y rúbricas (Kahoot, Quizizz, Mentimeter, Rubistar).</li>
+        <li>Documento mi propia práctica (Blogger, Wordpress, Audacity, líneas de tiempo) y comparto buenas prácticas.</li>
+        <li>Promuevo portafolios digitales con almacenamiento en la nube (Drive, OneDrive, Google Sites, Edublogs).</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">1.6</span> ¿Cómo identificar si mi práctica con TIC es una innovación pedagógica?</h3>
+    <h4>Ruta para la innovación</h4>
+    <div class="ruta">
+      <div class="ruta-step"><span class="rn">1</span><h5>Análisis del contexto</h5><p>Necesidades, intereses, problemáticas. Recursos disponibles.</p></div>
+      <div class="ruta-step"><span class="rn">2</span><h5>Planificación</h5><p>Objetivos · Proceso claro · Uso reflexivo de TIC.</p></div>
+      <div class="ruta-step"><span class="rn">3</span><h5>Desarrollo e implementación</h5><p>Competencias · Trabajo interdisciplinar · Uso intencionado de TIC · Aprendizaje activo · Transformaciones didácticas.</p></div>
+      <div class="ruta-step"><span class="rn">4</span><h5>Valoración</h5><p>Resultados observables · Procesos de valoración · Mecanismos de monitoreo.</p></div>
+      <div class="ruta-step"><span class="rn">5</span><h5>Circulación</h5><p>Documentación y publicación · Movilización · Redes de colaboración · Escalabilidad.</p></div>
+    </div>
+    <h4>Lista de chequeo interactiva</h4>
+    <p>Respondé <strong>Sí / No</strong> a las 20 preguntas de la guía y descubrí si tu práctica es una innovación educativa con uso de TIC:</p>
+    <div class="check-wrap" id="checklist"></div>
+    <div class="check-summary">
+      <div><strong id="checkCount">0 / 20</strong> preguntas respondidas · <span id="checkYes">0</span> respuestas «Sí»</div>
+      <div id="checkVerdict">Comenzá a responder para ver tu diagnóstico.</div>
+    </div>
+  </div>
+
+  <div class="concepts reveal">
+    <div class="concepts-head"><div class="ic">🧠</div><h3>Conceptos fundamentales · Sección 1</h3></div>
+    <div class="grid g2">
+      <div class="concept"><h5>Innovación educativa con uso de TIC</h5><p>Proceso en el que la práctica educativa se reconfigura para responder a una necesidad o problemática del contexto, propiciando la disposición permanente al aprendizaje.</p></div>
+      <div class="concept"><h5>Práctica educativa</h5><p>Actividad dinámica y reflexiva que abarca planificación, desarrollo e implementación y evaluación, más la difusión de la experiencia.</p></div>
+      <div class="concept"><h5>Niveles de competencias TIC</h5><p>Explorador (acercamiento), Integrador (resolución de problemas en contextos diversos) e Innovador (creación de nuevas posibilidades).</p></div>
+      <div class="concept"><h5>Ruta para la innovación</h5><p>Cinco momentos: análisis del contexto → planificación → desarrollo e implementación → valoración → circulación.</p></div>
+      <div class="concept"><h5>Difusión o circulación</h5><p>Documentar, publicar y movilizar la experiencia; base para configurar comunidades y redes de aprendizaje.</p></div>
+      <div class="concept"><h5>Aprendizaje activo</h5><p>Metodologías que vuelven protagonista al estudiante: ABP, aula invertida, STEM, Design thinking, gamificación.</p></div>
+    </div>
+  </div>
+
+  <div class="next-nav">
+    <button class="btn btn-ghost" data-goto="inicio">← Inicio</button>
+    <button class="btn btn-primary" data-goto="s2">Continuar a Sección 2 →</button>
+  </div>
+</section>
+
+<!-- ================= SECCIÓN 2 ================= -->
+<section class="view" data-view="s2">
+  <div class="banner reveal">
+    <div class="banner-info">
+      <span class="kicker">Sección 2</span>
+      <h1>Orientaciones para la creación de contenidos accesibles</h1>
+      <p>Accesibilidad web, Diseño Universal para el Aprendizaje y recomendaciones prácticas para crear documentos accesibles en Word, PowerPoint, PDF y correo electrónico, garantizando el acceso a la información de todos los estudiantes.</p>
+      <div class="banner-chips"><span class="bchip">♿ WCAG 2.0</span><span class="bchip">🧩 DUA</span><span class="bchip">📄 Word · PPT · PDF · Correo</span></div>
+    </div>
+    <div class="banner-img"><img src="https://image.qwenlm.ai/public_source/dd47d5c1-b567-48a7-bb05-e25125e9a149/1d02f30d5-ecc2-4350-9f8e-d687c86ef511.png" alt="Símbolos de accesibilidad: lector de pantalla, lengua de señas, braille, silla de ruedas, ojo y oído"></div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.1</span> Accesibilidad web</h3>
+    <div class="quote">«Medidas pertinentes para asegurar el acceso de las personas con discapacidad, en igualdad de condiciones con las demás, al entorno físico, el transporte, la información y las comunicaciones (…)»<small>Decreto 1421 de 2017</small></div>
+    <p>Los estándares <strong>WCAG 2.0</strong> (Norma Técnica Colombiana NTC 5854) definen cuatro principios que deben cumplir los contenidos de los sitios web:</p>
+    <div class="grid g4">
+      <div class="card lv-per"><h5>👁️ Perceptible</h5><p>La información puede ser captada por todos: lectores de pantalla, software ampliador, subtítulos para personas sordas, textos comprensibles.</p></div>
+      <div class="card lv-est"><h5>⌨️ Operable</h5><p>Las operaciones (diligenciar, enviar, activar) pueden ejecutarse con teclado, ratón, pantalla táctil o punteros de cabeza.</p></div>
+      <div class="card lv-afe"><h5>💬 Comprensible</h5><p>Los contenidos pueden entenderse por usuarios de distintas condiciones; evitar tecnicismos y vocabulario sin explicación.</p></div>
+      <div class="card lv-int"><h5>🧱 Robusto</h5><p>Los contenidos funcionan desde distintos navegadores, equipos y tecnologías de apoyo.</p></div>
+    </div>
+    <h4>Marco normativo de referencia</h4>
+    <ul class="dots clean">
+      <li>Resolución 1519 de 2020 (MinTIC): estándares y directrices de publicación de información y accesibilidad web.</li>
+      <li>Ley 1618 de 2013 y Ley 1680 de 2013: derechos de las personas con discapacidad y acceso a la información para personas ciegas y con baja visión.</li>
+      <li>NTC 5854 de 2011 (estándares W3C) · Decreto 2573 de 2014 · Ley 1712 de 2014 · Ley 1346 de 2009 (Convención ONU).</li>
+      <li>Programas: Cine para Todos, CONVERTIC, Centro de Relevo, Computadores para Educar, CONPES 3988 y 3975.</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.2</span> Diseño Universal para el Aprendizaje (DUA)</h3>
+    <p>El DUA nace de las investigaciones de <strong>CAST</strong> (David H. Rose y Anne Meyer, años 90). Las neurociencias muestran tres grandes redes neuronales que se activan al aprender, y a cada una corresponde un principio:</p>
+    <div class="grid g3">
+      <div class="card lv-per"><h5>Red de reconocimiento · ¿QUÉ?</h5><p><strong>Principio I:</strong> Proporcionar múltiples formas de <strong>representación</strong>. Textos e imágenes accesibles, contrastes, descripciones texto-voz, pictogramas.</p></div>
+      <div class="card lv-est"><h5>Red estratégica · ¿CÓMO?</h5><p><strong>Principio II:</strong> Proporcionar múltiples formas de <strong>expresión</strong>. Teclados alternativos, arte y danza, rutinas de pensamiento, auto/coevaluación, herramientas web interactivas.</p></div>
+      <div class="card lv-afe"><h5>Red afectiva · ¿POR QUÉ?</h5><p><strong>Principio III:</strong> Proporcionar múltiples formas de <strong>compromiso (motivación)</strong>. Conocimientos previos, exploración, calendarios visibles, trabajo en equipo, estudiante protagonista.</p></div>
+    </div>
+    <h4>Cuatro potencialidades de la tecnología en el DUA (Rose y Meyer, 2002)</h4>
+    <div class="grid g4">
+      <div class="card"><h5>🎛️ Versatilidad</h5><p>Presentar el mismo contenido en audio, texto o imágenes según las necesidades.</p></div>
+      <div class="card"><h5>🔄 Transformación</h5><p>Ajustar volumen, velocidad, tamaño del texto, contrastes o convertir texto en audio; impresoras 3D.</p></div>
+      <div class="card"><h5>🏷️ Marcación</h5><p>Organizar contenidos: resaltar conceptos, marcar palabras, explicitar relaciones.</p></div>
+      <div class="card"><h5>🔗 Conectividad</h5><p>Hipervínculos a imágenes, videos, diccionarios, traductores y apoyos complementarios.</p></div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.3</span> Contenidos con alternativas para la percepción</h3>
+    <ul class="clean">
+      <li>Agregue <strong>texto alternativo</strong> a imágenes y elementos visuales.</li>
+      <li>Cree videos con <strong>lengua de señas, subtitulación y audiodescripción</strong>.</li>
+      <li>Use <strong>contrastes adecuados</strong> entre forma y fondo; texto alineado a la izquierda (no justificado) e interlineado 1,5.</li>
+      <li>Incluya una narración en <strong>podcast</strong> como alternativa en audio del texto escrito.</li>
+      <li>Use <strong>infografías</strong> fáciles de entender, con elementos enumerados y texto alternativo.</li>
+      <li>Utilice <strong>audiodescripción</strong> en videos para detallar formas, colores, logos o nombres.</li>
+    </ul>
+    <h4>Contenidos con alternativas para navegar en páginas web y documentos</h4>
+    <ul class="clean">
+      <li>Incluya instrucciones y sugerencias para navegar.</li>
+      <li>Estructura organizada en <strong>títulos y subtítulos</strong> para saltar entre secciones con lectores de pantalla.</li>
+      <li>Hipervínculos que se abran <strong>en la misma página</strong>.</li>
+      <li>Evite menús desplegables que requieran mantener el ratón por encima.</li>
+    </ul>
+    <h4>Contenidos con alternativas que favorecen la comprensión</h4>
+    <ul class="clean">
+      <li>Guía de pasos con instrucciones <strong>claras, concretas y precisas</strong>.</li>
+      <li>Listas para vocabulario, símbolos y referencias desconocidas.</li>
+      <li>Esquemas, resúmenes, mapas conceptuales, infografías y tablas <strong>siempre con texto alternativo</strong>.</li>
+      <li>Vincule conceptos mediante <strong>analogías y metáforas</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.4</span> Accesibilidad en documentos · Recomendaciones generales</h3>
+    <div class="grid g2">
+      <div class="card"><h5>📋 Lista de 14 elementos</h5>
+        <ul><li>Tipo de letra: Verdana o Arial · tamaño 12 a 14 puntos.</li>
+        <li>Mejor letra normal que negrita · evitar cursiva y subrayado.</li>
+        <li>Mayúsculas solo para títulos y nombres.</li>
+        <li>Contraste: fondo blanco con texto negro.</li>
+        <li>Texto en horizontal; fotos a la derecha del texto.</li>
+        <li>Evitar tablas anidadas; explicar abreviaturas y acrónimos.</li>
+        <li>Lenguaje claro y sencillo · usar estilos estructurales.</li>
+        <li>No basar la información solo en el color.</li></ul>
+      </div>
+      <div class="card"><h5>🔗 Recomendaciones para enlaces</h5>
+        <ul><li>Especificar claramente el destino (misma ventana o nueva, y qué web es).</li>
+        <li>Evitar textos como «pinche aquí» o «más información»: las personas ciegas navegan leyendo el texto de los enlaces.</li>
+        <li>Insertar siempre la información con hipervínculos significativos.</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.5</span> Orientaciones para la accesibilidad en Microsoft Word</h3>
+    <div class="grid g3">
+      <div class="card"><h5>📝 Textos</h5><ul><li>Ordene el documento con tabla de contenido.</li><li>Lenguaje sencillo; fuente 12–16 pts.</li><li>Evite títulos dentro de párrafos y letras menores.</li><li>Interlineado recomendado: 1,5.</li></ul></div>
+      <div class="card"><h5>🌐 Idioma</h5><ul><li>Asigne el idioma desde el inicio de la redacción.</li><li>Cambios de idioma por párrafo cuando corresponda.</li><li>Los lectores de pantalla leen con la acentuación adecuada.</li></ul></div>
+      <div class="card"><h5>🏗️ Estructura</h5><ul><li>Planee títulos, subtítulos, tablas y listas.</li><li>Use la <strong>barra de estilos</strong> (Título 1, Título 2…); párrafos en «Estilo normal».</li><li>«Salto de página» en vez de Enter repetido; columnas con la opción «Columnas».</li><li>Tablas con «Insertar tabla», nunca dibujadas.</li></ul></div>
+      <div class="card"><h5>🖼️ Textos alternativos</h5><ul><li>Todo elemento no textual (imágenes, cuadros, fórmulas, gráficos, mapas, infografías) debe tener texto alternativo para el lector de pantalla.</li></ul></div>
+      <div class="card"><h5>📊 Tablas</h5><ul><li>Sencillas, que no ocupen más de una hoja.</li><li>Información en todas las celdas; sin imágenes dentro.</li><li>Descripción previa («Esta tabla contiene…») y posterior con los datos relevantes.</li></ul></div>
+      <div class="card"><h5>📈 Gráficas</h5><ul><li>Describa el contenido.</li><li>Correcta utilización de colores, títulos, leyendas y, sobre todo, textos alternativos.</li></ul></div>
+      <div class="card"><h5>✅ Prueba de accesibilidad</h5><ul><li>Menú <strong>Revisar → Comprobar accesibilidad</strong>.</li><li>Arroja alertas: falta de texto alternativo, contrastes, objetos no alineados.</li><li>Para PDF: <strong>Archivo → Exportar → Crear documento PDF/XPS → Tipo PDF → Aceptar</strong>.</li></ul></div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.6</span> Orientaciones para la accesibilidad en Microsoft PowerPoint</h3>
+    <div class="grid g4">
+      <div class="card"><h5>📝 Textos</h5><ul><li>Poco texto por diapositiva; palabras o frases clave.</li><li>Lenguaje sencillo.</li><li>No use texto dentro de imágenes: agregue texto alternativo.</li></ul></div>
+      <div class="card"><h5>🌐 Idioma</h5><ul><li>Asigne el idioma desde el inicio; cambios por párrafo.</li><li>Evite texto sin idioma definido.</li></ul></div>
+      <div class="card"><h5>📊 Tabla de datos</h5><ul><li>Que no ocupe más de una diapositiva.</li><li>Sin espacios en blanco; todas las filas y columnas con texto y sin imágenes.</li></ul></div>
+      <div class="card"><h5>📈 Gráficas</h5><ul><li>Describa el contenido con colores, títulos, leyendas y textos alternativos correctos.</li></ul></div>
+      <div class="card"><h5>🧭 Navegación</h5><ul><li>Hipervínculos a documentos externos, web o correo.</li><li>Botones visibles para cambiar de diapositiva (clic o flechas del teclado).</li></ul></div>
+      <div class="card"><h5>✨ Efectos</h5><ul><li><strong>No incluya transiciones automáticas ni efectos de animación</strong>: desorientan y no son procesados por lectores de pantalla.</li></ul></div>
+      <div class="card"><h5>🎬 Multimedia</h5><ul><li>Videos con subtítulos, Lengua de Señas Colombiana y audiodescripción.</li><li>El estudiante debe controlar reproducción, pausa y volumen.</li></ul></div>
+      <div class="card"><h5>✅ Prueba de accesibilidad</h5><ul><li>Menú <strong>Revisar → Comprobar</strong>.</li><li>Sugiere textos alternativos, títulos de diapositivas y advertencias de audio/video.</li></ul></div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.7</span> Creación de PDF accesibles</h3>
+    <h4>Antes de convertir a PDF etiquetado</h4>
+    <ul class="clean">
+      <li>Optimice la accesibilidad del documento original → convierta a PDF etiquetado → agregue metadatos → retoque etiquetas → ajuste orden de lectura y tabulación → verifique accesibilidad.</li>
+    </ul>
+    <h4>Elementos semánticos reales</h4>
+    <p>Proporcionan una estructura reconocible por tecnologías de asistencia. Por ejemplo, los encabezados se crean aplicando estilos de la cinta de opciones, <em>no solo con texto grande y en negrita</em>.</p>
+    <div class="grid g3">
+      <div class="card"><h5>🏷️ Títulos reales</h5><p>Inicio → Encabezados (estilos de la cinta de opciones).</p></div>
+      <div class="card"><h5>📃 Listas reales</h5><p>Inicio → Párrafo → Listas.</p></div>
+      <div class="card"><h5>📑 Notas al pie y al final reales</h5><p>Crearlas con la función nativa para que sean reconocidas.</p></div>
+      <div class="card"><h5>▥ Columnas reales</h5><p>Diseño de página → Configurar página → Columnas (nunca tabulaciones).</p></div>
+      <div class="card"><h5>📊 Tablas reales</h5><p>Insertar → Tabla, para que el lector identifique información ordenada.</p></div>
+      <div class="card"><h5>📚 Tabla de contenido real</h5><p>Menú Referencias → Tabla de contenido.</p></div>
+    </div>
+    <h4>Encabezados, texto, contraste y enlaces</h4>
+    <div class="grid g2">
+      <div class="card"><h5>Encabezados</h5><ul><li>Ser reales y semánticos; empezar en nivel 1 sin saltarse niveles.</li><li>Buen esquema lógico de jerarquía; precisos, informativos y concisos.</li><li>Los usuarios de lectores de pantalla escuchan primero los títulos para crear un mapa mental del documento.</li></ul></div>
+      <div class="card"><h5>Texto</h5><ul><li>Fuentes estándar legibles (Times New Roman, Arial).</li><li>Interlineado mínimo 1,5; espacio entre párrafos 1,5 veces mayor.</li><li><strong>No justificar completamente</strong> (evita «ríos de espacios en blanco»).</li></ul></div>
+      <div class="card"><h5>Texto alternativo</h5><ul><li>Todas las imágenes, gráficos y tablas significativas.</li><li>Clic derecho → Formato de imagen → Diseño y propiedades → Texto alternativo.</li><li>Debe ser significativo, completo y conciso; descripciones largas para gráficos complejos.</li></ul></div>
+      <div class="card"><h5>Contraste de color y enlaces</h5><ul><li>Cumplir relaciones de contraste mínimas (analizador de contraste de Adobe).</li><li>Enlaces designados correctamente: clicables, en azul y subrayado.</li><li>Texto del enlace significativo, no genérico («haga clic aquí» ✗).</li></ul></div>
+    </div>
+    <h4>Pasos básicos para hacer un PDF más accesible (Acrobat Pro)</h4>
+    <div class="ruta">
+      <div class="ruta-step"><span class="rn">1</span><h5>Orden lógico de lectura</h5><p>Herramientas → Accesibilidad → Orden de lectura. Verifique la numeración y arrastre las secciones para corregir el orden.</p></div>
+      <div class="ruta-step"><span class="rn">2</span><h5>Aplicación de etiquetado</h5><p>Barra derecha → Etiquetas → clic derecho sobre el ícono PDF → «Agregar etiquetas al documento».</p></div>
+      <div class="ruta-step"><span class="rn">3</span><h5>Texto alternativo de imágenes</h5><p>Orden de lectura → seleccionar imagen → marcar como «Figura» → clic derecho → «Editar texto alternativo» → Aceptar.</p></div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.8</span> Creación de correos electrónicos accesibles</h3>
+    <ul class="clean">
+      <li>Contenido en formato de texto sencillo y accesible; asunto que refleje con exactitud el contenido y sea conciso.</li>
+      <li>Fuentes <strong>sin serifa</strong>: Calibri, Franklin Gothic, Lucida Sans, Segoe, Tahoma, Trebuchet. Evite Bodoni, Bookman Old Style, Courier New, Times New Roman y decorativas (Chiller, Curlz).</li>
+      <li>Tamaño de fuente favorable (12 pts predeterminado en Configuración → Correo → Redactar y responder).</li>
+      <li>No dependa solo del color: use negrita para resaltar (personas con daltonismo).</li>
+      <li>Texto alternativo a cada imagen y a la firma del correo.</li>
+      <li>Fondos que resalten el texto (color sólido con contraste; p. ej., fondo negro y texto blanco para baja visión).</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">2.9</span> Orientaciones para mejorar la accesibilidad de los contenidos</h3>
+    <div class="grid g2">
+      <div class="card lv-per"><h5>👁️ Alternativas para la visualización</h5><ul><li><strong>Fonts Changer</strong> (Chrome): cambia la fuente de cualquier sitio web.</li><li><strong>ATbar</strong>: cambia la apariencia, lee en voz alta y revisa ortografía.</li></ul></div>
+      <div class="card lv-est"><h5>🌓 Alternativas para contrastes</h5><ul><li>Extensión <strong>Contraste alto</strong> (Chrome Web Store).</li><li>Recursos de accesibilidad de Windows o Apple.</li></ul></div>
+      <div class="card lv-afe"><h5>🔊 Alternativas de texto a voz</h5><ul><li><strong>Read&Write for Google Chrome</strong>: texto a voz con subrayado bicolor, diccionarios de imágenes, voz a texto, predicción de palabras.</li><li>Speak It · ttsMP3.com · TTSReader · Natural Readers.</li></ul></div>
+      <div class="card lv-inn"><h5>✍️ Alternativas para la expresión del aprendizaje</h5><ul><li>SpeechTexter y Voice Dictation (voz a texto) · Reconocimiento de voz en línea.</li><li>SAC: LetMeTalk, CPA (Comunicador Personal Adaptable), PictoDroid Lite, SymboTalk, Pictotraductor, Día a Día (diario visual para autismo).</li></ul></div>
+    </div>
+    <h4>Recursos para explorar</h4>
+    <div class="res-list">
+      <a href="https://www.plenainclusion.org/sites/default/files/10_pautas_accesibilidad_cognitiva_contenidos_web_y_app.pdf" target="_blank" rel="noopener">Plena inclusión España (2018) · Pautas para crear contenidos accesibles en páginas web y aplicaciones para personas con discapacidad intelectual</a>
+      <a href="https://www.w3.org/WAI/ER/tools/" target="_blank" rel="noopener">W3C · Web Accessibility Evaluation Tools List</a>
+      <a href="https://web.ua.es/es/accesibilidad/documentos-electronicos-accesibles/graficas.html" target="_blank" rel="noopener">Universidad de Alicante (2019) · Gráficas accesibles</a>
+      <a href="https://help.blackboard.com/es-es/Accessibility/Principles_of_PowerPoint_Accessibility" target="_blank" rel="noopener">Blackboard · Principios de accesibilidad en PowerPoint</a>
+      <a href="https://cidcca.com/pautas-accesibilidad-en-documentos-sena" target="_blank" rel="noopener">CIDCCA (2020) · Pautas de accesibilidad en documentos</a>
+      <a href="https://bit.ly/3jtr4YQ" target="_blank" rel="noopener">Caja de herramientas para crear contenidos para todos (Maestra Sindey Bernal · Universidad El Bosque)</a>
+    </div>
+  </div>
+
+  <div class="concepts reveal">
+    <div class="concepts-head"><div class="ic">🧠</div><h3>Conceptos fundamentales · Sección 2</h3></div>
+    <div class="grid g2">
+      <div class="concept"><h5>Accesibilidad</h5><p>Medidas para asegurar el acceso en igualdad de condiciones al entorno físico, transporte, información y comunicaciones (Decreto 1421 de 2017).</p></div>
+      <div class="concept"><h5>Principios WCAG 2.0</h5><p>Perceptible, Operable, Comprensible y Robusto (NTC 5854; Resolución 1519 de 2020).</p></div>
+      <div class="concept"><h5>DUA</h5><p>Múltiples formas de representación (¿qué?), expresión (¿cómo?) y compromiso (¿por qué?), según las redes de reconocimiento, estratégicas y afectivas.</p></div>
+      <div class="concept"><h5>Texto alternativo</h5><p>Descripción con palabras de todo contenido no textual, indispensable para lectores de pantalla.</p></div>
+      <div class="concept"><h5>Elementos semánticos reales</h5><p>Estructura creada con herramientas nativas (estilos, listas, tablas, columnas, notas) reconocible por tecnologías de asistencia y transferible al PDF etiquetado.</p></div>
+      <div class="concept"><h5>PDF accesible</h5><p>Documento con etiquetas, orden lógico de lectura, metadatos, textos alternativos y contraste verificados en Acrobat Pro.</p></div>
+      <div class="concept"><h5>Contraste de color</h5><p>Relación mínima entre texto/fondo y elementos adyacentes para garantizar legibilidad (fondo blanco + texto negro como estándar seguro).</p></div>
+      <div class="concept"><h5>Correo accesible</h5><p>Fuentes sin serifa, asunto conciso, texto alternativo en imágenes y firma, fondos con contraste y significado que no dependa solo del color.</p></div>
+    </div>
+  </div>
+
+  <div class="next-nav">
+    <button class="btn btn-ghost" data-goto="s1">← Sección 1</button>
+    <button class="btn btn-primary" data-goto="s3">Continuar a Sección 3 →</button>
+  </div>
+</section>
+
+<!-- ================= SECCIÓN 3 ================= -->
+<section class="view" data-view="s3">
+  <div class="banner reveal">
+    <div class="banner-info">
+      <span class="kicker">Sección 3</span>
+      <h1>Entornos virtuales de aprendizaje</h1>
+      <p>Dimensiones para organizar el aula virtual bajo los principios del DUA, momentos de aprendizaje sincrónico y asincrónico, formas diversas de valorar el aprendizaje y estrategias de acompañamiento a distancia.</p>
+      <div class="banner-chips"><span class="bchip">🎓 Aula virtual</span><span class="bchip">🕐 Sincrónico / Asincrónico</span><span class="bchip">🤝 Acompañamiento</span></div>
+    </div>
+    <div class="banner-img"><img src="https://image.qwenlm.ai/public_source/dd47d5c1-b567-48a7-bb05-e25125e9a149/1f8931973-957d-46dd-bfb2-134bdd5fea2d.png" alt="Aula virtual en una computadora con estudiantes conectados en videoconferencia"></div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">3.1</span> Entornos virtuales de aprendizaje</h3>
+    <p>El <strong>aula virtual</strong> es un entorno digital que posibilita el desarrollo de un proceso de aprendizaje: el estudiante accede al material de estudio e interactúa con el maestro y con otros estudiantes. Ariel Ferreira Szpiniak propone <strong>cinco dimensiones</strong> para organizarla:</p>
+    <div class="grid g3">
+      <div class="card lv-exp"><h5>🗂️ Organizativa</h5><p>Estructura del curso, programa, grupos, maestros a cargo, guías y cronograma. Ej.: video y mensaje de bienvenida, tour virtual, calendario.</p></div>
+      <div class="card lv-int"><h5>📖 Informativa</h5><p>Materiales: textos, imágenes, enlaces, presentaciones, videos, audios, animaciones, software. Blogs, wikis, redes, YouTube/Vimeo, Drive.</p></div>
+      <div class="card lv-afe"><h5>💬 Comunicativa</h5><p>Interacción social mediante foros, mensajería, preguntas frecuentes y videoconferencia. Sin comunicación, el aula sería solo un repositorio.</p></div>
+      <div class="card lv-est"><h5>🛠️ Práctica</h5><p>Actividades planificadas: ejercicios, lecturas orientadas, informes, debates, proyectos y actividades H5P en Moodle.</p></div>
+      <div class="card lv-inn"><h5>🧭 Tutorial y evaluativa</h5><p>El maestro como guía y dinamizador: motiva, planifica actividades desafiantes, refuerza la participación, reconoce el esfuerzo. Cuestionarios, evaluaciones, foros.</p></div>
+    </div>
+    <h4>Estudiantes con menor competencia digital</h4>
+    <ul class="clean">
+      <li>Haga un <strong>tour virtual</strong> por el aula (audio/video con LSC, subtítulos y audiodescripción).</li>
+      <li>Suba los videos a YouTube, Vimeo o Drive y <strong>enlázalos</strong> en el aula (no pesan el entorno).</li>
+      <li>Elabore <strong>infografías</strong> con módulos, tareas y fechas de entrega (Canva, Piktochart) con texto alternativo.</li>
+    </ul>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">3.2</span> Momentos de aprendizaje</h3>
+    <div class="grid g2">
+      <div class="card lv-int">
+        <h5>🕐 Aprendizaje sincrónico</h5>
+        <p>Evento en el cual un grupo de participantes aprende <strong>al mismo tiempo</strong> (Zoom, Skype, Meet, Teams). Favorece la interacción, el intercambio de conocimiento y la respuesta inmediata del maestro.</p>
+        <ul><li><strong>Antes:</strong> calendario accesible; caracterización del grupo (discapacidades, pertenencia étnica, dominio del idioma) y ajustes razonables; contenidos organizados; rúbricas cortas explicadas.</li>
+        <li><strong>Durante:</strong> agenda accesible; lenguaje claro y pausado; apoyo visual sin abusar del texto; <strong>describir las imágenes</strong> (no decir «aquí, allá»); planificar intervenciones; sesiones cortas + trabajo autónomo; un estudiante resume lo visto.</li>
+        <li><strong>Después:</strong> textos adicionales en el aula virtual en formato accesible; formulario o encuesta accesible para evaluar el encuentro.</li></ul>
+      </div>
+      <div class="card lv-exp">
+        <h5>🕓 Aprendizaje asincrónico</h5>
+        <p>El maestro, el estudiante y los participantes <strong>no están al mismo tiempo</strong>: permite aprender a propio ritmo y horario.</p>
+        <ul><li>Aula virtual organizada según la dinámica del curso.</li>
+        <li>Actividades diversas: foros de debate y de preguntas y respuestas, cuestionarios, evaluaciones.</li>
+        <li>Video de bienvenida y de conclusiones con LSC, subtitulación y audiodescripción.</li>
+        <li>Grabación de pantalla y audiotutorial para enseñar a usar las herramientas y cargar actividades.</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic reveal">
+    <h3><span class="tnum">3.3</span> Formas para valorar el aprendizaje</h3>
+    <ul class="clean">
+      <li>Use <strong>diversas opciones</strong>: cuestionarios con retroalimentación, entradas de blog, videos, infografías o presentaciones.</li>
+      <li>Debates en foros con formato «preguntas y respuestas» (no se leen las respuestas ajenas hasta enviar la propia).</li>
+      <li>Aplicaciones de evaluación: Kahoot, Mentimeter, Quizizz, Socrative, Flipgrid, Vizia.</li>
+      <li>Elemento motivador: que el estudiante <strong>elija la opción</strong> que mejor se ajuste a sus capacidades y ritmo.</li>
+      <li>En todos los casos, asegure las <strong>opciones de accesibilidad</strong> de cada formato.</li>
+    </ul>
+    <h4>Acompañamiento a distancia</h4>
+    <ul class="clean">
+      <li>Video o audio de <strong>retroalimentación individual</strong> sobre trabajo y progreso.</li>
+      <li>Video corto al iniciar el día o la semana para organizar y animar.</li>
+      <li>Encuentro sincrónico o videollamada periódica con quien lo requiera.</li>
+      <li>Chat individual de seguimiento semanal (Teams, Telegram, WhatsApp).</li>
+      <li>Tutorías grupales o individuales con familia y/o cuidador.</li>
+      <li>Grupo de WhatsApp/Telegram para orientaciones generales; actividades colaborativas referenciadas al aula virtual.</li>
+    </ul>
+    <h4>Recursos para explorar</h4>
+    <div class="res-list">
+      <a href="https://www.youtube.com/watch?v=qs0FRzhbvug" target="_blank" rel="noopener">MEN – Universidad de los Andes · Conferencia «Gamificación: del aprendizaje activo al interactivo»</a>
+      <a href="https://www.youtube.com/watch?v=6WBEebrF00" target="_blank" rel="noopener">MEN · «Be(the)1 Challenge y la gamificación aplicada a la educación»</a>
+      <a href="https://www.educaciontrespuntocero.com/recursos/herramientas-gamificacion-educacion/" target="_blank" rel="noopener">Educación 3.0 · Herramientas de gamificación para clase</a>
+      <a href="https://colombiaaprende.edu.co" target="_blank" rel="noopener">Aprender Digital · Contenidos para todos (Ministerio de Educación)</a>
+    </div>
+  </div>
+
+  <div class="concepts reveal">
+    <div class="concepts-head"><div class="ic">🧠</div><h3>Conceptos fundamentales · Sección 3</h3></div>
+    <div class="grid g2">
+      <div class="concept"><h5>Aula virtual</h5><p>Entorno digital que posibilita el aprendizaje y la interacción entre estudiantes y docente.</p></div>
+      <div class="concept"><h5>Dimensiones del aula virtual</h5><p>Organizativa, informativa, comunicativa, práctica y tutorial-evaluativa (Ferreira Szpiniak).</p></div>
+      <div class="concept"><h5>Aprendizaje sincrónico</h5><p>Evento de aprendizaje en tiempo real, con interacción simultánea de los participantes.</p></div>
+      <div class="concept"><h5>Aprendizaje asincrónico</h5><p>Aprendizaje a propio ritmo y horario, sin interacción en tiempo real.</p></div>
+      <div class="concept"><h5>Evaluación diversa</h5><p>Múltiples formatos accesibles para demostrar lo aprendido: blog, video, infografía, presentación, gamificación.</p></div>
+      <div class="concept"><h5>Acompañamiento a distancia</h5><p>Seguimiento entre encuentros sincrónicos: retroalimentación individual, chats, tutorías y trabajo colaborativo.</p></div>
+    </div>
+  </div>
+
+  <div class="next-nav">
+    <button class="btn btn-ghost" data-goto="s2">← Sección 2</button>
+    <button class="btn btn-primary" data-goto="quiz">Ir a la Autoevaluación →</button>
+  </div>
+</section>
+
+<!-- ================= AUTOEVALUACIÓN ================= -->
+<section class="view" data-view="quiz">
+  <div class="banner reveal">
+    <div class="banner-info">
+      <span class="kicker">Autoevaluación · 100/100</span>
+      <h1>Autoevaluación multiple choice · 20 preguntas</h1>
+      <p>Cada pregunta vale <strong>5 puntos</strong>. Niveles: <strong>Principiante</strong> (7), <strong>Intermedio</strong> (7) y <strong>Avanzado</strong> (6). Aprobación: 60/100. Al corregir vas a recibir la fundamentación de cada respuesta. ¡Éxitos!</p>
+      <div class="banner-chips"><span class="bchip">🟢 Principiante · 35 pts</span><span class="bchip">🟠 Intermedio · 35 pts</span><span class="bchip">🔴 Avanzado · 30 pts</span></div>
+    </div>
+    <div class="banner-img"><img src="https://image.qwenlm.ai/public_source/dd47d5c1-b567-48a7-bb05-e25125e9a149/1c63b93d5-8607-4a28-97ab-160fb2b766cd.png" alt="Estudiantes diversos aprendiendo con tecnología inclusiva"></div>
+  </div>
+
+  <div class="results" id="results" aria-live="polite">
+    <div class="results-inner">
+      <div class="gauge-wrap">
+        <svg width="170" height="170" viewBox="0 0 170 170" aria-hidden="true">
+          <circle class="gauge-bg" cx="85" cy="85" r="72"></circle>
+          <circle class="gauge-arc" id="gaugeArc" cx="85" cy="85" r="72"></circle>
+        </svg>
+        <div class="gauge-txt"><strong id="scoreNum">0</strong><span>/ 100 pts</span></div>
+      </div>
+      <div class="res-msg">
+        <h3 id="resTitle">Resultado</h3>
+        <p id="resText"></p>
+        <span class="res-level" id="resLevel"></span>
+        <div class="bars" id="resBars"></div>
+        <div class="res-actions">
+          <button class="btn btn-primary" id="retryBtn">🔄 Reintentar evaluación</button>
+          <button class="btn btn-ghost" id="reviewBtn" style="background:#fff">📚 Repasar conceptos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-toolbar">
+    <div><strong id="answeredCount">0 / 20</strong> <span style="color:var(--ink-soft)">respondidas</span></div>
+    <div class="qfilters" role="group" aria-label="Filtrar por nivel">
+      <button class="qf-btn active" data-filter="todas">Todas (20)</button>
+      <button class="qf-btn" data-filter="principiante">🟢 Principiante (7)</button>
+      <button class="qf-btn" data-filter="intermedio">🟠 Intermedio (7)</button>
+      <button class="qf-btn" data-filter="avanzado">🔴 Avanzado (6)</button>
+    </div>
+    <button class="btn btn-primary" id="gradeBtn">✅ Corregir evaluación</button>
+  </div>
+
+  <div id="quizBox"></div>
+
+  <div class="next-nav">
+    <button class="btn btn-ghost" data-goto="s3">← Sección 3</button>
+    <button class="btn btn-ghost" data-goto="inicio">🏠 Volver al inicio</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <h4>Tecnologías para la Inclusión · Módulo didáctico</h4>
+    <p>Elaborado por docente especialista en Informática y Pedagogía · Provincia de Buenos Aires, Argentina. Basado en: <em>«Tecnologías para la inclusión: Guía práctica para la innovación educativa y la creación de contenidos accesibles»</em> — Fundación Saldarriaga Concha (2021, ISBN 978-958-53617-1-3) · MEN (2013) · UNESCO (2015) · Decreto 1421 de 2017 · WCAG 2.0 / NTC 5854.</p>
+    <p>Diseñado bajo principios DUA y de accesibilidad web: alto contraste, texto alineado a la izquierda, interlineado 1,6, tipografía legible y control de tamaño de texto. ♿</p>
+  </div>
+</footer>
+
+<script>
+/* ================= DATOS ================= */
+var QUESTIONS=[
+{id:1,sec:1,nivel:"principiante",q:"Según el MEN (2013), la innovación educativa con uso de TIC se define como:",opts:["La incorporación de dispositivos tecnológicos al aula para reemplazar la labor del docente.","Un proceso en el que la práctica educativa se reconfigura para dar respuesta a una necesidad, expectativa o problemática, desde lo pertinente y particular de un contexto.","El uso exclusivo de plataformas virtuales para la enseñanza a distancia.","La capacitación técnica de los docentes en herramientas digitales."],a:1,why:"El MEN define la innovación educativa con uso de TIC como un proceso de reconfiguración de la práctica educativa que responde a necesidades del contexto y propicia la disposición permanente al aprendizaje."},
+{id:2,sec:1,nivel:"principiante",q:"Los tres momentos de la práctica educativa según García-Cabrero et al. (2008) son:",opts:["Inicio, desarrollo y cierre.","Planificación, desarrollo e implementación, y evaluación.","Diagnóstico, intervención y acreditación.","Enseñanza, aprendizaje y tutoría."],a:1,why:"La práctica educativa es una actividad dinámica y reflexiva que abarca la planificación, el desarrollo e implementación y la evaluación, unidos a la difusión o circulación de la experiencia."},
+{id:3,sec:2,nivel:"principiante",q:"Los cuatro principios de accesibilidad web de WCAG 2.0 (NTC 5854) son:",opts:["Visible, editable, imprimible y compartible.","Perceptible, operable, comprensible y robusto.","Accesible, veloz, económico y universal.","Legible, navegable, interactivo y responsive."],a:1,why:"WCAG 2.0 establece cuatro principios: Perceptible, Operable, Comprensible y Robusto, retomados en Colombia por la Resolución 1519 de 2020."},
+{id:4,sec:2,nivel:"principiante",q:"El texto alternativo (Alt Text) sirve para:",opts:["Decorar las imágenes del documento.","Describir con palabras el contenido de un elemento no textual, para que sea interpretado por los lectores de pantalla.","Reemplazar el texto principal del documento.","Reducir el peso de las imágenes."],a:1,why:"El Alt Text describe con palabras el contenido de un elemento no textual: es esencial para que los lectores de pantalla lo conviertan en texto audible."},
+{id:5,sec:3,nivel:"principiante",q:"El aprendizaje sincrónico se caracteriza porque:",opts:["Cada estudiante aprende a su propio ritmo y horario.","Un grupo de participantes está aprendiendo al mismo tiempo, con interacción en tiempo real.","No existe comunicación entre docente y estudiantes.","Se utilizan únicamente materiales impresos."],a:1,why:"En el aprendizaje sincrónico los participantes aprenden al mismo tiempo (Zoom, Skype, Meet, Teams): favorece la interacción y la respuesta inmediata del maestro."},
+{id:6,sec:1,nivel:"principiante",q:"Los tres niveles de desarrollo de competencias TIC propuestos por el MEN (2013) son:",opts:["Inicial, medio y experto.","Explorador, integrador e innovador.","Teórico, práctico y evaluativo.","Básico, procesal y terminal."],a:1,why:"El marco de Competencias TIC del MEN (2013) propone tres niveles: explorador (acercamiento), integrador (resolución de problemas) e innovador (creación)."},
+{id:7,sec:3,nivel:"principiante",q:"Un aula virtual es:",opts:["Una sala física equipada con proyectores.","Un entorno digital que posibilita el desarrollo de un proceso de aprendizaje, donde el estudiante accede al material e interactúa con el maestro y otros estudiantes.","Una red social educativa.","Una biblioteca de documentos en la nube."],a:1,why:"El aula virtual es un entorno digital de aprendizaje que permite acceder al material de estudio e interactuar con el maestro y los demás estudiantes."},
+{id:8,sec:2,nivel:"intermedio",q:"El DUA se apoya en tres redes neuronales. ¿Cuál relación red–principio es correcta?",opts:["Red de reconocimiento → múltiples formas de compromiso.","Red estratégica → múltiples formas de representación.","Red de reconocimiento (el QUÉ) → múltiples formas de representación.","Red afectiva (el cómo) → múltiples formas de expresión."],a:2,why:"Reconocimiento (¿QUÉ?) → representación; Estratégica (¿CÓMO?) → expresión; Afectiva (¿POR QUÉ?) → compromiso/motivación."},
+{id:9,sec:3,nivel:"intermedio",q:"Las cinco dimensiones para organizar el aula virtual según Ferreira Szpiniak son:",opts:["Organizativa, informativa, comunicativa, práctica y tutorial-evaluativa.","Visual, auditiva, kinestésica, lógica y lingüística.","Planificación, ejecución, control, evaluación y mejora.","Administrativa, académica, social, técnica y económica."],a:0,why:"Ferreira Szpiniak propone: organizativa, informativa, comunicativa, práctica y tutorial-evaluativa. Sin comunicación, el aula virtual sería solo un repositorio de materiales."},
+{id:10,sec:2,nivel:"intermedio",q:"Para documentos accesibles, la guía recomienda:",opts:["Fuentes decorativas como Chiller o Curlz para motivar la lectura.","Texto completamente justificado para mayor prolijidad.","Tipo de letra Verdana o Arial, tamaño 12 a 14 puntos y fondo blanco con texto negro.","Fotos intercaladas entre el texto en cualquier posición."],a:2,why:"La lista de 14 elementos recomienda Verdana/Arial 12–14 pts, letra normal, fondo blanco con texto negro, texto en horizontal y fotos a la derecha."},
+{id:11,sec:2,nivel:"intermedio",q:"En presentaciones accesibles de PowerPoint se debe:",opts:["Incluir transiciones automáticas y efectos de animación.","No incluir transiciones automáticas ni efectos de animación, porque desorientan y no son procesados por los lectores de pantalla.","Escribir todo el texto dentro de las imágenes.","Dejar espacios en blanco en las tablas de datos."],a:1,why:"Las transiciones automáticas y animaciones pueden resultar en acciones inesperadas que desorientan a estudiantes con discapacidad y no son procesadas por lectores de pantalla."},
+{id:12,sec:1,nivel:"intermedio",q:"El orden correcto de la Ruta para la innovación es:",opts:["Planificación → análisis del contexto → circulación → valoración → desarrollo.","Análisis del contexto → planificación → desarrollo e implementación → valoración → circulación.","Valoración → planificación → desarrollo → análisis del contexto → circulación.","Desarrollo → valoración → planificación → circulación → análisis del contexto."],a:1,why:"La ruta inicia con el análisis del contexto, luego planificación, desarrollo e implementación, valoración y finalmente circulación."},
+{id:13,sec:1,nivel:"intermedio",q:"¿Cuál acción corresponde al nivel INTEGRADOR en el proceso de evaluación?",opts:["Elaborar cuestionarios con procesador de texto y registrar calificaciones en hojas de cálculo.","Usar Google Forms, Microsoft Forms o Socrative y representar gráficamente los resultados.","Promover portafolios digitales con almacenamiento en la nube.","Documentar la propia práctica en Blogger o Wordpress."],a:1,why:"Usar formularios en línea e interpretar resultados gráficos es nivel integrador; elaborar cuestionarios en Word es explorador; portafolios digitales y documentación de la práctica son innovador."},
+{id:14,sec:2,nivel:"intermedio",q:"Para convertir un documento de Word en PDF accesible, el procedimiento correcto es:",opts:["Imprimir el documento y escanearlo.","Archivo → Exportar → Crear documento PDF/XPS → tipo PDF → Aceptar.","Guardar las páginas como imágenes JPG.","Copiar el texto en un archivo TXT sin formato."],a:1,why:"Con Archivo → Exportar → Crear documento PDF/XPS se conservan en el PDF los ajustes de accesibilidad realizados en el documento original de Word."},
+{id:15,sec:2,nivel:"avanzado",q:"Las cuatro potencialidades de los medios digitales en el DUA (Rose y Meyer, 2002) son:",opts:["Velocidad, economía, disponibilidad y durabilidad.","Versatilidad, capacidad de transformación, marcación y conectividad.","Interactividad, portabilidad, sincronía y escalabilidad.","Legibilidad, audibilidad, visibilidad y tactilidad."],a:1,why:"Rose y Meyer señalan cuatro potencialidades: versatilidad (múltiples formatos), transformación (ajustes según necesidades), marcación (organización y resaltado) y conectividad (hipervínculos)."},
+{id:16,sec:2,nivel:"avanzado",q:"En la creación de PDF accesibles, los «elementos semánticos reales» implican que:",opts:["Los encabezados se crean aplicando los estilos de encabezado de la cinta de opciones, no solo con texto grande y en negrita.","Basta con usar cualquier fuente en tamaño grande.","Las tablas pueden dibujarse a mano alzada.","Los títulos deben escribirse siempre en mayúsculas."],a:0,why:"Los elementos semánticos reales (estilos de encabezado, listas, tablas, columnas nativas) proporcionan una estructura reconocible por tecnologías de asistencia y se transfieren al PDF etiquetado."},
+{id:17,sec:2,nivel:"avanzado",q:"En Acrobat Pro, para aplicar texto alternativo a una imagen de un PDF se debe:",opts:["Eliminar la imagen y reemplazarla por texto.","Renombrar el archivo de la imagen.","Activar «Orden de lectura», seleccionar la imagen, marcarla como Figura y elegir «Editar texto alternativo» con clic derecho.","Convertir el PDF a imagen y volver a insertarla."],a:2,why:"El procedimiento es: Accesibilidad → Orden de lectura → seleccionar imagen → marcar como Figura → clic derecho → Editar texto alternativo → Aceptar."},
+{id:18,sec:2,nivel:"avanzado",q:"Para correos electrónicos accesibles, la guía recomienda:",opts:["Usar fuentes sin serifa (Calibri, Tahoma, Trebuchet), evitar Bodoni o Times New Roman y no depender solo del color.","Usar fuentes decorativas para destacar la información.","Depender exclusivamente del color para resaltar lo importante.","Omitir el asunto para no anticipar el contenido."],a:0,why:"Se recomiendan fuentes sin serifa sencillas, tamaño 12, texto alternativo en imágenes, fondos con contraste, asuntos concisos y no depender solo del color (usar negrita)."},
+{id:19,sec:3,nivel:"avanzado",q:"Durante un encuentro sincrónico, una práctica inclusiva es:",opts:["Referirse a las imágenes diciendo «aquí» o «allá» para agilizar la clase.","Describir las imágenes o diapositivas que se presentan, evitando expresiones excluyentes para estudiantes con discapacidad visual.","Realizar encuentros muy largos para aprovechar el tiempo.","Redactar en la proyección exactamente lo mismo que se dice oralmente."],a:1,why:"La guía indica describir las imágenes (evitando «aquí, allá»), no duplicar por vía fonológica lo proyectado y dividir en sesiones cortas complementadas con medios asincrónicos."},
+{id:20,sec:1,nivel:"avanzado",q:"La lista de chequeo de la guía distribuye sus 20 preguntas en los momentos de la ruta así:",opts:["5 preguntas por cada momento.","2 de análisis del contexto, 3 de planificación, 8 de desarrollo e implementación, 3 de valoración y 4 de difusión o circulación.","4 de contexto, 4 de planificación, 4 de desarrollo, 4 de valoración y 4 de circulación.","10 de planificación y 10 de valoración."],a:1,why:"La lista de chequeo se correlaciona con la ruta: 2 (contexto) + 3 (planificación) + 8 (desarrollo e implementación) + 3 (valoración) + 4 (difusión/circulación) = 20."}
+];
+var CHECKLIST=[
+{g:"Análisis del contexto",items:["¿Responde a una necesidad, problemática o interés de aprendizaje de mis estudiantes?","¿Aprovecha y emplea los recursos (humanos, tecnológicos y ambientales) disponibles en el entorno?"]},
+{g:"Planificación",items:["¿Determina objetivos asociados al desarrollo integral de sus estudiantes y su formación como ciudadanos críticos y responsables?","¿Propone un proceso claro, organizado y sistemático a seguir por parte de todos los participantes?","¿Propicia un ejercicio reflexivo para determinar por qué, para qué y en qué se utilizan las TIC?"]},
+{g:"Desarrollo e implementación",items:["¿Facilita y potencia el desarrollo de competencias básicas, socioemocionales y/o del siglo XXI?","¿Moviliza el desarrollo de proyectos, el trabajo interdisciplinar y la inclusión de todos los estudiantes?","¿Hace uso intencionado de las TIC como herramientas de mediación, colaboración, interacción y facilitación?","¿Promueve la creación y uso de recursos educativos digitales?","¿Propicia el aprendizaje activo y colaborativo, el pensamiento crítico, la creatividad, la experimentación e indagación?","¿Ha motivado el aprendizaje y desarrollo de nuevas competencias en el docente?","¿Ha motivado el desarrollo de transformaciones metodológicas, didácticas y curriculares?","¿Sus estudiantes y la comunidad educativa participan, se implican y reconocen los resultados logrados?"]},
+{g:"Valoración",items:["¿Cuenta con resultados observables, explícitos y medibles?","¿Ha evaluado el proceso con los diversos participantes y se han generado acciones de fortalecimiento?","¿Cuenta con mecanismos de monitoreo y evaluación?"]},
+{g:"Difusión o Circulación",items:["¿Ha documentado y publicado la experiencia?","¿Ha logrado compartir, divulgar o movilizar la experiencia con otros docentes?","¿Ha permitido la configuración y dinamización de redes de colaboración y aprendizaje?","¿La experiencia tiene potencial para ser adaptada y escalada?"]}
+];
+/* ================= UTILIDADES ================= */
+var $=function(s){return document.querySelector(s)};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+/* Barra de progreso scroll */
+window.addEventListener("scroll",function(){
+  var h=document.documentElement;
+  var p=h.scrollTop/(h.scrollHeight-h.clientHeight)*100;
+  $("#progress").style.width=p+"%";
+},{passive:true});
+/* Tamaño de fuente */
+var FS=[87.5,100,112.5],fsIdx=1;
+try{var st=parseInt(localStorage.getItem("tic-fs"));if(st>=0&&st<3)fsIdx=st;}catch(e){}
+function applyFs(){
+  document.documentElement.style.fontSize=FS[fsIdx]+"%";
+  $$(".font-ctrl button").forEach(function(b,i){b.classList.toggle("active",i===fsIdx)});
+  try{localStorage.setItem("tic-fs",fsIdx)}catch(e){}
+}
+$("#fsMinus").addEventListener("click",function(){fsIdx=Math.max(0,fsIdx-1);applyFs()});
+$("#fsReset").addEventListener("click",function(){fsIdx=1;applyFs()});
+$("#fsPlus").addEventListener("click",function(){fsIdx=Math.min(2,fsIdx+1);applyFs()});
+applyFs();
+/* Tabs */
+function activate(id){
+  $$(".view").forEach(function(v){v.classList.toggle("active",v.getAttribute("data-view")===id)});
+  $$(".tab-btn").forEach(function(b){var on=b.getAttribute("data-tab")===id;b.classList.toggle("active",on);b.setAttribute("aria-selected",on)});
+  window.scrollTo({top:0,behavior:"auto"});
+  setTimeout(revealCheck,60);
+}
+$$(".tab-btn").forEach(function(b){b.addEventListener("click",function(){activate(b.getAttribute("data-tab"))})});
+$$("[data-goto]").forEach(function(b){b.addEventListener("click",function(){activate(b.getAttribute("data-goto"))})});
+$("#goQuizTop").addEventListener("click",function(){activate("quiz")});
+/* Reveal on scroll */
+var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08}):null;
+function revealCheck(){$$(".reveal:not(.in)").forEach(function(el){if(io){io.observe(el)}else{el.classList.add("in")}})}
+revealCheck();
+/* ================= CHECKLIST ================= */
+(function(){
+  var box=$("#checklist"),n=0,state={};
+  CHECKLIST.forEach(function(grp){
+    var h=document.createElement("div");h.className="check-group";
+    h.innerHTML='<span class="cg-tag">'+grp.g+"</span>";box.appendChild(h);
+    grp.items.forEach(function(txt){
+      n++;var id=n;
+      var it=document.createElement("div");it.className="check-item";it.setAttribute("data-id",id);
+      it.innerHTML='<p class="ci-text"><span class="ci-n">'+id+'.</span>'+txt+'</p><div class="ci-btns"><button type="button" class="ci-btn si" aria-label="Sí, pregunta '+id+'">Sí</button><button type="button" class="ci-btn no" aria-label="No, pregunta '+id+'">No</button></div>';
+      box.appendChild(it);
+    });
+  });
+  box.addEventListener("click",function(ev){
+    var btn=ev.target.closest(".ci-btn");if(!btn)return;
+    var item=btn.closest(".check-item"),id=item.getAttribute("data-id");
+    var val=btn.classList.contains("si")?"si":"no";
+    state[id]=val;item.setAttribute("data-state",val);
+    item.querySelector(".si").classList.toggle("on",val==="si");
+    item.querySelector(".no").classList.toggle("on",val==="no");
+    var answered=Object.keys(state).length;
+    var yes=Object.keys(state).filter(function(k){return state[k]==="si"}).length;
+    $("#checkCount").textContent=answered+" / 20";
+    $("#checkYes").textContent=yes;
+    var v=$("#checkVerdict");
+    if(answered<20){v.textContent="Llevás "+answered+" de 20 respuestas…"}
+    else if(yes>=18){v.textContent="🎉 ¡Felicitaciones! Tu práctica reúne las características de una innovación educativa con uso de TIC."}
+    else if(yes>=13){v.textContent="💪 ¡Vas muy bien! Tu práctica está en camino de consolidarse como innovación."}
+    else if(yes>=8){v.textContent=" Tu práctica incorpora elementos valiosos, pero necesita fortalecer varios momentos de la ruta."}
+    else{v.textContent="📘 Te sugerimos revisar la ruta de innovación y repensar tu práctica desde el análisis del contexto."}
+  });
+})();
+/* ================= QUIZ ================= */
+var answers={},graded=false,LETTERS=["A","B","C","D"];
+(function render(){
+  var box=$("#quizBox");
+  QUESTIONS.forEach(function(qq){
+    var card=document.createElement("article");
+    card.className="q-card";card.setAttribute("data-id",qq.id);card.setAttribute("data-nivel",qq.nivel);
+    var secName=qq.sec===1?"Sección 1":(qq.sec===2?"Sección 2":"Sección 3");
+    var html='<div class="q-head"><span class="q-num">Pregunta '+qq.id+'</span><span class="chip chip-principiante" style="display:none"></span><span class="chip chip-'+qq.nivel+'">'+qq.nivel.charAt(0).toUpperCase()+qq.nivel.slice(1)+'</span><span class="chip" style="background:var(--blue-soft);color:var(--blue)">'+secName+'</span><span class="q-pts">5 pts</span></div>';
+    html+='<p class="q-text">'+qq.q+"</p><div class='opts' role='radiogroup' aria-label='Pregunta "+qq.id+"'>";
+    qq.opts.forEach(function(op,i){
+      html+='<label class="opt"><input type="radio" name="q'+qq.id+'" value="'+i+'"><span class="letter">'+LETTERS[i]+'</span><span class="txt">'+op+"</span></label>";
+    });
+    html+="</div><div class='feedback'></div>";
+    card.innerHTML=html;box.appendChild(card);
+  });
+  box.addEventListener("change",function(ev){
+    if(graded)return;
+    if(ev.target.matches("input[type=radio]")){
+      var card=ev.target.closest(".q-card"),id=card.getAttribute("data-id");
+      answers[id]=parseInt(ev.target.value,10);
+      card.querySelectorAll(".opt").forEach(function(o){o.classList.remove("selected")});
+      ev.target.closest(".opt").classList.add("selected");
+      $("#answeredCount").textContent=Object.keys(answers).length+" / 20";
+    }
+  });
+})();
+/* Filtros */
+$$(".qf-btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    $$(".qf-btn").forEach(function(x){x.classList.remove("active")});b.classList.add("active");
+    var f=b.getAttribute("data-filter");
+    $$(".q-card").forEach(function(c){c.style.display=(f==="todas"||c.getAttribute("data-nivel")===f)?"":"none"});
+  });
+});
+/* Corregir */
+$("#gradeBtn").addEventListener("click",function(){
+  if(graded)return;
+  var missing=QUESTIONS.length-Object.keys(answers).length;
+  if(missing>0&&!confirm("Tenés "+missing+" pregunta(s) sin responder. ¿Querés corregir igual?"))return;
+  graded=true;
+  var correct=0,byNivel={principiante:[0,0],intermedio:[0,0],avanzado:[0,0]},bySec={1:[0,0],2:[0,0],3:[0,0]};
+  QUESTIONS.forEach(function(qq){
+    var card=document.querySelector('.q-card[data-id="'+qq.id+'"]');
+    card.classList.add("graded");
+    var sel=answers[qq.id],ok=(sel===qq.a);
+    byNivel[qq.nivel][1]+=5;bySec[qq.sec][1]+=5;
+    if(ok){correct++;byNivel[qq.nivel][0]+=5;bySec[qq.sec][0]+=5;card.classList.add("correct")}
+    else{card.classList.add("incorrect")}
+    card.querySelectorAll(".opt").forEach(function(o,i){
+      if(i===qq.a)o.classList.add("right");
+      o.querySelector("input").disabled=true;
+    });
+    var fb=card.querySelector(".feedback");
+    fb.className="feedback show "+(ok?"ok":"bad");
+    fb.innerHTML=(ok?"✅ <strong>¡Correcto! +5 pts.</strong> ":"❌ <strong>Incorrecto.</strong> La respuesta correcta es la opción <strong>"+LETTERS[qq.a]+"</strong>. ")+"<br>📘 "+qq.why;
+  });
+  var score=correct*5;
+  /* Gauge */
+  var C=2*Math.PI*72,arc=$("#gaugeArc");
+  arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C;
+  arc.style.stroke=score>=60?(score>=85?"#4ade80":"#facc15"):"#fb7185";
+  requestAnimationFrame(function(){requestAnimationFrame(function(){arc.style.strokeDashoffset=C*(1-score/100)})});
+  $("#scoreNum").textContent=score;
+  var lvl=score>=85?"Innovador":(score>=60?"Integrador":"Explorador");
+  $("#resLevel").textContent="🎖️ Nivel de competencias TIC alcanzado: "+lvl;
+  var t=$("#resTitle"),tx=$("#resText");
+  if(score===100){t.textContent="¡Puntaje perfecto! 🏆";tx.textContent="Dominás de manera integral la innovación educativa con TIC y la creación de contenidos accesibles. ¡Sos un/a referente para tu comunidad educativa!"}
+  else if(score>=85){t.textContent="¡Excelente trabajo! 🌟";tx.textContent="Aprobaste con un dominio sólido de los tres niveles del módulo. Revisá las fundamentaciones de las preguntas falladas para llegar a la perfección."}
+  else if(score>=70){t.textContent="¡Muy bien! 👏";tx.textContent="Aprobaste el módulo con solidez. Te sugerimos repasar los conceptos fundamentales de las secciones con errores."}
+  else if(score>=60){t.textContent="Aprobaste ✔️";tx.textContent="Alcanzaste el puntaje mínimo (60/100). Repasá los conceptos fundamentales de cada sección y volvé a intentarlo para afianzar el aprendizaje."}
+  else{t.textContent="Seguí aprendiendo 💙";tx.textContent="Aún no alcanzaste el mínimo de 60/100. Volvé a recorrer las tres secciones, apoyate en los conceptos fundamentales y reintentá la autoevaluación."}
+  /* Barras */
+  var bars=$("#resBars");bars.innerHTML="";
+  function barRow(label,got,total){
+    var r=document.createElement("div");r.className="bar-row";
+    r.innerHTML="<span>"+label+"</span><div class='bar-track'><div class='bar-fill'></div></div><span>"+got+"/"+total+"</span>";
+    bars.appendChild(r);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){r.querySelector(".bar-fill").style.width=(total?Math.round(got/total*100):0)+"%"})});
+  }
+  barRow("🟢 Principiante",byNivel.principiante[0],byNivel.principiante[1]);
+  barRow("🟠 Intermedio",byNivel.intermedio[0],byNivel.intermedio[1]);
+  barRow("🔴 Avanzado",byNivel.avanzado[0],byNivel.avanzado[1]);
+  barRow("📗 Sección 1",bySec[1][0],bySec[1][1]);
+  barRow("📘 Sección 2",bySec[2][0],bySec[2][1]);
+  barRow("📙 Sección 3",bySec[3][0],bySec[3][1]);
+  $("#results").classList.add("show");
+  setTimeout(function(){$("#results").scrollIntoView({behavior:"smooth",block:"center"})},150);
+});
+/* Reintentar */
+$("#retryBtn").addEventListener("click",function(){
+  graded=false;answers={};
+  $("#results").classList.remove("show");
+  $$(".q-card").forEach(function(c){
+    c.classList.remove("graded","correct","incorrect");
+    c.querySelectorAll(".opt").forEach(function(o){o.classList.remove("selected","right");o.querySelector("input").disabled=false;o.querySelector("input").checked=false});
+    var fb=c.querySelector(".feedback");fb.className="feedback";fb.innerHTML="";
+  });
+  $("#answeredCount").textContent="0 / 20";
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+$("#reviewBtn").addEventListener("click",function(){activate("s1")});
+</script>
+</body>
+</html>
+
