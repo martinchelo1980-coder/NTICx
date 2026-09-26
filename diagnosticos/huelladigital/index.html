@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14171C">
+<title>Tu Huella Digital — NTICx 4.º Año · Prof. Martin Espinosa</title>
+<script>
+/* Progressive enhancement: si JS falla, el contenido queda visible igual */
+document.documentElement.className += ' js';
+window.addEventListener('error', function(){ document.documentElement.classList.remove('js'); });
+</script>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🫆</text></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ BASE ============ */
+:root{
+  --paper:#F3F0E7; --paper2:#FBFAF4; --paper3:#EAE5D6;
+  --ink:#14171C; --ink2:#4A4F58; --line:rgba(20,23,28,.16);
+  --lime:#C9E94E; --lime-d:#77930B;
+  --cyan:#4FC6D8; --cyan-d:#0E7E93;
+  --amber:#FFC53D; --amber-d:#B26E00;
+  --coral:#FF6B4A; --coral-d:#C63A1E;
+  --hdr:64px;
+  --disp:'Unbounded',sans-serif; --body:'Instrument Sans',sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr) + 16px)}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.6;overflow-x:hidden;-webkit-text-size-adjust:100%}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:120;opacity:.045;mix-blend-mode:multiply;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2"/></filter><rect width="140" height="140" filter="url(%23n)"/></svg>');}
+::selection{background:var(--lime);color:var(--ink)}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer}
+input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button,label,.ck,.pill,.opt,.quote,.dots label,.lrow,.seg5 label{touch-action:manipulation;-webkit-tap-highlight-color:rgba(201,233,78,.35)}
+.ta,.otro-in{font-size:16px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.oculto{display:none!important}
+h1,h2,h3{font-family:var(--disp);line-height:1.05;letter-spacing:-.01em}
+
+/* reveals — solo ocultos si JS está activo */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.on{opacity:1;transform:none}
+.rvm{display:block;overflow:hidden}
+.rvm>span{display:block}
+.js .rvm>span{transform:translateY(112%);transition:transform .8s cubic-bezier(.2,.75,.15,1)}
+.on .rvm>span, .rvm.on>span{transform:none}
+
+/* ============ HEADER ============ */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--ink);color:var(--paper);height:var(--hdr);display:flex;align-items:center;border-bottom:2px solid var(--ink)}
+.h-in{width:100%;max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;white-space:nowrap;min-width:0}
+.brand svg{flex:none}
+.brand b{color:var(--lime)}
+.brand>span{overflow:hidden;text-overflow:ellipsis}
+.h-title{font-family:var(--disp);font-weight:700;font-size:.82rem;letter-spacing:.04em;margin:0 auto;text-align:center;white-space:nowrap}
+.h-right{display:flex;align-items:center;gap:12px;margin-left:auto;flex:none}
+.prof{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:var(--lime);border:1px solid rgba(201,233,78,.55);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.prog-pill{font-family:var(--mono);font-size:.68rem;border:1px solid rgba(243,240,231,.35);padding:5px 10px;border-radius:999px;white-space:nowrap}
+.prog-pill b{color:var(--lime)}
+#scrollbar{position:absolute;left:0;bottom:-2px;height:3px;background:var(--lime);width:0%;transition:width .1s linear}
+@media(max-width:1080px){.h-title{display:none}}
+@media(max-width:900px){.prog-pill{display:none}}
+@media(max-width:680px){.brand>span{display:none}.prof{font-size:.56rem;padding:5px 8px}}
+
+/* ============ PORTADA ============ */
+.portada{padding:calc(var(--hdr) + 64px) 0 72px;position:relative;
+  background:
+   radial-gradient(1100px 500px at 85% -10%, rgba(79,198,216,.14), transparent 60%),
+   radial-gradient(900px 500px at -10% 110%, rgba(201,233,78,.16), transparent 55%),
+   repeating-linear-gradient(0deg, transparent 0 34px, rgba(20,23,28,.05) 34px 35px);}
+.p-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:56px;align-items:start}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--ink2);border-left:4px solid var(--coral);padding-left:12px;margin-bottom:26px;max-width:560px}
+.h-big{font-size:clamp(1.9rem,8.5vw,5.2rem);font-weight:900;text-transform:uppercase}
+.h-big .l2{color:var(--coral-d)}
+.h-big .cur{display:inline-block;width:.14em;height:.85em;background:var(--lime-d);margin-left:.08em;animation:blink 1.1s steps(2) infinite;vertical-align:-.06em}
+@keyframes blink{50%{opacity:0}}
+.lede{margin-top:22px;font-size:1.06rem;max-width:520px;color:var(--ink2)}
+.lede strong{color:var(--ink)}
+.chips-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.chip-meta{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;border:1.5px solid var(--ink);padding:7px 12px;border-radius:6px;background:var(--paper2);box-shadow:3px 3px 0 var(--ink)}
+.chip-meta.prof-chip{background:var(--lime)}
+.leeme{margin-top:30px;background:var(--paper2);border:1.5px solid var(--ink);border-radius:10px;padding:20px 22px;max-width:560px;position:relative}
+.leeme::before{content:"LEEME ANTES DE EMPEZAR";font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;position:absolute;top:-10px;left:16px;background:var(--amber);border:1.5px solid var(--ink);padding:3px 9px;border-radius:4px}
+.leeme p{font-size:.95rem;color:var(--ink2)}
+.leeme b{color:var(--ink)}
+
+/* escáner */
+.scanner{background:var(--ink);color:var(--paper);border-radius:14px;padding:26px;position:relative;overflow:hidden;box-shadow:8px 8px 0 rgba(20,23,28,.22)}
+.scanner::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(201,233,78,.045) 3px 4px);pointer-events:none}
+.sc-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:rgba(243,240,231,.6);margin-bottom:16px;gap:8px;flex-wrap:wrap}
+.sc-top .dot{width:8px;height:8px;border-radius:50%;background:var(--lime);display:inline-block;margin-right:6px;animation:pulse 1.6s ease infinite}
+@keyframes pulse{50%{opacity:.25}}
+.fp-stage{display:flex;justify-content:center;padding:8px 0 4px}
+.fp{width:min(230px,62vw);overflow:visible}
+.fp-base ellipse{fill:none;stroke:rgba(243,240,231,.22);stroke-width:5;stroke-linecap:round}
+.fp-live ellipse{fill:none;stroke:var(--lime);stroke-width:5;stroke-linecap:round}
+.fp-scan{fill:var(--lime);opacity:.9;animation:scan 3.2s linear infinite}
+@keyframes scan{0%{transform:translateY(-10px)}100%{transform:translateY(212px)}}
+.sc-status{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--lime);text-align:center;min-height:1.4em;margin:12px 0 18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--mono);font-weight:700;font-size:.82rem;letter-spacing:.1em;border:2px solid var(--ink);border-radius:8px;padding:14px 22px;background:var(--lime);color:var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .18s,box-shadow .18s;text-decoration:none;min-height:48px}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.btn.ghost{background:var(--paper2)}
+.btn.dark{background:var(--coral);color:#fff}
+.sc-btn{display:flex;justify-content:center}
+.sc-foot{margin-top:16px;text-align:center;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:rgba(243,240,231,.45)}
+
+/* ticker */
+.ticker{border-block:2px solid var(--ink);background:var(--paper2);overflow:hidden;padding:11px 0}
+.tk{display:flex;gap:0;width:max-content;animation:tk 36s linear infinite}
+.ticker:hover .tk{animation-play-state:paused}
+.tk span{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;white-space:nowrap;padding:0 14px;color:var(--ink2)}
+.tk span b{color:var(--coral-d)}
+@keyframes tk{to{transform:translateX(-50%)}}
+
+/* ledger */
+.ledger{padding:76px 0 30px}
+.sec-tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;display:inline-flex;align-items:center;gap:8px;margin-bottom:14px}
+.sec-tag::before{content:"";width:26px;height:2px;background:currentColor}
+.ledger h2{font-size:clamp(1.6rem,5.4vw,2.6rem);font-weight:900;text-transform:uppercase;max-width:720px}
+.ledger .sub{color:var(--ink2);margin-top:10px;max-width:640px}
+.lrow{border-top:1.5px solid var(--ink);display:grid;grid-template-columns:70px 250px 1fr 44px;gap:18px;align-items:start;padding:18px 8px;cursor:pointer;transition:background .25s}
+.lrow:last-child{border-bottom:1.5px solid var(--ink)}
+.lrow:hover{background:rgba(201,233,78,.22)}
+.lrow .idx{font-family:var(--mono);font-size:.8rem;padding-top:4px;color:var(--ink2)}
+.lrow .dim{font-family:var(--disp);font-weight:700;font-size:.95rem;line-height:1.25}
+.lrow .obj{font-size:.92rem;color:var(--ink2)}
+.lrow .pl{font-family:var(--mono);font-size:1.2rem;text-align:center;transition:transform .3s;color:var(--coral-d)}
+.lrow .det{grid-column:2/-1;display:none;background:var(--ink);color:var(--paper);border-radius:8px;padding:14px 18px;font-size:.88rem}
+.lrow .det b{color:var(--lime)}
+.lrow.open .det{display:block;animation:detin .35s ease}
+.lrow.open .pl{transform:rotate(45deg)}
+@keyframes detin{from{opacity:0;transform:translateY(-6px)}}
+@media(max-width:820px){.lrow{grid-template-columns:44px 1fr 34px;gap:10px}.lrow .dim{grid-column:2}.lrow .obj{grid-column:2}.lrow .det{grid-column:1/-1}}
+
+/* ============ ENCUESTA ============ */
+.survey{padding:56px 0 80px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;align-items:start}
+.bloque{--acc:var(--cyan);--accd:var(--cyan-d);margin-bottom:84px;scroll-margin-top:calc(var(--hdr) + 20px)}
+.bloque[data-b="2"]{--acc:var(--amber);--accd:var(--amber-d)}
+.bloque[data-b="3"]{--acc:var(--lime);--accd:var(--lime-d)}
+.bloque[data-b="4"]{--acc:var(--coral);--accd:var(--coral-d)}
+.bhead{position:relative;margin-bottom:34px;padding-top:18px;border-top:3px solid var(--ink)}
+.bnum{position:absolute;right:-6px;top:-30px;font-family:var(--disp);font-weight:900;font-size:clamp(3.2rem,13vw,7.5rem);color:transparent;-webkit-text-stroke:1.5px var(--acc);opacity:.5;pointer-events:none;line-height:1}
+.bchip{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;background:var(--acc);border:1.5px solid var(--ink);display:inline-block;padding:4px 10px;border-radius:4px;margin-bottom:12px}
+.bhead h2{font-size:clamp(1.35rem,4.6vw,2.3rem);font-weight:900;text-transform:uppercase;max-width:560px}
+.bhead p{margin-top:10px;color:var(--ink2);max-width:600px;font-size:.98rem}
+.q{background:var(--paper2);border:1.5px solid var(--ink);border-radius:12px;padding:24px;margin-bottom:22px;transition:box-shadow .3s,transform .3s}
+.q:hover{box-shadow:6px 6px 0 rgba(20,23,28,.12)}
+.q.flash{animation:flash 1s ease 2}
+@keyframes flash{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px var(--coral)}}
+.qtop{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:16px}
+.qnum{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;background:var(--ink);color:var(--acc);padding:3px 8px;border-radius:4px}
+.qtop h3{font-family:var(--body);font-weight:700;font-size:1.06rem}
+.hint{width:100%;font-size:.83rem;color:var(--ink2);font-style:italic}
+.optgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr));gap:10px}
+.ck{display:flex;align-items:center;gap:10px;border:1.5px solid var(--ink);border-radius:9px;padding:11px 13px;background:var(--paper);cursor:pointer;font-size:.9rem;font-weight:500;transition:transform .15s,background .2s,box-shadow .15s;position:relative;user-select:none;min-height:46px}
+.ck:hover{transform:translateY(-2px)}
+.ck svg{flex:none;width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ck .bx{width:16px;height:16px;border:1.5px solid var(--ink);border-radius:4px;flex:none;margin-left:auto;background:var(--paper2);position:relative}
+.ck.checked{background:var(--acc);box-shadow:3px 3px 0 var(--ink);animation:pop .3s cubic-bezier(.3,1.6,.5,1)}
+.ck.checked .bx{background:var(--ink)}
+.ck.checked .bx::after{content:"✓";position:absolute;inset:0;color:var(--acc);font-size:11px;font-weight:700;display:grid;place-items:center}
+.ck:focus-within{outline:2px dashed var(--ink);outline-offset:2px}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+.ck .otro-in{border:none;border-bottom:1.5px solid var(--ink);background:transparent;font-family:var(--mono);font-size:.8rem;width:110px;min-width:70px;outline:none}
+.subq{border:1px dashed rgba(20,23,28,.35);border-radius:10px;padding:18px;margin-top:16px}
+.subq .sq-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;margin-bottom:12px;color:var(--accd);font-weight:700}
+.pillrow{display:flex;flex-wrap:wrap;gap:9px}
+.pill{border:1.5px solid var(--ink);border-radius:999px;padding:9px 16px;font-size:.87rem;font-weight:500;background:var(--paper);cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,background .2s;user-select:none;min-height:42px}
+.pill:hover{transform:translateY(-2px)}
+.pill.checked{background:var(--acc);box-shadow:3px 3px 0 var(--ink)}
+.pill:focus-within{outline:2px dashed var(--ink);outline-offset:2px}
+.pill .ord{display:none;font-family:var(--mono);font-size:.66rem;font-weight:700;background:var(--ink);color:var(--acc);width:20px;height:20px;border-radius:50%;place-items:center;flex:none}
+.pill.ranked .ord{display:grid}
+.seg5{display:flex;border:1.5px solid var(--ink);border-radius:9px;overflow:hidden;background:var(--paper)}
+.seg5 label{flex:1;text-align:center;padding:12px 6px;font-family:var(--mono);font-size:.72rem;cursor:pointer;border-right:1.5px solid var(--ink);transition:background .2s;user-select:none;min-height:46px;display:flex;align-items:center;justify-content:center}
+.seg5 label:last-child{border-right:none}
+.seg5 label:hover{background:rgba(255,197,61,.3)}
+.seg5 label.checked{background:var(--acc);font-weight:700;box-shadow:inset 0 -4px 0 var(--ink)}
+.qlist{display:grid;gap:9px}
+.quote{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--ink);border-left-width:5px;border-radius:9px;padding:13px 16px;cursor:pointer;font-size:.94rem;background:var(--paper);transition:transform .15s,background .2s;user-select:none;min-height:48px}
+.quote em{font-style:normal}
+.quote:hover{transform:translateX(4px)}
+.quote.checked{background:var(--acc);border-left-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.quote .rd{width:15px;height:15px;border:1.5px solid var(--ink);border-radius:50%;flex:none;margin-top:4px;background:var(--paper2)}
+.quote.checked .rd{background:var(--ink);box-shadow:inset 0 0 0 3px var(--acc)}
+.mx-head{display:grid;grid-template-columns:minmax(140px,1fr) 240px;gap:14px;margin-bottom:6px;padding-right:6px}
+.mx-lbls{display:grid;grid-template-columns:repeat(5,1fr);text-align:center}
+.mx-lbls span{font-family:var(--mono);font-size:.58rem;letter-spacing:.02em;color:var(--ink2);line-height:1.2}
+.skrow{display:grid;grid-template-columns:minmax(140px,1fr) 240px;gap:14px;align-items:center;border-top:1px solid var(--line);padding:9px 6px;transition:background .2s}
+.skrow:hover{background:rgba(201,233,78,.18)}
+.skrow .skn{font-size:.9rem;font-weight:500}
+.dots{display:grid;grid-template-columns:repeat(5,1fr);justify-items:center}
+.dots label{width:30px;height:30px;display:grid;place-items:center;cursor:pointer;position:relative}
+.dots .d{width:19px;height:19px;border:1.7px solid var(--ink);border-radius:50%;background:var(--paper);transition:transform .15s,background .15s}
+.dots label:hover .d{transform:scale(1.18)}
+.dots label.checked .d{background:var(--acc);box-shadow:inset 0 0 0 3.5px var(--ink);transform:scale(1.15)}
+.dots label.checked::after{content:attr(data-n);position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.6rem;font-weight:700;color:var(--accd)}
+.mx-legend{font-size:.78rem;color:var(--ink2);margin-top:14px;font-family:var(--mono)}
+@media(max-width:560px){
+  .mx-head{grid-template-columns:1fr;padding-right:0}
+  .skrow{grid-template-columns:1fr;gap:10px;padding:12px 4px}
+  .mx-lbls,.dots{width:100%;max-width:340px}
+  .dots label{width:42px;height:42px}
+  .dots .d{width:26px;height:26px}
+}
+.ta{width:100%;min-height:96px;border:1.5px solid var(--ink);border-radius:9px;background:var(--paper);padding:13px 15px;resize:vertical;outline:none;transition:box-shadow .2s}
+.ta:focus{box-shadow:4px 4px 0 var(--acc)}
+.sit{background:var(--paper2);border:1.5px solid var(--ink);border-radius:14px;margin-bottom:26px;overflow:hidden}
+.sit-head{display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);padding:12px 20px;flex-wrap:wrap}
+.sit-head .stag{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--acc)}
+.sit-head .stitle{font-family:var(--disp);font-weight:700;font-size:.95rem}
+.sit-body{padding:22px}
+.story{border:1.5px dashed var(--accd);border-radius:10px;background:rgba(255,107,74,.06);padding:16px 18px;font-size:.95rem;margin-bottom:18px;position:relative}
+.story::before{content:"CASO";position:absolute;top:-9px;left:14px;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;background:var(--acc);border:1px solid var(--ink);padding:2px 7px;border-radius:3px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--line);border-radius:8px;padding:11px 14px;cursor:pointer;font-size:.92rem;background:var(--paper);transition:border-color .2s,background .2s,transform .15s;user-select:none;min-height:46px}
+.opt:hover{border-color:var(--ink);transform:translateX(3px)}
+.opt.checked{border-color:var(--ink);border-left:5px solid var(--acc);background:var(--paper2);box-shadow:3px 3px 0 rgba(20,23,28,.15)}
+.opt .rd{width:14px;height:14px;border:1.5px solid var(--ink);border-radius:50%;flex:none;margin-top:4px;background:var(--paper2)}
+.opt.checked .rd{background:var(--acc);box-shadow:inset 0 0 0 2.5px var(--ink)}
+.opt .otro-in{flex:1;min-width:60px}
+aside.perfil{position:sticky;top:calc(var(--hdr) + 22px)}
+.pcard{background:var(--ink);color:var(--paper);border-radius:14px;padding:22px;box-shadow:8px 8px 0 rgba(20,23,28,.18)}
+.pcard h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;color:var(--lime);margin-bottom:6px}
+.pcard .pwho{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;color:rgba(243,240,231,.5);margin-bottom:12px}
+.pcard .fp{width:104px;margin:0 auto}
+.pcard .fp-base ellipse{stroke:rgba(243,240,231,.16);stroke-width:6}
+.pcomp{text-align:center;margin:14px 0 18px}
+.pcomp .n{font-family:var(--disp);font-weight:900;font-size:2.2rem;color:var(--lime)}
+.pcomp .d{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:rgba(243,240,231,.55)}
+.pbar{margin-bottom:12px}
+.pbar .bl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;margin-bottom:5px;color:rgba(243,240,231,.75)}
+.pbar .tr{height:8px;background:rgba(243,240,231,.14);border-radius:99px;overflow:hidden}
+.pbar .fl{height:100%;width:0%;background:var(--lime);border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.pbar:nth-child(odd) .fl{background:var(--cyan)}
+.pnote{font-size:.74rem;color:rgba(243,240,231,.5);margin-top:14px;line-height:1.5}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}aside.perfil{display:none}}
+
+/* barra movil */
+#barraMovil{position:fixed;bottom:0;left:0;right:0;z-index:90;background:var(--ink);color:var(--paper);display:none;align-items:center;gap:12px;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));font-family:var(--mono);font-size:.66rem;letter-spacing:.08em}
+#barraMovil .tr{flex:1;height:7px;background:rgba(243,240,231,.15);border-radius:99px;overflow:hidden}
+#barraMovil .fl{height:100%;width:0;background:var(--lime)}
+@media(max-width:1000px){
+  #barraMovil{display:flex}
+  body{padding-bottom:54px}
+}
+
+/* CTA final */
+.cta-final{background:var(--ink);color:var(--paper);border-radius:16px;padding:44px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:"///";position:absolute;left:24px;top:18px;font-family:var(--mono);color:var(--lime);letter-spacing:.2em}
+.cta-final h3{font-size:clamp(1.2rem,4.6vw,2rem);font-weight:900;text-transform:uppercase;margin-bottom:12px}
+.cta-final p{color:rgba(243,240,231,.65);max-width:460px;margin:0 auto 26px;font-size:.95rem}
+
+/* ============ RESULTADO ============ */
+#resultado{padding:70px 0 90px;scroll-margin-top:var(--hdr)}
+.ficha{background:var(--paper2);border:2.5px solid var(--ink);border-radius:16px;box-shadow:12px 12px 0 rgba(20,23,28,.16);padding:38px;position:relative}
+.ficha::before{content:"";position:absolute;top:12px;left:12px;right:12px;bottom:12px;border:1px dashed rgba(20,23,28,.25);border-radius:10px;pointer-events:none}
+.f-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:28px}
+.f-stamp{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;background:var(--ink);color:var(--paper);padding:6px 12px;border-radius:4px}
+.f-grid{display:grid;grid-template-columns:340px 1fr;gap:40px;position:relative;z-index:1}
+.radar-box{text-align:center}
+.radar-box svg{width:100%;max-width:300px}
+.radar-box .axis{stroke:rgba(20,23,28,.25);stroke-width:1}
+.radar-box .ring{fill:none;stroke:rgba(20,23,28,.16);stroke-width:1}
+#radarPol{fill:rgba(201,233,78,.35);stroke:var(--lime-d);stroke-width:2.5;stroke-linejoin:round;clip-path:circle(0% at 50% 50%);transition:clip-path 1.4s cubic-bezier(.2,.7,.2,1)}
+#radarPol.go{clip-path:circle(75% at 50% 50%)}
+.radar-box text{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;fill:var(--ink2)}
+.perfil-hero{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.p-letter{font-family:var(--disp);font-weight:900;font-size:4.6rem;line-height:1;width:104px;height:104px;display:grid;place-items:center;border:3px solid var(--ink);border-radius:12px;background:var(--lime);transform:rotate(-3deg);box-shadow:5px 5px 0 var(--ink);flex:none}
+.p-name{font-family:var(--disp);font-weight:900;font-size:clamp(1rem,3.6vw,1.7rem);text-transform:uppercase;line-height:1.2}
+.p-tag{font-family:var(--mono);font-size:.74rem;color:var(--coral-d);margin-top:6px;letter-spacing:.06em}
+.f-dl{display:grid;gap:10px}
+.f-dl div{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:.9rem}
+.f-dl dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--ink2);padding-top:3px}
+.f-dl dd{font-weight:600;text-align:right}
+.f-bars{margin:30px 0 10px;position:relative;z-index:1}
+.fb{display:grid;grid-template-columns:190px 1fr 52px;gap:14px;align-items:center;margin-bottom:11px}
+.fb .fl-name{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--ink2);text-align:right}
+.fb .tr{height:14px;border:1.5px solid var(--ink);border-radius:99px;background:var(--paper);overflow:hidden}
+.fb .fl{height:100%;width:0;background:var(--acc2,var(--lime-d));transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.fb .vl{font-family:var(--mono);font-size:.72rem;font-weight:700}
+@media(max-width:820px){.f-grid{grid-template-columns:1fr}.fb{grid-template-columns:110px 1fr 44px}.fb .fl-name{font-size:.56rem}}
+.f-desc{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px;position:relative;z-index:1}
+.f-desc .col{border:1.5px solid var(--ink);border-radius:10px;padding:18px;background:var(--paper)}
+.f-desc h5{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;margin-bottom:10px;color:var(--coral-d)}
+.f-desc ul{list-style:none;display:grid;gap:7px;font-size:.86rem}
+.f-desc li{padding-left:16px;position:relative}
+.f-desc li::before{content:"▸";position:absolute;left:0;color:var(--lime-d)}
+@media(max-width:820px){.f-desc{grid-template-columns:1fr}}
+.ciu-badge{display:inline-flex;align-items:center;gap:10px;border:2px solid var(--ink);border-radius:999px;padding:8px 16px;font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.04em;background:var(--amber);box-shadow:3px 3px 0 var(--ink);margin-top:14px;max-width:100%}
+.f-foot{margin-top:30px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.f-foot .fine{font-size:.78rem;color:var(--ink2);max-width:420px}
+.f-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ============ FOOTER ============ */
+footer{background:var(--ink);color:var(--paper);padding:64px 0 40px}
+.f-grid2{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px}
+.f-brand{font-family:var(--disp);font-weight:900;font-size:1.4rem;text-transform:uppercase}
+.f-brand span{color:var(--lime)}
+footer p{font-size:.86rem;color:rgba(243,240,231,.6);max-width:340px;margin-top:12px}
+footer h6{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;color:var(--lime);margin-bottom:14px}
+footer ul{list-style:none;display:grid;gap:8px;font-family:var(--mono);font-size:.72rem;color:rgba(243,240,231,.7)}
+.f-line{border-top:1px solid rgba(243,240,231,.15);margin-top:44px;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:rgba(243,240,231,.45)}
+@media(max-width:820px){.f-grid2{grid-template-columns:1fr}.p-grid{grid-template-columns:1fr;gap:40px}}
+
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--lime);font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;padding:12px 20px;border-radius:8px;border:1.5px solid var(--lime);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:200;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1000px){#toast{bottom:70px}}
+
+/* noscript */
+.noscript-msg{margin-top:var(--hdr);background:var(--coral-d);color:#fff;font-family:var(--mono);font-size:.8rem;text-align:center;padding:14px 18px}
+
+/* ============ AJUSTES MÓVILES ============ */
+@media (max-width:600px){
+  :root{--hdr:58px}
+  body{font-size:15.5px}
+  .wrap{padding:0 16px}
+  .h-in{gap:10px;padding:0 12px}
+  .brand{font-size:.6rem;gap:7px}
+  .brand svg{width:22px;height:22px}
+  .portada{padding-top:calc(var(--hdr) + 36px);padding-bottom:52px}
+  .kicker{font-size:.62rem;margin-bottom:20px}
+  .lede{font-size:.98rem;margin-top:18px}
+  .chip-meta{font-size:.6rem;padding:6px 9px;box-shadow:2px 2px 0 var(--ink)}
+  .chips-row{gap:8px}
+  .leeme{padding:18px 16px 16px;max-width:100%}
+  .leeme::before{font-size:.56rem;left:12px}
+  .scanner{padding:18px 16px;border-radius:12px}
+  .fp{width:min(200px,64vw)}
+  .btn{padding:13px 18px;font-size:.76rem;width:100%;max-width:340px}
+  .sc-btn{justify-content:center}
+  .ticker{padding:9px 0}
+  .tk span{font-size:.7rem;padding:0 10px}
+  .ledger{padding:56px 0 20px}
+  .survey{padding:40px 0 60px}
+  .bloque{margin-bottom:64px}
+  .bhead{margin-bottom:24px}
+  .bhead p{font-size:.92rem}
+  .bchip{font-size:.6rem}
+  .q{padding:16px 14px;border-radius:10px}
+  .qtop h3{font-size:.98rem}
+  .hint{font-size:.8rem}
+  .optgrid{grid-template-columns:1fr;gap:8px}
+  .ck{padding:12px;font-size:.88rem}
+  .ck svg{width:18px;height:18px}
+  .ck .bx{width:20px;height:20px}
+  .ck .otro-in{width:100px}
+  .subq{padding:14px 12px}
+  .subq .sq-t{font-size:.66rem;line-height:1.5}
+  .pill{padding:10px 14px;font-size:.84rem}
+  .seg5 label{padding:12px 2px;font-size:.58rem;min-height:48px}
+  .quote{padding:13px 14px;font-size:.9rem}
+  .mx-head{margin-bottom:2px}
+  .mx-lbls span{font-size:.52rem}
+  .skrow .skn{font-size:.86rem}
+  .mx-legend{font-size:.68rem}
+  .sit-head{padding:10px 14px;gap:8px}
+  .sit-head .stitle{font-size:.86rem}
+  .sit-head .stag{font-size:.6rem}
+  .sit-body{padding:16px 14px}
+  .story{padding:14px;font-size:.9rem}
+  .opt{padding:12px;font-size:.88rem}
+  .cta-final{padding:30px 18px;border-radius:12px}
+  .cta-final::before{display:none}
+  .cta-final p{font-size:.88rem}
+  #resultado{padding:52px 0 70px}
+  .ficha{padding:22px 16px;box-shadow:6px 6px 0 rgba(20,23,28,.16)}
+  .ficha::before{inset:7px}
+  .f-top{margin-bottom:20px}
+  .f-stamp{font-size:.52rem;letter-spacing:.08em}
+  .p-letter{width:76px;height:76px;font-size:3.1rem;border-radius:10px}
+  .perfil-hero{gap:16px;margin-bottom:16px}
+  .ciu-badge{font-size:.62rem;padding:7px 12px}
+  .f-dl div{flex-direction:column;gap:3px}
+  .f-dl dd{text-align:left}
+  .fb{grid-template-columns:1fr;gap:5px;margin-bottom:14px}
+  .fb .fl-name{text-align:left;font-size:.62rem}
+  .f-desc{gap:12px}
+  .f-desc .col{padding:14px}
+  .f-foot{flex-direction:column;align-items:stretch}
+  .f-foot .fine{max-width:100%}
+  .f-actions{display:grid;gap:10px}
+  .f-actions .btn{width:100%;max-width:none}
+  footer{padding:44px 0 32px}
+  footer .f-line{flex-direction:column;gap:8px}
+}
+
+/* print — imprime solo la ficha de resultado */
+@media print{
+  header,#toast,#barraMovil,footer{display:none!important}
+  body{background:#fff;padding-bottom:0!important}
+  .portada,.ticker,.ledger,.survey{display:none!important}
+  #resultado{padding:0!important}
+  .ficha{box-shadow:none;border-width:2px}
+  .f-foot .f-actions{display:none!important}
+  .fp-scan{display:none}
+  .rv,.rvm>span{opacity:1;transform:none}
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv,.rvm>span{opacity:1;transform:none}
+  .fp-scan{display:none}
+}
+</style>
+</head>
+<body>
+
+<noscript><div class="noscript-msg">⚠ Este diagnóstico necesita JavaScript activado para funcionar. Revisá la configuración de tu navegador.</div></noscript>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="h-in">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 200 200"><g fill="none" stroke="#C9E94E" stroke-width="14" stroke-linecap="round"><ellipse cx="100" cy="100" rx="30" ry="40"/><ellipse cx="100" cy="100" rx="62" ry="76" stroke-dasharray="220 90" transform="rotate(30 100 100)"/><ellipse cx="100" cy="100" rx="90" ry="96" stroke-dasharray="300 160" transform="rotate(-40 100 100)"/></g></svg>
+      <span>NTICx <b>·</b> 4.º AÑO<span class="b2"> <b>·</b> B. BLANCA</span></span>
+    </div>
+    <div class="h-title">TU HUELLA DIGITAL</div>
+    <div class="h-right">
+      <span class="prof">PROF. MARTIN ESPINOSA</span>
+      <span class="prog-pill" id="pillProg">DIAGNÓSTICO <b id="pillPct">0%</b></span>
+    </div>
+  </div>
+  <div id="scrollbar"></div>
+</header>
+
+<main id="v-est">
+
+  <!-- PORTADA -->
+  <section class="portada">
+    <div class="wrap p-grid">
+      <div>
+        <p class="kicker rv">INSTRUMENTO DE DIAGNÓSTICO Y PERFILADO INICIAL · NTICx · 4.º AÑO · PROF. MARTIN ESPINOSA · BAHÍA BLANCA</p>
+        <h1 class="h-big"><span class="l1" id="scr1" data-text="TU HUELLA">TU HUELLA</span><br><span class="l2"><span id="scr2" data-text="DIGITAL.">DIGITAL.</span><span class="cur"></span></span></h1>
+        <p class="lede rv">Conocé tu perfil tecnológico. <strong>No es un examen. No tiene nota. No hay respuestas correctas o incorrectas.</strong> Cuanto más real sea tu perfil, mejor vamos a poder trabajar juntos este año.</p>
+        <div class="chips-row rv">
+          <span class="chip-meta prof-chip">👤 PROF. MARTIN ESPINOSA</span>
+          <span class="chip-meta">⏱ 25–30 MIN</span>
+          <span class="chip-meta">🔒 CONFIDENCIAL</span>
+          <span class="chip-meta">📍 BAHÍA BLANCA</span>
+        </div>
+        <div class="leeme rv">
+          <p><b>Todo lo que respondas es confidencial</b> y solo lo va a usar tu profe para planificar las clases. Respondé con sinceridad: tu huella digital se arma con tus respuestas reales. <b>¡Gracias!</b></p>
+        </div>
+      </div>
+
+      <div class="scanner rv">
+        <div class="sc-top"><span><span class="dot"></span>SENSOR ACTIVO</span><span>v4.0 / 2026</span></div>
+        <div class="fp-stage">
+          <svg class="fp" viewBox="0 0 200 200" aria-hidden="true">
+            <defs><clipPath id="fpCutH"><rect id="fpFillH" x="0" y="200" width="200" height="0"/></clipPath></defs>
+            <g class="fp-base">
+              <ellipse cx="100" cy="100" rx="9" ry="13"/>
+              <ellipse cx="100" cy="100" rx="21" ry="27" stroke-dasharray="96 30" transform="rotate(24 100 100)"/>
+              <ellipse cx="100" cy="100" rx="33" ry="41" stroke-dasharray="150 46" transform="rotate(-18 100 100)"/>
+              <ellipse cx="100" cy="100" rx="45" ry="55" stroke-dasharray="210 62" transform="rotate(48 100 100)"/>
+              <ellipse cx="100" cy="100" rx="57" ry="69" stroke-dasharray="266 74" transform="rotate(8 100 100)"/>
+              <ellipse cx="100" cy="100" rx="69" ry="83" stroke-dasharray="330 96" transform="rotate(-38 100 100)"/>
+              <ellipse cx="100" cy="100" rx="81" ry="96" stroke-dasharray="400 130" transform="rotate(66 100 100)"/>
+            </g>
+            <g class="fp-live" clip-path="url(#fpCutH)">
+              <ellipse cx="100" cy="100" rx="9" ry="13"/>
+              <ellipse cx="100" cy="100" rx="21" ry="27" stroke-dasharray="96 30" transform="rotate(24 100 100)"/>
+              <ellipse cx="100" cy="100" rx="33" ry="41" stroke-dasharray="150 46" transform="rotate(-18 100 100)"/>
+              <ellipse cx="100" cy="100" rx="45" ry="55" stroke-dasharray="210 62" transform="rotate(48 100 100)"/>
+              <ellipse cx="100" cy="100" rx="57" ry="69" stroke-dasharray="266 74" transform="rotate(8 100 100)"/>
+              <ellipse cx="100" cy="100" rx="69" ry="83" stroke-dasharray="330 96" transform="rotate(-38 100 100)"/>
+              <ellipse cx="100" cy="100" rx="81" ry="96" stroke-dasharray="400 130" transform="rotate(66 100 100)"/>
+            </g>
+            <rect class="fp-scan" x="0" y="0" width="200" height="4"/>
+          </svg>
+        </div>
+        <div class="sc-status mono" id="scStatus" aria-live="polite">ESPERANDO DATOS_</div>
+        <div class="sc-btn"><button class="btn" onclick="startScan()">INICIAR DIAGNÓSTICO ↘</button></div>
+        <div class="sc-foot">LECTOR DE HUELLA · PROF. MARTIN ESPINOSA · SIN CALIFICACIÓN</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true"><div class="tk" id="tk"></div></div>
+
+  <!-- LEDGER -->
+  <section class="ledger wrap">
+    <p class="sec-tag rv" style="color:var(--coral-d)">LO QUE ESCANEA ESTE INSTRUMENTO</p>
+    <h2 class="rv">Seis dimensiones, una sola huella.</h2>
+    <p class="sub rv">Tocá cada dimensión para ver por qué la medimos. Nada de esto lleva nota: es información para armar una materia que te sirva.</p>
+    <div id="ledger" style="margin-top:34px"></div>
+  </section>
+
+  <!-- ENCUESTA -->
+  <section class="survey wrap" id="encuesta">
+    <div class="layout">
+      <form id="formEnc" autocomplete="off" onsubmit="return false">
+        <div>
+
+        <!-- ============ BLOQUE 1 ============ -->
+        <section class="bloque" data-b="1" id="b1">
+          <div class="bhead rv">
+            <span class="bnum">01</span>
+            <span class="bchip">BLOQUE 01 · ACCESO</span>
+            <h2 class="rvm"><span>Acceso, conectividad e infraestructura local</span></h2>
+            <p>Queremos saber con qué contás en tu casa para conectarte con el mundo digital. <b>No juzgamos:</b> cada hogar es distinto y todas las realidades son válidas.</p>
+          </div>
+
+          <div class="q rv" data-q="dev" data-type="multi">
+            <div class="qtop"><span class="qnum">P.1.1</span><h3>Dispositivos disponibles en tu hogar</h3><span class="hint">Marcá todos los que tengas, tuyos o compartidos con la familia.</span></div>
+            <div class="optgrid">
+              <label class="ck"><input type="checkbox" class="vh" value="pc"><svg viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="10" rx="1"/><path d="M7 17h6M10 13v4"/></svg>PC de escritorio<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="notebook"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="9" rx="1"/><path d="M2 16h16l-2-4H4z"/></svg>Notebook / Laptop<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="netbook"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="9" rx="1"/><path d="M2 16h16l-2-4H4z"/><circle cx="10" cy="7" r="1.4"/></svg>Netbook estatal (Conectar Igualdad / Juana Manso)<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="tablet"><svg viewBox="0 0 20 20"><rect x="5" y="2" width="10" height="16" rx="1.5"/><circle cx="10" cy="15" r=".8"/></svg>Tablet<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="celpropio"><svg viewBox="0 0 20 20"><rect x="6.5" y="2" width="7" height="16" rx="1.5"/><path d="M9 15.5h2"/></svg>Smartphone propio<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="celcomp"><svg viewBox="0 0 20 20"><rect x="6.5" y="2" width="7" height="16" rx="1.5"/><circle cx="10" cy="9" r="2"/></svg>Smartphone compartido<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="tv"><svg viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="10" rx="1"/><path d="M6 17h8"/></svg>Smart TV con internet<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="consola"><svg viewBox="0 0 20 20"><rect x="2" y="7" width="16" height="7" rx="3.5"/><path d="M6 10.5h3M7.5 9v3"/><circle cx="13.5" cy="11.5" r=".9"/><circle cx="15.5" cy="9.5" r=".9"/></svg>Consola (Play, Xbox, Nintendo)<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="watch"><svg viewBox="0 0 20 20"><rect x="6" y="6" width="8" height="8" rx="2"/><path d="M8 6V2h4v4M8 14v4h4v-4"/></svg>Smartwatch / pulsera<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="impresora"><svg viewBox="0 0 20 20"><path d="M5 7V3h10v4"/><rect x="3" y="7" width="14" height="6" rx="1"/><rect x="6" y="12" width="8" height="5"/></svg>Impresora<span class="bx"></span></label>
+              <label class="ck"><input type="checkbox" class="vh" value="otro"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 7v6M7 10h6"/></svg>Otro: <input type="text" class="otro-in" placeholder="¿cuál?"><span class="bx"></span></label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="comp" data-type="group">
+            <div class="qtop"><span class="qnum">P.1.2</span><h3>Estado y uso de la computadora (si tenés)</h3><span class="hint">Si en tu casa no hay computadora, marcá la última opción en cada punto.</span></div>
+            <div class="subq" data-q="comp_dueno" data-type="single">
+              <p class="sq-t">A) ¿DE QUIÉN ES PRINCIPALMENTE?</p>
+              <div class="pillrow">
+                <label class="pill"><input type="radio" class="vh" name="comp_dueno" value="1">Es solo mía</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_dueno" value="2">La comparto con 1 persona más</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_dueno" value="3">La comparto con 2 o más</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_dueno" value="0">No tengo compu en casa</label>
+              </div>
+            </div>
+            <div class="subq" data-q="comp_estado" data-type="single">
+              <p class="sq-t">B) ¿EN QUÉ ESTADO ESTÁ?</p>
+              <div class="pillrow">
+                <label class="pill"><input type="radio" class="vh" name="comp_estado" value="3">Funciona perfecto, rápida</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_estado" value="2">Funciona pero es lenta / se tilda</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_estado" value="1">Solo para cosas básicas</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_estado" value="0">Está rota / no funciona</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_estado" value="-1">No tengo compu</label>
+              </div>
+            </div>
+            <div class="subq" data-q="comp_so" data-type="single" style="margin-top:16px">
+              <p class="sq-t">C) ¿QUÉ SISTEMA OPERATIVO USA?</p>
+              <div class="pillrow">
+                <label class="pill"><input type="radio" class="vh" name="comp_so" value="win">Windows</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_so" value="mac">macOS</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_so" value="linux">Linux (Ubuntu, Huayra…)</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_so" value="nose">No sé / no estoy seguro/a</label>
+                <label class="pill"><input type="radio" class="vh" name="comp_so" value="-1">No tengo compu</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="net" data-type="multi">
+            <div class="qtop"><span class="qnum">P.1.3</span><h3>Conectividad a internet en tu hogar</h3><span class="hint">Podés marcar más de una opción.</span></div>
+            <div class="optgrid">
+              <label class="ck"><input type="checkbox" class="vh" value="fibra"><span class="bx" style="margin-left:0"></span>Wi-Fi por fibra óptica (rápida y estable)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="cable"><span class="bx" style="margin-left:0"></span>Wi-Fi por cablemódem (Telecentro, Flow…)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="adsl"><span class="bx" style="margin-left:0"></span>Wi-Fi por ADSL / teléfono (más lenta)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="sat"><span class="bx" style="margin-left:0"></span>Internet satelital</label>
+              <label class="ck"><input type="checkbox" class="vh" value="datos"><span class="bx" style="margin-left:0"></span>Solo datos móviles (tethering / hotspot)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="vecino"><span class="bx" style="margin-left:0"></span>Red de un vecino / familiar</label>
+              <label class="ck"><input type="checkbox" class="vh" value="nada"><span class="bx" style="margin-left:0"></span>No tengo internet en casa</label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="lim" data-type="multi">
+            <div class="qtop"><span class="qnum">P.1.4</span><h3>Limitaciones de acceso</h3><span class="hint">¿Alguna de estas situaciones te pasa seguido? Marcá todas las que apliquen.</span></div>
+            <div class="optgrid">
+              <label class="ck"><input type="checkbox" class="vh" value="cortes"><span class="bx" style="margin-left:0"></span>Se corta internet frecuentemente</label>
+              <label class="ck"><input type="checkbox" class="vh" value="lenta"><span class="bx" style="margin-left:0"></span>Muy lenta para videos o videollamadas</label>
+              <label class="ck"><input type="checkbox" class="vh" value="sindatos"><span class="bx" style="margin-left:0"></span>Me quedo sin datos antes de fin de mes</label>
+              <label class="ck"><input type="checkbox" class="vh" value="salir"><span class="bx" style="margin-left:0"></span>Tengo que salir de casa para conectarme</label>
+              <label class="ck"><input type="checkbox" class="vh" value="comparto"><span class="bx" style="margin-left:0"></span>Comparto el único celular con internet</label>
+              <label class="ck"><input type="checkbox" class="vh" value="espacio"><span class="bx" style="margin-left:0"></span>No tengo espacio tranquilo para usar la compu</label>
+              <label class="ck" style="background:var(--paper2)"><input type="checkbox" class="vh" value="ninguna" data-excl="lim"><span class="bx" style="margin-left:0"></span><b>Ninguna me pasa</b></label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="escuela" data-type="single">
+            <div class="qtop"><span class="qnum">P.1.5</span><h3>Acceso desde la escuela</h3><span class="hint">¿Usás internet en la escuela? ¿Cómo?</span></div>
+            <div class="pillrow">
+              <label class="pill"><input type="radio" class="vh" name="escuela" value="aula">Sí, en el aula de informática</label>
+              <label class="pill"><input type="radio" class="vh" name="escuela" value="celu">Sí, con mi celular en recreos / clases</label>
+              <label class="pill"><input type="radio" class="vh" name="escuela" value="netbook">Sí, con la netbook escolar</label>
+              <label class="pill"><input type="radio" class="vh" name="escuela" value="casi">Casi nunca / nunca</label>
+              <label class="pill"><input type="radio" class="vh" name="escuela" value="noclaro">No sé si la escuela tiene internet para estudiantes</label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BLOQUE 2 ============ -->
+        <section class="bloque" data-b="2" id="b2">
+          <div class="bhead rv">
+            <span class="bnum">02</span>
+            <span class="bchip">BLOQUE 02 · CONSUMO Y HÁBITOS</span>
+            <h2 class="rvm"><span>Consumo cultural, redes y hábitos digitales</span></h2>
+            <p>Acá nos interesa saber qué hacés cuando estás conectado/a. <b>Sin filtros:</b> todo lo que consumís dice algo de vos.</p>
+          </div>
+
+          <div class="q rv" data-q="plats" data-type="rank">
+            <div class="qtop"><span class="qnum">P.2.1</span><h3>Tus 5 plataformas de todos los días</h3><span class="hint">Elegí exactamente 5: el orden en que las toques les asigna el puesto (1.º a 5.º).</span></div>
+            <div class="pillrow" id="platsRow">
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="tiktok">TikTok</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="instagram">Instagram</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="whatsapp">WhatsApp</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="youtube">YouTube</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="twitch">Twitch</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="discord">Discord</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="x">X (Twitter)</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="facebook">Facebook</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="telegram">Telegram</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="musica">Spotify / Música</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="streaming">Netflix / Disney+ / HBO…</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="gaming">Videojuegos online</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="reddit">Reddit</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="pinterest">Pinterest</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="linkedin">LinkedIn</label>
+              <label class="pill"><span class="ord"></span><input type="checkbox" class="vh" value="otra">Otra: <input type="text" class="otro-in" placeholder="¿cuál?" style="width:80px"></label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="horas" data-type="group">
+            <div class="qtop"><span class="qnum">P.2.2</span><h3>Tiempo de conexión</h3><span class="hint">¿Cuántas horas por día pasás conectado/a a pantallas (celular, compu, TV)?</span></div>
+            <div class="subq" data-q="horas_semana" data-type="single">
+              <p class="sq-t">DÍA DE SEMANA (LUNES A VIERNES)</p>
+              <div class="seg5">
+                <label><input type="radio" class="vh" name="horas_semana" value="0">&lt;2 hs</label>
+                <label><input type="radio" class="vh" name="horas_semana" value="1">2–4</label>
+                <label><input type="radio" class="vh" name="horas_semana" value="2">4–6</label>
+                <label><input type="radio" class="vh" name="horas_semana" value="3">6–8</label>
+                <label><input type="radio" class="vh" name="horas_semana" value="4">+8</label>
+              </div>
+            </div>
+            <div class="subq" data-q="horas_finde" data-type="single" style="margin-top:16px">
+              <p class="sq-t">DÍA DE FIN DE SEMANA</p>
+              <div class="seg5">
+                <label><input type="radio" class="vh" name="horas_finde" value="0">&lt;2 hs</label>
+                <label><input type="radio" class="vh" name="horas_finde" value="1">2–4</label>
+                <label><input type="radio" class="vh" name="horas_finde" value="2">4–6</label>
+                <label><input type="radio" class="vh" name="horas_finde" value="3">6–8</label>
+                <label><input type="radio" class="vh" name="horas_finde" value="4">+8</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="info" data-type="multi" data-max="2">
+            <div class="qtop"><span class="qnum">P.2.3</span><h3>¿Cómo te informás?</h3><span class="hint">Cuando querés saber qué pasa en Bahía Blanca, Argentina o el mundo: marcá tus 2 fuentes principales.</span></div>
+            <div class="optgrid">
+              <label class="ck"><input type="checkbox" class="vh" value="portales"><span class="bx" style="margin-left:0"></span>Portales de noticias (La Nueva, Infobae, TN…)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="periodistas"><span class="bx" style="margin-left:0"></span>Periodistas / medios en Instagram o X</label>
+              <label class="ck"><input type="checkbox" class="vh" value="tiktoknews"><span class="bx" style="margin-left:0"></span>Creadores de TikTok</label>
+              <label class="ck"><input type="checkbox" class="vh" value="grupos"><span class="bx" style="margin-left:0"></span>Grupos de WhatsApp / Telegram</label>
+              <label class="ck"><input type="checkbox" class="vh" value="ytnoticias"><span class="bx" style="margin-left:0"></span>YouTube (noticias, podcasts)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="entorno"><span class="bx" style="margin-left:0"></span>Lo que comparten amigos / familia</label>
+              <label class="ck"><input type="checkbox" class="vh" value="radiotv"><span class="bx" style="margin-left:0"></span>Radio o TV tradicional</label>
+              <label class="ck"><input type="checkbox" class="vh" value="papel"><span class="bx" style="margin-left:0"></span>Diarios impresos</label>
+              <label class="ck"><input type="checkbox" class="vh" value="nada"><span class="bx" style="margin-left:0"></span>La verdad, casi no me informo</label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="prod" data-type="multi">
+            <div class="qtop"><span class="qnum">P.2.4</span><h3>Producción de contenido</h3><span class="hint">¿Alguna vez creaste o publicaste alguno de estos contenidos?</span></div>
+            <div class="optgrid">
+              <label class="ck"><input type="checkbox" class="vh" value="video"><span class="bx" style="margin-left:0"></span>Video propio (TikTok / Reels / Shorts)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="stream"><span class="bx" style="margin-left:0"></span>Stream en Twitch / YouTube</label>
+              <label class="ck"><input type="checkbox" class="vh" value="podcast"><span class="bx" style="margin-left:0"></span>Podcast o radio escolar</label>
+              <label class="ck"><input type="checkbox" class="vh" value="web"><span class="bx" style="margin-left:0"></span>Blog o página web</label>
+              <label class="ck"><input type="checkbox" class="vh" value="fan"><span class="bx" style="margin-left:0"></span>Fanfic, fanart o contenido creativo</label>
+              <label class="ck"><input type="checkbox" class="vh" value="memes"><span class="bx" style="margin-left:0"></span>Memes propios que circularon</label>
+              <label class="ck"><input type="checkbox" class="vh" value="foto"><span class="bx" style="margin-left:0"></span>Fotos editadas artísticamente</label>
+              <label class="ck"><input type="checkbox" class="vh" value="musica"><span class="bx" style="margin-left:0"></span>Música / beats / covers</label>
+              <label class="ck"><input type="checkbox" class="vh" value="codigo"><span class="bx" style="margin-left:0"></span>Código (juegos, apps, webs)</label>
+              <label class="ck"><input type="checkbox" class="vh" value="mods"><span class="bx" style="margin-left:0"></span>Mods o contenido para videojuegos</label>
+              <label class="ck"><input type="checkbox" class="vh" value="solo" data-excl="prod"><span class="bx" style="margin-left:0"></span><b>Nunca publiqué nada: solo consumo</b></label>
+            </div>
+          </div>
+
+          <div class="q rv" data-q="reltec" data-type="single">
+            <div class="qtop"><span class="qnum">P.2.5</span><h3>Tu relación con la tecnología</h3><span class="hint">Elegí la frase que más te represente.</span></div>
+            <div class="qlist">
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="1"><span class="rd"></span><em>“Me encanta, quiero saber cómo funciona todo y crear cosas.”</em></label>
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="2"><span class="rd"></span><em>“La uso mucho pero no sé bien cómo funciona por dentro.”</em></label>
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="3"><span class="rd"></span><em>“La uso lo necesario, no me genera mucho interés.”</em></label>
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="4"><span class="rd"></span><em>“Me cuesta, me siento incómodo/a con muchas cosas digitales.”</em></label>
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="5"><span class="rd"></span><em>“La uso para divertirme pero no para estudiar o trabajar.”</em></label>
+              <label class="quote"><input type="radio" class="vh" name="reltec" value="6"><span class="rd"></span><em>“Me interesa pero no tengo con quién aprender.”</em></label>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BLOQUE 3 ============ -->
+        <section class="bloque" data-b="3" id="b3">
+          <div class="bhead rv">
+            <span class="bnum">03</span>
+            <span class="bchip">BLOQUE 03 · SABERES PREVIOS</span>
+            <h2 class="rvm"><span>Saberes tecnológicos y ofimáticos</span></h2>
+            <p>Queremos saber qué cosas ya sabés hacer. <b>No te preocupes si no sabés algunas: ¡para eso está la materia!</b></p>
+          </div>
+
+          <div class="q rv" data-type="matrix">
+            <div class="qtop"><span class="qnum">P.3.1</span><h3>Autoevaluación de habilidades</h3><span class="hint">Marcá un nivel por habilidad. Nadie te está mirando: sé honesto/a con vos.</span></div>
+            <div class="mx-head"><span></span>
+              <div class="mx-lbls"><span>1<br>NI IDEA</span><span>2<br>CON AYUDA</span><span>3<br>DESPACIO</span><span>4<br>SOLTURA</span><span>5<br>DOMINO</span></div>
+            </div>
+            <div id="skills"></div>
+            <p class="mx-legend">▸ 18 habilidades · el promedio alimenta tu barra de SABERES en el perfilómetro.</p>
+          </div>
+
+          <div class="q rv" data-type="group">
+            <div class="qtop"><span class="qnum">P.3.2</span><h3>Experiencias previas</h3><span class="hint">Respuestas abiertas y breves. Escribir es opcional, pero suma muchísimo.</span></div>
+            <div class="subq" data-q="exp_curso" data-type="text">
+              <p class="sq-t">A) ¿HICISTE ALGÚN CURSO, TALLER O MATERIA DE TECNOLOGÍA ANTES?</p>
+              <textarea class="ta" name="exp_curso" placeholder="Programación, diseño, robótica, edición…"></textarea>
+            </div>
+            <div class="subq" data-q="exp_proyecto" data-type="text">
+              <p class="sq-t">B) ¿TENÉS ALGÚN PROYECTO DIGITAL PROPIO O EN EL QUE PARTICIPES?</p>
+              <textarea class="ta" name="exp_proyecto" placeholder="Un canal, un server de Discord, un emprendimiento, un grupo…"></textarea>
+            </div>
+            <div class="subq" data-q="exp_aprender" data-type="text" style="margin-top:16px">
+              <p class="sq-t">C) ¿QUÉ TE GUSTARÍA APRENDER ESTE AÑO EN NTICx?</p>
+              <textarea class="ta" name="exp_aprender" placeholder="Sin respuestas incorrectas. Soñá en grande."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BLOQUE 4 ============ -->
+        <section class="bloque" data-b="4" id="b4">
+          <div class="bhead rv">
+            <span class="bnum">04</span>
+            <span class="bchip">BLOQUE 04 · CIUDADANÍA DIGITAL</span>
+            <h2 class="rvm"><span>Percepción de riesgos: ¿qué harías realmente?</span></h2>
+            <p>Seis situaciones que podrían pasarte de verdad. <b>No hay respuestas correctas:</b> contanos qué harías vos, en serio.</p>
+          </div>
+          <div id="situaciones"></div>
+        </section>
+
+        <!-- CTA -->
+        <div class="cta-final rv">
+          <h3>¿Listo? Calculamos tu huella</h3>
+          <p>Con tus respuestas generamos una ficha de perfil aproximada: conectividad, saberes, producción y tu nivel de ciudadanía digital. Al final vas a poder descargarla en PDF.</p>
+          <button class="btn dark" onclick="generarPerfil()">GENERAR MI PERFIL ⚡</button>
+        </div>
+
+        </div>
+      </form>
+
+      <!-- PERFILÓMETRO -->
+      <aside class="perfil">
+        <div class="pcard">
+          <h4>◉ PERFILÓMETRO EN VIVO</h4>
+          <p class="pwho">PROF. MARTIN ESPINOSA · NTICx 4.º</p>
+          <svg class="fp" viewBox="0 0 200 200" aria-hidden="true">
+            <defs><clipPath id="fpCutP"><rect id="fpFillP" x="0" y="200" width="200" height="0"/></clipPath></defs>
+            <g class="fp-base">
+              <ellipse cx="100" cy="100" rx="10" ry="14"/>
+              <ellipse cx="100" cy="100" rx="26" ry="32" stroke-dasharray="120 40" transform="rotate(20 100 100)"/>
+              <ellipse cx="100" cy="100" rx="44" ry="52" stroke-dasharray="200 60" transform="rotate(-25 100 100)"/>
+              <ellipse cx="100" cy="100" rx="62" ry="72" stroke-dasharray="300 90" transform="rotate(50 100 100)"/>
+              <ellipse cx="100" cy="100" rx="80" ry="92" stroke-dasharray="380 130" transform="rotate(-45 100 100)"/>
+            </g>
+            <g class="fp-live" clip-path="url(#fpCutP)">
+              <ellipse cx="100" cy="100" rx="10" ry="14"/>
+              <ellipse cx="100" cy="100" rx="26" ry="32" stroke-dasharray="120 40" transform="rotate(20 100 100)"/>
+              <ellipse cx="100" cy="100" rx="44" ry="52" stroke-dasharray="200 60" transform="rotate(-25 100 100)"/>
+              <ellipse cx="100" cy="100" rx="62" ry="72" stroke-dasharray="300 90" transform="rotate(50 100 100)"/>
+              <ellipse cx="100" cy="100" rx="80" ry="92" stroke-dasharray="380 130" transform="rotate(-45 100 100)"/>
+            </g>
+          </svg>
+          <div class="pcomp"><div class="n" id="compPct">0%</div><div class="d">HUELLA REGISTRADA</div></div>
+          <div class="pbar"><div class="bl"><span>CONECTIVIDAD</span><span id="lv-con">—</span></div><div class="tr"><div class="fl" id="b-con"></div></div></div>
+          <div class="pbar"><div class="bl"><span>SABERES</span><span id="lv-sab">—</span></div><div class="tr"><div class="fl" id="b-sab"></div></div></div>
+          <div class="pbar"><div class="bl"><span>PRODUCCIÓN</span><span id="lv-pro">—</span></div><div class="tr"><div class="fl" id="b-pro"></div></div></div>
+          <div class="pbar"><div class="bl"><span>CIUDADANÍA</span><span id="lv-ciu">—</span></div><div class="tr"><div class="fl" id="b-ciu"></div></div></div>
+          <p class="pnote">La huella se va pintando a medida que respondés. Todo se procesa en tu navegador: nada sale de esta página.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- RESULTADO -->
+  <section id="resultado" class="oculto">
+    <div class="wrap">
+      <p class="sec-tag" style="color:var(--lime-d)">RESULTADO DEL ESCANEO</p>
+      <div class="ficha" id="fichaCard">
+        <div class="f-top">
+          <span class="f-stamp">FICHA DE PERFIL TECNOLÓGICO · NTICx 4.º · PROF. MARTIN ESPINOSA · <span id="fFecha"></span></span>
+          <span class="f-stamp" style="background:var(--coral)">APROXIMACIÓN AUTOMÁTICA</span>
+        </div>
+        <div class="f-grid">
+          <div class="radar-box">
+            <svg viewBox="0 0 220 220" id="radarSvg"></svg>
+            <p class="mono" style="font-size:.6rem;letter-spacing:.14em;color:var(--ink2)">RADAR DE 5 DIMENSIONES</p>
+          </div>
+          <div>
+            <div class="perfil-hero">
+              <div class="p-letter" id="resLetter">?</div>
+              <div><div class="p-name" id="resName">—</div><div class="p-tag" id="resTag">—</div>
+              <div class="ciu-badge" id="resCiu">CIUDADANÍA: —</div></div>
+            </div>
+            <dl class="f-dl">
+              <div><dt>PLATAFORMAS TOP</dt><dd id="resPlats">—</dd></div>
+              <div><dt>CONEXIÓN DIARIA (SEMANA)</dt><dd id="resHoras">—</dd></div>
+              <div><dt>PROMEDIO DE HABILIDADES</dt><dd id="resSab">—</dd></div>
+              <div><dt>SEGUNDO PERFIL MÁS CERCANO</dt><dd id="resSecond">—</dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="f-bars" id="fBars"></div>
+        <div class="f-desc">
+          <div class="col"><h5>SE DETECTA POR</h5><ul id="resRasgos"></ul></div>
+          <div class="col"><h5>QUÉ PROPONEMOS ESTE AÑO</h5><ul id="resProp"></ul></div>
+          <div class="col"><h5>PROYECTO SUGERIDO</h5><ul id="resProy"></ul><h5 style="margin-top:16px">ORIENTACIÓN</h5><ul id="resOri"></ul></div>
+        </div>
+        <div class="f-foot">
+          <p class="fine">⚠ Esto es una <b>aproximación automática</b> con fines pedagógicos. No es una etiqueta: tu huella cambia todo el año. · Prof. Martin Espinosa · NTICx 4.º Año · Bahía Blanca.</p>
+          <div class="f-actions">
+            <button class="btn dark" id="btnPdf" onclick="descargarPDF()">⬇ DESCARGAR PDF</button>
+            <button class="btn ghost" onclick="window.print()">🖨 IMPRIMIR</button>
+            <button class="btn" onclick="reiniciar()">↺ REINICIAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- barra movil -->
+<div id="barraMovil"><span>HUELLA</span><div class="tr"><div class="fl" id="bmFl"></div></div><span id="bmPct">0%</span></div>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap f-grid2">
+    <div>
+      <div class="f-brand">TU HUELLA <span>DIGITAL.</span></div>
+      <p>Instrumento de diagnóstico y perfilado inicial · Nuevas Tecnologías de la Información y la Conectividad · 4.º año · Escuela Secundaria · Bahía Blanca.</p>
+    </div>
+    <div>
+      <h6>FICHA TÉCNICA</h6>
+      <ul><li>DOCENTE · PROF. MARTIN ESPINOSA</li><li>TIEMPO · 25–30 MIN</li><li>BLOQUES · 04</li><li>SITUACIONES · 06</li><li>HABILIDADES · 18</li></ul>
+    </div>
+    <div>
+      <h6>PRINCIPIOS</h6>
+      <ul><li>NO ES UN EXAMEN</li><li>SIN RESPUESTAS CORRECTAS</li><li>CONFIDENCIAL</li><li>LIBRE DE JUICIOS</li><li>DATOS SOLO PARA EL/LA PROFE</li></ul>
+    </div>
+  </div>
+  <div class="wrap f-line">
+    <span>© 2026 · PROF. MARTIN ESPINOSA · MATERIAL PEDAGÓGICO DE USO LIBRE — CITÁ LA FUENTE</span>
+    <span>HECHO CON ♥ PARA LAS AULAS BAHÍENSES</span>
+  </div>
+</footer>
+
+<div id="toast" role="status"></div>
+
+<!-- Librerías para generar el PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+(function(){
+"use strict";
+var RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(s){ return document.querySelector(s); }
+function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+
+/* ---------- DATOS ---------- */
+var DIMS = [
+ ["Infraestructura doméstica","Equipamiento real del hogar y condiciones materiales de acceso.","Para planificar tareas realistas: nada de pedir lo que no se puede cumplir en casa."],
+ ["Hábitos de consumo digital","Plataformas, formatos y géneros de la dieta mediática cotidiana.","Para anclar la materia en los universos culturales reales: memes, TikTok, Twitch…"],
+ ["Saberes instrumentales previos","Dominio de ofimática, edición y gestión de archivos.","Para agrupar por nivel y calibrar la profundidad de las primeras clases."],
+ ["Ciudadanía digital intuitiva","Reacciones espontáneas ante riesgo, desinformación y dilemas éticos.","Para saber dónde reforzar seguridad, pensamiento crítico y ética digital."],
+ ["Perfil vocacional / intereses","Inclinaciones: programación, diseño, comunicación, ciberseguridad, audiovisual.","Para vincular los proyectos del año con intereses genuinos y salidas laborales."],
+ ["Brechas de segundo nivel","Quién, teniendo acceso, hace usos limitados, recreativos o pasivos.","Para ampliar el repertorio de usos significativos de la tecnología."]
+];
+var SKILLS = ["Crear y guardar un documento (Word / Writer)","Dar formato a un texto (negrita, títulos, márgenes)","Hacer una tabla y ordenar datos","Usar una planilla de cálculo (Excel / Calc / Sheets)","Hacer una fórmula simple (=SUMA, =PROMEDIO)","Armar una presentación (PowerPoint / Slides)","Editar una foto (recortar, filtros, texto)","Editar un video corto (CapCut, Premiere, iMovie)","Grabar y editar un audio / podcast","Subir y organizar archivos en la nube (Drive)","Comprimir / descomprimir archivos (.zip, .rar)","Reconocer una estafa o mail falso (phishing)","Configurar contraseñas seguras y 2FA","Búsqueda avanzada en Google (operadores)","Instalar / desinstalar programas","Conectar impresora / configurar Wi-Fi","Armar un mapa conceptual digital","Programar algo básico (Scratch, Python, HTML)"];
+var SITS = [
+ {t:"La noticia viral",txt:"Estás scrolleando TikTok y te aparece un video: “URGENTE: el municipio de Bahía Blanca va a cortar el agua 3 días en tu barrio por una obra no anunciada”. Tiene 200 mil likes y lo subió una cuenta con 50 mil seguidores.",ops:["Lo creo y aviso a mi familia","Lo comparto en el grupo de WhatsApp del barrio","Busco en la página oficial del municipio si es verdad","Busco en Google si otros medios lo publicaron","Lo ignoro, seguro es fake"]},
+ {t:"El mail sospechoso",txt:"Te llega un mail que dice ser de Mercado Pago: “Detectamos actividad inusual en tu cuenta. Hacé clic acá para verificar tu identidad o vamos a bloquearla en 24 hs”. Tiene tu nombre y parece oficial.",ops:["Hago clic rápido para que no me bloqueen","Respondo el mail preguntando qué pasó","Entro directo a la app/web oficial, sin usar el enlace","Lo borro directamente sin abrir","Se lo reenvío a un amigo para que me diga"]},
+ {t:"El amigo en apuros",txt:"WhatsApp de un amigo: “Estoy en un problema, necesito que me pases $20.000 ya por transferencia, después te explico. No puedo hablar ahora”. El número es el de él, pero el tono te parece raro.",ops:["Le transfiero: es mi amigo","Le llamo por teléfono para verificar que es él","Le pregunto algo que solo él sabría (una anécdota)","Le digo que no puedo y me fijo en sus redes","Aviso a sus familiares por las dudas"]},
+ {t:"La foto íntima",txt:"Un compañero te manda por WhatsApp una foto íntima de otra persona del curso que se filtró: “mirá lo que me llegó, pasalo”.",ops:["La miro y la borro, no la paso","La paso a algunos amigos de confianza","La paso al grupo del curso: total ya circula","Le digo que no la paso y que difundirla es un delito","Aviso a un docente / preceptor / directivo","Le aviso a la persona de la foto para que sepa"]},
+ {t:"La apuesta online",txt:"Anuncio en Instagram de una plataforma de apuestas: “Ganá $50.000 en tu primera apuesta, 100% seguro”. Lo promocionan varios influencers que seguís.",ops:["Me registro y pruebo, total es poco dinero","Investigo si la plataforma es legal en Argentina","La ignoro, sé que es riesgoso","La instalo pero no apuesto, solo miro","Denuncio el anuncio como engañoso"]},
+ {t:"El uso de IA",txt:"Tenés que entregar un ensayo de 3 páginas para Historia. ChatGPT te lo puede generar en 30 segundos con solo pedirlo.",ops:["Se lo pido y lo entrego tal cual","Se lo pido, lo leo, lo corrijo y le agrego ideas mías","Lo uso solo para ideas y después escribo yo","No lo uso: lo escribo todo yo","Lo uso, pero antes le pregunto al profe si puedo"]}
+];
+var SIT_SCORES = {s1:[1,1,3,3,2],s2:[1,1,3,2,1],s3:[1,3,3,2,2],s4:[2,1,1,3,3,3],s5:[1,3,2,1,3],s6:[1,2,3,3,3]};
+var PERFILES = {
+ A:{n:"HIPERCONECTADO/A RECREATIVO/A",tag:"“Mucho scroll, poca fábrica.”",c:"#FFC53D",
+   rasgos:["Más de 6 horas diarias conectado/a","Domina TikTok, Instagram, Twitch, Discord","Altísimo consumo, baja producción","Buen manejo de redes, poca reflexión crítica"],
+   prop:["Convertir tu expertise en producción crítica: community manager de los proyectos del curso","Desafío: analizar algorítmicamente tu propio feed. ¿Qué te muestra TikTok y por qué?"],
+   proy:"Campaña de concientización digital en TikTok para estudiantes de 1.er año.",
+   ori:"Podés brillar en imagen visual y medios digitales (Módulos 4 y 5)."},
+ B:{n:"CREADOR/A MULTIMEDIA",tag:"“De la idea al render.”",c:"#FFC53D",
+   rasgos:["Producís contenido propio: videos, streams, música, arte","Editás fotos y videos con soltura","Consumo cultural diverso y crítico","Intereses artísticos o comunicacionales"],
+   prop:["Podés estar a cargo de la estética de los proyectos grupales","Este año sumamos semiótica, retórica visual y análisis de la manipulación publicitaria"],
+   proy:"Documental multimedia sobre un barrio de Bahía Blanca.",
+   ori:"Comunicación Social, Diseño y Artes Audiovisuales (UNS)."},
+ C:{n:"TÉCNICO/A · HACKER EN FORMACIÓN",tag:"“Siempre quiere abrir la caja.”",c:"#C9E94E",
+   rasgos:["Alto dominio de hardware, redes y programación básica","Interés genuino en cómo funcionan las cosas por dentro","Experiencia en mods, servidores, Linux","Te podés aburrir con contenidos básicos"],
+   prop:["Tareas avanzadas: configurar el aula virtual, armar la LAN, auditorías de seguridad","Rol de tutor par de compañeros con menos saberes técnicos"],
+   proy:"Diseñar el plan de ciberseguridad de la escuela.",
+   ori:"Ingeniería en Sistemas y Cs. de la Computación (UNS, UTN) · Olimpíada Informática Argentina."},
+ D:{n:"ACCESO LIMITADO",tag:"“La conexión no te define: la escuela banca.”",c:"#FF6B4A",
+   rasgos:["Sin computadora o con equipo muy limitado","Conexión solo por datos móviles o inexistente","Uso instrumental básico de WhatsApp y Facebook","Bajo consumo de contenido multimedia"],
+   prop:["Todas las tareas se van a poder hacer en el aula: ninguna va a depender de tu conectividad","Netbooks, aula de informática y software portable a disposición","Ofimática en la nube desde el celular como puente"],
+   proy:"Mapeo de puntos de acceso gratuito a internet en Bahía Blanca, como recurso comunitario.",
+   ori:"Programas municipales de inclusión digital y becas de conectividad."},
+ E:{n:"INSTRUMENTAL EN DESPEGUE",tag:"“Acceso listo, falta caja de herramientas.”",c:"#9BB8ED",
+   rasgos:["Tenés acceso pero lo limitás a redes y WhatsApp","Saberes ofimáticos bajos (Word, Excel)","Nube, productividad y búsqueda avanzada: pendiente","Riesgo de que la facu o el trabajo te encuentren en desventaja"],
+   prop:["Nivelación sin estigmatizar: aprendizaje entre pares en trabajos grupales","Ofimática con sentido: nada de “clases de Word”, vamos a hacer informes reales","Seguimiento con bitácora de aprendizaje"],
+   proy:"Armar tu primer blogofolio digital: portafolio de trabajos del año.",
+   ori:"Módulos 1, 2 y 3 de forma intensiva en el primer trimestre."},
+ F:{n:"CIUDADANO/A DIGITAL REFLEXIVO/A",tag:"“Pregunta antes de compartir.”",c:"#D89BE8",
+   rasgos:["Respuestas de Nivel 3 en ciudadanía digital","Consumo cultural diverso y crítico","Interés en lo ético, político y social de la tecnología","Producís con conciencia: citás fuentes, respetás licencias"],
+   prop:["Debates de soberanía tecnológica, capitalismo de vigilancia y ética de la IA","Liderazgo en campañas de concientización y extensión comunitaria"],
+   proy:"Auditoría cívica de datos abiertos del municipio de Bahía Blanca.",
+   ori:"Ciencia Política, Derecho, Sociología, Periodismo."}
+};
+var TIQUES = ["TIKTOK","PHISHING","EXCEL","FIBRA ÓPTICA","MEMES","CHATGPT","TWITCH","CONTRASEÑAS","FAKE NEWS","CAPCUT","LINUX","2FA","CREATIVE COMMONS","E-SPORTS","DATOS ABIERTOS","HUAYRA"];
+
+/* ---------- BUILD ---------- */
+var i, j;
+$('#tk').innerHTML = TIQUES.concat(TIQUES).map(function(t){return '<span>'+t+' <b>▸</b></span>';}).join('');
+$('#ledger').innerHTML = DIMS.map(function(d,i2){
+ return '<div class="lrow rv" onclick="this.classList.toggle(\'open\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')this.classList.toggle(\'open\')">'+
+   '<span class="idx">D-0'+(i2+1)+'</span><span class="dim">'+d[0]+'</span><span class="obj">'+d[1]+'</span><span class="pl">+</span>'+
+   '<div class="det"><b>¿PARA QUÉ SIRVE MEDIRLA?</b> '+d[2]+'</div></div>';
+}).join('');
+var skHtml='';
+for(i=0;i<SKILLS.length;i++){
+  var dots='';
+  for(j=1;j<=5;j++){ dots += '<label data-n="'+j+'"><input type="radio" class="vh" name="sk'+i+'" value="'+j+'"><span class="d"></span></label>'; }
+  skHtml += '<div class="skrow" data-q="sk'+i+'" data-type="single"><span class="skn">'+SKILLS[i]+'</span><div class="dots">'+dots+'</div></div>';
+}
+$('#skills').innerHTML = skHtml;
+var sitHtml='';
+for(i=0;i<SITS.length;i++){
+  var ops='';
+  for(j=0;j<SITS[i].ops.length;j++){
+    ops += '<label class="opt"><input type="radio" class="vh" name="s'+(i+1)+'" value="'+j+'"><span class="rd"></span>'+SITS[i].ops[j]+'</label>';
+  }
+  ops += '<label class="opt"><input type="radio" class="vh" name="s'+(i+1)+'" value="otro"><span class="rd"></span>Otro: <input type="text" class="otro-in" placeholder="contanos…" style="border:none;border-bottom:1.5px solid var(--ink);background:transparent;font-family:var(--mono);font-size:.82rem;outline:none"></label>';
+  sitHtml += '<div class="sit rv" data-q="s'+(i+1)+'" data-type="single"><div class="sit-head"><span class="stag">🎭 SITUACIÓN 0'+(i+1)+'</span><span class="stitle">'+SITS[i].t+'</span></div><div class="sit-body"><div class="story">'+SITS[i].txt+'</div><div class="opts">'+ops+'</div></div></div>';
+}
+$('#situaciones').innerHTML = sitHtml;
+
+/* ---------- SYNC UI ---------- */
+function syncUI(){
+  var labels=$$('.ck,.pill,.quote,.opt,.seg5 label,.dots label');
+  for(var x=0;x<labels.length;x++){
+    var l=labels[x], inp=l.querySelector('input');
+    if(inp){
+      if(inp.checked){ l.classList.add('checked'); } else { l.classList.remove('checked'); }
+    }
+  }
+}
+
+/* ---------- SCRAMBLE ---------- */
+function scramble(el){
+  var txt = el.getAttribute('data-text'), chars="█▓▒░<>/#01+*";
+  if(RM){ el.textContent=txt; return; }
+  var f=0; el.textContent="";
+  var iv=setInterval(function(){
+    f++;
+    var out="";
+    for(var y=0;y<txt.length;y++){ out += (y < f/2.4) ? txt[y] : chars[Math.floor(Math.random()*chars.length)]; }
+    el.textContent=out;
+    if(f/2.4 >= txt.length){ el.textContent=txt; clearInterval(iv); }
+  },34);
+}
+scramble($('#scr1')); setTimeout(function(){ scramble($('#scr2')); },400);
+
+/* ---------- STATUS SCANNER ---------- */
+var STATUSES=["ESPERANDO DATOS_","SENSORES LISTOS_","TU PERFIL SE ARMA EN VIVO_","CERO JUICIOS, 100% DATOS_"];
+var si2=0;
+if(!RM) setInterval(function(){ si2=(si2+1)%STATUSES.length; $('#scStatus').textContent=STATUSES[si2]; },2600);
+
+/* ---------- TOAST ---------- */
+var tTimer;
+function toast(msg){ var t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(tTimer); tTimer=setTimeout(function(){t.classList.remove('show');},2600); }
+
+/* ---------- LÓGICA DE RESPUESTAS ---------- */
+var platOrder=[];
+document.addEventListener('change',function(e){
+  var inp=e.target, x;
+  if(inp.dataset && inp.dataset.excl && inp.checked){
+    var grp=inp.closest('[data-q]');
+    if(grp){ var boxes=grp.querySelectorAll('input[type=checkbox]'); for(x=0;x<boxes.length;x++){ if(boxes[x]!==inp) boxes[x].checked=false; } }
+  } else if(inp.type==='checkbox'){
+    var grp2=inp.closest('[data-q]');
+    if(grp2){ var excl=grp2.querySelector('input[data-excl]'); if(excl && inp.checked) excl.checked=false; }
+  }
+  var q=inp.closest('[data-q][data-max]');
+  if(q && q.querySelectorAll('input:checked').length > parseInt(q.getAttribute('data-max'),10)){
+    inp.checked=false; toast("✋ Máximo 2 fuentes principales.");
+  }
+  if(inp.closest('#platsRow')){
+    if(inp.checked){
+      if(platOrder.length>=5){ inp.checked=false; toast("✋ ¡Hasta 5 plataformas! Desmarcá una para sumar otra."); }
+      else platOrder.push(inp.value);
+    } else { var idx0=platOrder.indexOf(inp.value); if(idx0>-1) platOrder.splice(idx0,1); }
+    var pills=$$('#platsRow .pill');
+    for(x=0;x<pills.length;x++){
+      var v=pills[x].querySelector('input').value, idx=platOrder.indexOf(v);
+      if(idx>-1){ pills[x].classList.add('ranked'); } else { pills[x].classList.remove('ranked'); }
+      var ord=pills[x].querySelector('.ord'); if(ord) ord.textContent=(idx+1)+"º";
+    }
+  }
+  syncUI(); refresh();
+});
+document.addEventListener('input',function(e){
+  var t=e.target;
+  if(t.classList && t.classList.contains('otro-in')){
+    var lab=t.closest('label');
+    if(lab){ var ctl=lab.querySelector('input[type=checkbox],input[type=radio]'); if(ctl && !ctl.checked){ ctl.checked=true; } }
+  }
+  if(t.matches && t.matches('.ta,.otro-in')){ syncUI(); refresh(); }
+});
+
+/* ---------- MÉTRICAS ---------- */
+function groups(){ return $$('[data-q]').filter(function(g){ return !g.querySelector('[data-q]'); }); }
+function isAns(g){
+  var t=g.getAttribute('data-type');
+  if(t==='text'){ var ta=g.querySelector('textarea'); return ta ? ta.value.trim().length>=2 : false; }
+  return !!g.querySelector('input:checked');
+}
+function val(name){ var r=document.querySelector('input[name="'+name+'"]:checked'); return r ? r.value : null; }
+function chk(qid){ return $$('[data-q="'+qid+'"] input:checked').map(function(i3){return i3.value;}); }
+
+function calcular(){
+  var dev=chk('dev'), net=chk('net'), lim=chk('lim');
+  var dw={pc:2,notebook:2,netbook:1.5,tablet:1,celpropio:2,celcomp:1,tv:1,consola:1,watch:.5,impresora:.5,otro:.5};
+  var dSum=0; for(var a=0;a<dev.length;a++){ dSum += dw[dev[a]]||0; }
+  var dS=Math.min(1, dSum/7);
+  var nW={fibra:1,cable:.8,sat:.6,adsl:.5,datos:.45,vecino:.4};
+  var nS=0;
+  if(net.indexOf('nada')===-1 && net.length>0){ for(var b=0;b<net.length;b++){ if((nW[net[b]]||0)>nS) nS=nW[net[b]]||0; } }
+  var lS = lim.indexOf('ninguna')>-1 ? 1 : Math.max(0, 1-lim.length*.18);
+  var con=Math.round(100*(.45*dS+.4*nS+.15*lS));
+
+  var sum=0,n=0;
+  for(var c=0;c<SKILLS.length;c++){ var v=val('sk'+c); if(v){ sum+=+v; n++; } }
+  var sab=n?Math.round(100*(sum/n)/5):0;
+
+  var prod=chk('prod').filter(function(v2){return v2!=='solo';});
+  var bigProd = (prod.indexOf('video')>-1||prod.indexOf('stream')>-1||prod.indexOf('codigo')>-1||prod.indexOf('mods')>-1)?12:0;
+  var pro=Math.min(100, Math.round(prod.length/10*78 + bigProd + (prod.length>=4?10:0)));
+
+  var info=chk('info');
+  var wI={portales:.85,periodistas:.7,ytnoticias:.6,radiotv:.6,papel:.7,grupos:.4,tiktoknews:.4,entorno:.3,nada:.1};
+  var crit=0;
+  if(info.length){
+    var ws=info.map(function(i4){return wI[i4]||.3;}).sort(function(x,y){return y-x;}).slice(0,2);
+    var wsum=0; for(var d2=0;d2<ws.length;d2++) wsum+=ws[d2];
+    crit=wsum/ws.length*70;
+  }
+  var rel=val('reltec');
+  if(rel==='1')crit+=22; if(rel==='6')crit+=15; if(rel==='2')crit+=8;
+  var hwRaw=val('horas_semana'); var hw=(hwRaw===null)?2:(+hwRaw);
+  if(hw===2||hw===3) crit+=8;
+  crit=Math.min(100,Math.round(crit));
+
+  var cs=0,cn=0;
+  for(var s2=0;s2<SITS.length;s2++){
+    var sv=val('s'+(s2+1));
+    if(sv && sv!=='otro'){ cs+=SIT_SCORES['s'+(s2+1)][+sv]; cn++; }
+  }
+  var ciuAvg=cn?cs/cn:0;
+  var ciuLevel=cn?(ciuAvg>=2.6?3:(ciuAvg>=1.9?2:1)):0;
+  var ciu=Math.round(ciuAvg/3*100);
+
+  var social=['tiktok','instagram','twitch','discord','x','facebook'].filter(function(p2){return platOrder.indexOf(p2)>-1;}).length;
+  var hh=hw>=3?1:(hw===2?.65:(hw===1?.35:.12));
+  function skAvg(idxs){ var s3=0,m=0; for(var z=0;z<idxs.length;z++){ var vv=val('sk'+idxs[z]); if(vv){ s3+=+vv; m++; } } return m?(s3/m)/5:0; }
+  var edit=skAvg([6,7,8]), tech=skAvg([10,13,14,15,17]);
+  var raw={
+    A:.30*hh+.24*(social/5)+.26*(1-pro/100)+.20*(1-crit/100),
+    B:.55*Math.min(1,prod.length/4)+.45*edit,
+    C:.6*tech+(rel==='1'?.25:(rel==='6'?.16:0))+((prod.indexOf('codigo')>-1||prod.indexOf('mods')>-1)?.15:0),
+    D:.72*(1-con/100)+.28*(1-(n?sab:30)/100),
+    E:.25*(con/100)+.62*(1-(n?sab:20)/100)+.13*(1-pro/100),
+    F:.5*(ciu/100)+.25*(crit/100)+((rel==='1'||rel==='6')?.15:.05)+((info.indexOf('portales')>-1||info.indexOf('radiotv')>-1||info.indexOf('papel')>-1)?.1:0)
+  };
+  var tot=0, kk; for(kk in raw) tot+=raw[kk]; if(!tot) tot=1;
+  var scores={}; for(kk in raw) scores[kk]=Math.round(raw[kk]/tot*100);
+  var hfRaw=val('horas_finde'); var hf=(hfRaw===null)?2:(+hfRaw);
+  return {con:con,sab:sab,n:n,pro:pro,crit:crit,ciu:ciu,ciuLevel:ciuLevel,plats:platOrder.slice(),hw:hw,hf:hf,scores:scores};
+}
+
+function refresh(){
+  var gs=groups(), done=0;
+  for(var x=0;x<gs.length;x++){ if(isAns(gs[x])) done++; }
+  var pct=Math.round(done/gs.length*100);
+  var m=calcular();
+  $('#pillPct').textContent=pct+'%'; $('#compPct').textContent=pct+'%'; $('#bmPct').textContent=pct+'%';
+  $('#bmFl').style.width=pct+'%';
+  var H=200;
+  $('#fpFillH').setAttribute('y',H-H*pct/100); $('#fpFillH').setAttribute('height',H*pct/100);
+  $('#fpFillP').setAttribute('y',H-H*pct/100); $('#fpFillP').setAttribute('height',H*pct/100);
+  $('#b-con').style.width=m.con+'%'; $('#lv-con').textContent=m.con+'/100';
+  $('#b-sab').style.width=m.sab+'%'; $('#lv-sab').textContent=m.n?m.sab+'/100':'—';
+  $('#b-pro').style.width=m.pro+'%'; $('#lv-pro').textContent=m.pro+'/100';
+  $('#b-ciu').style.width=m.ciu+'%'; $('#lv-ciu').textContent=m.ciuLevel?('NIVEL '+m.ciuLevel):'—';
+}
+
+/* ---------- GENERAR PERFIL ---------- */
+window.generarPerfil=function(){
+  var gs=groups(), done=0, first=null;
+  for(var x=0;x<gs.length;x++){ if(isAns(gs[x])) done++; else if(!first) first=gs[x]; }
+  var pct=done/gs.length;
+  if(pct<.5){
+    toast("⚠ Todavía falta mucho por responder. Recorramos los bloques…");
+    if(first){ first.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'}); first.classList.add('flash'); setTimeout(function(){first.classList.remove('flash');},2200); }
+    return;
+  }
+  var m=calcular();
+  var rank=Object.keys(m.scores).map(function(k){return [k,m.scores[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var topK=rank[0][0], secK=rank[1][0], secV=rank[1][1], P=PERFILES[topK];
+  $('#resLetter').textContent=topK;
+  $('#resLetter').style.background=P.c;
+  $('#resName').textContent='PERFIL '+topK+' · '+P.n;
+  $('#resTag').textContent=P.tag;
+  var ciuTxt={1:"NIVEL 1 · REACTIVO — actuás por impulso. Este año: verificación de fuentes.",2:"NIVEL 2 · PRECAUTORIO — dudás, a veces verificás. Vamos a sistematizar.",3:"NIVEL 3 · CRÍTICO — verificás, protegés, denunciás. ¡A liderar campañas!"};
+  $('#resCiu').textContent='🛡 CIUDADANÍA: '+(m.ciuLevel?ciuTxt[m.ciuLevel]:'SIN DATOS SUFICIENTES');
+  var platName={tiktok:'TikTok',instagram:'Instagram',whatsapp:'WhatsApp',youtube:'YouTube',twitch:'Twitch',discord:'Discord',x:'X',facebook:'Facebook',telegram:'Telegram',musica:'Música',streaming:'Streaming',gaming:'Gaming',reddit:'Reddit',pinterest:'Pinterest',linkedin:'LinkedIn',otra:'Otra'};
+  $('#resPlats').textContent = m.plats.length? m.plats.slice(0,3).map(function(p3){return platName[p3]||p3;}).join(' · '):'Sin marcar';
+  var hTxt=['menos de 2 hs','2 a 4 hs','4 a 6 hs','6 a 8 hs','más de 8 hs'];
+  $('#resHoras').textContent=hTxt[m.hw]+' (finde: '+hTxt[m.hf]+')';
+  $('#resSab').textContent=m.n?(m.sab/20).toFixed(1)+' / 5 ('+m.n+'/18 habilidades)':'Sin datos';
+  $('#resSecond').textContent='PERFIL '+secK+' · '+PERFILES[secK].n+' ('+secV+'%)';
+  $('#resRasgos').innerHTML=P.rasgos.map(function(r){return '<li>'+r+'</li>';}).join('');
+  $('#resProp').innerHTML=P.prop.map(function(r){return '<li>'+r+'</li>';}).join('');
+  $('#resProy').innerHTML='<li>'+P.proy+'</li>';
+  $('#resOri').innerHTML='<li>'+P.ori+'</li>';
+  var bars=[["CONECTIVIDAD",m.con],["SABERES OFIMÁTICOS",m.n?m.sab:0],["PRODUCCIÓN PROPIA",m.pro],["MIRADA CRÍTICA",m.crit],["CIUDADANÍA DIGITAL",m.ciu]];
+  $('#fBars').innerHTML=bars.map(function(b,i5){return '<div class="fb"><span class="fl-name">'+b[0]+'</span><div class="tr"><div class="fl" data-w="'+b[1]+'" style="--acc2:'+(i5%2?'var(--cyan-d)':'var(--lime-d)')+'"></div></div><span class="vl">'+b[1]+'%</span></div>';}).join('');
+  $('#fFecha').textContent=new Date().toLocaleDateString('es-AR');
+  $('#resultado').classList.remove('oculto');
+  buildRadar([m.con,m.n?m.sab:0,m.pro,m.crit,m.ciu]);
+  setTimeout(function(){
+    $('#resultado').scrollIntoView({behavior:RM?'auto':'smooth'});
+    setTimeout(function(){
+      var fls=$$('#fBars .fl');
+      for(var y=0;y<fls.length;y++){ fls[y].style.width=fls[y].getAttribute('data-w')+'%'; }
+      var pol=$('#radarPol'); if(pol) pol.classList.add('go');
+    },RM?0:450);
+  },60);
+  toast("✓ Huella procesada. Perfil dominante: "+topK);
+};
+
+/* ---------- RADAR ---------- */
+function buildRadar(vals){
+  var AX=[["CONECTIVIDAD",-90],["SABERES",-18],["PRODUCCIÓN",54],["MIRADA CRÍTICA",126],["CIUDADANÍA",198]];
+  function pt(a,r){ var t=a*Math.PI/180; return [110+r*Math.cos(t),110+r*Math.sin(t)]; }
+  var s='',a2,a3,a4,p5,p6,p7,c,anch;
+  [25,50,75,100].forEach(function(r){
+    var pts=[]; for(var a=0;a<AX.length;a++){ var p4=pt(AX[a][1],r); pts.push(p4[0]+','+p4[1]); }
+    s+='<polygon class="ring" points="'+pts.join(' ')+'"/>';
+  });
+  for(a2=0;a2<AX.length;a2++){ p5=pt(AX[a2][1],100); s+='<line class="axis" x1="110" y1="110" x2="'+p5[0]+'" y2="'+p5[1]+'"/>'; }
+  var vpts=[]; for(a3=0;a3<AX.length;a3++){ p6=pt(AX[a3][1],Math.max(4,vals[a3])); vpts.push(p6[0]+','+p6[1]); }
+  s+='<polygon id="radarPol" points="'+vpts.join(' ')+'"/>';
+  for(a4=0;a4<AX.length;a4++){
+    p7=pt(AX[a4][1],124); c=Math.cos(AX[a4][1]*Math.PI/180);
+    anch=Math.abs(c)<.3?'middle':(c>0?'start':'end');
+    s+='<text x="'+p7[0]+'" y="'+p7[1]+'" text-anchor="'+anch+'" dominant-baseline="middle">'+AX[a4][0]+'</text>';
+  }
+  $('#radarSvg').innerHTML=s;
+}
+
+/* ---------- DESCARGAR PDF ---------- */
+function addSliced(pdf,canvas,marg){
+  var pw=210, ph=297;
+  var iw=pw-marg*2;
+  var ihFull=canvas.height*iw/canvas.width;
+  var pageH=ph-marg*2;
+  if(ihFull<=pageH){
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.92),'JPEG',marg,marg,iw,ihFull);
+    return;
+  }
+  var pxPage=Math.floor(canvas.width*pageH/iw);
+  var rendered=0, page=0;
+  while(rendered<canvas.height){
+    var sliceH=Math.min(pxPage,canvas.height-rendered);
+    var tmp=document.createElement('canvas');
+    tmp.width=canvas.width; tmp.height=sliceH;
+    tmp.getContext('2d').drawImage(canvas,0,rendered,canvas.width,sliceH,0,0,canvas.width,sliceH);
+    if(page>0) pdf.addPage();
+    pdf.addImage(tmp.toDataURL('image/jpeg',0.92),'JPEG',marg,marg,iw,sliceH*iw/canvas.width);
+    rendered+=sliceH; page++;
+  }
+}
+window.descargarPDF=function(){
+  var ficha=document.getElementById('fichaCard');
+  if(!ficha) return;
+  if(typeof html2canvas==='undefined' || !window.jspdf){
+    toast("⚠ Sin conexión para el generador. Usá IMPRIMIR → Guardar como PDF.");
+    return;
+  }
+  var btn=document.getElementById('btnPdf'); var old=btn.textContent;
+  btn.textContent="GENERANDO PDF…"; btn.disabled=true;
+  setTimeout(function(){
+    html2canvas(ficha,{scale:2,backgroundColor:'#FBFAF4',useCORS:true,logging:false}).then(function(canvas){
+      var pdf=new window.jspdf.jsPDF('p','mm','a4');
+      addSliced(pdf,canvas,8);
+      pdf.save('huella-digital-perfil.pdf');
+      btn.textContent=old; btn.disabled=false;
+      toast("✓ PDF descargado: huella-digital-perfil.pdf");
+    }).catch(function(){
+      btn.textContent=old; btn.disabled=false;
+      toast("⚠ Ocurrió un error. Probá con IMPRIMIR → Guardar como PDF.");
+    });
+  },80);
+};
+
+/* ---------- CONTROLES ---------- */
+window.startScan=function(){ toast("◉ Escáner activo. Respondé con total sinceridad."); $('#b1').scrollIntoView({behavior:RM?'auto':'smooth'}); };
+window.reiniciar=function(){
+  $('#formEnc').reset(); platOrder.length=0;
+  var pills=$$('#platsRow .pill');
+  for(var x=0;x<pills.length;x++){ pills[x].classList.remove('ranked'); var o=pills[x].querySelector('.ord'); if(o)o.textContent=''; }
+  $('#resultado').classList.add('oculto'); syncUI(); refresh();
+  window.scrollTo({top:0,behavior:RM?'auto':'smooth'}); toast("↺ Diagnóstico reiniciado.");
+};
+
+/* ---------- SCROLL / OBSERVERS ---------- */
+window.addEventListener('scroll',function(){
+  var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+  var p=max>0?h.scrollTop/max*100:0;
+  $('#scrollbar').style.width=p+'%';
+},{passive:true});
+
+var rvEls=$$('.rv,.rvm');
+if('IntersectionObserver' in window && !RM){
+  var io=new IntersectionObserver(function(es){
+    for(var x=0;x<es.length;x++){ if(es[x].isIntersecting){ es[x].target.classList.add('on'); io.unobserve(es[x].target); } }
+  },{threshold:.12});
+  for(i=0;i<rvEls.length;i++){ io.observe(rvEls[i]); }
+}else{
+  for(i=0;i<rvEls.length;i++){ rvEls[i].classList.add('on'); }
+}
+
+syncUI();
+refresh();
+})();
+</script>
+</body>
+</html>
+
