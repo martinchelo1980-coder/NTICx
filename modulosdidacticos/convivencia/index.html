@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo Didáctico · Convivencia Digital · Provincia de Buenos Aires</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.12/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.12/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/manrope@5.0.20/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/manrope@5.0.20/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/manrope@5.0.20/800.css">
+<style>
+:root{
+  --navy:#0d2740; --navy2:#14395f; --ink:#182838; --muted:#5c6f83;
+  --teal:#0e9f8f; --teal-dk:#0b7d72; --teal-bg:#e6f6f3; --teal-ln:#bfe6df;
+  --coral:#f06449; --coral-bg:#fdeee9; --coral-ln:#f6cfc2;
+  --amber:#e8a020; --amber-bg:#fdf3df; --amber-ln:#f0d9a8;
+  --violet:#6d5ae0; --violet-bg:#eeeafc; --violet-ln:#d6cdf6;
+  --bg:#f3f6fa; --card:#fff; --line:#dde6f0;
+  --shadow:0 10px 30px rgba(13,39,64,.08);
+  --rad:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.68;font-size:16px}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;line-height:1.22;color:var(--navy)}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+/* ---------- progress + topbar ---------- */
+#progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--teal),var(--coral));width:0;z-index:60}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(13,39,64,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08)}
+.topbar .wrap{display:flex;align-items:center;gap:18px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-family:'Space Grotesk';font-weight:700;font-size:1.02rem;letter-spacing:.2px}
+.brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--teal),#14b8a6);display:grid;place-items:center;font-size:1.1rem;flex:none}
+.topnav{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topnav button{background:none;border:none;color:#c8d6e5;font-weight:600;font-size:.86rem;padding:8px 12px;border-radius:9px;white-space:nowrap;transition:.2s}
+.topnav button:hover{background:rgba(255,255,255,.1);color:#fff}
+.topnav button.on{background:var(--teal);color:#fff}
+#printBtn{margin-left:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:9px;padding:7px 12px;font-size:.82rem;font-weight:600;white-space:nowrap;transition:.2s}
+#printBtn:hover{background:var(--coral);border-color:var(--coral)}
+
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(135deg,#0d2740 0%,#14395f 55%,#0d6a66 100%);color:#fff;padding:64px 0 70px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-140px;top:-140px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.35),transparent 70%)}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:6px 14px;border-radius:99px;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9fe8dd}
+.hero h1{color:#fff;font-size:clamp(1.9rem,4vw,2.9rem);margin:18px 0 14px}
+.hero h1 em{font-style:normal;color:#7fe0d2}
+.hero p.lead{color:#cfdcea;font-size:1.05rem;max-width:56ch}
+.hero-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:7px 14px;font-size:.82rem;font-weight:700;color:#e6eef7}
+.hero figure{border-radius:22px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15)}
+.hero figcaption{background:rgba(13,39,64,.85);padding:10px 16px;font-size:.78rem;color:#9fb4ca}
+
+/* ---------- tabs ---------- */
+.tabsbar{position:sticky;top:62px;z-index:40;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 6px 18px rgba(13,39,64,.05)}
+.tabsbar .wrap{display:flex;gap:8px;overflow-x:auto;padding:12px 22px;scrollbar-width:none}
+.tabsbar::-webkit-scrollbar{display:none}
+.tabbtn{border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:99px;padding:9px 18px;font-weight:800;font-size:.86rem;white-space:nowrap;transition:.2s;display:flex;gap:8px;align-items:center}
+.tabbtn:hover{border-color:var(--teal);color:var(--teal-dk)}
+.tabbtn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+main{padding:44px 0 70px}
+.tab-panel{display:none;animation:fadeUp .45s ease}
+.tab-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- section headers ---------- */
+.sec-head{margin-bottom:26px}
+.sec-kicker{font-size:.75rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-dk)}
+.sec-head h2{font-size:clamp(1.5rem,3vw,2.1rem);margin:6px 0 10px}
+.sec-head p{color:var(--muted);max-width:80ch}
+
+/* ---------- cards / grids ---------- */
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);padding:22px;box-shadow:var(--shadow)}
+.card h4{font-size:1rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card p,.card li{font-size:.92rem;color:#3c4f63}
+.icon-sq{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:1.15rem;flex:none}
+.iq-teal{background:var(--teal-bg)} .iq-coral{background:var(--coral-bg)} .iq-amber{background:var(--amber-bg)} .iq-violet{background:var(--violet-bg)}
+
+/* ---------- accordion topics ---------- */
+.acc{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}
+.acc-head{width:100%;display:flex;align-items:center;gap:14px;background:none;border:none;padding:20px 22px;text-align:left}
+.acc-head .t{flex:1}
+.acc-head h3{font-size:1.15rem}
+.acc-head .meta{font-size:.78rem;color:var(--muted);font-weight:600;margin-top:2px}
+.chev{width:34px;height:34px;border-radius:50%;background:var(--teal-bg);color:var(--teal-dk);display:grid;place-items:center;font-size:.9rem;transition:.3s;flex:none}
+.acc.open .chev{transform:rotate(180deg);background:var(--teal);color:#fff}
+.acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}
+.acc.open .acc-body{grid-template-rows:1fr}
+.acc-inner{overflow:hidden;min-height:0}
+.acc-content{padding:0 22px 26px;border-top:1px dashed var(--line);padding-top:20px}
+.acc-content h4.sub{font-size:1.02rem;margin:20px 0 8px;color:var(--navy);display:flex;gap:8px;align-items:center}
+.acc-content p{font-size:.94rem;color:#3c4f63;margin-bottom:10px}
+.topic-flex{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
+.topic-flex figure{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.topic-flex figcaption{font-size:.76rem;color:var(--muted);padding:8px 12px;background:#f7fafc}
+
+/* lists */
+ul.tick{list-style:none;margin:8px 0}
+ul.tick li{position:relative;padding-left:26px;margin-bottom:7px;font-size:.92rem;color:#3c4f63}
+ul.tick li::before{content:"✓";position:absolute;left:0;top:0;width:18px;height:18px;border-radius:6px;background:var(--teal-bg);color:var(--teal-dk);font-size:.7rem;font-weight:800;display:grid;place-items:center;margin-top:3px}
+ul.arrow{list-style:none;margin:8px 0}
+ul.arrow li{position:relative;padding-left:22px;margin-bottom:7px;font-size:.92rem;color:#3c4f63}
+ul.arrow li::before{content:"▸";position:absolute;left:2px;color:var(--coral);font-weight:800}
+
+/* boxes */
+.box{border-radius:14px;padding:18px 20px;margin:16px 0;border:1px solid}
+.box .box-t{font-family:'Space Grotesk';font-weight:700;font-size:.95rem;display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.box p,.box li{font-size:.9rem}
+.box-adulto{background:var(--amber-bg);border-color:var(--amber-ln)} .box-adulto .box-t{color:#8a5c05}
+.box-act{background:var(--teal-bg);border-color:var(--teal-ln)} .box-act .box-t{color:var(--teal-dk)}
+.box-den{background:var(--coral-bg);border-color:var(--coral-ln)} .box-den .box-t{color:#b23a20}
+.box-ley{background:var(--violet-bg);border-color:var(--violet-ln)} .box-ley .box-t{color:#4a3ab0}
+.callout{border-left:5px solid var(--coral);background:#fff;border-radius:10px;padding:14px 18px;margin:14px 0;font-weight:700;color:var(--navy);font-size:.95rem;box-shadow:var(--shadow)}
+.callout small{display:block;font-weight:600;color:var(--muted)}
+
+/* mini cards inside topics */
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0}
+.mini{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfdff}
+.mini b{display:block;font-family:'Space Grotesk';font-size:.9rem;color:var(--navy);margin-bottom:4px}
+.mini span{font-size:.84rem;color:var(--muted)}
+.mini.m-teal{border-top:4px solid var(--teal)} .mini.m-coral{border-top:4px solid var(--coral)} .mini.m-amber{border-top:4px solid var(--amber)} .mini.m-violet{border-top:4px solid var(--violet)}
+
+/* phase timeline */
+.fases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.fase{position:relative;border-radius:12px;padding:16px;background:#fff;border:1px solid var(--line)}
+.fase .num{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-family:'Space Grotesk';font-weight:700;display:grid;place-items:center;margin-bottom:8px}
+.fase b{font-family:'Space Grotesk';color:var(--navy);font-size:.92rem}
+.fase p{font-size:.84rem;color:var(--muted);margin-top:4px}
+
+/* helplines */
+.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.help{border-radius:14px;padding:16px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--coral)}
+.help .num{font-family:'Space Grotesk';font-weight:700;font-size:1.15rem;color:var(--coral)}
+.help b{font-size:.88rem;color:var(--navy);display:block}
+.help p{font-size:.8rem;color:var(--muted)}
+
+/* ---------- glossary ---------- */
+.glo-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+#glSearch{flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;font-family:inherit;font-size:.95rem;background:#fff;outline:none;transition:.2s}
+#glSearch:focus{border-color:var(--teal)}
+.letters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.letters button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:800;font-size:.78rem;transition:.15s}
+.letters button:hover:not(:disabled){border-color:var(--teal);color:var(--teal-dk)}
+.letters button:disabled{opacity:.3;cursor:not-allowed}
+.letters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+#glCount{font-size:.82rem;color:var(--muted);font-weight:700;margin-bottom:12px}
+.glo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.glo-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:.2s}
+.glo-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--teal-ln)}
+.glo-card b{font-family:'Space Grotesk';color:var(--teal-dk);font-size:.92rem;letter-spacing:.04em;display:block;margin-bottom:5px;text-transform:uppercase}
+.glo-card span{font-size:.84rem;color:#42566b}
+
+/* ---------- table ---------- */
+.tbl{overflow-x:auto;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{background:var(--navy);color:#fff;font-family:'Space Grotesk';font-size:.82rem;text-align:left;padding:12px 16px;letter-spacing:.03em}
+td{padding:12px 16px;font-size:.88rem;color:#3c4f63;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#f8fbfd}
+
+/* ---------- quiz ---------- */
+.quiz-q{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+.quiz-q .qt{font-weight:800;font-size:.95rem;color:var(--navy);margin-bottom:12px;display:flex;gap:10px}
+.quiz-q .qt .n{flex:none;width:26px;height:26px;border-radius:8px;background:var(--violet-bg);color:var(--violet);font-family:'Space Grotesk';display:grid;place-items:center;font-size:.82rem}
+.opts{display:grid;gap:8px}
+.opt{border:1.5px solid var(--line);background:#fbfdff;border-radius:10px;padding:10px 14px;text-align:left;font-size:.9rem;color:#3c4f63;transition:.15s}
+.opt:hover{border-color:var(--teal)}
+.opt.sel{border-color:var(--navy);background:var(--navy);color:#fff}
+.opt.ok{border-color:var(--teal);background:var(--teal-bg);color:var(--teal-dk);font-weight:700}
+.opt.bad{border-color:var(--coral);background:var(--coral-bg);color:#b23a20}
+.quiz-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.btn{border:none;border-radius:12px;padding:13px 26px;font-weight:800;font-size:.92rem;transition:.2s}
+.btn-primary{background:var(--teal);color:#fff} .btn-primary:hover{background:var(--teal-dk)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--muted)} .btn-ghost:hover{border-color:var(--coral);color:var(--coral)}
+#quizResult{margin-top:16px;border-radius:14px;padding:18px 22px;font-weight:800;display:none}
+#quizResult small{display:block;font-weight:600;margin-top:4px}
+
+/* footer */
+footer{background:var(--navy);color:#9fb4ca;padding:36px 0;font-size:.85rem}
+footer .wrap{display:grid;gap:14px}
+footer b{color:#fff}
+footer a{color:#7fe0d2}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr}
+  .topic-flex{grid-template-columns:1fr}
+  .topnav{display:none}
+}
+@media print{
+  .topbar,.tabsbar,#progress,footer,.quiz-actions,#printBtn{display:none!important}
+  .tab-panel{display:block!important}
+  .acc-body{grid-template-rows:1fr!important}
+  body{background:#fff}
+  .hero{background:#fff;color:#000;padding:20px 0}
+  .hero h1{color:var(--navy)}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="logo">🛡️</span> Convivencia Digital · Módulo Didáctico</div>
+    <nav class="topnav" id="topnav">
+      <button data-tab="fundamentos" class="on">Fundamentación</button>
+      <button data-tab="seccion1">Sección 1 · Uso responsable</button>
+      <button data-tab="seccion2">Sección 2 · Ciudadanía digital</button>
+      <button data-tab="glosario">Sección 3 · Glosario</button>
+      <button data-tab="actividades">Actividades y evaluación</button>
+    </nav>
+    <button id="printBtn">🖨️ Imprimir módulo</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">📘 Módulo didáctico · ESI y tecnología</span>
+      <h1>Convivencia Digital: <em>cuidarnos y participar</em> en el mundo en línea</h1>
+      <p class="lead">Módulo de sensibilización y formación para docentes, referentes y familias de la Provincia de Buenos Aires. Herramientas para prevenir el ciberbullying, la difusión de imágenes sin consentimiento y el grooming, y para construir ciudadanía digital junto a chicos, chicas y jóvenes.</p>
+      <div class="hero-chips">
+        <span class="chip">⏱️ 8 encuentros de 80′</span>
+        <span class="chip">🎓 Nivel primario y secundario</span>
+        <span class="chip">📖 Guía UNICEF – PBA · 2ª ed. 2020</span>
+        <span class="chip">🤝 ESI · Ley 26.150</span>
+      </div>
+    </div>
+    <figure>
+      <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/1cbb848c1-5c36-4c14-9606-b00128b33b7b.png" alt="Grupo de adolescentes conectados de forma segura bajo un escudo protector">
+      <figcaption>Los espacios digitales también se cuidan: acompañar, dialogar y educar.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="tabsbar">
+  <div class="wrap" id="tabsbar">
+    <button class="tabbtn on" data-tab="fundamentos">🧭 Fundamentación</button>
+    <button class="tabbtn" data-tab="seccion1">🛡️ Sección 1 · Uso responsable de TIC</button>
+    <button class="tabbtn" data-tab="seccion2">🌐 Sección 2 · Ciudadanía digital</button>
+    <button class="tabbtn" data-tab="glosario">🔤 Sección 3 · ABC digital</button>
+    <button class="tabbtn" data-tab="actividades">✏️ Actividades y evaluación</button>
+  </div>
+</div>
+
+<main>
+<div class="wrap">
+
+<!-- ================= FUNDAMENTACIÓN ================= -->
+<section class="tab-panel active" id="tab-fundamentos">
+  <div class="sec-head">
+    <span class="sec-kicker">Presentación del módulo</span>
+    <h2>Fundamentación y propósitos</h2>
+    <p>Las tecnologías digitales inspiran a chicos, chicas y jóvenes a explorar su curiosidad, ser creativos, comunicarse y aprender. Pero junto con las oportunidades existen riesgos: este módulo brinda estrategias de <b>prevención, reparación y denuncia</b> frente al hostigamiento online, la difusión de contenidos sexuales sin consentimiento y el abuso sexual web, y promueve la construcción de una <b>ciudadanía digital</b> crítica y participativa.</p>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:22px">
+    <div class="card"><div class="icon-sq iq-teal">👥</div><h4>Destinatarios</h4><p>Docentes, equipos directivos y de orientación, familias y referentes adultos de niños, niñas y adolescentes (NNA) de la PBA.</p></div>
+    <div class="card"><div class="icon-sq iq-amber">⏱️</div><h4>Organización</h4><p>8 encuentros de 80 minutos, secuencia flexible y adaptable a proyectos institucionales, jornadas ESI y espacios curriculares.</p></div>
+    <div class="card"><div class="icon-sq iq-coral">🧩</div><h4>Modalidad</h4><p>Presencial o mixta, con y sin dispositivos: las actividades priorizan el diálogo, el análisis de casos y la producción.</p></div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h4>🎯 Aprendizajes esperados</h4>
+      <ul class="tick">
+        <li>Comprender qué son la huella digital, la viralización y la identidad digital, y cuidar la propia reputación web.</li>
+        <li>Identificar el ciberbullying, sus formas, roles y consecuencias, y conocer estrategias de prevención e intervención.</li>
+        <li>Reconocer la difusión de imágenes íntimas sin consentimiento como violencia digital y de género: la responsabilidad es de quien difunde.</li>
+        <li>Conocer el grooming como delito (Ley 26.904), sus fases, y cómo prevenirlo, detectarlo y denunciarlo.</li>
+        <li>Ejercer la ciudadanía digital: derechos, obligaciones y convivencia en los espacios online.</li>
+        <li>Integrar las TIC en el aula con uso reflexivo, crítico y productivo.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🧭 Enfoques transversales</h4>
+      <ul class="arrow">
+        <li><b>Diálogo y confianza</b> como estrategia central de prevención: antes que prohibir, educar y acompañar.</li>
+        <li><b>Educación Sexual Integral</b> (Ley 26.150) aplicada a los entornos digitales: el “no es no” también rige en lo digital.</li>
+        <li><b>No demonizar la tecnología</b>: la web es un medio; los comportamientos online se condicen con los offline.</li>
+        <li><b>De consumidores a productores</b> de conocimiento y contenido.</li>
+        <li><b>Perspectiva de derechos</b>: Convención sobre los Derechos del Niño y Ley 26.061 — los sujetos de internet son sujetos de derecho.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="box box-ley" style="margin-top:20px">
+    <div class="box-t">⚖️ Marco normativo de referencia</div>
+    <p><b>Ley 26.388</b> (ciberdelitos, 2008) · <b>Ley 26.904</b> (grooming, art. 131 CP) · <b>Ley 25.326</b> (protección de datos personales, habeas data) · <b>Ley 26.061</b> (protección integral de NNA, deber de comunicar) · <b>Ley 26.150</b> (ESI). Los delitos cometidos en internet siguen siendo delitos, y las víctimas siguen siendo víctimas.</p>
+  </div>
+</section>
+
+<!-- ================= SECCIÓN 1 ================= -->
+<section class="tab-panel" id="tab-seccion1">
+  <div class="sec-head">
+    <span class="sec-kicker">Sección 1</span>
+    <h2>Sensibilización sobre uso responsable de TIC</h2>
+    <p>Cuatro problemáticas centrales de la cultura digital: huella digital y reputación, ciberbullying, difusión de imágenes sin consentimiento y grooming. Para cada una: conceptos clave, rol del adulto y líneas de asesoramiento y denuncia.</p>
+  </div>
+
+  <!-- TEMA 1 -->
+  <article class="acc open">
+    <button class="acc-head"><span class="icon-sq iq-teal">👣</span>
+      <span class="t"><h3>Huella digital y reputación</h3><span class="meta">¿Qué es? · Viralización · Relevancia de la identidad digital · Rol del adulto</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <div class="topic-flex">
+        <div>
+          <h4 class="sub">❓ ¿Qué es?</h4>
+          <p>Cuando utilizamos internet construimos una <b>huella digital</b>: el rastro que dejan nuestras actividades (fotos, videos, publicaciones y comentarios). Toda la información que está en la web y se asocia con nuestro nombre forma parte de nuestra <b>identidad digital</b>: es la manera en que terceros nos conocen.</p>
+          <p>La huella incluye lo que publicamos, aquello en lo que somos etiquetados o mencionados, fotos y videos subidos por otros, páginas donde se cite nuestro nombre, cuentas asociadas a nuestro nombre real, noticias y participación en foros, juegos y chats.</p>
+          <div class="mini-grid">
+            <div class="mini m-teal"><b>Acción propia</b><span>Publicaciones que hace el usuario dando su identidad en redes, blogs, foros o diarios.</span></div>
+            <div class="mini m-coral"><b>Acción de otros</b><span>Publicaciones donde el usuario es citado, nombrado o etiquetado por otra persona.</span></div>
+            <div class="mini m-amber"><b>Omisión</b><span>No tener cuentas también es un dato de nuestra identidad digital cuando alguien nos busca.</span></div>
+          </div>
+          <h4 class="sub">📣 Viralización</h4>
+          <p>La dinámica de internet permite que algunos contenidos comiencen a compartirse rápidamente por distintos usuarios: es la <b>viralización</b>. Es difícil prever su alcance (cientos, miles o millones de personas) y la información se distribuye por múltiples plataformas y dispositivos.</p>
+          <p>Un contenido que queremos borrar pudo haber sido descargado, editado y re-compartido por otros: <b>perdemos la posibilidad de borrarlo</b> y de impedir que forme parte de nuestra reputación web.</p>
+          <div class="callout">🚫 En internet NO hay derecho al olvido: una vez que un dato o imagen se sube a la web, es difícil de borrar y perdemos el control sobre él.</div>
+          <h4 class="sub">💼 Relevancia de la identidad digital</h4>
+          <p>Internet es la principal fuente de información para conocer a alguien: es la <b>vidriera</b> mediante la cual el mundo nos conocerá. En una búsqueda laboral, el empleador puede googlear el nombre y analizar el perfil y las publicaciones del candidato: contenido privado o fuera de contexto puede ser leído como negativo.</p>
+          <p><b>Riesgos para la identidad digital:</b> brindar información privada a quien no debería recibirla; ser asociado a información que tiene un sentido en lo privado y otro en lo público; imagen empañada por información pasada o descontextualizada; adelantar etapas en relaciones personales y profesionales; quedar relacionado con actitudes pasadas que actúan como filtros de selección.</p>
+        </div>
+        <figure>
+          <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/1a78432a7-a003-4182-ae5e-bf1ae2682d63.png" alt="Huella digital compuesta por íconos de redes sociales">
+          <figcaption>Nuestra huella digital: el rastro que dejan nuestras acciones online.</figcaption>
+        </figure>
+      </div>
+
+      <div class="box box-adulto">
+        <div class="box-t">🧑‍🏫 Rol del adulto: diálogo y concientización</div>
+        <ul class="tick">
+          <li>Dialogar sobre la identidad digital como algo que los acompañará toda la vida, con consecuencias presentes y futuras.</li>
+          <li>La información en internet es nuestra carta de presentación ante desconocidos.</li>
+          <li>Debatir el derecho al olvido: pensar antes de publicar o compartir.</li>
+          <li>Diferenciar espacios públicos y privados: configurar la privacidad de las cuentas.</li>
+          <li>Pensar la huella en positivo: ¿qué quiero que vean cuando me buscan? ¿cómo fomento que eso aparezca?</li>
+          <li>Trabajar con casos reales, noticias, series o películas que materialicen el tema.</li>
+        </ul>
+        <p style="margin-top:8px"><b>¿Cómo cuidar la identidad digital?</b> Configurar la privacidad · cuidado al agregar desconocidos · pensar antes de publicar · controlar qué circula (buscarse periódicamente, “Google alerts”) · contraseñas y bloqueo en dispositivos · contraseñas seguras que no se comparten · recordar que los contactos online son desconocidos · usar seudónimos cuando no queremos asociar una publicación a nuestro nombre.</p>
+      </div>
+
+      <div class="box box-act">
+        <div class="box-t">✏️ Actividad sugerida · “Mi vidriera digital” (1 encuentro)</div>
+        <p><b>Inicio:</b> ¿qué sabría de vos un desconocido que googlea tu nombre? Puesta en común.</p>
+        <p><b>Desarrollo:</b> analizar un caso ficticio o una noticia identificando acción propia, acción de otros y omisión; debatir el “derecho al olvido” con ejemplos reales.</p>
+        <p><b>Cierre:</b> producir en grupos un decálogo “Pensar antes de publicar” para difundir en la escuela.</p>
+      </div>
+    </div></div></div>
+  </article>
+
+  <!-- TEMA 2 -->
+  <article class="acc">
+    <button class="acc-head"><span class="icon-sq iq-coral">💬</span>
+      <span class="t"><h3>Ciberbullying</h3><span class="meta">¿Qué es? · Formas, roles y consecuencias · Rol del adulto · Denuncias</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <div class="topic-flex">
+        <div>
+          <h4 class="sub">❓ ¿Qué es?</h4>
+          <p>El <b>ciberbullying</b> (o ciberacoso) es el hostigamiento sistemático y sostenido en el tiempo entre <b>niños, niñas o adolescentes</b> a través de plataformas digitales: discriminación, exclusión, burla o agresión en publicaciones, memes, videos, hashtags, exclusiones de grupos de WhatsApp o comentarios.</p>
+          <p>Es “el uso de medios telemáticos para ejercer el acoso psicológico <b>entre iguales</b>”: debe haber NNA en ambos extremos del conflicto. Si hay presencia de un adulto, estamos ante otro tipo de ciberacoso.</p>
+          <div class="mini-grid">
+            <div class="mini m-coral"><b>Alcance exponencial</b><span>Conocidos y desconocidos se enteran de la agresión; el contenido puede viralizarse.</span></div>
+            <div class="mini m-amber"><b>La víctima no descansa</b><span>Mensajes y notificaciones a toda hora; el daño no tiene un final establecido.</span></div>
+            <div class="mini m-teal"><b>Más participantes</b><span>Quienes ponen “me gusta”, comentan o callan también forman parte del circuito.</span></div>
+            <div class="mini m-violet"><b>Anonimato y falta de empatía</b><span>La falsa sensación de anonimato anima a agredir a quienes no lo harían en persona.</span></div>
+          </div>
+          <h4 class="sub">🎭 Formas de ciberbullying</h4>
+          <div class="mini-grid">
+            <div class="mini m-coral"><b>Hostigamiento</b><span>Imágenes denigrantes, software espía, envío de virus, humillar en juegos online.</span></div>
+            <div class="mini m-amber"><b>Exclusión</b><span>Denegar a la víctima el acceso a foros, chats o plataformas de todo el grupo.</span></div>
+            <div class="mini m-violet"><b>Manipulación</b><span>Difundir información inadecuada; usar la clave de otra persona para perjudicarla en su nombre.</span></div>
+          </div>
+          <p><b>Discurso del odio:</b> expresión deliberada que busca denigrar, humillar o discriminar a un grupo por su raza, nacionalidad, orientación sexual u otra característica. Precede a la web: internet no lo crea, pero lo fomenta (anonimato, soledad, ausencia física del otro). La raíz se trabaja desde la educación en el respeto.</p>
+          <h4 class="sub">⚠️ Roles y consecuencias</h4>
+          <p>Los perfiles (acosador/a, víctima, observadores, cómplices) son <b>dinámicos</b>: evitar estigmatizaciones; los chicos recorren varios roles en poco tiempo. Son sujetos de derecho: acompañar tanto al acosado como al que acosa.</p>
+          <ul class="arrow">
+            <li><b>Para la víctima:</b> la viralización extiende la humillación y el “no olvido” la sostiene en el tiempo.</li>
+            <li><b>Para el acosador:</b> su accionar queda asociado a su reputación web, presente y futura.</li>
+            <li><b>Para todos:</b> el recorte temporal se pierde; el hecho perdura más allá de los contextos (ej.: una futura búsqueda laboral).</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/169c34779-817d-4de3-ad39-6210e645700e.png" alt="Adolescente afectado por mensajes agresivos, acompañado y protegido por un adulto">
+          <figcaption>Acompañar sin minimizar ni exagerar: el adulto como red de contención.</figcaption>
+        </figure>
+      </div>
+
+      <div class="box box-adulto">
+        <div class="box-t">🧑‍🏫 Rol del adulto: detectar y prevenir</div>
+        <p><b>Señales de alerta:</b> cambios de conducta, angustia o tristeza; variaciones en el rendimiento escolar; necesidad constante de revisar lo que se publica sobre ellos; encierro y búsqueda de soledad.</p>
+        <p><b>Prevención:</b> dialogar abiertamente (“no hacer ni decir en internet lo que no harías en persona”) · promover que cuenten lo ocurrido · desalentar el reenvío de mensajes ofensivos · participar en redes con perfiles privados · no responder con odio o violencia · usar herramientas de denuncia y bloqueo · educar en respeto, tolerancia y empatía · fomentar una actitud activa frente a la agresión.</p>
+        <p><b>Ante un caso:</b> ① escuchar respetuosamente y consensuar el acompañamiento · ② acompañar sin minimizar ni exagerar · ③ no demonizar la herramienta · ④ bloquear usuarios indeseados · ⑤ denunciar en la plataforma (es anónima) y, ante un delito, en policía o fiscalía · ⑥ guardar evidencias (capturas de pantalla) · ⑦ intervenir si trasciende a violencia interpersonal · ⑧ en la escuela: articular con Inspección, Equipos de Orientación Escolar y Consejo Institucional de Convivencia.</p>
+      </div>
+
+      <div class="box box-den">
+        <div class="box-t">📞 Asesoramiento, denuncias y consultas</div>
+        <div class="help-grid">
+          <div class="help"><span class="num">Línea 102</span><b>Orientación sobre derechos de la infancia (PBA)</b><p>Gratuita, 24 h, 365 días. Funciona en CABA y PBA y en 16 provincias.</p></div>
+          <div class="help"><span class="num">0800-222-1717</span><b>Equipo niñ@s vs. explotación sexual y grooming</b><p>Min. de Justicia y DD.HH., 24 h, todo el país. equiponinas@jus.gov.ar</p></div>
+          <div class="help"><span class="num">Línea 137</span><b>Las víctimas contra las violencias</b><p>Gratuita, 24 h, 365 días, todo el país.</p></div>
+          <div class="help"><span class="num">Fiscalías</span><b>Delegaciones de la Fiscalía de Estado</b><p>fiscalia.gba.gov.ar/delegaciones/map</p></div>
+        </div>
+      </div>
+
+      <div class="box box-act">
+        <div class="box-t">✏️ Actividad sugerida · “Romper el círculo” (2 encuentros)</div>
+        <p><b>Inicio:</b> analizar en grupos un caso ficticio de hostigamiento (posteo, meme o grupo de WhatsApp).</p>
+        <p><b>Desarrollo:</b> identificar roles (quien agrede, quien es agredido, quien comenta, quien silencia, quien denuncia) y dramatizar desenlaces alternativos; explorar las opciones de denuncia y bloqueo de las plataformas que usan.</p>
+        <p><b>Cierre:</b> campaña institucional “Mirar no es neutro: acompañá y denunciá”.</p>
+      </div>
+    </div></div></div>
+  </article>
+
+  <!-- TEMA 3 -->
+  <article class="acc">
+    <button class="acc-head"><span class="icon-sq iq-amber">🔒</span>
+      <span class="t"><h3>Sexting: cuando la difusión de imágenes es sin consentimiento</h3><span class="meta">¿Qué es? · Situaciones y riesgos · Rol del adulto · Denuncias</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <div class="topic-flex">
+        <div>
+          <h4 class="sub">❓ ¿Qué es?</h4>
+          <p>El <b>sexting</b> consiste en el envío de imágenes íntimas mediante plataformas digitales, una práctica extendida que, entre pares y de forma consensuada, puede reconocerse como parte del derecho a explorar la propia sexualidad. La <b>problemática</b> aparece cuando quien recibe ese material viola el pacto de privacidad y lo reenvía o difunde.</p>
+          <p>La difusión de imágenes íntimas sin consentimiento del titular es una <b>forma de violencia digital</b> y, dado que la mayoría de las víctimas son mujeres y responde a la sexualización social del cuerpo femenino, también una <b>forma de violencia de género</b>.</p>
+          <div class="callout">⚖️ La responsabilidad está siempre en quien DIFUNDE las imágenes sin permiso, no en quien las envía. Evitemos culpabilizar a la víctima. También es violencia extorsionar u obligar a enviar fotos, y recibir material íntimo no solicitado.</div>
+          <h4 class="sub">🕵️ Posibles situaciones de difusión sin consentimiento</h4>
+          <div class="mini-grid">
+            <div class="mini m-coral"><b>Tras una separación o pelea</b><span>Una pareja se filmó o fotografió; al separarse, uno hace circular las imágenes guardadas.</span></div>
+            <div class="mini m-amber"><b>Fotos para seducir</b><span>Una foto enviada en una comunicación privada puede ser hecha pública hoy o en el futuro por quien la recibe.</span></div>
+            <div class="mini m-violet"><b>Cámara web en el chateo</b><span>Las poses sexuales frente a cámara pueden ser capturadas o grabadas y publicadas sin consentimiento.</span></div>
+            <div class="mini m-teal"><b>Robo o hackeo de dispositivos</b><span>El acceso indebido a fotos y videos guardados es puerta de entrada a su publicación.</span></div>
+          </div>
+          <h4 class="sub">💥 Consecuencias</h4>
+          <ul class="arrow">
+            <li><b>Descontextualización:</b> la imagen pierde el sentido del contexto íntimo en que fue producida.</li>
+            <li><b>Exposición:</b> cuantos más contactos la reciben, más expuesto/a queda el/la protagonista.</li>
+            <li><b>Daño a la identidad digital:</b> el material perdura y se asocia al nombre en cualquier búsqueda, presente o futura.</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/172830753-68ec-4024-9959-e0577ff60320.png" alt="Teléfono con candado y símbolo de no compartir: privacidad y consentimiento">
+          <figcaption>Lo privado se cuida: el consentimiento también rige en lo digital.</figcaption>
+        </figure>
+      </div>
+
+      <div class="box box-adulto">
+        <div class="box-t">🧑‍🏫 Rol del adulto: prevención de la difusión sin consentimiento</div>
+        <ul class="tick">
+          <li>Incluir los espacios digitales en la <b>ESI</b>: el cuidado del cuerpo y de la imagen también aplica en chats, juegos y redes; “no es no” también en lo digital.</li>
+          <li>Establecer la <b>cadena de responsabilidades</b>: primero quien difunde sin permiso; luego cada “me gusta”, compartido o comentario que valida y amplía la circulación.</li>
+          <li>Abordar desde la ESI y la perspectiva de <b>violencia de género</b>, indagando causas socioculturales.</li>
+          <li>Prácticas de reducción de riesgos: anonimizar imágenes (sin rostro ni marcas identificables); desconfiar de plataformas “efímeras” (hay capturas); ante promesa de borrado, verificar también la nube.</li>
+          <li>Debatir la diferencia entre lo público y lo privado: lo privado se cuida como algo propio.</li>
+          <li>No compartir, reenviar ni difundir imágenes de otras personas sin su consentimiento.</li>
+          <li>Contraseñas seguras y bloqueo de dispositivos; tapar la cámara web si no se usa; copia de seguridad y borrado de material íntimo de celulares que pueden perderse o robarse.</li>
+        </ul>
+        <p style="margin-top:8px"><b>Cómo actuar:</b> reportar siempre imágenes sexuales de NNA en redes, sitios de video y blogs (es ejercer ciudadanía digital); ante material de NNA, denuncia en comisarías o fiscalías; reportar contenidos inadecuados y usar filtros de seguridad con los más chicos.</p>
+      </div>
+
+      <div class="box box-den">
+        <div class="box-t">📞 Asesoramiento, denuncias y consultas</div>
+        <div class="help-grid">
+          <div class="help"><span class="num">Línea 102</span><b>Derechos de la infancia (PBA)</b><p>Gratuita, 24 h, 365 días.</p></div>
+          <div class="help"><span class="num">0800-222-1717</span><b>Equipo niñ@s vs. explotación sexual y grooming</b><p>24 h, todo el país. equiponinas@jus.gov.ar</p></div>
+          <div class="help"><span class="num">Línea 137</span><b>Las víctimas contra las violencias</b><p>24 h, todo el país.</p></div>
+        </div>
+      </div>
+
+      <div class="box box-act">
+        <div class="box-t">✏️ Actividad sugerida · “El pacto de privacidad” (1 encuentro)</div>
+        <p><b>Inicio:</b> pregunta disparadora: si comparto algo con una sola persona, ¿sigue siendo mío?</p>
+        <p><b>Desarrollo:</b> trabajar las situaciones situación–riesgo de la guía; debatir la cadena de responsabilidades y el mito “no debería haberse sacado la foto” con perspectiva de género.</p>
+        <p><b>Cierre:</b> elaborar el “Decálogo del consentimiento digital” y una campaña para la escuela.</p>
+      </div>
+    </div></div></div>
+  </article>
+
+  <!-- TEMA 4 -->
+  <article class="acc">
+    <button class="acc-head"><span class="icon-sq iq-violet">🚨</span>
+      <span class="t"><h3>Grooming</h3><span class="meta">¿Qué es? · Responsabilidad de la escuela · Fases · Rol del adulto · Denuncias</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <div class="topic-flex">
+        <div>
+          <h4 class="sub">❓ ¿Qué es?</h4>
+          <p>Se denomina <b>grooming</b> a la situación en que un <b>adulto</b> acosa sexualmente a un niño o niña mediante el uso de las TIC. No es la antesala de un delito: <b>es ya en sí un tipo de abuso y un delito</b> en nuestro país, aunque nunca se concrete un encuentro personal.</p>
+          <p>Los perpetradores suelen crear perfiles falsos haciéndose pasar por chicos o chicas para generar amistad y confianza; el mecanismo suele comenzar con un pedido de foto o video sexual y derivar en chantaje.</p>
+          <div class="box box-ley" style="margin:12px 0">
+            <div class="box-t">⚖️ Ley 26.904 · Art. 131 del Código Penal</div>
+            <p>Prisión de <b>6 meses a 4 años</b> a quien, por medio de comunicaciones electrónicas o cualquier tecnología de transmisión de datos, contacte a una persona menor de edad con el propósito de cometer cualquier delito contra su integridad sexual.</p>
+          </div>
+          <h4 class="sub">🏫 Responsabilidad de la escuela</h4>
+          <ul class="tick">
+            <li>Estar atentos a actitudes o conductas que alerten sobre un posible abuso; observar indicadores y fundamentar la sospecha.</li>
+            <li>Informar a las autoridades de la institución y reunir información relevante (marcas, cambios de ánimo, juego, vínculos).</li>
+            <li><b>Deber de comunicar</b> (Ley 26.061, art. 30): todo miembro de establecimientos educativos que conozca una vulneración de derechos de NNA debe comunicarla al organismo de protección local, bajo apercibimiento de responsabilidad por omisión.</li>
+          </ul>
+          <h4 class="sub">🔄 Componentes y fases del grooming</h4>
+          <p><b>Dos tipos:</b> sin fase previa (material obtenido por hackeo o robo de contraseñas, luego extorsión) y con fase previa de generación de confianza (el material es entregado por el/la chico/a).</p>
+          <div class="fases">
+            <div class="fase"><span class="num">1</span><b>Amistad · contacto y acercamiento</b><p>Conoce gustos, costumbres y rutinas; miente sobre su edad con fotos o videos falsos o editados; se muestra como un par.</p></div>
+            <div class="fase"><span class="num">2</span><b>Relación · confianza y obtención del material</b><p>Conversaciones extensas y continuas, confesiones íntimas, falsa familiaridad; consigue el envío de material sexual o erótico.</p></div>
+            <div class="fase"><span class="num">3</span><b>Componente sexual · chantaje y acoso</b><p>El material se vuelve objeto de chantaje: más imágenes o un encuentro personal, bajo amenaza de difusión a contactos o plataformas.</p></div>
+          </div>
+          <p><b>¿Dónde actúan?</b> En la infancia, sobre todo en <b>juegos online</b> y <b>WhatsApp</b> (chatos multitudinarios escolares, mensajes de usuarios no identificados). Claves: bloqueo, privacidad de foto de perfil/estado/última conexión solo para contactos agendados, y trabajar nociones de conocido/desconocido y perfil falso.</p>
+        </div>
+        <figure>
+          <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/1d824e4af-123b-4031-a4d1-da85b20e9cfe.png" alt="Perfil sospechoso tras una pantalla y mano adulta que protege y guía a un niño">
+          <figcaption>La identidad en internet no es fácil de corroborar: acompañar y verificar.</figcaption>
+        </figure>
+      </div>
+
+      <div class="box box-adulto">
+        <div class="box-t">🧑‍🏫 Rol del adulto: prevención y detección</div>
+        <ul class="tick">
+          <li>Prohibir no sirve: dialogar y brindar herramientas sí. Presencia activa en la vida online de los chicos (páginas, redes, contactos, rutinas).</li>
+          <li>Acompañar y generar confianza sin violar la intimidad; distinguir niños (mayor presencia, evitar contacto con extraños) de adolescentes (diálogo y mirada crítica).</li>
+          <li>Trabajar la noción de anonimato e identidad falsa: abrir un perfil trucho es facilísimo.</li>
+          <li>Configurar privacidad y seguridad de las cuentas junto a los chicos; no publicar información ni imágenes comprometedoras.</li>
+          <li>No usar cámara web con desconocidos; no usar nombre y apellido como nick en juegos online.</li>
+          <li>Política cuidadosa de contraseñas: seguras, sin datos predecibles, sin reutilizar; los chicos las comparten con sus padres/madres.</li>
+          <li><b>Detección:</b> repentina tristeza, angustia, descenso del rendimiento, necesidad de soledad → charlar en confianza.</li>
+        </ul>
+        <p style="margin-top:8px"><b>Ante un caso:</b> NO denunciar el perfil en la plataforma (se pierden pruebas y el acosador crea cuentas nuevas) · NO escrachar ni enfrentar · hablar sin avergonzar ni culpar (evitar revictimización) · recurrir a servicios de protección y centros de acceso a la justicia · hacer la <b>denuncia penal</b> · guardar pruebas: no borrar conversaciones, capturas, URLs de chats y fotos enviadas por el acosador.</p>
+      </div>
+
+      <div class="box box-den">
+        <div class="box-t">📞 Asesoramiento, denuncias y consultas</div>
+        <div class="help-grid">
+          <div class="help"><span class="num">Línea 102</span><b>Derechos de la infancia (PBA)</b><p>Gratuita, 24 h, 365 días.</p></div>
+          <div class="help"><span class="num">0800-222-1717</span><b>Equipo niñ@s vs. explotación sexual y grooming</b><p>24 h, todo el país. equiponinas@jus.gov.ar</p></div>
+          <div class="help"><span class="num">Línea 137</span><b>Las víctimas contra las violencias</b><p>24 h, todo el país.</p></div>
+          <div class="help"><span class="num">Fiscalías</span><b>Delegaciones de la Fiscalía de Estado</b><p>fiscalia.gba.gov.ar/delegaciones/map</p></div>
+        </div>
+      </div>
+
+      <div class="box box-act">
+        <div class="box-t">✏️ Actividad sugerida · “Perfiles en duda” (1 encuentro)</div>
+        <p><b>Inicio:</b> ¿cómo sabemos que alguien es quien dice ser en internet? Lluvia de ideas.</p>
+        <p><b>Desarrollo:</b> reconstruir las tres fases del grooming con un caso ficticio y listar señales de alerta; revisar juntos las configuraciones de privacidad de los juegos y apps que usa el grupo.</p>
+        <p><b>Cierre:</b> infografía “Ante la duda: contáselo a un adulto, guardá las pruebas, denunciá” con las líneas 102 / 0800-222-1717 / 137.</p>
+      </div>
+    </div></div></div>
+  </article>
+</section>
+
+<!-- ================= SECCIÓN 2 ================= -->
+<section class="tab-panel" id="tab-seccion2">
+  <div class="sec-head">
+    <span class="sec-kicker">Sección 2</span>
+    <h2>Construcción de ciudadanía digital</h2>
+    <p>Del cuidado a la participación: derechos y obligaciones en la web, convivencia digital y uso reflexivo y didáctico de las TIC en el aula.</p>
+  </div>
+
+  <article class="acc open">
+    <button class="acc-head"><span class="icon-sq iq-teal">🌐</span>
+      <span class="t"><h3>Ciudadanía digital</h3><span class="meta">¿Qué es? · Convivencia digital · Derechos digitales · Rol del adulto</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <div class="topic-flex">
+        <div>
+          <h4 class="sub">❓ ¿Qué es?</h4>
+          <p>La <b>ciudadanía digital</b> es un concepto en permanente construcción: refiere a nuestras <b>actitudes</b> en los espacios digitales y, al mismo tiempo, a nuestros <b>derechos y obligaciones</b>. Es el conjunto de competencias que faculta a acceder, comprender, evaluar, utilizar, crear y compartir información de manera crítica, ética y eficaz (UNESCO).</p>
+          <p>Lo digital penetró la vida cotidiana (trabajar, estudiar, jugar, enamorarse): ya no existen bordes claros entre lo online y lo offline, habitamos <b>espacios mixtos</b>. La UNESCO propone tres niveles: el sujeto como <b>receptor</b>, como <b>participante</b> y como <b>actor activo</b>. La destreza tecnológica ya no es solo manejar dispositivos: es participación, respeto, intercambio, colaboración y convivencia (Jones y Mitchell).</p>
+          <div class="mini-grid">
+            <div class="mini m-teal"><b>Sujetos de derecho</b><span>También en internet: conocer y usar las herramientas de denuncia y exigirlas.</span></div>
+            <div class="mini m-amber"><b>Sujetos activos</b><span>No dar nada por sentado: leer y aceptar o rechazar términos y condiciones.</span></div>
+            <div class="mini m-coral"><b>Sujetos con obligaciones</b><span>Cumplir las normas de convivencia aceptadas para poder reclamar su cumplimiento.</span></div>
+          </div>
+          <h4 class="sub">🤝 Convivencia digital</h4>
+          <p>Nuestras actitudes online hablan de nosotros: los valores valen igual en la calle que en el chat. Factores que alimentan la “laxitud” digital: anonimato, ausencia física del otro, asincronicidad y soledad desde la que se escribe. Antídoto: la <b>empatía</b>. Ejercicios simples: ¿lo diría si tuviera a la persona enfrente? ¿mostraría esta foto en la escuela? Somos una misma identidad, offline y online.</p>
+          <h4 class="sub">⚖️ Derechos digitales</h4>
+          <p>El Consejo de Derechos Humanos de la ONU reconoce que <b>los mismos derechos del mundo offline deben protegerse en internet</b>: libertad de expresión, alfabetización digital, acceso a internet para la educación y la reducción de brechas, inclusión de personas con discapacidad, seguridad y privacidad.</p>
+          <p>A partir de la Convención sobre los Derechos del Niño, el <b>Decálogo de e-derechos</b> de UNICEF establece: ① acceso sin discriminación · ② libre expresión y asociación · ③ ser consultados sobre normas que los afecten · ④ protección contra explotación y violencia · ⑤ desarrollo personal y educación · ⑥ intimidad de las comunicaciones y protección de datos · ⑦ esparcimiento y juego sin violencia · ⑧ padres y madres orientan el uso responsable · ⑨ cooperación entre países · ⑩ usar las TIC para un mundo más justo y pacífico.</p>
+          <div class="box box-ley" style="margin:12px 0">
+            <div class="box-t">🇦 Legislación argentina sobre internet</div>
+            <p><b>Ley 26.388</b> (2008, ciberdelitos): pornografía infantil, interceptación de comunicaciones, acceso no autorizado, publicación de correspondencia privada, acceso a bancos de datos. · <b>Ley 26.904</b>: grooming. · <b>Ley 25.326</b> + art. 43 CN: protección de datos personales y habeas data.</p>
+          </div>
+        </div>
+        <figure>
+          <img src="https://image.qwenlm.ai/public_source/c71c6172-222d-4d64-a23e-0dd679bdd72e/1bc162e7b-2d80-4f7e-b795-3cfe6a7bcd46.png" alt="Niños y jóvenes sobre un globo conectado sosteniendo símbolos de derechos digitales">
+          <figcaption>Ciudadanía digital: derechos, participación y convivencia en la red.</figcaption>
+        </figure>
+      </div>
+
+      <div class="box box-adulto">
+        <div class="box-t">🧑‍ Rol del adulto: uso saludable del mundo digital</div>
+        <ul class="tick">
+          <li>Reflexionar sobre la sensación de dependencia del celular y la sobreexposición a pantallas.</li>
+          <li>Educar a los más chicos desde el primer contacto con internet.</li>
+          <li>Pensar antes de postear: la viralización no tiene lógica previsible.</li>
+          <li>Pensar antes de enviar fotos o videos íntimos: se pierde el control del recorrido.</li>
+          <li>Cuidado al hablar con desconocidos; evitar la cámara web.</li>
+          <li>Contraseñas seguras y privacidad configurada en todas las cuentas.</li>
+        </ul>
+      </div>
+    </div></div></div>
+  </article>
+
+  <article class="acc">
+    <button class="acc-head"><span class="icon-sq iq-amber">🎒</span>
+      <span class="t"><h3>Uso reflexivo y didáctico de las TIC</h3><span class="meta">Habilidades digitales · Celular pedagógico · Fuentes · Consumir o producir · Sugerencias</span></span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="acc-body"><div class="acc-inner"><div class="acc-content">
+      <h4 class="sub">🧠 ¿Con TIC o desde las TIC?</h4>
+      <p>La educación ya está atravesada por lo digital: los estudiantes aprenden con tutoriales, búsquedas y mensajería. La cuestión no es <i>si</i> usamos tecnología sino <i>cómo</i>: no es lo mismo pedir que <b>busquen</b> información (trabajar con TIC como técnica) que pedir que <b>comparen fuentes, analicen enfoques y produzcan</b> un video o un programa (trabajar desde las TIC como estrategia de producción de conocimiento).</p>
+      <div class="mini-grid">
+        <div class="mini m-teal"><b>Habilidades instrumentales</b><span>Operacionales, básicas o funcionales: operar dispositivos e internet.</span></div>
+        <div class="mini m-amber"><b>Habilidades de información</b><span>Comprensión, navegación y evaluación crítica de contenidos.</span></div>
+        <div class="mini m-coral"><b>Habilidades sociales</b><span>Comunicación, autorevelación y privacidad en entornos digitales.</span></div>
+      </div>
+      <h4 class="sub">📱 Uso del celular con fines pedagógicos</h4>
+      <p>En lugar de debatir cómo prohibirlo, proponemos usar didácticamente la principal herramienta de los chicos: reconocen sistemas operativos, configuran y planifican estrategias con naturalidad. Con actividades desafiantes, divertidas y originales, los estudiantes se entusiasman. El debate de los próximos años: ¿recreamos la era analógica en el aula o adaptamos el aula a la vida actual de los estudiantes?</p>
+      <h4 class="sub">🔎 Las fuentes como punto de partida</h4>
+      <ul class="tick">
+        <li>Diferenciar fuentes primarias (producen conocimiento) de secundarias (lo reproducen; Wikipedia es una gran fuente secundaria colaborativa).</li>
+        <li>Analizar quién produce el discurso y por qué; comparar enfoques de diversas páginas sobre un mismo hecho.</li>
+        <li>Distinguir fuentes científicas (buscador académico de Google) de las que no lo son.</li>
+        <li>Docente como <b>curador de información</b>: organizar, evaluar y seleccionar materiales digitales; regular la “dieta cognitiva” frente a la sobreinformación.</li>
+      </ul>
+      <h4 class="sub">🏭 ¿Consumir o producir?</h4>
+      <p>La lógica de mercado empuja al consumo pasivo; solo una minoría produce. Propongamos producción de contenido: material audiovisual, cuentos y artículos, programación de apps y videojuegos, robótica, animación, edición de fotos, stop motion. Estimular exploración, creatividad y pensamiento crítico, dando mayor protagonismo al sujeto que aprende.</p>
+      <div class="box box-act">
+        <div class="box-t">✅ Sugerencias para la inclusión de las TIC en el aula</div>
+        <ul class="tick">
+          <li>La tecnología como <b>medio</b>, no como fin: con propósito pedagógico.</li>
+          <li>No pensarla como enemigo: demonizar corta el diálogo con los chicos.</li>
+          <li>Usarla como herramienta y como objeto de estudio: producción de conocimiento.</li>
+          <li>Uso divertido y original: disminuye la distracción.</li>
+          <li>Fomentar la creación y la disrupción en forma permanente.</li>
+          <li>Usar diversas formas: videos, fotos, diseño, apps, videojuegos.</li>
+          <li>Escuchar los intereses y saberes de los chicos; abrirse a aprender de ellos.</li>
+          <li>Propiciar el uso reflexivo: debatir sobre la tecnología con ellos.</li>
+          <li>Mantenerse al día con las tendencias; fomentar la cultura del hacer (hackatones, equipos creativos).</li>
+        </ul>
+      </div>
+      <div class="box box-act">
+        <div class="box-t">✏️ Actividad sugerida · “Diseñar con TIC” (1 encuentro)</div>
+        <p><b>Inicio:</b> relevar usos e intereses tecnológicos del grupo. <b>Desarrollo:</b> en parejas, diseñar una actividad de 40′ con propósito pedagógico (video, podcast, stop motion, programación o encuesta). <b>Cierre:</b> evaluar cada propuesta: ¿la tecnología es medio y no fin? ¿produce conocimiento? ¿es divertida y original?</p>
+      </div>
+    </div></div></div>
+  </article>
+</section>
+
+<!-- ================= GLOSARIO ================= -->
+<section class="tab-panel" id="tab-glosario">
+  <div class="sec-head">
+    <span class="sec-kicker">Sección 3</span>
+    <h2>Glosario · ABC digital</h2>
+    <p>Vocabulario de la cultura digital para docentes, familias y estudiantes. Buscá por término o filtrá por letra.</p>
+  </div>
+  <div class="glo-controls">
+    <input type="search" id="glSearch" placeholder="🔍 Buscar término (ej.: phishing, meme, huella…)">
+  </div>
+  <div class="letters" id="glLetters"></div>
+  <div id="glCount"></div>
+  <div class="glo-grid" id="glGrid"></div>
+</section>
+
+<!-- ================= ACTIVIDADES ================= -->
+<section class="tab-panel" id="tab-actividades">
+  <div class="sec-head">
+    <span class="sec-kicker">Planificación y evaluación</span>
+    <h2>Secuencia didáctica, evaluación y quiz final</h2>
+    <p>Propuesta de 8 encuentros articulando las tres secciones del módulo, criterios de evaluación con rúbrica y un quiz interactivo de cierre.</p>
+  </div>
+
+  <h3 style="margin:8px 0 14px">🗓️ Secuencia de encuentros</h3>
+  <div class="tbl" style="margin-bottom:26px">
+    <table>
+      <thead><tr><th>#</th><th>Eje</th><th>Actividad principal</th><th>Producto esperado</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Huella digital y reputación</td><td>“Mi vidriera digital”: análisis de casos y búsqueda del propio nombre.</td><td>Decálogo “Pensar antes de publicar”.</td></tr>
+        <tr><td>2</td><td>Viralización y olvido</td><td>Análisis de una noticia viralizada; debate derecho al olvido.</td><td>Infografía sobre viralización.</td></tr>
+        <tr><td>3</td><td>Ciberbullying</td><td>Identificación de formas y roles en un caso ficticio.</td><td>Mapa de roles y consecuencias.</td></tr>
+        <tr><td>4</td><td>Ciberbullying: intervención</td><td>Explorar denuncia/bloqueo en plataformas; dramatizaciones.</td><td>Campaña “Mirar no es neutro”.</td></tr>
+        <tr><td>5</td><td>Sexting y consentimiento</td><td>Situaciones y riesgos; cadena de responsabilidades; ESI y género.</td><td>Decálogo del consentimiento digital.</td></tr>
+        <tr><td>6</td><td>Grooming</td><td>Reconstrucción de las fases; señales de alerta; privacidad en juegos y WhatsApp.</td><td>Infografía “Ante la duda…” con líneas de ayuda.</td></tr>
+        <tr><td>7</td><td>Ciudadanía y derechos digitales</td><td>Decálogo de e-derechos; juego de situaciones “¿qué harías?”.</td><td>Carta de convivencia digital del aula.</td></tr>
+        <tr><td>8</td><td>TIC en el aula + cierre</td><td>“Diseñar con TIC” + quiz final y firma de compromisos.</td><td>Proyecto productivo y quiz aprobado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:8px 0 14px">📏 Rúbrica de evaluación</h3>
+  <div class="tbl" style="margin-bottom:26px">
+    <table>
+      <thead><tr><th>Dimensión</th><th>En inicio</th><th>En desarrollo</th><th>Avanzado</th></tr></thead>
+      <tbody>
+        <tr><td><b>Conceptos clave</b> (huella, viralización, identidad digital)</td><td>Reconoce nociones de forma confusa.</td><td>Define con ayuda y ejemplos.</td><td>Explica y ejemplifica con autonomía.</td></tr>
+        <tr><td><b>Roles y responsabilidades</b> (ciberbullying, difusión sin consentimiento)</td><td>Identifica solo víctima y agresor.</td><td>Incluye observadores y cómplices.</td><td>Analiza la cadena de responsabilidades sin culpabilizar a la víctima.</td></tr>
+        <tr><td><b>Saber actuar</b> (protocolos y denuncia)</td><td>Desconoce pasos y líneas de ayuda.</td><td>Aplica pasos con acompañamiento.</td><td>Aplica y difunde protocolos: guardar pruebas, bloquear, denunciar, líneas 102/0800/137.</td></tr>
+        <tr><td><b>Ciudadanía digital y TIC</b></td><td>Usa TIC solo como consumo.</td><td>Participa y produce con guía.</td><td>Produce contenido con mirada crítica, ética y colaborativa.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:8px 0 14px">🧠 Quiz interactivo de cierre</h3>
+  <div id="quizBox"></div>
+  <div class="quiz-actions">
+    <button class="btn btn-primary" id="quizCheck">Corregir mi quiz</button>
+    <button class="btn btn-ghost" id="quizReset">↺ Reiniciar</button>
+  </div>
+  <div id="quizResult"></div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b>Módulo Didáctico · Convivencia Digital</b> — Provincia de Buenos Aires, Argentina.</div>
+    <div>Elaborado con fines educativos sobre la base de la <b>“Guía de sensibilización sobre Convivencia Digital”</b> (2ª edición, julio 2020) — UNICEF Argentina · Gobierno de la Provincia de Buenos Aires · Organismo Provincial de Niñez y Adolescencia. Reproducción autorizada con créditos.</div>
+    <div>Líneas gratuitas: <b>102</b> (PBA) · <b>0800-222-1717</b> (grooming) · <b>137</b> (víctimas contra las violencias) — 24 h, 365 días. · <a href="http://www.fiscalia.gba.gov.ar/delegaciones/map" target="_blank" rel="noopener">Mapa de Delegaciones de la Fiscalía de Estado</a></div>
+  </div>
+</footer>
+
+<script>
+/* ---------- tabs ---------- */
+const tabBtns = document.querySelectorAll('[data-tab]');
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id==='tab-'+id));
+  tabBtns.forEach(b=>b.classList.toggle('on', b.dataset.tab===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+tabBtns.forEach(b=>b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
+
+/* ---------- accordions ---------- */
+document.querySelectorAll('.acc-head').forEach(h=>{
+  h.addEventListener('click', ()=>h.closest('.acc').classList.toggle('open'));
+});
+
+/* ---------- progress bar ---------- */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const p = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progress').style.width = p + '%';
+}, {passive:true});
+
+/* ---------- print ---------- */
+document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+
+/* ---------- glosario ---------- */
+const GLOSARIO = [
+["ANTIVIRUS","Programas dedicados a la detección y remoción de virus en computadoras, smartphones y tabletas; los más completos se complementan con firewall, anti-malware y anti-spyware."],
+["APP","Aplicación: software que se instala en un smartphone o tableta para sumar prestaciones (educación, juegos, salud, fotografía…). Del inglés application."],
+["BIG DATA","Tratamiento y análisis de grandes volúmenes de información, incrementados por el avance de la interconexión global."],
+["BLUETOOTH","Tecnología de transmisión de datos de corto alcance entre dispositivos (unos 10 metros); hoy usada también en auriculares, parlantes y estéreo."],
+["BOT","Programa de origen malicioso que permite a un tercero tomar el control remoto de un dispositivo infectado."],
+["BOTNET","Red de computadoras infectadas por un bot."],
+["BYTE","Unidad de medición de almacenamiento en informática y telecomunicaciones; equivale a 8 bits."],
+["CIBERBULLYING","Ciberacoso: un niño, niña o adolescente es atormentado, acosado, humillado o avergonzado por un par a través de internet."],
+["CLOUD COMPUTING","“Computación en la nube”: servicio brindado a través de una red que permite, principalmente, el almacenamiento de información."],
+["CÓDIGO QR","Quick Response Code: patrón que almacena información alfanumérica (hasta 4.200 caracteres) descifrable con un lector especial."],
+["CONTROL PARENTAL","Función que bloquea o limita el acceso de chicos y chicas a sitios no aptos por contenido sexual, violento o riesgoso; presente en antivirus, sistemas operativos y apps."],
+["CYBERDATING","“Cita virtual”: conocer personas por internet para concretar citas presenciales; hoy crece mediante aplicaciones específicas."],
+["DATOS PERSONALES","Información de cualquier tipo referida a personas físicas o ideales determinadas o determinables. En Argentina los protege la Ley 25.326."],
+["DATOS SENSIBLES","Datos que revelan origen racial o étnico, opiniones políticas, convicciones religiosas, afiliación sindical, salud o vida sexual. Nadie está obligado a proporcionarlos (Ley 25.326, art. 7)."],
+["DELITO INFORMÁTICO","Ciberdelito: actividad ilegal que utiliza la informática como medio. La Ley 26.388 (2008) lo incorporó al Código Penal."],
+["EMOJI","Versión japonesa de los emoticones: dibujos predeterminados de los chats que representan situaciones o estados de ánimo."],
+["EMOTICÓN","Secuencia de caracteres que expresa un estado de ánimo con una carita, como :) o :(. Une “emoción” e “ícono”."],
+["FAQ","Frequently Asked Questions: “preguntas frecuentes” de un sitio o app, para evitar consultas repetidas y guiar a nuevos usuarios."],
+["FLIRTMOJI","Emoticones con connotación sexual explícita o implícita, disponibles en aplicaciones de mensajería."],
+["GEEK","Persona apasionada y amante de la tecnología, con gran conocimiento sobre el tema."],
+["GEOLOCALIZACIÓN","Posibilidad de conocer la ubicación puntual de un objeto mediante GPS: fotos, vehículos, mascotas o posteos con coordenadas."],
+["GUESTPOSTING","“Publicación de invitado”: un blogger invita a otro a redactar en su sitio para darse a conocer y sumar calidad al blog."],
+["HACKER","Especialista en tecnología capaz de intervenir redes y sistemas; aunque se lo asocie al intruso, también desarrolla sistemas más seguros."],
+["HARDWARE","Partes físicas de una computadora: lo que se puede ver y tocar. Del inglés hard (duro) y ware (utensilio)."],
+["HASHTAG","Etiqueta: término antepuesto por el símbolo # que ordena mensajes por temática en redes sociales."],
+["HOAX","Farsa o fraude: mensaje falso distribuido por mail o web para difundir información sin veracidad, captar correos o robar contraseñas."],
+["IDENTIDAD DIGITAL","Recopilación de información que un usuario construye en internet al publicar e interactuar en sitios y redes sociales."],
+["INMIGRANTE DIGITAL","Persona que no se crió en un mundo de dispositivos conectados y debe aprender a interactuar con la tecnología."],
+["INTERNET DE LAS COSAS","IoT: conexión a la red de objetos cotidianos (heladeras, aires, lavarropas) que ganan nuevas funciones."],
+["KEYLOGGER","Software que registra todo lo tecleado para que un tercero malintencionado conozca los movimientos e información del usuario."],
+["LINK BUILDING","Técnica de marketing online para mejorar el posicionamiento web, desarrollada por especialistas en SEO."],
+["LOL","Laughing out loud: “riendo a carcajadas”. Reemplaza al jajaja en redes y chats; a veces se usa XD."],
+["MEME","Idea o expresión que se viraliza velozmente en diversos formatos (imagen, texto, audio, video); nace, se reproduce y cae en el olvido en poco tiempo."],
+["MICROBLOGGING","Servicio de mensajes breves con caracteres limitados, como los SMS o los tweets."],
+["NATIVO DIGITAL","Persona criada en un mundo donde las TIC ocupan la vida cotidiana: su aprendizaje de uso es casi natural."],
+["NOMOFOBIA","Del inglés no mobile phone phobia: miedo irracional a quedarse sin el celular u otro dispositivo conectado."],
+["PASSWORD","Clave o contraseña: conjunto de caracteres alfanuméricos para ingresar a sitios y aplicaciones; su buen uso protege nuestra privacidad."],
+["PHISHING","Método de ciberdelincuentes para captar información confidencial (usuarios, contraseñas, cuentas) mediante mails o páginas falsas."],
+["PHUBBING","Phone + snubbing: prestar más atención al teléfono que a la situación social que nos rodea."],
+["PIC","Abreviatura del inglés picture: “imagen”, popularizada entre usuarios de redes sociales."],
+["QWERTY","Distribución de teclado nacida con las máquinas de escribir, que busca equilibrar el trabajo de ambas manos."],
+["REALIDAD AUMENTADA","Combina el mundo real con el virtual agregando información informática al entorno físico (catálogos 3D, probadores, videojuegos)."],
+["REPUTACIÓN WEB","Imagen, prestigio y referencia que internet muestra de una persona; la construyen acciones propias, omisiones y acciones de terceros."],
+["RETWEET","Reenvío de un tweet: replica una publicación para que la vean todos los seguidores y facilita la viralización."],
+["SEGURIDAD INFORMÁTICA","Conjunto de acciones y herramientas para lograr la inviolabilidad de la información de un sistema."],
+["SMARTPHONE","“Teléfono inteligente”: dispositivo móvil capaz de realizar tareas de una computadora en miniatura."],
+["STALKEAR","Del inglés to stalk: acechar o espiar digitalmente el perfil de un usuario en redes sociales; quien lo ejerce es un stalker."],
+["#TBT","Throwback Thursday: “jueves de antaño”, hashtag de Instagram para publicar fotos de la infancia ese día."],
+["TIC","Tecnologías de la Información y la Comunicación: recursos que procesan, almacenan, envían y reciben información mediante soporte tecnológico."],
+["TRENDING TOPIC","TT o “tendencia”: en Twitter, los hashtags más populares del momento."],
+["TWEET","Mensaje de hasta 140 caracteres publicado en Twitter."],
+["URL","Uniform Resource Locator: dirección de un sitio web, compuesta por protocolo, dominio y ruta."],
+["WEB CAM","Cámara digital integrada a un dispositivo que transmite imágenes por internet, usada en chats y videollamadas."],
+["WIFI","Método de conexión inalámbrica para computadoras, televisores, consolas y celulares; su alcance depende del enrutador."],
+["WIKI","Página web colaborativa donde los usuarios crean, modifican y eliminan contenido desde el navegador. Ejemplo: Wikipedia."],
+["WTF","What the fuck: “¡qué demonios!”. Sigla usada ante situaciones increíbles en redes y chats."]
+];
+const glGrid = document.getElementById('glGrid');
+const glLetters = document.getElementById('glLetters');
+const glSearch = document.getElementById('glSearch');
+const glCount = document.getElementById('glCount');
+let curLetter = 'TODAS';
+const lettersAvail = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('').filter(L=>GLOSARIO.some(g=>g[0].toUpperCase().startsWith(L)));
+function renderLetters(){
+  let html = '<button class="'+(curLetter==='TODAS'?'on':'')+'" data-l="TODAS">★</button>';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('').forEach(L=>{
+    html += '<button data-l="'+L+'" '+(lettersAvail.includes(L)?'':'disabled')+' class="'+(curLetter===L?'on':'')+'">'+L+'</button>';
+  });
+  glLetters.innerHTML = html;
+  glLetters.querySelectorAll('button:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{curLetter=b.dataset.l;renderLetters();renderGlos();}));
+}
+function renderGlos(){
+  const q = glSearch.value.trim().toLowerCase();
+  let items = GLOSARIO.filter(g=>{
+    const okL = curLetter==='TODAS' || g[0].toUpperCase().startsWith(curLetter);
+    const okQ = !q || g[0].toLowerCase().includes(q) || g[1].toLowerCase().includes(q);
+    return okL && okQ;
+  }).sort((a,b)=>a[0].localeCompare(b[0],'es'));
+  glCount.textContent = items.length + (items.length===1?' término encontrado':' términos encontrados');
+  glGrid.innerHTML = items.map(g=>'<div class="glo-card"><b>'+g[0]+'</b><span>'+g[1]+'</span></div>').join('') || '<div class="card">😕 No se encontraron términos para tu búsqueda.</div>';
+}
+glSearch.addEventListener('input', renderGlos);
+renderLetters(); renderGlos();
+
+/* ---------- quiz ---------- */
+const QUIZ = [
+["La huella digital es…",["La marca que deja el dedo en la pantalla del celular.","El rastro que dejan nuestras actividades en internet: fotos, videos, publicaciones y comentarios.","Un programa que borra automáticamente lo que publicamos."],1],
+["Para que exista ciberbullying debe haber…",["Un adulto acosando a un menor de edad.","Niños, niñas o adolescentes en ambos extremos del conflicto.","Una víctima mayor de edad."],1],
+["¿Qué NO conviene hacer ante un caso de ciberbullying?",["Guardar capturas de pantalla como evidencia.","Bloquear al usuario que hostiga.","Responder con el mismo odio o violencia."],2],
+["Cuando una imagen íntima se difunde sin consentimiento, la responsabilidad es de…",["Quien reenvía o difunde la imagen sin permiso.","Quien se sacó la foto originalmente.","La víctima, por haberla enviado."],0],
+["El grooming en Argentina…",["Es solo una falta moral, no un delito.","Es un delito penado por la Ley 26.904 con prisión de 6 meses a 4 años.","Solo existe si se concreta un encuentro presencial."],1],
+["Ante la sospecha de un caso de grooming conviene…",["Denunciar el perfil en la red social para que lo den de baja inmediatamente.","Escrachar públicamente al acosador.","No borrar conversaciones, guardar pruebas y realizar la denuncia penal."],2],
+["¿Cuál de estos es un e-derecho de niños y niñas según UNICEF?",["Derecho a la intimidad de las comunicaciones por medios electrónicos.","Derecho a conocer las contraseñas de sus amigos.","Derecho a viralizar cualquier contenido sin límites."],0],
+["Para cuidar la identidad digital se recomienda…",["Configurar la privacidad y pensar antes de publicar.","Usar nombre y apellido completo como nick en todos los juegos.","Compartir las contraseñas con todos los contactos."],0]
+];
+const quizBox = document.getElementById('quizBox');
+quizBox.innerHTML = QUIZ.map((q,i)=>{
+  return '<div class="quiz-q" data-i="'+i+'"><div class="qt"><span class="n">'+(i+1)+'</span>'+q[0]+'</div><div class="opts">'+
+    q[1].map((o,j)=>'<button class="opt" data-j="'+j+'">'+String.fromCharCode(65+j)+') '+o+'</button>').join('')+'</div></div>';
+}).join('');
+quizBox.addEventListener('click', e=>{
+  const opt = e.target.closest('.opt'); if(!opt) return;
+  const q = opt.closest('.quiz-q');
+  q.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  opt.classList.add('sel');
+});
+document.getElementById('quizCheck').addEventListener('click', ()=>{
+  let score = 0, answered = 0;
+  document.querySelectorAll('.quiz-q').forEach(q=>{
+    const i = +q.dataset.i, sel = q.querySelector('.opt.sel');
+    q.querySelectorAll('.opt').forEach(o=>o.classList.remove('ok','bad'));
+    if(sel){ answered++;
+      const j = +sel.dataset.j;
+      if(j===QUIZ[i][2]){ score++; sel.classList.add('ok'); }
+      else { sel.classList.add('bad'); q.querySelectorAll('.opt')[QUIZ[i][2]].classList.add('ok'); }
+    } else { q.querySelectorAll('.opt')[QUIZ[i][2]].classList.add('ok'); }
+  });
+  const res = document.getElementById('quizResult');
+  res.style.display='block';
+  let msg, bg;
+  if(answered < QUIZ.length){ msg='⚠️ Respondiste '+answered+' de '+QUIZ.length+' preguntas. Completá todas y volvé a corregir.'; bg='var(--amber-bg)'; }
+  else if(score===QUIZ.length){ msg='🏆 ¡Excelente! '+score+'/'+QUIZ.length+'. Dominás los conceptos del módulo: ¡a multiplicarlos en tu comunidad!'; bg='var(--teal-bg)'; }
+  else if(score>=6){ msg='🎉 ¡Muy bien! '+score+'/'+QUIZ.length+'. Revisá las respuestas marcadas en rojo para afianzar los conceptos.'; bg='var(--teal-bg)'; }
+  else { msg='📚 Obtuviste '+score+'/'+QUIZ.length+'. Te sugerimos repasar las Secciones 1 y 2 y volver a intentarlo.'; bg='var(--coral-bg)'; }
+  res.style.background = bg;
+  res.innerHTML = msg + '<small>Recordá: ante cualquier situación de violencia digital, líneas 102 · 0800-222-1717 · 137 (gratuitas, 24 h).</small>';
+  res.scrollIntoView({behavior:'smooth', block:'center'});
+});
+document.getElementById('quizReset').addEventListener('click', ()=>{
+  document.querySelectorAll('.quiz-q .opt').forEach(o=>o.classList.remove('sel','ok','bad'));
+  const res = document.getElementById('quizResult'); res.style.display='none';
+});
+</script>
+</body>
+</html>
+
