@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- ============================================================
+     NTiCx · Web Interactiva Pedagógica · 4to año Secundaria (Argentina)
+     ------------------------------------------------------------
+     Archivo único y autocontenido: HTML5 + Tailwind CSS (CDN) + JS moderno.
+     Para usarlo: guardá este archivo como "index.html" y arrastralo
+     a cualquier navegador web (Chrome, Edge o Firefox).
+
+     VERSIÓN 4 — Cambios solicitados:
+     · ❌ Se eliminó la trivia/desafío de la pestaña Inicio.
+     · 📇 El Glosario YA NO es una pestaña: ahora es un botón en la
+       barra superior (junto a "Mi Reporte" y "Teoría A4") que abre
+       un modal con buscador y botón de impresión A4.
+     · 🖨️ La impresión de "Mi Reporte" ya NO incluye "Últimos movimientos".
+     · 📄 La impresión de "Mi Reporte" AHORA incluye el DETALLE COMPLETO
+       de cada trivia (preguntas, respuesta elegida, ✔/✘ y correcta).
+     ============================================================ -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) · Aula Interactiva 4to Año</title>
+
+<!-- Tipografías modernas (Outfit + Plus Jakarta Sans) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS vía CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /* Configuración del tema Tailwind: paleta "Tech Isometric" vibrante */
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Outfit', 'sans-serif'],          // títulos
+          body: ['"Plus Jakarta Sans"', 'sans-serif'] // textos
+        },
+        colors: {
+          navy:'#0B1026', panel:'#141B3C', panel2:'#1C2550',
+          violet:'#7C5CFC', cyan:'#22E4FF', neon:'#2BFFB2', pink:'#FF5CD7', amber2:'#FFC53D'
+        },
+        keyframes: {
+          floaty:   { '0%,100%':{transform:'translateY(0)'},   '50%':{transform:'translateY(-10px)'} },
+          floaty2:  { '0%,100%':{transform:'translateY(0)'},   '50%':{transform:'translateY(-16px)'} },
+          pulseGlow:{ '0%,100%':{opacity:.5},                  '50%':{opacity:1} },
+          popIn:    { '0%':{transform:'scale(.6)',opacity:0},  '100%':{transform:'scale(1)',opacity:1} },
+          slideUp:  { '0%':{transform:'translateY(24px)',opacity:0},'100%':{transform:'translateY(0)',opacity:1} }
+        },
+        animation: {
+          floaty:'floaty 4s ease-in-out infinite', floaty2:'floaty2 6s ease-in-out infinite',
+          pulseGlow:'pulseGlow 2s ease-in-out infinite', popIn:'popIn .35s cubic-bezier(.2,1.4,.4,1) both',
+          slideUp:'slideUp .5s ease both'
+        }
+      }
+    }
+  }
+</script>
+
+<!-- jsPDF (CDN, del inglés JavaScript Portable Document Format — Formato de Documento Portátil en JavaScript) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  /* ============ ESTILOS PERSONALIZADOS ============ */
+  html { scroll-behavior: smooth; }
+  body { font-family:'Plus Jakarta Sans',sans-serif; }
+  h1,h2,h3,h4,.font-display { font-family:'Outfit',sans-serif; }
+
+  .iso-bg{
+    background-color:#0B1026;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,92,252,.22), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(34,228,255,.14), transparent),
+      radial-gradient(ellipse 50% 40% at 50% 110%, rgba(255,92,215,.10), transparent),
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size:auto,auto,auto,42px 42px,42px 42px;
+  }
+
+  .tech-card{
+    background:linear-gradient(160deg,#141B3C 0%,#101736 100%);
+    border:1px solid rgba(124,92,252,.25);
+    border-radius:1.25rem;
+    transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  .tech-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(34,228,255,.55);
+    box-shadow:0 18px 40px -12px rgba(34,228,255,.25), 0 8px 20px -8px rgba(124,92,252,.35);
+  }
+  .btn-neon{ position:relative; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+  .btn-neon:hover{ transform:translateY(-2px); filter:brightness(1.12); box-shadow:0 10px 24px -8px currentColor; }
+  .btn-neon:active{ transform:translateY(0) scale(.98); }
+
+  .tab-btn{ transition:all .25s ease; white-space:nowrap; }
+  .tab-btn.active{ background:linear-gradient(135deg,#7C5CFC,#22E4FF); color:#0B1026; font-weight:800; box-shadow:0 6px 18px -6px rgba(34,228,255,.6); }
+
+  .no-scrollbar::-webkit-scrollbar{ display:none; }
+  .no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none; }
+
+  .acc-panel{ max-height:0; overflow:hidden; transition:max-height .45s ease; }
+  .acc-open{ max-height:1200px; }
+
+  .topo-node{ cursor:pointer; transition:transform .2s ease; transform-origin:center; transform-box:fill-box; }
+  .topo-node:hover{ transform:scale(1.18); }
+  .topo-node:hover .node-ring{ opacity:1; }
+  .node-ring{ opacity:0; transition:opacity .25s ease; }
+  .topo-line{ stroke-dasharray:6 6; animation:dashFlow 1.6s linear infinite; }
+  @keyframes dashFlow{ to{ stroke-dashoffset:-24; } }
+
+  .packet{
+    position:absolute; top:50%; transform:translate(-50%,-50%);
+    width:26px; height:26px; border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800; color:#0B1026;
+    box-shadow:0 0 14px rgba(34,228,255,.8); opacity:0;
+  }
+  .bw-dot{ position:absolute; border-radius:4px; animation:flow linear infinite; }
+  @keyframes flow{ from{ left:-6%; } to{ left:106%; } }
+
+  .flip{ perspective:1200px; }
+  .flip-inner{ position:relative; width:100%; height:100%; transition:transform .7s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; }
+  .flip.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:1.25rem; }
+  .flip-back{ transform:rotateY(180deg); }
+
+  .progress-fill{ transition:width .8s cubic-bezier(.2,.8,.2,1); }
+
+  .quiz-opt{ transition:all .25s ease; }
+  .quiz-opt:hover:not(:disabled){ transform:translateX(6px); border-color:#22E4FF; }
+  .quiz-ok { background:rgba(43,255,178,.15)!important; border-color:#2BFFB2!important; }
+  .quiz-bad{ background:rgba(255,92,215,.15)!important; border-color:#FF5CD7!important; }
+
+  .ch-input{
+    background:#0B1026; border:1px solid rgba(124,92,252,.4); border-radius:.75rem;
+    padding:.5rem .75rem; color:#fff; font-size:.85rem; width:100%; outline:none;
+  }
+  .ch-input:focus{ border-color:#22E4FF; }
+
+  /* Área de impresión (oculta en pantalla) */
+  #printArea{ display:none; }
+
+  /* ============ ESTILOS DE IMPRESIÓN · A4 ============ */
+  @page { size:A4 portrait; margin:14mm; }
+  @media print{
+    header, footer, .no-print, .tab-nav, .print-hide{ display:none !important; }
+    html, body{ background:#ffffff !important; }
+    *{
+      color:#111 !important; background:transparent !important;
+      box-shadow:none !important; text-shadow:none !important;
+      border-color:#999 !important; animation:none !important; transition:none !important;
+    }
+    .tab-section{ display:none !important; }
+    .tab-section[data-active="true"]{ display:block !important; }
+    .print-only{ display:block !important; }
+    .acc-panel{ max-height:none !important; overflow:visible !important; }
+    .tech-card, .print-block, table, .qa-item, .rep-row{ break-inside:avoid; page-break-inside:avoid; }
+    .tech-card, .print-block, table{ border:1px solid #999 !important; }
+    svg{ max-width:100% !important; height:auto !important; }
+    svg *{ stroke:#333 !important; fill:none; }
+    svg text{ fill:#111 !important; stroke:none !important; }
+    svg rect.node-box, svg circle{ fill:#eee !important; stroke:#333 !important; }
+    input, select, button{ display:none !important; }
+    .overflow-x-auto{ overflow:visible !important; }
+
+    /* Colores semánticos de las hojas de resultados */
+    #printArea .ok-mark { color:#006400 !important; font-weight:800 !important; }
+    #printArea .bad-mark{ color:#B00020 !important; font-weight:800 !important; }
+
+    /* MODO TRIVIA / REPORTE / GLOSARIO: solo se imprime la hoja generada */
+    body.printing-quiz .tab-section{ display:none !important; }
+    body.printing-quiz > .print-only{ display:none !important; }
+    body.printing-quiz #printArea{ display:block !important; }
+
+    /* MODO TEORÍA COMPLETA: todos los módulos, uno por hoja */
+    body.print-all-theory .tab-section{ display:block !important; break-before:page; page-break-before:always; }
+    body.print-all-theory .tab-section#tab-inicio{ break-before:auto; page-break-before:auto; }
+    body.print-all-theory .no-theory{ display:none !important; }
+  }
+  .print-only{ display:none; }
+</style>
+</head>
+
+<body class="iso-bg text-slate-200 font-body min-h-screen">
+
+<!-- ==================== ENCABEZADO FIJO ==================== -->
+<header class="sticky top-0 z-50 backdrop-blur-xl bg-navy/85 border-b border-violet/30 print-hide">
+  <div class="max-w-7xl mx-auto px-4 pt-3">
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-br from-violet to-cyan flex items-center justify-center shadow-lg shadow-cyan/30 animate-floaty">
+          <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#0B1026" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z"/><path d="M12 2v18M4 6.5l8 4.5 8-4.5"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h1 class="font-display text-lg md:text-xl font-extrabold leading-none truncate">
+            <span class="bg-gradient-to-r from-cyan via-violet to-pink bg-clip-text text-transparent">NTiCx</span>
+            <span class="text-slate-300 hidden lg:inline">(Nuevas Tecnologías de la Información y de la Conectividad)</span>
+          </h1>
+          <p class="text-[11px] md:text-xs text-slate-400 leading-tight">Redes y Conectividad · 4.º año · Escuela Secundaria</p>
+        </div>
+      </div>
+
+      <!-- Barra de utilidades: Glosario · Mi Reporte · Teoría A4 -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="studentChip" onclick="openReport()" class="btn-neon hidden items-center gap-1 text-[11px] font-extrabold px-3 py-2 rounded-xl bg-pink/10 border border-pink/40 text-pink" title="Abrir Mi Reporte"></button>
+        <button onclick="openGlossary()" class="btn-neon text-[11px] font-extrabold px-3 py-2 rounded-xl bg-cyan/10 border border-cyan/40 text-cyan" title="Glosario de términos y siglas">📖 Glosario</button>
+        <button onclick="openReport()" class="btn-neon text-[11px] font-extrabold px-3 py-2 rounded-xl bg-pink/10 border border-pink/40 text-pink" title="Mi Reporte: datos del alumno, puntos y resultados">📇 Mi Reporte</button>
+        <button onclick="printAllTheory()" class="btn-neon text-[11px] font-extrabold px-3 py-2 rounded-xl bg-neon/10 border border-neon/40 text-neon" title="Imprimir toda la teoría en hojas A4">📚 Teoría A4</button>
+        <div class="hidden md:flex items-center gap-2 bg-panel border border-violet/30 rounded-full px-3 py-1.5">
+          <span class="text-lg">🏆</span>
+          <div class="w-20 h-2 rounded-full bg-navy overflow-hidden">
+            <div id="miniProgress" class="progress-fill h-full rounded-full bg-gradient-to-r from-neon to-cyan" style="width:0%"></div>
+          </div>
+          <span id="miniProgressTxt" class="text-xs font-bold text-neon w-9 text-right">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <nav id="tabNav" class="tab-nav no-scrollbar flex gap-2 overflow-x-auto py-3 -mb-px" aria-label="Módulos del curso"></nav>
+  </div>
+</header>
+
+<!-- Membrete visible SOLO al imprimir -->
+<div class="print-only px-2 pb-3 border-b-2 border-black mb-4">
+  <h1 style="font-size:17pt; font-weight:800;">NTiCx (Nuevas Tecnologías de la Información y de la Conectividad)</h1>
+  <p style="font-size:10pt;">Material pedagógico · 4.º año · Escuela Secundaria · República Argentina</p>
+</div>
+
+<!-- ÁREA DE IMPRESIÓN (trivias, reporte del alumno y glosario) -->
+<div id="printArea"></div>
+
+<!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- ============ PESTAÑA 1 · INICIO (sin trivia) ============ -->
+  <section id="tab-inicio" class="tab-section" data-active="true">
+    <div class="grid lg:grid-cols-5 gap-8 items-center">
+      <div class="lg:col-span-3 animate-slideUp">
+        <span class="inline-flex items-center gap-2 bg-violet/20 border border-violet/40 text-cyan text-xs font-bold px-3 py-1 rounded-full mb-4">
+          🚀 AULA INTERACTIVA · DESAFÍOS POR MÓDULO · MI REPORTE PERSONAL
+        </span>
+        <h2 class="font-display font-extrabold text-4xl md:text-5xl leading-tight mb-4">
+          Bienvenido/a a la <span class="bg-gradient-to-r from-cyan to-neon bg-clip-text text-transparent">red del futuro</span>
+        </h2>
+        <p class="text-slate-300 text-lg leading-relaxed mb-3">
+          Cada mensaje que enviás, cada video que mirás y cada partida online que jugás viaja por
+          <strong class="text-cyan">redes de información</strong> que conectan al planeta entero en milisegundos.
+          En este recorrido vas a descubrir <em>cómo funcionan por dentro</em>.
+        </p>
+        <p class="text-slate-400 leading-relaxed mb-6">
+          Internet es el medio de comunicación global más importante de nuestra época: une a la televisión, la radio,
+          la telefonía, la educación y el comercio en una sola infraestructura. Comprenderla te convierte en un/a
+          ciudadano/a digital capaz de <strong class="text-neon">usarla, administrarla y cuidarla</strong>.
+        </p>
+        <div class="flex flex-wrap gap-3 print-hide">
+          <button onclick="goTab('organizacion')" class="btn-neon bg-gradient-to-r from-violet to-cyan text-navy font-extrabold px-6 py-3 rounded-2xl">Comenzar el recorrido ▶</button>
+          <button onclick="openGlossary()" class="btn-neon border border-cyan/50 text-cyan font-bold px-6 py-3 rounded-2xl">📖 Glosario</button>
+          <button onclick="openReport()" class="btn-neon bg-gradient-to-r from-pink to-violet text-white font-extrabold px-6 py-3 rounded-2xl">📇 Mi Reporte</button>
+          <button onclick="printAllTheory()" class="btn-neon border border-neon/50 text-neon font-bold px-6 py-3 rounded-2xl">📚 Imprimir TODA la teoría (A4)</button>
+        </div>
+      </div>
+
+      <!-- Ilustración isométrica (SVG estilo Tech Isometric Art) -->
+      <div class="lg:col-span-2 relative">
+        <svg viewBox="0 0 420 420" class="w-full max-w-md mx-auto drop-shadow-[0_20px_50px_rgba(124,92,252,0.45)]" role="img" aria-label="Escena isométrica de una red de computadoras">
+          <defs>
+            <linearGradient id="gTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8F75FF"/><stop offset="1" stop-color="#5B3DF5"/></linearGradient>
+            <linearGradient id="gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A2BA8"/><stop offset="1" stop-color="#241A6B"/></linearGradient>
+            <linearGradient id="gRight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5440D8"/><stop offset="1" stop-color="#33248F"/></linearGradient>
+            <linearGradient id="gCyan" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22E4FF"/><stop offset="1" stop-color="#0FA8CC"/></linearGradient>
+            <linearGradient id="gNeon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2BFFB2"/><stop offset="1" stop-color="#12C98A"/></linearGradient>
+            <radialGradient id="gCloud" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="#2C3A7A"/><stop offset="1" stop-color="#1A2350"/></radialGradient>
+          </defs>
+          <g stroke="#22E4FF" stroke-width="2" opacity=".55" fill="none">
+            <path class="topo-line" d="M210 96 L210 150"/><path class="topo-line" d="M120 300 L210 250"/>
+            <path class="topo-line" d="M300 300 L210 250"/><path class="topo-line" d="M330 170 L250 200"/>
+            <path class="topo-line" d="M90 170 L170 200"/>
+          </g>
+          <g class="animate-floaty">
+            <path d="M165 92 q-6 -30 24 -34 q6 -24 34 -22 q26 -14 44 8 q30 -2 32 26 q20 8 12 30 q-4 14 -22 14 L180 114 q-18 0 -15 -22z" fill="url(#gCloud)" stroke="#22E4FF" stroke-width="2"/>
+            <text x="212" y="86" text-anchor="middle" fill="#22E4FF" font-size="14" font-weight="800" font-family="Outfit">INTERNET</text>
+          </g>
+          <g>
+            <polygon points="210,150 262,180 210,210 158,180" fill="url(#gTop)"/>
+            <polygon points="158,180 210,210 210,242 158,212" fill="url(#gLeft)"/>
+            <polygon points="262,180 210,210 210,242 262,212" fill="url(#gRight)"/>
+            <circle cx="210" cy="180" r="8" fill="#2BFFB2" class="animate-pulseGlow"/>
+            <text x="210" y="262" text-anchor="middle" fill="#A9B6E8" font-size="11" font-family="Outfit" font-weight="600">ROUTER (enrutador)</text>
+          </g>
+          <g class="animate-floaty2">
+            <polygon points="90,170 122,188 90,206 58,188" fill="url(#gCyan)"/>
+            <polygon points="58,188 90,206 90,226 58,208" fill="#0C7FA0"/>
+            <polygon points="122,188 90,206 90,226 122,208" fill="#12A5C9"/>
+            <text x="90" y="248" text-anchor="middle" fill="#A9B6E8" font-size="10" font-family="Outfit">PC 1</text>
+          </g>
+          <g class="animate-floaty">
+            <polygon points="330,170 362,188 330,206 298,188" fill="url(#gNeon)"/>
+            <polygon points="298,188 330,206 330,226 298,208" fill="#0E9A6B"/>
+            <polygon points="362,188 330,206 330,226 362,208" fill="#1FD492"/>
+            <text x="330" y="248" text-anchor="middle" fill="#A9B6E8" font-size="10" font-family="Outfit">PC 2</text>
+          </g>
+          <g>
+            <polygon points="120,262 158,284 120,306 82,284" fill="url(#gTop)"/>
+            <polygon points="82,284 120,306 120,352 82,330" fill="url(#gLeft)"/>
+            <polygon points="158,284 120,306 120,352 158,330" fill="url(#gRight)"/>
+            <circle cx="112" cy="316" r="3" fill="#2BFFB2" class="animate-pulseGlow"/>
+            <circle cx="112" cy="326" r="3" fill="#FFC53D" class="animate-pulseGlow"/>
+            <text x="120" y="372" text-anchor="middle" fill="#A9B6E8" font-size="10" font-family="Outfit">SERVIDOR</text>
+          </g>
+          <g class="animate-floaty2">
+            <polygon points="300,268 326,283 300,298 274,283" fill="#FF5CD7"/>
+            <polygon points="274,283 300,298 300,340 274,325" fill="#B03392"/>
+            <polygon points="326,283 300,298 300,340 326,325" fill="#DE44BA"/>
+            <text x="300" y="362" text-anchor="middle" fill="#A9B6E8" font-size="10" font-family="Outfit">MÓVIL</text>
+          </g>
+          <g font-family="Outfit" font-weight="800" font-size="9" text-anchor="middle">
+            <g class="animate-floaty"><rect x="176" y="120" width="16" height="12" rx="3" fill="#FFC53D"/><text x="184" y="129" fill="#0B1026">01</text></g>
+            <g class="animate-floaty2"><rect x="240" y="238" width="16" height="12" rx="3" fill="#22E4FF"/><text x="248" y="247" fill="#0B1026">10</text></g>
+            <g class="animate-floaty"><rect x="140" y="216" width="16" height="12" rx="3" fill="#2BFFB2"/><text x="148" y="225" fill="#0B1026">11</text></g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Panel de progreso gamificado -->
+    <div class="tech-card p-6 md:p-8 mt-10 print-block">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div>
+          <h3 class="font-display font-extrabold text-2xl text-white">🎮 Tu misión: completar los 8 módulos</h3>
+          <p class="text-slate-400 text-sm">Explorá cada pestaña, <strong class="text-amber2">superá los desafíos de 3 preguntas</strong>, sumá puntos con tus interacciones
+          y seguí todo desde <strong class="text-pink">📇 Mi Reporte</strong>.</p>
+          <button onclick="openReport()" class="btn-neon mt-3 bg-gradient-to-r from-pink to-violet text-white font-extrabold px-5 py-2.5 rounded-xl text-sm print-hide">📇 Abrir Mi Reporte</button>
+        </div>
+        <div class="text-right">
+          <div id="bigProgressTxt" class="font-display font-extrabold text-5xl bg-gradient-to-r from-neon to-cyan bg-clip-text text-transparent">0%</div>
+          <div class="text-xs text-slate-400 uppercase tracking-widest">Progreso general</div>
+        </div>
+      </div>
+      <div class="w-full h-4 rounded-full bg-navy border border-violet/30 overflow-hidden mb-6">
+        <div id="bigProgress" class="progress-fill h-full rounded-full bg-gradient-to-r from-violet via-cyan to-neon" style="width:0%"></div>
+      </div>
+      <div id="badgeGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3"></div>
+    </div>
+
+    <!-- Objetivos pedagógicos -->
+    <h3 class="font-display font-extrabold text-2xl text-white mt-10 mb-4 print-block">🎯 ¿Qué vas a lograr en esta materia?</h3>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="tech-card p-5"><div class="text-3xl mb-2">🌐</div><h4 class="font-bold text-cyan mb-1">Redes y medios globales</h4><p class="text-sm text-slate-400">Comprender el papel de las redes de información y los medios de comunicación en el mundo actual.</p></div>
+      <div class="tech-card p-5"><div class="text-3xl mb-2">🗂️</div><h4 class="font-bold text-neon mb-1">Organización de redes</h4><p class="text-sm text-slate-400">Reconocer las distintas formas de organizar una red: Intranet, Extranet e Internet.</p></div>
+      <div class="tech-card p-5"><div class="text-3xl mb-2">📦</div><h4 class="font-bold text-pink mb-1">Transmisión de datos</h4><p class="text-sm text-slate-400">Analizar cómo se empaquetan y transportan los datos dentro de una red informática.</p></div>
+      <div class="tech-card p-5"><div class="text-3xl mb-2">🖨️</div><h4 class="font-bold text-amber2 mb-1">Recursos compartidos</h4><p class="text-sm text-slate-400">Administrar la red como centro de recursos: impresoras, archivos, carpetas y servidores.</p></div>
+      <div class="tech-card p-5"><div class="text-3xl mb-2">🕸️</div><h4 class="font-bold text-violet mb-1">Arquitecturas de red</h4><p class="text-sm text-slate-400">Comprender topologías y modelos Cliente-Servidor y P2P (Peer to Peer — Par a Par).</p></div>
+      <div class="tech-card p-5"><div class="text-3xl mb-2">💬</div><h4 class="font-bold text-cyan mb-1">Comunicación</h4><p class="text-sm text-slate-400">Manejar los tipos de comunicación en red: sincrónica y asincrónica.</p></div>
+    </div>
+
+    <!-- (Se eliminó el desafío/trivia de Inicio según lo solicitado) -->
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="openGlossary()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">📖 Abrir Glosario</button>
+      <button onclick="completeModule('inicio')" id="btn-done-inicio" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar módulo como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 2 · ORGANIZACIÓN DE REDES ============ -->
+  <section id="tab-organizacion" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">🗂️ Organización de Redes</h2>
+      <p class="text-slate-400 max-w-3xl">No todas las redes son iguales ni están abiertas a todos. Según <strong class="text-cyan">quiénes pueden acceder</strong> y <strong class="text-cyan">qué alcance tienen</strong>, las redes se organizan de tres grandes formas. Hacé clic en cada tarjeta para investigarla.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 mb-8 print-hide" id="orgCards">
+      <button onclick="showOrg('intranet')" data-org="intranet" class="org-btn tech-card p-6 text-left group">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan to-violet flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">🏫</div>
+        <h3 class="font-display font-extrabold text-xl text-white mb-1">Intranet</h3>
+        <p class="text-sm text-slate-400">Red <strong>privada</strong> interna de una organización.</p>
+        <span class="inline-block mt-3 text-xs font-bold text-cyan">Clic para explorar (+5 pts) →</span>
+      </button>
+      <button onclick="showOrg('extranet')" data-org="extranet" class="org-btn tech-card p-6 text-left group">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink to-violet flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">🤝</div>
+        <h3 class="font-display font-extrabold text-xl text-white mb-1">Extranet</h3>
+        <p class="text-sm text-slate-400">Intranet <strong>parcialmente abierta</strong> a socios externos.</p>
+        <span class="inline-block mt-3 text-xs font-bold text-pink">Clic para explorar (+5 pts) →</span>
+      </button>
+      <button onclick="showOrg('internet')" data-org="internet" class="org-btn tech-card p-6 text-left group">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-neon to-cyan flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">🌍</div>
+        <h3 class="font-display font-extrabold text-xl text-white mb-1">Internet</h3>
+        <p class="text-sm text-slate-400">Red <strong>pública mundial</strong> de redes interconectadas.</p>
+        <span class="inline-block mt-3 text-xs font-bold text-neon">Clic para explorar (+5 pts) →</span>
+      </button>
+    </div>
+
+    <div id="orgDetail" class="tech-card p-6 md:p-8 mb-8 print-hide">
+      <p class="text-slate-400 text-center py-8">👆 Seleccioná una de las tres redes para ver su análisis completo, ejemplos reales y alcance.</p>
+    </div>
+
+    <!-- Resumen teórico imprimible -->
+    <div class="print-only print-block mb-6">
+      <h3 style="font-weight:800;font-size:14pt;margin-bottom:2mm;">Resumen teórico · Intranet, Extranet e Internet</h3>
+      <p style="font-size:10pt;"><b>Intranet:</b> red privada de una sola organización que usa tecnologías de Internet, como el protocolo HTTP (HyperText Transfer Protocol — Protocolo de Transferencia de Hipertexto) y el navegador web. Acceso exclusivo para miembros internos autorizados, protegida por un firewall (cortafuegos). Ejemplo: portal de notas y planificaciones de la escuela. Alcance: LAN (Local Area Network — Red de Área Local).</p>
+      <p style="font-size:10pt;"><b>Extranet:</b> extensión controlada de la Intranet que permite el acceso seguro a personas externas autorizadas (proveedores, clientes u organizaciones aliadas) mediante VPN (Virtual Private Network — Red Privada Virtual), HTTPS (HyperText Transfer Protocol Secure — Protocolo de Transferencia de Hipertexto Seguro) y credenciales. Ejemplo: plataforma donde el proveedor de la cooperativa escolar consulta los pedidos. Alcance: varias organizaciones.</p>
+      <p style="font-size:10pt;"><b>Internet:</b> red pública y mundial de redes interconectadas mediante TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet). Es el medio de comunicación global que integra la WWW (World Wide Web — Red Mundial), el correo electrónico, el streaming (transmisión en continuo), la telefonía y el comercio. La WWW no es Internet: es solo uno de sus servicios.</p>
+    </div>
+
+    <div class="tech-card p-6 overflow-x-auto print-block">
+      <h3 class="font-display font-extrabold text-xl text-white mb-4">📊 Cuadro comparativo rápido</h3>
+      <table class="w-full text-sm min-w-[560px]">
+        <thead><tr class="text-left text-cyan border-b border-violet/30"><th class="py-2 pr-4">Criterio</th><th class="py-2 pr-4">Intranet</th><th class="py-2 pr-4">Extranet</th><th class="py-2">Internet</th></tr></thead>
+        <tbody class="text-slate-300">
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Acceso</td><td class="py-2 pr-4">Solo miembros internos</td><td class="py-2 pr-4">Miembros + socios autorizados</td><td class="py-2">Público mundial</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Seguridad</td><td class="py-2 pr-4">Muy alta (firewall — cortafuegos interno)</td><td class="py-2 pr-4">Alta (VPN — Red Privada Virtual, usuarios y claves)</td><td class="py-2">Variable (riesgos públicos)</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Alcance</td><td class="py-2 pr-4">Una organización (LAN — Red de Área Local)</td><td class="py-2 pr-4">Varias organizaciones aliadas</td><td class="py-2">Todo el planeta (WAN — Wide Area Network, Red de Área Amplia)</td></tr>
+          <tr><td class="py-2 pr-4 font-bold text-slate-200">Ejemplo</td><td class="py-2 pr-4">Portal de notas de la escuela</td><td class="py-2 pr-4">Plataforma escuela–proveedores</td><td class="py-2 pr-4">YouTube, WhatsApp Web</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="organizacion"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir resumen (A4)</button>
+      <button onclick="completeModule('organizacion')" id="btn-done-organizacion" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 3 · PROTOCOLO TCP/IP ============ -->
+  <section id="tab-tcpip" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">📦 Protocolo TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet)</h2>
+      <p class="text-slate-400 max-w-3xl">¿Cómo se "entienden" dos computadoras que están a miles de kilómetros? Gracias a <strong class="text-cyan">reglas comunes</strong> llamadas protocolos.
+      TCP/IP (Protocolo de Control de Transmisión / Protocolo de Internet) es el idioma oficial de Internet: divide los datos en <strong class="text-neon">paquetes</strong>,
+      los dirige con <strong class="text-pink">direcciones IP (Internet Protocol — Protocolo de Internet)</strong> y verifica que lleguen bien.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <div class="print-block">
+        <h3 class="font-display font-extrabold text-xl text-white mb-3">🧱 Las 4 capas del modelo TCP/IP <span class="text-xs text-slate-400 font-normal">(clic para desplegar)</span></h3>
+        <div class="space-y-3" id="layerAcc">
+          <div class="tech-card overflow-hidden">
+            <button onclick="toggleAcc(this)" class="acc-head w-full flex items-center gap-3 p-4 text-left print-hide">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink to-violet flex items-center justify-center font-extrabold text-navy">4</span>
+              <span class="font-bold text-white flex-1">Capa de Aplicación</span><span class="acc-arrow text-cyan transition-transform">▾</span>
+            </button>
+            <div class="acc-panel"><div class="px-4 pb-4 text-sm text-slate-300 border-t border-white/10 pt-3">
+              Es la capa que <strong>vos usás</strong>: los programas que se comunican con la red. Aquí viven los protocolos
+              <span class="text-cyan font-bold">HTTP (HyperText Transfer Protocol — Protocolo de Transferencia de Hipertexto) / HTTPS (HyperText Transfer Protocol Secure — Protocolo de Transferencia de Hipertexto Seguro)</span> para la web,
+              <span class="text-cyan font-bold">SMTP (Simple Mail Transfer Protocol — Protocolo Simple de Transferencia de Correo)</span> para el correo,
+              <span class="text-cyan font-bold">FTP (File Transfer Protocol — Protocolo de Transferencia de Archivos)</span> para archivos y
+              <span class="text-cyan font-bold">DNS (Domain Name System — Sistema de Nombres de Dominio)</span> que traduce los nombres de sitios a direcciones IP (Internet Protocol — Protocolo de Internet).
+            </div></div>
+          </div>
+          <div class="tech-card overflow-hidden">
+            <button onclick="toggleAcc(this)" class="acc-head w-full flex items-center gap-3 p-4 text-left print-hide">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet to-cyan flex items-center justify-center font-extrabold text-navy">3</span>
+              <span class="font-bold text-white flex-1">Capa de Transporte: TCP / UDP</span><span class="acc-arrow text-cyan transition-transform">▾</span>
+            </button>
+            <div class="acc-panel"><div class="px-4 pb-4 text-sm text-slate-300 border-t border-white/10 pt-3">
+              <strong class="text-neon">TCP (Transmission Control Protocol — Protocolo de Control de Transmisión)</strong> divide el mensaje en segmentos, los numera y
+              <strong>exige una confirmación de llegada llamada ACK (Acknowledgement — Acuse de Recibo)</strong>: si un paquete se pierde, lo reenvía. Es confiable (web, correo).
+              <strong class="text-pink">UDP (User Datagram Protocol — Protocolo de Datagrama de Usuario)</strong> envía sin confirmar: más rápido pero menos seguro (videollamadas, juegos online).
+            </div></div>
+          </div>
+          <div class="tech-card overflow-hidden">
+            <button onclick="toggleAcc(this)" class="acc-head w-full flex items-center gap-3 p-4 text-left print-hide">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan to-neon flex items-center justify-center font-extrabold text-navy">2</span>
+              <span class="font-bold text-white flex-1">Capa de Internet: IP (Internet Protocol — Protocolo de Internet)</span><span class="acc-arrow text-cyan transition-transform">▾</span>
+            </button>
+            <div class="acc-panel"><div class="px-4 pb-4 text-sm text-slate-300 border-t border-white/10 pt-3">
+              El protocolo <strong>IP (Internet Protocol — Protocolo de Internet)</strong> etiqueta cada paquete con la <strong>dirección IP de origen y destino</strong>
+              (ejemplo: <code class="text-cyan">192.168.0.15</code>) y decide la mejor ruta. Los <strong>routers (enrutadores)</strong> leen esas
+              etiquetas y reenvían el paquete de red en red, como el correo postal con las direcciones del sobre.
+            </div></div>
+          </div>
+          <div class="tech-card overflow-hidden">
+            <button onclick="toggleAcc(this)" class="acc-head w-full flex items-center gap-3 p-4 text-left print-hide">
+              <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber2 to-pink flex items-center justify-center font-extrabold text-navy">1</span>
+              <span class="font-bold text-white flex-1">Capa de Acceso a la Red (nivel físico)</span><span class="acc-arrow text-cyan transition-transform">▾</span>
+            </button>
+            <div class="acc-panel"><div class="px-4 pb-4 text-sm text-slate-300 border-t border-white/10 pt-3">
+              Es el nivel <strong>físico y lógico más bajo</strong>: convierte los paquetes en <strong>señales</strong>
+              (impulsos eléctricos en cable Ethernet, pulsos de luz en fibra óptica u ondas de radio en Wi-Fi — Wireless Fidelity, Fidelidad Inalámbrica)
+              y los pone en el medio de transmisión. Aquí actúan las placas de red con su dirección MAC (Media Access Control — Control de Acceso al Medio) y los cables/antenas.
+            </div></div>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3 mt-4">
+          <div class="tech-card p-4"><p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Dirección IP (Internet Protocol — Protocolo de Internet)</p><p class="text-sm text-slate-300">Identificador <strong>lógico</strong> único de cada dispositivo en la red. Puede cambiar.</p></div>
+          <div class="tech-card p-4"><p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Dirección MAC (Media Access Control — Control de Acceso al Medio)</p><p class="text-sm text-slate-300">Identificador <strong>físico</strong> grabado en la placa de red. No cambia nunca.</p></div>
+        </div>
+
+        <div class="tech-card p-5 mt-4">
+          <h4 class="font-bold text-amber2 mb-2">✉️ Analogía para recordar</h4>
+          <p class="text-sm text-slate-300">Enviar datos por TCP/IP (Protocolo de Control de Transmisión / Protocolo de Internet) es como mandar una <strong>enciclopedia por correo postal</strong>:
+          se divide en cajas (paquetes), cada caja lleva la dirección del destinatario (IP — Internet Protocol), viaja por distintas sucursales (routers — enrutadores),
+          y al llegar el destinatario firma cada entrega (ACK — Acknowledgement, Acuse de Recibo) y rearma la colección completa.</p>
+        </div>
+      </div>
+
+      <!-- SIMULADOR (solo pantalla) -->
+      <div class="print-hide">
+        <h3 class="font-display font-extrabold text-xl text-white mb-3">🚚 Simulador: el viaje de tus datos <span class="text-xs text-neon font-bold">(+10 pts la primera vez)</span></h3>
+        <div class="tech-card p-5">
+          <div class="text-sm text-slate-300 mb-4">
+            El emisor divide el mensaje <strong class="text-cyan">"¡HOLA RED!"</strong> en 3 paquetes. Cada uno viaja por los routers (enrutadores)
+            guiado por su dirección IP (Internet Protocol — Protocolo de Internet) y, al llegar, el receptor los <strong class="text-neon">reordena y reensambla</strong>.
+          </div>
+          <div id="simStage" class="relative h-44 rounded-2xl bg-navy border border-violet/30 overflow-hidden">
+            <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+              <line x1="6" y1="50" x2="94" y2="50" stroke="#7C5CFC" stroke-width=".8" stroke-dasharray="2 2" opacity=".6"/>
+            </svg>
+            <div class="absolute left-[4%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-center">
+              <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-cyan to-violet flex items-center justify-center text-xl">💻</div>
+              <div class="text-[10px] font-bold text-cyan mt-1">EMISOR</div>
+            </div>
+            <div class="absolute left-[34%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-center">
+              <div class="w-11 h-11 mx-auto rounded-xl bg-panel2 border border-violet/50 flex items-center justify-center text-lg">📡</div>
+              <div class="text-[10px] font-bold text-slate-400 mt-1">ROUTER 1</div>
+            </div>
+            <div class="absolute left-[64%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-center">
+              <div class="w-11 h-11 mx-auto rounded-xl bg-panel2 border border-violet/50 flex items-center justify-center text-lg">📡</div>
+              <div class="text-[10px] font-bold text-slate-400 mt-1">ROUTER 2</div>
+            </div>
+            <div class="absolute left-[92%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-center">
+              <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-neon to-cyan flex items-center justify-center text-xl">🖥️</div>
+              <div class="text-[10px] font-bold text-neon mt-1">RECEPTOR</div>
+            </div>
+            <div id="pk1" class="packet bg-cyan" style="left:4%">P1</div>
+            <div id="pk2" class="packet bg-neon" style="left:4%">P2</div>
+            <div id="pk3" class="packet bg-pink" style="left:4%">P3</div>
+            <div id="simMsg" class="absolute left-[92%] top-[18%] -translate-x-1/2 hidden">
+              <span class="text-[10px] font-extrabold bg-amber2 text-navy px-2 py-1 rounded-md shadow-lg animate-popIn">¡HOLA RED! ✅</span>
+            </div>
+          </div>
+          <div id="simLog" class="mt-4 h-28 overflow-y-auto rounded-xl bg-navy border border-cyan/20 p-3 font-mono text-[11px] leading-relaxed text-neon">
+            <div>&gt; Sistema listo. Presioná "Enviar datos" para comenzar…</div>
+          </div>
+          <button id="simBtn" onclick="runPacketSim()" class="btn-neon mt-4 w-full bg-gradient-to-r from-violet to-cyan text-navy font-extrabold py-3 rounded-2xl">📦 Enviar datos por la red</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="tcpip"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir resumen (A4)</button>
+      <button onclick="completeModule('tcpip')" id="btn-done-tcpip" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 4 · TOPOLOGÍAS Y ARQUITECTURAS ============ -->
+  <section id="tab-topologias" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">🕸️ Topologías y Arquitecturas</h2>
+      <p class="text-slate-400 max-w-3xl">La <strong class="text-cyan">topología</strong> es el "plano" de cómo se conectan físicamente los equipos.
+      La <strong class="text-neon">arquitectura</strong> define cómo se reparten las tareas entre ellos. Elegí una topología y pasá el mouse (o tocá) los nodos del diagrama.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="space-y-2 print-hide">
+        <h3 class="font-display font-bold text-white mb-2">Topologías físicas</h3>
+        <button onclick="showTopo('estrella')" data-topo="estrella" class="topo-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">⭐</span><span class="font-bold">Estrella</span></button>
+        <button onclick="showTopo('bus')" data-topo="bus" class="topo-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">➖</span><span class="font-bold">Bus</span></button>
+        <button onclick="showTopo('anillo')" data-topo="anillo" class="topo-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">⭕</span><span class="font-bold">Anillo</span></button>
+        <button onclick="showTopo('malla')" data-topo="malla" class="topo-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">🕸️</span><span class="font-bold">Malla</span></button>
+        <button onclick="showTopo('arbol')" data-topo="arbol" class="topo-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">🌳</span><span class="font-bold">Árbol</span></button>
+        <h3 class="font-display font-bold text-white mt-6 mb-2">Arquitecturas lógicas</h3>
+        <button onclick="showArq('cs')" data-arq="cs" class="arq-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">🏢</span><span class="font-bold">Cliente-Servidor</span></button>
+        <button onclick="showArq('p2p')" data-arq="p2p" class="arq-btn w-full text-left tech-card p-3 px-4 flex items-center gap-3"><span class="text-xl">👥</span><span class="font-bold">P2P (Peer to Peer — Par a Par)</span></button>
+      </div>
+
+      <div class="lg:col-span-2 space-y-4 print-hide">
+        <div class="tech-card p-5">
+          <div id="diagramTitle" class="font-display font-extrabold text-xl text-cyan mb-1">⭐ Topología en Estrella</div>
+          <p id="diagramDesc" class="text-sm text-slate-400 mb-3"></p>
+          <div id="diagramStage" class="rounded-2xl bg-navy border border-violet/30 p-2"></div>
+          <p id="nodeInfo" class="text-xs text-slate-500 mt-2 italic">💡 Pasá el mouse o tocá los nodos para inspeccionarlos. (+3 pts por diagrama explorado)</p>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="tech-card p-4 border-neon/40">
+            <h4 class="font-bold text-neon mb-2">✅ Ventajas</h4>
+            <ul id="diagPros" class="text-sm text-slate-300 space-y-1 list-disc list-inside"></ul>
+          </div>
+          <div class="tech-card p-4 border-pink/40">
+            <h4 class="font-bold text-pink mb-2">⚠️ Desventajas</h4>
+            <ul id="diagCons" class="text-sm text-slate-300 space-y-1 list-disc list-inside"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Esquemas imprimibles de TODAS las topologías -->
+    <div id="topoPrintSummary" class="print-only mt-6"></div>
+
+    <div class="tech-card p-6 mt-8 overflow-x-auto print-block">
+      <h3 class="font-display font-extrabold text-xl text-white mb-4">🆚 Cliente-Servidor vs. P2P (Peer to Peer — Par a Par)</h3>
+      <table class="w-full text-sm min-w-[560px]">
+        <thead><tr class="text-left text-cyan border-b border-violet/30"><th class="py-2 pr-4">Aspecto</th><th class="py-2 pr-4">Cliente-Servidor</th><th class="py-2">P2P (Peer to Peer — Par a Par)</th></tr></thead>
+        <tbody class="text-slate-300">
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Roles</td><td class="py-2 pr-4">Servidor central poderoso + clientes que piden recursos</td><td class="py-2">Todos los nodos son iguales: a la vez clientes y servidores</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Administración</td><td class="py-2 pr-4">Centralizada (usuarios, permisos, copias de seguridad)</td><td class="py-2">Descentralizada, cada usuario administra su equipo</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Escalabilidad</td><td class="py-2 pr-4">Alta (se mejora el servidor)</td><td class="py-2">Crece con cada nodo que se suma</td></tr>
+          <tr><td class="py-2 pr-4 font-bold text-slate-200">Ejemplo</td><td class="py-2 pr-4">Red de la escuela, Gmail, Netflix</td><td class="py-2">Compartir archivos entre compañeros, blockchain (cadena de bloques)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="topologias"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir diagramas (A4)</button>
+      <button onclick="completeModule('topologias')" id="btn-done-topologias" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 5 · FORMAS DE CONEXIÓN ============ -->
+  <section id="tab-conexion" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">🔌 Formas de Conexión</h2>
+      <p class="text-slate-400 max-w-3xl">Los datos pueden viajar por <strong class="text-cyan">medios guiados (cables)</strong> o <strong class="text-pink">medios no guiados (inalámbricos)</strong>.
+      Tocá cada tarjeta para darla vuelta y descubrir sus características (+2 pts por ficha). Además: la red funciona como un gran <strong class="text-neon">centro de recursos compartidos</strong>.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10 print-hide" id="flipGrid">
+      <div class="flip h-64 cursor-pointer" onclick="flipCard(this,'wifi')">
+        <div class="flip-inner">
+          <div class="flip-face tech-card p-6 flex flex-col items-center justify-center text-center border-cyan/40">
+            <div class="text-5xl mb-3 animate-floaty">📶</div>
+            <h3 class="font-display font-extrabold text-xl text-cyan">Wi-Fi (Wireless Fidelity — Fidelidad Inalámbrica)</h3>
+            <p class="text-xs text-slate-400 mt-2">Inalámbrico · ondas de radio</p>
+            <span class="text-[10px] text-slate-500 mt-3">Tocá para voltear ↻</span>
+          </div>
+          <div class="flip-face flip-back bg-gradient-to-br from-panel2 to-navy border border-cyan/40 p-5 flex flex-col justify-center rounded-[1.25rem]">
+            <ul class="text-xs text-slate-200 space-y-2">
+              <li>📡 Usa ondas de radio según los estándares IEEE (Institute of Electrical and Electronics Engineers — Instituto de Ingenieros Eléctricos y Electrónicos) 802.11.</li>
+              <li>🚶 Máxima movilidad: ideal para notebooks y celulares.</li>
+              <li>⚠️ Menor velocidad y más interferencias que el cable.</li>
+              <li>🔐 Se protege con contraseña WPA2/WPA3 (Wi-Fi Protected Access — Acceso Protegido a Wi-Fi, versiones 2 y 3).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip h-64 cursor-pointer" onclick="flipCard(this,'fibra')">
+        <div class="flip-inner">
+          <div class="flip-face tech-card p-6 flex flex-col items-center justify-center text-center border-neon/40">
+            <div class="text-5xl mb-3 animate-floaty2">💡</div>
+            <h3 class="font-display font-extrabold text-xl text-neon">Fibra Óptica</h3>
+            <p class="text-xs text-slate-400 mt-2">Cableado · pulsos de luz</p>
+            <span class="text-[10px] text-slate-500 mt-3">Tocá para voltear ↻</span>
+          </div>
+          <div class="flip-face flip-back bg-gradient-to-br from-panel2 to-navy border border-neon/40 p-5 flex flex-col justify-center rounded-[1.25rem]">
+            <ul class="text-xs text-slate-200 space-y-2">
+              <li>✨ Transmite datos como <strong>luz</strong> por hilos de vidrio.</li>
+              <li>🚀 La mayor velocidad y alcance de todas.</li>
+              <li>🛡️ Inmune a interferencias electromagnéticas.</li>
+              <li>💰 Más costosa de instalar; es la troncal de Internet (cables submarinos).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip h-64 cursor-pointer" onclick="flipCard(this,'ethernet')">
+        <div class="flip-inner">
+          <div class="flip-face tech-card p-6 flex flex-col items-center justify-center text-center border-violet/40">
+            <div class="text-5xl mb-3 animate-floaty">🧵</div>
+            <h3 class="font-display font-extrabold text-xl text-violet">Ethernet</h3>
+            <p class="text-xs text-slate-400 mt-2">Cableado · par trenzado con conector RJ-45 (Registered Jack 45 — Conector Registrado 45)</p>
+            <span class="text-[10px] text-slate-500 mt-3">Tocá para voltear ↻</span>
+          </div>
+          <div class="flip-face flip-back bg-gradient-to-br from-panel2 to-navy border border-violet/40 p-5 flex flex-col justify-center rounded-[1.25rem]">
+            <ul class="text-xs text-slate-200 space-y-2">
+              <li>🔌 El clásico cable de red con conector RJ-45 (Registered Jack 45 — Conector Registrado 45).</li>
+              <li>⚡ Estable y rápido: de 100 Mbps (megabits por segundo) a 10 Gbps (gigabits por segundo).</li>
+              <li>🏫 Es el estándar en aulas, oficinas y datacenters (centros de datos).</li>
+              <li>📏 Limitado por la longitud del cableado.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip h-64 cursor-pointer" onclick="flipCard(this,'movil')">
+        <div class="flip-inner">
+          <div class="flip-face tech-card p-6 flex flex-col items-center justify-center text-center border-pink/40">
+            <div class="text-5xl mb-3 animate-floaty2">📱</div>
+            <h3 class="font-display font-extrabold text-xl text-pink">Redes Móviles 4G/5G (Fourth/Fifth Generation — Cuarta/Quinta Generación)</h3>
+            <p class="text-xs text-slate-400 mt-2">Inalámbrico · telefonía celular</p>
+            <span class="text-[10px] text-slate-500 mt-3">Tocá para voltear ↻</span>
+          </div>
+          <div class="flip-face flip-back bg-gradient-to-br from-panel2 to-navy border border-pink/40 p-5 flex flex-col justify-center rounded-[1.25rem]">
+            <ul class="text-xs text-slate-200 space-y-2">
+              <li>🗼 Conectan por antenas celulares (celdas).</li>
+              <li>🌎 Cobertura en casi todo el territorio.</li>
+              <li>📊 Dependen de la señal y del plan de datos.</li>
+              <li>🚀 El 5G (Fifth Generation — Quinta Generación) permite latencias (tiempos de respuesta) bajísimas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-card p-6 mb-8 overflow-x-auto print-block">
+      <h3 class="font-display font-extrabold text-xl text-white mb-4">📋 Resumen de medios de transmisión</h3>
+      <table class="w-full text-sm min-w-[560px]">
+        <thead><tr class="text-left text-cyan border-b border-violet/30"><th class="py-2 pr-4">Medio</th><th class="py-2 pr-4">Tipo</th><th class="py-2 pr-4">Señal</th><th class="py-2">Ideal para…</th></tr></thead>
+        <tbody class="text-slate-300">
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Wi-Fi (Wireless Fidelity — Fidelidad Inalámbrica)</td><td class="py-2 pr-4">Inalámbrico</td><td class="py-2 pr-4">Ondas de radio</td><td class="py-2">Movilidad en hogares y escuelas</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Fibra óptica</td><td class="py-2 pr-4">Guiado (cable)</td><td class="py-2 pr-4">Pulsos de luz</td><td class="py-2">Troncales de Internet, máxima velocidad</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Ethernet (par trenzado con conector RJ-45 — Registered Jack 45, Conector Registrado 45)</td><td class="py-2 pr-4">Guiado (cable)</td><td class="py-2 pr-4">Impulsos eléctricos</td><td class="py-2">Redes locales LAN (Local Area Network — Red de Área Local) estables</td></tr>
+          <tr><td class="py-2 pr-4 font-bold text-slate-200">4G/5G (Fourth/Fifth Generation — Cuarta/Quinta Generación)</td><td class="py-2 pr-4">Inalámbrico</td><td class="py-2 pr-4">Ondas de radio</td><td class="py-2">Conectividad móvil en cualquier lugar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-block">
+      <h3 class="font-display font-extrabold text-2xl text-white mb-2">🖨️ La red como centro de recursos compartidos</h3>
+      <p class="text-slate-400 text-sm mb-5 max-w-3xl">Administrar una red es <strong class="text-neon">organizar los recursos</strong> para que todos los usuarios autorizados puedan usarlos,
+      sin duplicar equipos ni perder información. Estos son los recursos que se comparten:</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="tech-card p-5 text-center">
+          <div class="text-4xl mb-2">🖨️</div><h4 class="font-bold text-cyan mb-1">Impresoras</h4>
+          <p class="text-xs text-slate-400">Una sola impresora de red sirve a toda el aula: se instala una vez y todos la usan por turnos y con una cola de impresión.</p>
+        </div>
+        <div class="tech-card p-5 text-center">
+          <div class="text-4xl mb-2">📁</div><h4 class="font-bold text-neon mb-1">Archivos y carpetas</h4>
+          <p class="text-xs text-slate-400">Carpetas compartidas con permisos: solo lectura para algunos, edición para otros. Trabajo colaborativo sin pendrives (memorias USB — Universal Serial Bus, Bus Serial Universal).</p>
+        </div>
+        <div class="tech-card p-5 text-center">
+          <div class="text-4xl mb-2">🗄️</div><h4 class="font-bold text-pink mb-1">Servidores</h4>
+          <p class="text-xs text-slate-400">El servidor centraliza usuarios, contraseñas, programas y copias de seguridad (backups). Si se cae, el administrador lo restaura.</p>
+        </div>
+        <div class="tech-card p-5 text-center">
+          <div class="text-4xl mb-2">🌐</div><h4 class="font-bold text-amber2 mb-1">Conexión a Internet</h4>
+          <p class="text-xs text-slate-400">Un único acceso a Internet se comparte entre todos los equipos mediante el router (enrutador) y el firewall (cortafuegos).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="conexion"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir resumen (A4)</button>
+      <button onclick="completeModule('conexion')" id="btn-done-conexion" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 6 · ANCHO DE BANDA Y TRANSFERENCIA ============ -->
+  <section id="tab-ancho" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">⚡ Ancho de Banda y Transferencia</h2>
+      <p class="text-slate-400 max-w-3xl">El <strong class="text-cyan">ancho de banda</strong> es la capacidad <em>máxima teórica</em> del canal y se mide en Mbps (megabits por segundo).
+      La <strong class="text-pink">tasa de transferencia real</strong> es lo que efectivamente llega (siempre menor, por congestión, interferencias y distancia).</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <div class="print-block">
+        <h3 class="font-display font-extrabold text-xl text-white mb-3">🚰 Analogía de la cañería de agua</h3>
+        <div class="tech-card p-5">
+          <p class="text-sm text-slate-300 mb-4">El ancho de banda es el <strong>grosor del caño</strong>; la transferencia real es el <strong>agua que sale</strong>.
+          En la práctica siempre se pierde un porcentaje por sobrecarga del protocolo TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet), Wi-Fi (Wireless Fidelity — Fidelidad Inalámbrica) saturado, distancia al servidor y congestión de la red.</p>
+          <div class="print-hide">
+            <div class="relative h-14 rounded-full bg-navy border-2 border-violet/40 overflow-hidden mb-3" id="pipeBox">
+              <div class="absolute inset-y-0 left-0 w-full flex items-center px-2 text-[10px] font-bold text-slate-500 z-10 pointer-events-none">CANAL DE DATOS</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-slate-400">Lento</span>
+              <input id="bwSlider" type="range" min="10" max="100" value="40" class="w-full accent-cyan" oninput="updatePipe(this.value)">
+              <span class="text-xs text-slate-400">Rápido</span>
+            </div>
+            <div class="flex justify-between mt-3 text-sm">
+              <div class="bg-navy border border-cyan/30 rounded-xl px-4 py-2 flex-1 mr-2 text-center">
+                <div class="text-[10px] uppercase tracking-widest text-slate-400">Ancho de banda</div>
+                <div id="bwTheo" class="font-display font-extrabold text-2xl text-cyan">40 Mbps (megabits por segundo)</div>
+              </div>
+              <div class="bg-navy border border-pink/30 rounded-xl px-4 py-2 flex-1 ml-2 text-center">
+                <div class="text-[10px] uppercase tracking-widest text-slate-400">Transferencia real (~85%)</div>
+                <div id="bwReal" class="font-display font-extrabold text-2xl text-pink">34 Mbps (megabits por segundo)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="print-block">
+        <h3 class="font-display font-extrabold text-xl text-white mb-3">🧮 Simulador de velocidad de descarga <span class="text-xs text-neon font-bold">(+5 pts la primera vez)</span></h3>
+        <div class="tech-card p-5">
+          <div class="print-hide">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <label class="block">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Tamaño del archivo (MB — megabytes)</span>
+                <input id="calcSize" type="number" min="1" value="700" class="ch-input mt-1 font-bold">
+              </label>
+              <label class="block">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Ancho de banda (Mbps — megabits por segundo)</span>
+                <input id="calcBw" type="number" min="1" value="50" class="ch-input mt-1 font-bold">
+              </label>
+            </div>
+            <label class="block mb-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">Eficiencia real de la red: <span id="effLabel" class="text-neon">85%</span></span>
+              <input id="calcEff" type="range" min="40" max="100" value="85" class="mt-1 w-full accent-neon" oninput="document.getElementById('effLabel').textContent=this.value+'%'">
+            </label>
+            <button onclick="calcDownload()" class="btn-neon w-full bg-gradient-to-r from-cyan to-neon text-navy font-extrabold py-3 rounded-2xl">⏱️ Calcular tiempo de descarga</button>
+            <div id="calcResult" class="hidden mt-4 rounded-2xl bg-navy border border-neon/40 p-4 animate-popIn">
+              <div class="text-xs uppercase tracking-widest text-slate-400 mb-1">Tiempo estimado</div>
+              <div id="calcTime" class="font-display font-extrabold text-4xl text-neon"></div>
+              <div id="calcDetail" class="text-sm text-slate-300 mt-2"></div>
+              <div id="calcFun" class="text-xs text-cyan mt-2"></div>
+            </div>
+          </div>
+          <div class="mt-4 rounded-xl bg-navy border border-violet/30 p-3 text-xs text-slate-400">
+            <strong class="text-violet">Fórmula:</strong> tiempo (s) = [ tamaño (MB — megabytes) × 8 ] ÷ [ ancho de banda (Mbps — megabits por segundo) × eficiencia ]
+            <br>Recordá: <strong class="text-cyan">1 Byte (octeto) = 8 bits (dígitos binarios)</strong>. Por eso un archivo de 700 MB (megabytes) necesita 5600 megabits para viajar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tech-card p-6 mt-8 overflow-x-auto print-block">
+      <h3 class="font-display font-extrabold text-xl text-white mb-4">📐 Unidades que tenés que dominar</h3>
+      <table class="w-full text-sm min-w-[560px]">
+        <thead><tr class="text-left text-cyan border-b border-violet/30"><th class="py-2 pr-4">Unidad</th><th class="py-2 pr-4">Significa</th><th class="py-2">Se usa para…</th></tr></thead>
+        <tbody class="text-slate-300">
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">bit (binary digit — dígito binario)</td><td class="py-2 pr-4">Un 0 o un 1: la unidad mínima de información</td><td class="py-2">Velocidad de red (Mbps — megabits por segundo)</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Byte (octeto)</td><td class="py-2 pr-4">8 bits (dígitos binarios) = 1 carácter aproximado</td><td class="py-2">Tamaño de archivos (MB — megabytes, GB — gigabytes)</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4 font-bold text-slate-200">Mbps (megabits por segundo)</td><td class="py-2 pr-4">Millones de bits (dígitos binarios) por segundo</td><td class="py-2">Ancho de banda contratado</td></tr>
+          <tr><td class="py-2 pr-4 font-bold text-slate-200">MB/s (megabytes por segundo)</td><td class="py-2 pr-4">= Mbps (megabits por segundo) ÷ 8</td><td class="py-2">Velocidad de descarga real</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="ancho"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir resumen (A4)</button>
+      <button onclick="completeModule('ancho')" id="btn-done-ancho" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 7 · TIPOS DE COMUNICACIÓN ============ -->
+  <section id="tab-comunicacion" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">💬 Tipos de Comunicación en Red</h2>
+      <p class="text-slate-400 max-w-3xl">Según <strong class="text-cyan">el tiempo</strong> en que ocurre el intercambio, la comunicación en red se clasifica en dos grandes tipos.
+      Comparalas y después jugá al clasificador para poner a prueba lo aprendido (+5 pts por acierto).</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-10 print-block">
+      <div class="tech-card p-6 border-cyan/40">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan to-violet flex items-center justify-center text-2xl">⚡</div>
+          <h3 class="font-display font-extrabold text-2xl text-cyan">Sincrónica</h3>
+        </div>
+        <p class="text-sm text-slate-300 mb-3"><strong>Todos los participantes coinciden en el mismo momento</strong> (en tiempo real). La respuesta es inmediata, como una conversación presencial.</p>
+        <ul class="text-sm text-slate-400 space-y-1.5 list-disc list-inside">
+          <li>📞 Llamadas de voz y videollamadas (Google Meet, Zoom)</li>
+          <li>💬 Chat (charla) en vivo y mensajería instantánea activa</li>
+          <li>🎮 Partidas multijugador online (en línea)</li>
+          <li>🎓 Clases en vivo / streaming (transmisión en continuo) con interacción</li>
+        </ul>
+        <div class="mt-4 text-xs bg-navy border border-cyan/30 rounded-xl p-3 text-slate-300"><strong class="text-cyan">Requiere:</strong> coordinación horaria y buena conexión simultánea.</div>
+      </div>
+      <div class="tech-card p-6 border-pink/40">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink to-violet flex items-center justify-center text-2xl">🕐</div>
+          <h3 class="font-display font-extrabold text-2xl text-pink">Asincrónica</h3>
+        </div>
+        <p class="text-sm text-slate-300 mb-3"><strong>Cada participante entra cuando puede</strong>: el mensaje queda guardado y se responde en otro momento. No hay coincidencia temporal.</p>
+        <ul class="text-sm text-slate-400 space-y-1.5 list-disc list-inside">
+          <li>✉️ Correo electrónico (e-mail — electronic mail, correo electrónico en inglés)</li>
+          <li>📋 Foros y tablones de anuncios</li>
+          <li>🎙️ Mensajes de voz y videos grabados</li>
+          <li>📝 Compartir documentos editables en la nube (cloud computing — computación en la nube)</li>
+        </ul>
+        <div class="mt-4 text-xs bg-navy border border-pink/30 rounded-xl p-3 text-slate-300"><strong class="text-pink">Ventaja:</strong> flexibilidad total de horarios; queda registro escrito.</div>
+      </div>
+    </div>
+
+    <div class="tech-card p-6 print-hide">
+      <h3 class="font-display font-extrabold text-xl text-white mb-1">🎯 Mini-juego: ¿Sincrónica o Asincrónica?</h3>
+      <p class="text-sm text-slate-400 mb-4">Clasificá cada situación correctamente para ganar los 8 puntos (+5 pts por acierto, acumulables en Mi Reporte).</p>
+      <div id="classGame" class="space-y-3"></div>
+      <div id="classScore" class="mt-4 font-display font-extrabold text-lg text-neon hidden"></div>
+      <button onclick="resetClassGame()" class="btn-neon mt-4 border border-violet/50 text-violet font-bold px-5 py-2 rounded-xl text-sm">🔄 Reiniciar juego</button>
+    </div>
+
+    <div class="challenge-block tech-card p-6 mt-8 print-hide" data-ch="comunicacion"></div>
+
+    <div class="mt-8 flex flex-wrap gap-3 justify-end print-hide">
+      <button onclick="window.print()" class="btn-neon border border-cyan/50 text-cyan font-bold px-5 py-3 rounded-2xl">🖨️ Imprimir resumen (A4)</button>
+      <button onclick="completeModule('comunicacion')" id="btn-done-comunicacion" class="btn-neon bg-neon text-navy font-extrabold px-6 py-3 rounded-2xl">✔ Marcar como completado</button>
+    </div>
+  </section>
+
+  <!-- ============ PESTAÑA 8 · EVALUACIÓN FINAL ============ -->
+  <section id="tab-evaluacion" class="tab-section hidden">
+    <div class="mb-6">
+      <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white mb-2">🏁 Evaluación Final</h2>
+      <p class="text-slate-400 max-w-3xl">Trivia gamificada con preguntas de <strong class="text-cyan">todos los módulos</strong> (+20 pts por acierto en Mi Reporte).
+      Al finalizar podrás completar tus datos y <strong class="text-neon">descargar el resultado en PDF (Portable Document Format — Formato de Documento Portátil)</strong>
+      o <strong class="text-amber2">imprimirlo en A4</strong> para entregarlo al docente.</p>
+    </div>
+
+    <div class="print-only print-block mb-4">
+      <p style="font-size:10pt;"><b>Evaluación Final:</b> se realiza de forma interactiva en la plataforma web. La hoja de resultados
+      (con Nombre, Escuela, Curso, puntaje y detalle de respuestas) se genera al terminar la trivia mediante el botón
+      "Enviar y Descargar (PDF — Portable Document Format, Formato de Documento Portátil)" o "Imprimir resultado en A4".</p>
+    </div>
+
+    <div id="quizBox" class="tech-card p-6 md:p-8 max-w-3xl mx-auto print-hide">
+      <div id="quizStart" class="text-center py-6">
+        <div class="text-6xl mb-4 animate-floaty">🧠</div>
+        <h3 class="font-display font-extrabold text-2xl text-white mb-2">¿Listo/a para el desafío final?</h3>
+        <p class="text-slate-400 text-sm mb-6">14 preguntas · Retroalimentación inmediata · Certificado en PDF (Formato de Documento Portátil) e impresión A4 al terminar.</p>
+        <button onclick="startQuiz()" class="btn-neon bg-gradient-to-r from-violet to-pink text-white font-extrabold px-8 py-3 rounded-2xl">🚀 Iniciar trivia</button>
+      </div>
+
+      <div id="quizPlay" class="hidden">
+        <div class="flex items-center justify-between mb-3">
+          <span id="quizCounter" class="text-xs font-bold text-slate-400 uppercase tracking-widest"></span>
+          <span id="quizScoreLive" class="text-xs font-bold text-neon">Puntaje: 0</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-navy overflow-hidden mb-5">
+          <div id="quizBar" class="progress-fill h-full bg-gradient-to-r from-violet to-pink" style="width:0%"></div>
+        </div>
+        <h3 id="quizQuestion" class="font-display font-bold text-xl text-white mb-5 leading-snug"></h3>
+        <div id="quizOptions" class="space-y-3"></div>
+        <div id="quizFeedback" class="mt-4 text-sm font-bold hidden"></div>
+        <div class="flex justify-end mt-5">
+          <button id="quizNext" onclick="nextQuestion()" class="btn-neon hidden bg-gradient-to-r from-cyan to-neon text-navy font-extrabold px-6 py-2.5 rounded-2xl">Siguiente ▶</button>
+        </div>
+      </div>
+
+      <div id="quizEnd" class="hidden">
+        <div class="text-center py-2 mb-6">
+          <div id="endEmoji" class="text-6xl mb-2 animate-popIn">🏆</div>
+          <h3 class="font-display font-extrabold text-3xl text-white">Resultado final</h3>
+          <div id="endScore" class="font-display font-extrabold text-5xl bg-gradient-to-r from-neon to-cyan bg-clip-text text-transparent my-2"></div>
+          <p id="endMsg" class="text-slate-400 text-sm max-w-md mx-auto"></p>
+        </div>
+
+        <div class="rounded-2xl border-2 border-amber2/60 bg-amber2/5 p-5">
+          <h4 class="font-display font-extrabold text-amber2 mb-1">📝 Datos obligatorios para el certificado</h4>
+          <p class="text-xs text-slate-400 mb-4">La trivia quedó <strong>bloqueada</strong>. Completá el formulario (si cargaste "Mi Reporte", ya está autocompleto) y elegí cómo entregar el resultado.</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block"><span class="text-xs font-bold text-slate-300">Fecha *</span><input id="pdfFecha" type="date" class="ch-input mt-1"></label>
+            <label class="block"><span class="text-xs font-bold text-slate-300">Escuela *</span><input id="pdfEscuela" type="text" placeholder="Ej: E.E.S.T. N.º 1 (Escuela de Educación Secundaria Técnica)" class="ch-input mt-1"></label>
+            <label class="block"><span class="text-xs font-bold text-slate-300">Curso *</span><input id="pdfCurso" type="text" placeholder="Ej: 4to 2da" class="ch-input mt-1"></label>
+            <label class="block"><span class="text-xs font-bold text-slate-300">Nombre y Apellido del alumno *</span><input id="pdfNombre" type="text" placeholder="Ej: Juana Pérez" class="ch-input mt-1"></label>
+          </div>
+          <p id="pdfError" class="hidden text-pink text-xs font-bold mt-2">⚠️ Debés completar todos los campos obligatorios.</p>
+          <button onclick="generatePDF()" class="btn-neon mt-4 w-full bg-gradient-to-r from-amber2 to-pink text-navy font-extrabold py-3 rounded-2xl">📄 Enviar y Descargar (PDF — Portable Document Format, Formato de Documento Portátil)</button>
+          <button onclick="printFinalQuiz()" class="btn-neon mt-3 w-full border-2 border-cyan/60 text-cyan font-extrabold py-3 rounded-2xl">🖨️ Imprimir resultado en A4 (Nombre · Escuela · Curso)</button>
+        </div>
+
+        <div class="text-center mt-5">
+          <button onclick="restartQuiz()" class="text-xs text-slate-500 underline hover:text-cyan">↻ Volver a intentar la trivia</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ==================== MODAL "GLOSARIO" (ya no es pestaña) ==================== -->
+<div id="glossaryModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 print-hide">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeGlossary()"></div>
+  <div class="relative tech-card w-full max-w-4xl max-h-[88vh] overflow-y-auto p-6 animate-popIn">
+    <button onclick="closeGlossary()" class="absolute top-3 right-3 w-9 h-9 rounded-xl bg-panel2 border border-violet/40 text-slate-300 font-bold hover:text-pink transition z-10">✕</button>
+    <h3 class="font-display font-extrabold text-2xl text-white mb-1">📖 Glosario NTiCx (Nuevas Tecnologías de la Información y de la Conectividad)</h3>
+    <p class="text-sm text-slate-400 mb-4">Todas las <strong class="text-cyan">siglas y términos técnicos</strong> del curso, con su significado detallado entre paréntesis.</p>
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+      <input id="glosarioSearch" type="text" placeholder="🔎 Buscar término o sigla… (ej: TCP, router, fibra)" oninput="renderGlosario(this.value)" class="ch-input max-w-md">
+      <span id="glosarioCount" class="text-xs font-bold text-slate-400 uppercase tracking-widest"></span>
+    </div>
+    <div id="glosarioGrid" class="grid sm:grid-cols-2 gap-3"></div>
+    <div class="flex flex-wrap gap-2 mt-5">
+      <button onclick="printGlossarySheet()" class="btn-neon bg-gradient-to-r from-cyan to-neon text-navy font-extrabold px-5 py-2.5 rounded-xl text-sm">🖨️ Imprimir glosario (A4)</button>
+      <button onclick="closeGlossary()" class="btn-neon border border-violet/50 text-violet font-bold px-5 py-2.5 rounded-xl text-sm">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL "MI REPORTE" ==================== -->
+<div id="reportModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 print-hide">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeReport()"></div>
+  <div class="relative tech-card w-full max-w-2xl max-h-[88vh] overflow-y-auto p-6 animate-popIn">
+    <button onclick="closeReport()" class="absolute top-3 right-3 w-9 h-9 rounded-xl bg-panel2 border border-violet/40 text-slate-300 font-bold hover:text-pink transition z-10">✕</button>
+    <div id="reportContent"></div>
+  </div>
+</div>
+
+<!-- ==================== PIE DE PÁGINA ==================== -->
+<footer class="border-t border-violet/20 mt-10 py-6 text-center text-xs text-slate-500 print-hide">
+  <p><strong class="text-slate-300">NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) · Aula Interactiva</strong> — Material tecno-pedagógico para 4.º año · Escuelas Secundarias de Argentina.</p>
+  <p class="mt-1">Hecho con HTML (HyperText Markup Language — Lenguaje de Marcado de Hipertexto) + Tailwind CSS (Cascading Style Sheets — Hojas de Estilo en Cascada) + JavaScript · Se abre offline arrastrando el archivo al navegador.</p>
+</footer>
+
+<script>
+/* ============================================================
+   LÓGICA GENERAL DE LA APLICACIÓN (v4)
+   ------------------------------------------------------------
+   1)  Sistema de pestañas (navegación) — 8 módulos (Inicio sin trivia)
+   2)  Gamificación: progreso y persistencia (localStorage)
+   3)  MI REPORTE: identidad del alumno + puntos + resultados
+       + DETALLE de las trivias al imprimir (sin "últimos movimientos")
+   4)  Organización de Redes (comparativa dinámica)
+   5)  TCP/IP (acordeones + simulador de paquetes)
+   6)  Topologías (diagramas SVG + resumen imprimible)
+   7)  Ancho de Banda (tubo animado + calculadora)
+   8)  Comunicación (mini-juego clasificador)
+   9)  GLOSARIO en modal (botón en la barra superior)
+   10) Desafíos por módulo (3 preguntas + impresión A4)
+   11) Evaluación Final (trivia + PDF jsPDF + impresión A4)
+   12) Motor de impresión (trivia / reporte / glosario / teoría)
+   ============================================================ */
+
+/* ---------- Almacenamiento seguro ---------- */
+const LS = {
+  get(k, fallback){ try{ const v = JSON.parse(localStorage.getItem(k)); return v===null?fallback:v; }catch(e){ return fallback; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ---------- 1) PESTAÑAS (el Glosario YA NO es pestaña) ---------- */
+const TABS = [
+  { id:'inicio',       label:'🏠 Inicio' },
+  { id:'organizacion', label:'🗂️ Organización de Redes' },
+  { id:'tcpip',        label:'📦 Protocolo TCP/IP (Transmission Control Protocol / Internet Protocol)' },
+  { id:'topologias',   label:'🕸️ Topologías y Arquitecturas' },
+  { id:'conexion',     label:'🔌 Formas de Conexión' },
+  { id:'ancho',        label:'⚡ Ancho de Banda y Transferencia' },
+  { id:'comunicacion', label:'💬 Tipos de Comunicación' },
+  { id:'evaluacion',   label:'🏁 Evaluación Final' }
+];
+const MODULES = TABS;   // los 8 módulos cuentan para el progreso
+
+const nav = document.getElementById('tabNav');
+TABS.forEach(t=>{
+  const b = document.createElement('button');
+  b.className = 'tab-btn text-sm font-semibold px-4 py-2 rounded-xl bg-panel border border-violet/20 text-slate-300';
+  b.dataset.tab = t.id;
+  b.innerHTML = `${t.label} <span class="tab-check hidden text-navy font-black">✔</span>`;
+  b.onclick = ()=> goTab(t.id);
+  nav.appendChild(b);
+});
+
+function goTab(id){
+  document.querySelectorAll('.tab-section').forEach(s=>{ s.classList.add('hidden'); s.removeAttribute('data-active'); });
+  const sec = document.getElementById('tab-'+id);
+  sec.classList.remove('hidden');
+  sec.setAttribute('data-active','true');
+  document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.tab===id));
+  window.scrollTo({ top:0, behavior:'smooth' });
+  const activeBtn = document.querySelector(`.tab-btn[data-tab="${id}"]`);
+  if(activeBtn) activeBtn.scrollIntoView({ inline:'center', behavior:'smooth', block:'nearest' });
+}
+
+/* ---------- 2) PROGRESO GAMIFICADO ---------- */
+let completed = new Set(LS.get('nticx_completed', []));
+
+const badgeGrid = document.getElementById('badgeGrid');
+MODULES.forEach(t=>{
+  const d = document.createElement('div');
+  d.id = 'badge-'+t.id;
+  d.className = 'rounded-2xl border p-3 text-center transition-all duration-300';
+  d.innerHTML = `<div class="text-2xl mb-1">${t.label.split(' ')[0]}</div>
+                 <div class="text-[10px] font-bold leading-tight">${t.label.replace(/^[^\s]+\s/,'').replace(/\s*\(.*\)/,'')}</div>
+                 <div class="badge-state text-[10px] mt-1"></div>`;
+  badgeGrid.appendChild(d);
+});
+
+function completeModule(id){
+  const isNew = !completed.has(id);
+  completed.add(id);
+  LS.set('nticx_completed', [...completed]);
+  renderProgress();
+  if(isNew){
+    const t = TABS.find(x=>x.id===id);
+    awardInteraction('modulo-'+id, 50, `Completó el módulo: ${t ? t.label.replace(/\s*\(.*\)/,'') : id}`);
+  }
+  const btn = document.getElementById('btn-done-'+id);
+  if(btn && !btn.disabled){ btn.textContent='🎉 ¡Módulo completado!'; btn.disabled=true; btn.classList.add('opacity-60'); }
+}
+
+function renderProgress(){
+  const doneMods = MODULES.filter(m=>completed.has(m.id)).length;
+  const pct = Math.round(doneMods / MODULES.length * 100);
+  document.getElementById('miniProgress').style.width = pct+'%';
+  document.getElementById('miniProgressTxt').textContent = pct+'%';
+  document.getElementById('bigProgress').style.width = pct+'%';
+  document.getElementById('bigProgressTxt').textContent = pct+'%';
+  MODULES.forEach(t=>{
+    const done = completed.has(t.id);
+    const badge = document.getElementById('badge-'+t.id);
+    badge.className = 'rounded-2xl border p-3 text-center transition-all duration-300 ' +
+      (done ? 'border-neon/60 bg-neon/10 shadow-[0_0_20px_-6px_#2BFFB2]' : 'border-violet/20 bg-panel/50 opacity-70');
+    badge.querySelector('.badge-state').innerHTML = done
+      ? '<span class="text-neon font-extrabold">✔ Logrado</span>' : '<span class="text-slate-500">Pendiente</span>';
+    const btn = document.getElementById('btn-done-'+t.id);
+    if(btn && done && !btn.disabled){ btn.textContent='🎉 ¡Módulo completado!'; btn.disabled=true; btn.classList.add('opacity-60'); }
+    const chk = document.querySelector(`.tab-btn[data-tab="${t.id}"] .tab-check`);
+    if(chk) chk.classList.toggle('hidden', !done);
+  });
+}
+
+/* ============================================================
+   3) MI REPORTE · Identidad + puntos + resultados + detalle
+   ============================================================ */
+let student = LS.get('nticx_student', null);
+let report  = LS.get('nticx_report', { puntos:0, eventos:[], desafios:{}, final:null, clasificador:null, inter:{} });
+let reportOpen = false;
+
+function saveReport(){ LS.set('nticx_report', report); updateStudentChip(); }
+function saveStudent(){ LS.set('nticx_student', student); updateStudentChip(); }
+
+function addPoints(pts, tipo, detalle){
+  report.puntos = (report.puntos||0) + pts;
+  report.eventos = report.eventos || [];
+  report.eventos.unshift({ fecha:new Date().toLocaleString('es-AR'), tipo, detalle, pts });
+  report.eventos = report.eventos.slice(0, 80);
+  saveReport();
+  if(reportOpen) renderReport();
+}
+
+function awardInteraction(key, pts, label){
+  report.inter = report.inter || {};
+  if(report.inter[key]) return;
+  report.inter[key] = true;
+  addPoints(pts, 'Interacción', label);
+}
+
+function updateStudentChip(){
+  const chip = document.getElementById('studentChip');
+  if(student){
+    chip.classList.remove('hidden'); chip.classList.add('flex');
+    chip.innerHTML = `👤 ${student.nombre.split(' ')[0]} · ⭐ ${report.puntos||0} pts`;
+  }else{
+    chip.classList.add('hidden'); chip.classList.remove('flex');
+  }
+}
+
+function openReport(){ reportOpen = true; renderReport();
+  const m = document.getElementById('reportModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeReport(){ reportOpen = false;
+  const m = document.getElementById('reportModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+function renderReport(editMode=false){
+  const c = document.getElementById('reportContent');
+  if(!student || editMode){
+    /* ---- Formulario de datos del alumno ---- */
+    c.innerHTML = `
+      <div class="text-center mb-4">
+        <div class="text-5xl mb-1">📇</div>
+        <h3 class="font-display font-extrabold text-2xl text-white">Mi Reporte — Registro del alumno/a</h3>
+        <p class="text-sm text-slate-400 mt-1">Ingresá tus datos. A partir de ahora, <strong class="text-pink">todos los resultados de las trivias</strong>
+        y los <strong class="text-neon">puntos de tus interacciones</strong> se acumularán aquí, y podrás imprimirlos cuando lo necesites.</p>
+      </div>
+      <div class="space-y-3">
+        <label class="block"><span class="text-xs font-bold text-slate-300">Nombre y Apellido *</span>
+          <input id="repNombre" class="ch-input mt-1" placeholder="Ej: Juana Pérez" value="${student?escapeAttr(student.nombre):''}"></label>
+        <label class="block"><span class="text-xs font-bold text-slate-300">Escuela *</span>
+          <input id="repEscuela" class="ch-input mt-1" placeholder="Ej: E.E.S.T. N.º 1 (Escuela de Educación Secundaria Técnica)" value="${student?escapeAttr(student.escuela):''}"></label>
+        <label class="block"><span class="text-xs font-bold text-slate-300">Grado y División *</span>
+          <input id="repGrado" class="ch-input mt-1" placeholder="Ej: 4to 2da" value="${student?escapeAttr(student.grado):''}"></label>
+        <p id="repError" class="hidden text-pink text-xs font-bold">⚠️ Completá los tres campos para crear tu reporte.</p>
+        <button onclick="saveStudentForm()" class="btn-neon w-full bg-gradient-to-r from-pink to-violet text-white font-extrabold py-3 rounded-2xl">💾 Guardar y crear Mi Reporte</button>
+        ${student?`<button onclick="renderReport(false)" class="w-full text-xs text-slate-500 underline hover:text-cyan">↩ Volver al reporte sin editar</button>`:''}
+      </div>`;
+    return;
+  }
+
+  /* ---- Panel de resultados acumulados ---- */
+  const filasDesafios = Object.keys(CHALLENGES).map(mod=>{
+    const r = report.desafios && report.desafios[mod];
+    const nombre = CHALLENGES[mod].name;
+    return `<tr class="border-b border-white/5">
+      <td class="py-2 pr-3 text-slate-300">🎯 Desafío · ${nombre}</td>
+      <td class="py-2 pr-3 font-bold ${r?(r.score>=2?'text-neon':'text-amber2'):'text-slate-500'}">${r?`${r.score}/${r.total}`:'—'}</td>
+      <td class="py-2 text-xs text-slate-500">${r?r.fecha:'Sin intentar'}</td></tr>`;
+  }).join('');
+
+  const f = report.final;
+  const cl = report.clasificador;
+  const interList = Object.keys(report.inter||{}).length;
+
+  c.innerHTML = `
+    <div class="flex items-center gap-4 mb-4">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink to-violet flex items-center justify-center text-3xl">📇</div>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-display font-extrabold text-xl text-white truncate">Mi Reporte · ${escapeHTML(student.nombre)}</h3>
+        <p class="text-xs text-slate-400 truncate">${escapeHTML(student.escuela)} · ${escapeHTML(student.grado)}</p>
+      </div>
+      <div class="text-right shrink-0">
+        <div class="font-display font-extrabold text-3xl bg-gradient-to-r from-amber2 to-pink bg-clip-text text-transparent">⭐ ${report.puntos||0}</div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-500">puntos totales</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-4 text-center">
+      <div class="rounded-xl bg-navy border border-neon/30 p-3">
+        <div class="font-display font-extrabold text-2xl text-neon">${MODULES.filter(m=>completed.has(m.id)).length}/${MODULES.length}</div>
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Módulos completados</div>
+      </div>
+      <div class="rounded-xl bg-navy border border-cyan/30 p-3">
+        <div class="font-display font-extrabold text-2xl text-cyan">${interList}</div>
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Interacciones premiadas</div>
+      </div>
+      <div class="rounded-xl bg-navy border border-pink/30 p-3">
+        <div class="font-display font-extrabold text-2xl text-pink">${(report.eventos||[]).length}</div>
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Eventos registrados</div>
+      </div>
+    </div>
+
+    <h4 class="font-bold text-white text-sm mb-2">🎯 Resultados de trivias y desafíos</h4>
+    <div class="rounded-xl bg-navy border border-violet/25 overflow-x-auto mb-3">
+      <table class="w-full text-xs min-w-[420px]">
+        <thead><tr class="text-left text-cyan border-b border-violet/30"><th class="py-2 px-3">Actividad</th><th class="py-2 px-3">Resultado</th><th class="py-2 px-3">Fecha</th></tr></thead>
+        <tbody>${filasDesafios}
+          <tr class="border-b border-white/5"><td class="py-2 px-3 text-slate-300">🕹️ Mini-juego clasificador (Sincrónica/Asincrónica)</td>
+            <td class="py-2 px-3 font-bold ${cl?'text-neon':'text-slate-500'}">${cl?`${cl.score}/${cl.total}`:'—'}</td>
+            <td class="py-2 px-3 text-slate-500">${cl?cl.fecha:'Sin intentar'}</td></tr>
+          <tr><td class="py-2 px-3 text-slate-300">🏁 Evaluación Final (14 preguntas)</td>
+            <td class="py-2 px-3 font-bold ${f?(f.score/f.total>=0.6?'text-neon':'text-amber2'):'text-slate-500'}">${f?`${f.score}/${f.total} (${Math.round(f.score/f.total*100)}%)`:'—'}</td>
+            <td class="py-2 px-3 text-slate-500">${f?f.fecha:'Sin intentar'}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-[11px] text-slate-500 mb-4">📄 Al imprimir Mi Reporte en A4 se incluye el <strong class="text-cyan">detalle pregunta por pregunta</strong> de cada trivia realizada.</p>
+
+    <div class="grid sm:grid-cols-2 gap-3">
+      <button onclick="printStudentReport()" class="btn-neon bg-gradient-to-r from-amber2 to-pink text-navy font-extrabold py-3 rounded-2xl">🖨️ Imprimir Mi Reporte (A4)</button>
+      <button onclick="renderReport(true)" class="btn-neon border border-cyan/50 text-cyan font-bold py-3 rounded-2xl">✏️ Editar mis datos</button>
+    </div>
+    <button onclick="resetStudent()" class="mt-3 w-full text-[11px] text-slate-600 underline hover:text-pink">🗑️ Borrar mis datos y reiniciar el reporte</button>`;
+}
+
+const escapeHTML = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const escapeAttr = s => escapeHTML(s);
+
+function saveStudentForm(){
+  const nombre  = document.getElementById('repNombre').value.trim();
+  const escuela = document.getElementById('repEscuela').value.trim();
+  const grado   = document.getElementById('repGrado').value.trim();
+  if(!nombre || !escuela || !grado){ document.getElementById('repError').classList.remove('hidden'); return; }
+  student = { nombre, escuela, grado };
+  saveStudent();
+  autofillForms();
+  renderReport(false);
+}
+
+function resetStudent(){
+  if(!confirm('¿Seguro que querés borrar tus datos y TODO el reporte acumulado? Esta acción no se puede deshacer.')) return;
+  student = null;
+  report = { puntos:0, eventos:[], desafios:{}, final:null, clasificador:null, inter:{} };
+  LS.set('nticx_report', report);
+  try{ localStorage.removeItem('nticx_student'); }catch(e){}
+  updateStudentChip();
+  renderReport(true);
+}
+
+function autofillForms(){
+  if(!student) return;
+  const set = (id,v)=>{ const el=document.getElementById(id); if(el && !el.value) el.value=v; };
+  set('pdfNombre', student.nombre); set('pdfEscuela', student.escuela); set('pdfCurso', student.grado);
+}
+
+/* ---------- 4) ORGANIZACIÓN DE REDES ---------- */
+const ORG_DATA = {
+  intranet:{
+    icon:'🏫', color:'text-cyan', title:'Intranet — La red privada de la organización',
+    body:`<p class="text-slate-300 text-sm leading-relaxed mb-3">Una <strong class="text-cyan">Intranet</strong> es una red privada que utiliza las mismas tecnologías de Internet
+    (navegador web y HTTP — HyperText Transfer Protocol, Protocolo de Transferencia de Hipertexto) pero está <strong>restringida a los miembros de una sola organización</strong>.</p>
+    <ul class="text-sm text-slate-400 space-y-1.5 list-disc list-inside mb-3">
+      <li><strong class="text-slate-200">Acceso:</strong> solo usuarios internos autorizados (usuario + contraseña).</li>
+      <li><strong class="text-slate-200">Seguridad:</strong> protegida por un firewall (cortafuegos) que bloquea el acceso desde Internet.</li>
+      <li><strong class="text-slate-200">Uso típico:</strong> documentos internos, novedades, horarios, gestión administrativa.</li>
+    </ul>
+    <div class="rounded-xl bg-navy border border-cyan/30 p-3 text-xs text-slate-300"><strong class="text-cyan">Ejemplo escolar:</strong> el portal interno donde los preceptores cargan las asistencias y los docentes suben las planificaciones. Alcance típico: LAN (Local Area Network — Red de Área Local).</div>`,
+    reach:'Alcance: LAN (Local Area Network — Red de Área Local)'
+  },
+  extranet:{
+    icon:'🤝', color:'text-pink', title:'Extranet — La intranet que abre una puerta segura',
+    body:`<p class="text-slate-300 text-sm leading-relaxed mb-3">Una <strong class="text-pink">Extranet</strong> es una extensión controlada de la Intranet que permite que
+    <strong>personas externas autorizadas</strong> (proveedores, clientes, otras escuelas) accedan a ciertos recursos, sin abrir toda la red.</p>
+    <ul class="text-sm text-slate-400 space-y-1.5 list-disc list-inside mb-3">
+      <li><strong class="text-slate-200">Acceso:</strong> semiprivado, con credenciales y permisos específicos.</li>
+      <li><strong class="text-slate-200">Seguridad:</strong> conexiones cifradas mediante VPN (Virtual Private Network — Red Privada Virtual) y HTTPS (HyperText Transfer Protocol Secure — Protocolo de Transferencia de Hipertexto Seguro).</li>
+      <li><strong class="text-slate-200">Uso típico:</strong> una empresa comparte su stock con proveedores; dos escuelas comparten un proyecto.</li>
+    </ul>
+    <div class="rounded-xl bg-navy border border-pink/30 p-3 text-xs text-slate-300"><strong class="text-pink">Ejemplo real:</strong> la plataforma donde el proveedor de la cooperativa escolar consulta los pedidos pendientes sin entrar al resto del sistema.</div>`,
+    reach:'Alcance: varias organizaciones aliadas'
+  },
+  internet:{
+    icon:'🌍', color:'text-neon', title:'Internet — La red global de redes',
+    body:`<p class="text-slate-300 text-sm leading-relaxed mb-3"><strong class="text-neon">Internet</strong> es la red pública y mundial que interconecta millones de redes
+    usando TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet).
+    Es el <strong>medio de comunicación global</strong> más poderoso de la historia.</p>
+    <ul class="text-sm text-slate-400 space-y-1.5 list-disc list-inside mb-3">
+      <li><strong class="text-slate-200">Acceso:</strong> público, cualquiera puede conectarse y publicar.</li>
+      <li><strong class="text-slate-200">Infraestructura:</strong> cables submarinos de fibra óptica, satélites, datacenters (centros de datos) y routers (enrutadores).</li>
+      <li><strong class="text-slate-200">Servicios:</strong> WWW (World Wide Web — Red Mundial), correo electrónico, streaming (transmisión en continuo), redes sociales, nube (cloud computing — computación en la nube) e IoT (Internet of Things — Internet de las Cosas).</li>
+    </ul>
+    <div class="rounded-xl bg-navy border border-neon/30 p-3 text-xs text-slate-300"><strong class="text-neon">Dato clave:</strong> la WWW (World Wide Web — Red Mundial) NO es Internet: es solo uno de sus servicios. Internet es toda la infraestructura que la transporta.</div>`,
+    reach:'Alcance: WAN (Wide Area Network — Red de Área Amplia) mundial'
+  }
+};
+
+function showOrg(key){
+  const d = ORG_DATA[key];
+  document.getElementById('orgDetail').innerHTML = `
+    <div class="flex items-start gap-4 mb-3">
+      <div class="text-5xl animate-popIn">${d.icon}</div>
+      <div><h3 class="font-display font-extrabold text-2xl ${d.color}">${d.title}</h3>
+      <p class="text-xs uppercase tracking-widest text-slate-500 mt-1">${d.reach}</p></div>
+    </div>${d.body}`;
+  document.querySelectorAll('.org-btn').forEach(b=>{
+    const on = b.dataset.org===key;
+    b.classList.toggle('ring-2', on); b.classList.toggle('ring-cyan', on);
+  });
+  awardInteraction('org-'+key, 5, `Exploró la ficha de ${key.charAt(0).toUpperCase()+key.slice(1)}`);
+}
+
+/* ---------- 5) TCP/IP · Acordeones + Simulador ---------- */
+function toggleAcc(btn){
+  const panel = btn.nextElementSibling;
+  const open = panel.classList.toggle('acc-open');
+  btn.querySelector('.acc-arrow').style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+let simRunning = false;
+function runPacketSim(){
+  if(simRunning) return;
+  simRunning = true;
+  awardInteraction('sim-tcpip', 10, 'Ejecutó el simulador de paquetes TCP/IP (Protocolo de Control de Transmisión / Protocolo de Internet)');
+  const btn = document.getElementById('simBtn');
+  btn.disabled = true; btn.textContent = '📡 Transmitiendo…';
+  const log = document.getElementById('simLog');
+  log.innerHTML = '';
+  document.getElementById('simMsg').classList.add('hidden');
+
+  const say = (t, txt, cls='text-neon') => setTimeout(()=>{
+    const div = document.createElement('div');
+    div.className = cls + ' animate-popIn';
+    div.textContent = '> ' + txt;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
+  }, t);
+
+  say(0,   'Capa de APLICACIÓN: el mensaje "¡HOLA RED!" se entrega a TCP (Transmission Control Protocol — Protocolo de Control de Transmisión)…', 'text-cyan');
+  say(900, 'Capa de TRANSPORTE: TCP divide el mensaje en 3 segmentos numerados (P1, P2, P3).', 'text-amber2');
+  say(1700,'Capa de INTERNET: cada paquete recibe dirección IP (Internet Protocol — Protocolo de Internet) de origen y destino.', 'text-pink');
+  say(2400,'Capa de ACCESO A RED: los paquetes se convierten en señales y entran al medio físico…', 'text-violet');
+
+  const frames = [
+    { left:'4%',  opacity:0, offset:0 },
+    { left:'4%',  opacity:1, offset:.06 },
+    { left:'34%', offset:.4 },
+    { left:'64%', offset:.7 },
+    { left:'92%', opacity:1, offset:.94 },
+    { left:'92%', opacity:0 }
+  ];
+  const delays = [3000, 3700, 4400];
+  const anims = ['pk1','pk2','pk3'].map((id,i)=>{
+    const el = document.getElementById(id);
+    el.style.opacity = 0;
+    return el.animate(frames, { duration:3400, delay:delays[i], easing:'ease-in-out', fill:'forwards' }).finished;
+  });
+
+  say(3400,'📡 Router 1 (enrutador): leo la IP (Internet Protocol — Protocolo de Internet) destino y reenvío el paquete P1.', 'text-slate-300');
+  say(5000,'📡 Router 2 (enrutador): salto siguiente hacia la red del receptor.', 'text-slate-300');
+
+  Promise.all(anims).then(()=>{
+    say(7600,'Capa de TRANSPORTE (receptor): los 3 segmentos llegaron → se reordenan y reensamblan.', 'text-amber2');
+    document.getElementById('simMsg').classList.remove('hidden');
+    say(8400,'✅ Mensaje reconstruido: "¡HOLA RED!" — TCP envía ACK (Acknowledgement — Acuse de Recibo) al emisor.', 'text-neon');
+    say(9200,'🔁 Si algún paquete se hubiera perdido, TCP (Protocolo de Control de Transmisión) lo reenviaría automáticamente.', 'text-cyan');
+    btn.disabled = false; btn.textContent = '📦 Enviar datos otra vez';
+    simRunning = false;
+  });
+}
+
+/* ---------- 6) TOPOLOGÍAS ---------- */
+function nodeSVG(x,y,label,tip,color='#22E4FF'){
+  return `<g class="topo-node" onclick="nodeClick('${tip}')">
+    <circle class="node-ring" cx="${x}" cy="${y}" r="20" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle class="node-box" cx="${x}" cy="${y}" r="14" fill="#141B3C" stroke="${color}" stroke-width="3"/>
+    <text x="${x}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="800" fill="${color}" font-family="Outfit" pointer-events="none">${label}</text>
+    <title>${tip}</title></g>`;
+}
+function hubSVG(x,y,label,color='#FFC53D'){
+  return `<g class="topo-node" onclick="nodeClick('${label}: dispositivo central que concentra todas las conexiones')">
+    <rect class="node-box" x="${x-20}" y="${y-14}" width="40" height="28" rx="7" fill="#141B3C" stroke="${color}" stroke-width="3"/>
+    <text x="${x}" y="${y+4}" text-anchor="middle" font-size="9" font-weight="800" fill="${color}" font-family="Outfit" pointer-events="none">${label}</text>
+    <title>${label}: dispositivo central de la red</title></g>`;
+}
+const line = (x1,y1,x2,y2,c='#7C5CFC')=>`<line class="topo-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="2.5"/>`;
+
+const TOPOS = {
+  estrella:{
+    title:'⭐ Topología en Estrella',
+    desc:'Todos los equipos se conectan a un dispositivo central: un switch (conmutador) o un hub (concentrador). Es la más usada en escuelas y oficinas.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(200,150,200,50)}${line(200,150,287,100)}${line(200,150,287,200)}
+      ${line(200,150,200,250)}${line(200,150,113,200)}${line(200,150,113,100)}
+      ${nodeSVG(200,50,'PC1','PC 1: envía sus datos siempre a través del switch (conmutador) central')}
+      ${nodeSVG(287,100,'PC2','PC 2: si el switch falla, queda incomunicada')}
+      ${nodeSVG(287,200,'PC3','PC 3: su cable es independiente del resto')}
+      ${nodeSVG(200,250,'PC4','PC 4: fácil de agregar a la red')}
+      ${nodeSVG(113,200,'PC5','PC 5: el tráfico pasa siempre por el centro')}
+      ${nodeSVG(113,100,'PC6','PC 6: una falla propia NO afecta a las demás')}
+      ${hubSVG(200,150,'SWITCH')}
+    </svg>`,
+    pros:['Fácil de instalar, ampliar y diagnosticar.','Si falla un cable o PC, el resto sigue funcionando.','Rendimiento estable y administración centralizada.'],
+    cons:['Si falla el switch (conmutador) central, TODA la red se cae.','Requiere más cableado que otras topologías.','El dispositivo central puede saturarse (cuello de botella).']
+  },
+  bus:{
+    title:'➖ Topología en Bus',
+    desc:'Todos los equipos comparten un único cable troncal (bus) terminado en resistencias. Simple y económica.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      <line x1="30" y1="150" x2="370" y2="150" stroke="#7C5CFC" stroke-width="4"/>
+      <circle cx="30" cy="150" r="6" fill="#FF5CD7"/><circle cx="370" cy="150" r="6" fill="#FF5CD7"/>
+      <text x="30" y="176" font-size="9" fill="#FF5CD7" text-anchor="middle" font-family="Outfit">terminador</text>
+      <text x="370" y="176" font-size="9" fill="#FF5CD7" text-anchor="middle" font-family="Outfit">terminador</text>
+      ${line(90,150,90,95)}${line(165,150,165,95)}${line(240,150,240,205)}${line(315,150,315,205)}
+      ${nodeSVG(90,80,'PC1','PC 1: sus datos recorren TODO el cable troncal')}
+      ${nodeSVG(165,80,'PC2','PC 2: todas las PCs escuchan el mismo canal')}
+      ${nodeSVG(240,220,'PC3','PC 3: colisiones posibles si dos transmiten a la vez')}
+      ${nodeSVG(315,220,'PC4','PC 4: si el troncal se corta, la red entera muere')}
+    </svg>`,
+    pros:['Muy barata y sencilla de montar.','Usa poco cableado.','Ideal para redes pequeñas temporarias.'],
+    cons:['Si se corta el cable principal, cae TODA la red.','Colisiones: el rendimiento baja con muchos equipos.','Difícil de diagnosticar y ya está en desuso.']
+  },
+  anillo:{
+    title:'⭕ Topología en Anillo',
+    desc:'Cada equipo se conecta con el siguiente formando un círculo cerrado. Los datos giran en un solo sentido portando un "token" (testigo).',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(200,50,287,100)}${line(287,100,287,200)}${line(287,200,200,250)}
+      ${line(200,250,113,200)}${line(113,200,113,100)}${line(113,100,200,50)}
+      ${nodeSVG(200,50,'PC1','PC 1: recibe y retransmite los datos a la PC siguiente')}
+      ${nodeSVG(287,100,'PC2','PC 2: el token (testigo) viaja en un solo sentido')}
+      ${nodeSVG(287,200,'PC3','PC 3: si se apaga, el anillo se interrumpe')}
+      ${nodeSVG(200,250,'PC4','PC 4: todas las PCs tienen el mismo rol')}
+      ${nodeSVG(113,200,'PC5','PC 5: sin choques de datos gracias al token (testigo)')}
+      ${nodeSVG(113,100,'PC6','PC 6: la información da vueltas hasta su destino')}
+      <text x="200" y="155" text-anchor="middle" font-size="12" fill="#FFC53D" font-weight="800" font-family="Outfit">🔑 TOKEN (testigo) →</text>
+    </svg>`,
+    pros:['Sin colisiones: solo transmite quien tiene el token (testigo).','Rendimiento parejo entre todos los nodos.','Cableado ordenado punto a punto.'],
+    cons:['Si falla UNA PC o un tramo, se corta todo el anillo.','Agregar o quitar equipos detiene la red.','Tecnología prácticamente obsoleta.']
+  },
+  malla:{
+    title:'🕸️ Topología en Malla',
+    desc:'Cada nodo se conecta con todos los demás (malla completa) o con varios (malla parcial). Máxima redundancia: es el modelo del núcleo de Internet.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(200,45,318,110)}${line(318,110,273,240)}${line(273,240,127,240)}${line(127,240,82,110)}${line(82,110,200,45)}
+      ${line(200,45,273,240)}${line(200,45,127,240)}${line(318,110,127,240)}${line(318,110,82,110)}${line(273,240,82,110)}
+      ${nodeSVG(200,45,'R1','Router (enrutador) 1: múltiples caminos posibles para cada paquete')}
+      ${nodeSVG(318,110,'R2','Router (enrutador) 2: si un enlace cae, los datos toman otra ruta')}
+      ${nodeSVG(273,240,'R3','Router (enrutador) 3: alta tolerancia a fallos')}
+      ${nodeSVG(127,240,'R4','Router (enrutador) 4: redundancia total entre nodos')}
+      ${nodeSVG(82,110,'R5','Router (enrutador) 5: así funciona el núcleo de Internet')}
+    </svg>`,
+    pros:['Altísima confiabilidad: caminos alternativos ante fallas.','Sin congestión en un único punto.','Escalable y tolerante a errores (modelo de Internet).'],
+    cons:['Costosa: muchos cables y puertos.','Compleja de instalar y administrar.','En malla completa: n×(n-1)/2 conexiones.']
+  },
+  arbol:{
+    title:'🌳 Topología en Árbol (jerárquica)',
+    desc:'Combina estrella + bus en niveles jerárquicos: un nodo raíz del que se desprenden ramas. Típica de redes grandes y edificios.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(200,50,120,140)}${line(200,50,280,140)}
+      ${line(120,140,65,235)}${line(120,140,170,235)}${line(280,140,235,235)}${line(280,140,335,235)}
+      ${hubSVG(200,50,'RAÍZ')}
+      ${hubSVG(120,140,'SW-A','#22E4FF')}
+      ${hubSVG(280,140,'SW-B','#22E4FF')}
+      ${nodeSVG(65,248,'PC1','PC 1: nivel hoja del árbol')}
+      ${nodeSVG(170,248,'PC2','PC 2: depende de su switch (conmutador) de rama')}
+      ${nodeSVG(235,248,'PC3','PC 3: depende de su switch (conmutador) de rama')}
+      ${nodeSVG(335,248,'PC4','PC 4: nivel hoja del árbol')}
+    </svg>`,
+    pros:['Fácil de ampliar por ramas (nuevos niveles).','Aislamiento de fallos por rama.','Ideal para edificios con pisos o sectores.'],
+    cons:['Si falla el nodo raíz, caen todas las ramas.','Más cableado y planificación que una estrella simple.','Dependencia jerárquica de los switches (conmutadores) intermedios.']
+  }
+};
+
+const ARQS = {
+  cs:{
+    title:'🏢 Arquitectura Cliente-Servidor',
+    desc:'Un servidor potente centraliza los recursos y los clientes los solicitan. Es el modelo de la escuela, de Gmail y de Netflix.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(200,90,90,220)}${line(200,90,200,235)}${line(200,90,310,220)}
+      ${hubSVG(200,75,'SERVIDOR','#2BFFB2')}
+      <text x="200" y="118" text-anchor="middle" font-size="10" fill="#A9B6E8" font-family="Outfit">🗄️ datos · usuarios · permisos · backups (copias de seguridad)</text>
+      ${nodeSVG(90,235,'C1','Cliente 1: SOLICITA recursos al servidor')}
+      ${nodeSVG(200,250,'C2','Cliente 2: no guarda la información central')}
+      ${nodeSVG(310,235,'C3','Cliente 3: el servidor valida sus permisos')}
+      <text x="150" y="165" font-size="9" fill="#22E4FF" font-family="Outfit">petición →</text>
+      <text x="235" y="165" font-size="9" fill="#2BFFB2" font-family="Outfit">← respuesta</text>
+    </svg>`,
+    pros:['Administración y seguridad centralizadas.','Backups (copias de seguridad) y permisos controlados por el servidor.','Fácil de auditar quién hace qué.'],
+    cons:['El servidor es un punto único de falla.','Requiere hardware (equipamiento) potente y un administrador.','Más costosa de implementar.']
+  },
+  p2p:{
+    title:'👥 Arquitectura P2P (Peer to Peer — Par a Par)',
+    desc:'No hay servidor central: todas las computadoras son iguales y comparten recursos entre sí directamente.',
+    svg:`<svg viewBox="0 0 400 300" class="w-full">
+      ${line(120,90,280,90)}${line(120,90,80,210)}${line(280,90,320,210)}
+      ${line(80,210,200,250)}${line(320,210,200,250)}${line(120,90,200,250)}${line(280,90,200,250)}
+      ${nodeSVG(120,90,'P1','Par 1: es cliente Y servidor a la vez')}
+      ${nodeSVG(280,90,'P2','Par 2: comparte sus propias carpetas')}
+      ${nodeSVG(80,210,'P3','Par 3: si uno se va, los demás siguen')}
+      ${nodeSVG(320,210,'P4','Par 4: cada nodo aporta recursos')}
+      ${nodeSVG(200,250,'P5','Par 5: modelo descentralizado')}
+    </svg>`,
+    pros:['Barata y fácil de armar sin servidor.','Cada nodo nuevo suma recursos a la red.','Sin punto único de falla central.'],
+    cons:['Seguridad y permisos dispersos (difíciles de controlar).','Sin backups (copias de seguridad) centralizados.','El rendimiento depende de cada equipo.']
+  }
+};
+
+function renderDiagram(data){
+  document.getElementById('diagramTitle').textContent = data.title;
+  document.getElementById('diagramDesc').textContent  = data.desc;
+  document.getElementById('diagramStage').innerHTML   = data.svg;
+  document.getElementById('diagPros').innerHTML = data.pros.map(p=>`<li>${p}</li>`).join('');
+  document.getElementById('diagCons').innerHTML = data.cons.map(c=>`<li>${c}</li>`).join('');
+}
+function showTopo(k){
+  renderDiagram(TOPOS[k]);
+  document.querySelectorAll('.topo-btn').forEach(b=>{ b.classList.toggle('ring-2', b.dataset.topo===k); b.classList.toggle('ring-cyan', b.dataset.topo===k); });
+  document.querySelectorAll('.arq-btn').forEach(b=>b.classList.remove('ring-2','ring-pink'));
+  awardInteraction('diagram-'+k, 3, `Exploró el diagrama: Topología ${k}`);
+}
+function showArq(k){
+  renderDiagram(ARQS[k]);
+  document.querySelectorAll('.arq-btn').forEach(b=>{ b.classList.toggle('ring-2', b.dataset.arq===k); b.classList.toggle('ring-pink', b.dataset.arq===k); });
+  document.querySelectorAll('.topo-btn').forEach(b=>b.classList.remove('ring-2','ring-cyan'));
+  awardInteraction('diagram-'+k, 3, `Exploró el diagrama: Arquitectura ${k==='cs'?'Cliente-Servidor':'P2P (Peer to Peer — Par a Par)'}`);
+}
+function nodeClick(tip){
+  const el = document.getElementById('nodeInfo');
+  el.innerHTML = '🔍 <strong class="text-cyan">Nodo inspeccionado:</strong> ' + tip;
+  el.classList.remove('italic','text-slate-500');
+}
+
+function buildTopoPrintSummary(){
+  const all = [...Object.values(TOPOS), ...Object.values(ARQS)];
+  document.getElementById('topoPrintSummary').innerHTML =
+    '<h3 style="font-weight:800;font-size:14pt;margin-bottom:3mm;">Esquemas imprimibles · Topologías y Arquitecturas</h3>' +
+    all.map(d=>`
+      <div style="margin-bottom:6mm;break-inside:avoid;page-break-inside:avoid;border:1px solid #999;padding:3mm;border-radius:3mm;">
+        <h4 style="font-weight:800;font-size:11pt;margin:0 0 1mm;">${d.title}</h4>
+        <p style="font-size:9pt;margin:0 0 2mm;">${d.desc}</p>
+        <div style="max-width:110mm;margin:0 auto 2mm;">${d.svg}</div>
+        <p style="font-size:9pt;margin:1mm 0;"><b>Ventajas:</b> ${d.pros.join(' · ')}</p>
+        <p style="font-size:9pt;margin:1mm 0;"><b>Desventajas:</b> ${d.cons.join(' · ')}</p>
+      </div>`).join('');
+}
+
+/* ---------- 7) ANCHO DE BANDA ---------- */
+function updatePipe(v){
+  v = +v;
+  const real = Math.round(v*0.85);
+  document.getElementById('bwTheo').textContent = v + ' Mbps (megabits por segundo)';
+  document.getElementById('bwReal').textContent = real + ' Mbps (megabits por segundo)';
+  const box = document.getElementById('pipeBox');
+  box.querySelectorAll('.bw-dot').forEach(d=>d.remove());
+  const count = Math.round(v/6);
+  for(let i=0;i<count;i++){
+    const d = document.createElement('div');
+    d.className = 'bw-dot';
+    const size = 8 + Math.random()*6;
+    d.style.width = size+'px'; d.style.height = size+'px';
+    d.style.top = (10 + Math.random()*70)+'%';
+    d.style.background = ['#22E4FF','#2BFFB2','#7C5CFC','#FF5CD7','#FFC53D'][i%5];
+    d.style.animationDuration = (3.2 - v/45) + 's';
+    d.style.animationDelay = (-Math.random()*3) + 's';
+    box.appendChild(d);
+  }
+}
+
+function calcDownload(){
+  const sizeMB = Math.max(0.1, +document.getElementById('calcSize').value || 0);
+  const bwMbps = Math.max(1,   +document.getElementById('calcBw').value   || 0);
+  const eff    = (+document.getElementById('calcEff').value)/100;
+  const seconds = (sizeMB*8)/(bwMbps*eff);
+  const min = Math.floor(seconds/60), seg = Math.round(seconds%60);
+  const tiempoTxt = seconds < 60 ? `${seconds.toFixed(1)} segundos`
+                  : seconds < 3600 ? `${min} min ${seg} s`
+                  : `${Math.floor(seconds/3600)} h ${min} min`;
+  document.getElementById('calcTime').textContent = '⏱️ ' + tiempoTxt;
+  document.getElementById('calcDetail').innerHTML =
+    `Un archivo de <strong class="text-cyan">${sizeMB} MB (megabytes)</strong> (${(sizeMB*8).toLocaleString('es-AR')} megabits) con
+     <strong class="text-neon">${bwMbps} Mbps (megabits por segundo)</strong> al <strong class="text-amber2">${Math.round(eff*100)}%</strong> de eficiencia
+     → velocidad efectiva ≈ <strong>${(bwMbps*eff/8).toFixed(2)} MB/s (megabytes por segundo)</strong>.`;
+  const songs = (sizeMB/5).toFixed(0);
+  document.getElementById('calcFun').textContent = `🎵 Equivale a descargar unas ${songs} canciones de 5 MB (megabytes) en ${tiempoTxt.toLowerCase()}.`;
+  document.getElementById('calcResult').classList.remove('hidden');
+  awardInteraction('calc-ancho', 5, 'Usó la calculadora de tiempo de descarga');
+}
+
+function flipCard(el, name){
+  el.classList.toggle('flipped');
+  if(el.classList.contains('flipped')) awardInteraction('flip-'+name, 2, `Descubrió la ficha de conexión: ${name}`);
+}
+
+/* ---------- 8) COMUNICACIÓN · Mini-juego ---------- */
+const CLASS_ITEMS = [
+  { t:'Videollamada grupal por Google Meet en vivo',             ok:'S' },
+  { t:'Correo electrónico (e-mail) a un profesor',               ok:'A' },
+  { t:'Chat (charla) de voz en una partida online en tiempo real', ok:'S' },
+  { t:'Publicar en el foro del aula y responder mañana',         ok:'A' },
+  { t:'Llamada telefónica por WhatsApp',                         ok:'S' },
+  { t:'Dejar un mensaje de voz para que lo escuchen después',    ok:'A' },
+  { t:'Clase por streaming (transmisión en continuo) con preguntas en vivo', ok:'S' },
+  { t:'Editar entre todos un documento en la nube (cloud — computación en la nube), cada uno a su hora', ok:'A' }
+];
+let classScore = 0, classAnswered = 0;
+
+function buildClassGame(){
+  const wrap = document.getElementById('classGame');
+  wrap.innerHTML = ''; classScore = 0; classAnswered = 0;
+  document.getElementById('classScore').classList.add('hidden');
+  CLASS_ITEMS.forEach((item,idx)=>{
+    const row = document.createElement('div');
+    row.className = 'flex flex-col sm:flex-row sm:items-center gap-2 rounded-xl bg-navy border border-violet/25 p-3';
+    row.innerHTML = `
+      <span class="flex-1 text-sm text-slate-200"><strong class="text-cyan mr-1">${idx+1}.</strong>${item.t}</span>
+      <span class="flex gap-2">
+        <button data-i="${idx}" data-v="S" class="cls-btn text-xs font-extrabold px-4 py-2 rounded-xl bg-cyan/15 border border-cyan/50 text-cyan hover:bg-cyan/30 transition">⚡ Sincrónica</button>
+        <button data-i="${idx}" data-v="A" class="cls-btn text-xs font-extrabold px-4 py-2 rounded-xl bg-pink/15 border border-pink/50 text-pink hover:bg-pink/30 transition">🕐 Asincrónica</button>
+      </span>
+      <span class="cls-fb text-xs font-bold w-28 text-center hidden sm:block"></span>`;
+    row.querySelectorAll('.cls-btn').forEach(b=> b.onclick = ()=> answerClass(b, item, row));
+    wrap.appendChild(row);
+  });
+}
+function answerClass(btn, item, row){
+  if(row.dataset.done) return;
+  row.dataset.done = '1';
+  const correct = btn.dataset.v === item.ok;
+  if(correct){ classScore++; addPoints(5, 'Mini-juego', 'Acierto en el clasificador Sincrónica/Asincrónica'); }
+  classAnswered++;
+  row.querySelectorAll('.cls-btn').forEach(b=>{
+    b.disabled = true;
+    b.classList.toggle('opacity-30', b.dataset.v !== item.ok);
+    if(b.dataset.v === item.ok) b.classList.add('ring-2','ring-neon');
+  });
+  const fb = row.querySelector('.cls-fb');
+  fb.classList.remove('hidden');
+  fb.textContent = correct ? '✅ ¡Correcto!' : '❌ Era ' + (item.ok==='S'?'Sincrónica':'Asincrónica');
+  fb.className = 'cls-fb text-xs font-bold w-28 text-center hidden sm:block ' + (correct?'text-neon':'text-pink');
+  if(classAnswered === CLASS_ITEMS.length){
+    const s = document.getElementById('classScore');
+    s.classList.remove('hidden');
+    s.innerHTML = `Resultado: <span class="${classScore>=6?'text-neon':'text-amber2'}">${classScore}/${CLASS_ITEMS.length}</span> ${classScore>=6?'🎉 ¡Excelente dominio del tema!':'💪 Repasá el cuadro comparativo e intentá de nuevo.'}`;
+    const prev = report.clasificador;
+    if(!prev || classScore > prev.score){
+      report.clasificador = { score:classScore, total:CLASS_ITEMS.length, fecha:new Date().toLocaleString('es-AR') };
+      saveReport();
+    }
+  }
+}
+function resetClassGame(){ buildClassGame(); }
+
+/* ============================================================
+   9) GLOSARIO · Ahora en MODAL desde la barra superior
+   ============================================================ */
+const GLOSARIO = [
+  { t:'NTiCx', d:'(Nuevas Tecnologías de la Información y de la Conectividad). Materia escolar que estudia las redes, los medios globales de comunicación y la conectividad.' },
+  { t:'TIC', d:'(Tecnologías de la Información y la Comunicación). Conjunto de herramientas y saberes vinculados a la información y la comunicación.' },
+  { t:'Red informática', d:'Conjunto de dispositivos (computadoras, celulares, servidores) interconectados para compartir información y recursos.' },
+  { t:'LAN', d:'(Local Area Network — Red de Área Local). Red de alcance pequeño: un aula, una casa o un edificio.' },
+  { t:'MAN', d:'(Metropolitan Area Network — Red de Área Metropolitana). Red que abarca una ciudad o campus grande.' },
+  { t:'WAN', d:'(Wide Area Network — Red de Área Amplia). Red de gran alcance geográfico. Internet es la WAN (Red de Área Amplia) más grande del mundo.' },
+  { t:'Intranet', d:'Red privada de una organización que usa tecnologías de Internet. Acceso exclusivo para miembros internos.' },
+  { t:'Extranet', d:'Extensión controlada de una Intranet que permite acceso seguro a socios externos autorizados (proveedores, clientes).' },
+  { t:'Internet', d:'Red pública y mundial de redes interconectadas mediante TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet).' },
+  { t:'Protocolo', d:'Conjunto de reglas y formatos acordados para que dos dispositivos puedan comunicarse y entenderse.' },
+  { t:'TCP/IP', d:'(Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet). Suite de protocolos que da vida a Internet: empaqueta, direcciona, transporta y verifica los datos.' },
+  { t:'IP', d:'(Internet Protocol — Protocolo de Internet). Protocolo que etiqueta cada paquete con direcciones de origen y destino para enrutarlo por la red.' },
+  { t:'Dirección IP', d:'(Dirección de Internet Protocol — Protocolo de Internet). Identificador lógico de un dispositivo en la red. Ejemplo: 192.168.0.15. IPv4 (Internet Protocol version 4 — versión 4) e IPv6 (versión 6).' },
+  { t:'MAC', d:'(Media Access Control — Control de Acceso al Medio). Dirección física y única grabada en la placa de red de cada dispositivo. No cambia.' },
+  { t:'HTTP', d:'(HyperText Transfer Protocol — Protocolo de Transferencia de Hipertexto). Protocolo de la capa de aplicación con el que funcionan las páginas web.' },
+  { t:'HTTPS', d:'(HyperText Transfer Protocol Secure — Protocolo de Transferencia de Hipertexto Seguro). Versión cifrada y segura de HTTP (Protocolo de Transferencia de Hipertexto).' },
+  { t:'DNS', d:'(Domain Name System — Sistema de Nombres de Dominio). "Guía telefónica" de Internet: traduce nombres (ej: educ.ar) a direcciones IP (Internet Protocol — Protocolo de Internet).' },
+  { t:'SMTP', d:'(Simple Mail Transfer Protocol — Protocolo Simple de Transferencia de Correo). Protocolo usado para enviar correo electrónico.' },
+  { t:'FTP', d:'(File Transfer Protocol — Protocolo de Transferencia de Archivos). Protocolo para subir y bajar archivos entre equipos.' },
+  { t:'UDP', d:'(User Datagram Protocol — Protocolo de Datagrama de Usuario). Protocolo de transporte rápido pero sin confirmación de entrega; usado en videollamadas y juegos online.' },
+  { t:'ACK', d:'(Acknowledgement — Acuse de Recibo). Confirmación que envía el receptor a TCP (Transmission Control Protocol — Protocolo de Control de Transmisión) para avisar que un paquete llegó bien.' },
+  { t:'Paquete', d:'Fragmento numerado de un mensaje, con dirección IP (Internet Protocol — Protocolo de Internet) de origen y destino, que viaja de forma independiente por la red.' },
+  { t:'Router', d:'(Enrutador). Dispositivo que lee las direcciones IP (Internet Protocol — Protocolo de Internet) y decide por dónde reenviar cada paquete.' },
+  { t:'Switch', d:'(Conmutador). Dispositivo central de una LAN (Local Area Network — Red de Área Local) que conecta equipos y dirige los datos solo al destinatario correcto.' },
+  { t:'Hub', d:'(Concentrador). Dispositivo antiguo que repite los datos hacia TODOS los puertos; fue reemplazado por el switch (conmutador).' },
+  { t:'Topología', d:'Forma o "plano" en que se conectan físicamente los nodos de una red: estrella, bus, anillo, malla o árbol.' },
+  { t:'Cliente-Servidor', d:'Arquitectura donde un servidor centraliza recursos (datos, usuarios, permisos) y los equipos clientes los solicitan.' },
+  { t:'P2P', d:'(Peer to Peer — Par a Par). Arquitectura descentralizada donde todos los nodos son iguales: a la vez clientes y servidores.' },
+  { t:'Wi-Fi', d:'(Wireless Fidelity — Fidelidad Inalámbrica). Tecnología de red inalámbrica por ondas de radio, basada en los estándares IEEE (Institute of Electrical and Electronics Engineers — Instituto de Ingenieros Eléctricos y Electrónicos) 802.11.' },
+  { t:'WPA2 / WPA3', d:'(Wi-Fi Protected Access 2 / 3 — Acceso Protegido a Wi-Fi, versiones 2 y 3). Sistemas de contraseña y cifrado que protegen una red inalámbrica.' },
+  { t:'Ethernet', d:'Estándar de red cableada por par trenzado con conectores RJ-45 (Registered Jack 45 — Conector Registrado 45); el más usado en LAN (Local Area Network — Red de Área Local).' },
+  { t:'RJ-45', d:'(Registered Jack 45 — Conector Registrado 45). Conector plástico de 8 pines que se enchufa en el cable de red Ethernet.' },
+  { t:'Fibra óptica', d:'Medio guiado que transmite datos como pulsos de luz por hilos de vidrio o plástico. Máxima velocidad e inmunidad a interferencias.' },
+  { t:'4G / 5G', d:'(Fourth Generation / Fifth Generation — Cuarta / Quinta Generación). Generaciones de telefonía móvil celular; el 5G (Quinta Generación) ofrece latencias (tiempos de respuesta) mínimas.' },
+  { t:'VPN', d:'(Virtual Private Network — Red Privada Virtual). Túnel cifrado que permite acceder de forma segura a una red privada desde Internet.' },
+  { t:'WWW', d:'(World Wide Web — Red Mundial). Servicio de Internet basado en páginas web enlazadas mediante hipervínculos. No es sinónimo de Internet.' },
+  { t:'URL', d:'(Uniform Resource Locator — Localizador Uniforme de Recursos). Dirección única de un recurso en la web. Ejemplo: https://www.educar.gob.ar' },
+  { t:'IoT', d:'(Internet of Things — Internet de las Cosas). Red de objetos cotidianos conectados: heladeras, relojes, sensores, cámaras.' },
+  { t:'bit', d:'(binary digit — dígito binario). Unidad mínima de información: un 0 o un 1.' },
+  { t:'Byte', d:'(octeto). Conjunto de 8 bits (dígitos binarios); equivale aproximadamente a un carácter. Base de MB (megabytes) y GB (gigabytes).' },
+  { t:'Mbps', d:'(megabits por segundo). Unidad del ancho de banda: millones de bits (dígitos binarios) por segundo.' },
+  { t:'MB/s', d:'(megabytes por segundo). Velocidad de descarga real de archivos. 1 MB/s (megabyte por segundo) = 8 Mbps (megabits por segundo).' },
+  { t:'Ancho de banda', d:'Capacidad máxima teórica de transmisión de un canal de red, medida en Mbps (megabits por segundo).' },
+  { t:'Tasa de transferencia', d:'Cantidad de datos que realmente se transmiten por unidad de tiempo; siempre es menor que el ancho de banda teórico.' },
+  { t:'Latencia', d:'Tiempo que tarda un dato en ir desde el origen hasta el destino (se mide en milisegundos, ms). Clave en videollamadas y juegos online.' },
+  { t:'Firewall', d:'(cortafuegos). Sistema de seguridad que filtra el tráfico entre una red privada e Internet, bloqueando accesos no autorizados.' },
+  { t:'Servidor', d:'Computadora potente que centraliza y provee recursos (archivos, impresoras, sitios web) a los demás equipos de la red.' },
+  { t:'Streaming', d:'(transmisión en continuo). Reproducción de audio o video mientras se descarga, sin bajar el archivo completo.' },
+  { t:'Nube', d:'(Cloud Computing — Computación en la Nube). Guardar y procesar datos en servidores remotos accesibles por Internet, en lugar del equipo local.' },
+  { t:'Comunicación sincrónica', d:'Intercambio en tiempo real: los participantes coinciden en el mismo momento (videollamada, chat en vivo).' },
+  { t:'Comunicación asincrónica', d:'Intercambio diferido: cada participante lee y responde en su propio momento (correo electrónico, foros).' },
+  { t:'PDF', d:'(Portable Document Format — Formato de Documento Portátil). Formato de archivo imprimible que conserva el diseño en cualquier dispositivo.' },
+  { t:'Datacenter', d:'(centro de datos). Edificio que alberga miles de servidores que dan vida a los servicios de Internet.' },
+  { t:'Backup', d:'(copia de seguridad). Resguardo duplicado de la información para poder restaurarla ante pérdidas o fallas.' }
+];
+
+function openGlossary(){
+  renderGlosario(document.getElementById('glosarioSearch').value);
+  const m = document.getElementById('glossaryModal');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+function closeGlossary(){
+  const m = document.getElementById('glossaryModal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+function renderGlosario(filter=''){
+  const f = (filter||'').trim().toLowerCase();
+  const terms = GLOSARIO.filter(g=> !f || g.t.toLowerCase().includes(f) || g.d.toLowerCase().includes(f));
+  document.getElementById('glosarioGrid').innerHTML = terms.map(g=>`
+    <div class="rounded-2xl bg-navy border border-violet/25 p-4 hover:border-cyan/50 transition">
+      <h4 class="font-display font-extrabold text-cyan">${escapeHTML(g.t)}</h4>
+      <p class="text-xs text-slate-400 mt-1 leading-relaxed">${g.d}</p>
+    </div>`).join('') ||
+    '<p class="text-slate-400 text-sm col-span-full text-center py-6">🔎 No se encontraron términos con esa búsqueda.</p>';
+  document.getElementById('glosarioCount').textContent = `${terms.length} de ${GLOSARIO.length} términos`;
+}
+
+/* Hoja A4 con el glosario completo */
+function printGlossarySheet(){
+  const rows = GLOSARIO.map(g=>`
+    <div class="qa-item" style="margin-bottom:2.5mm; padding:1.5mm 2.5mm; border:1px solid #ccc; border-radius:2mm;">
+      <p style="font-size:9.5pt; margin:0;"><b>${escapeHTML(g.t)}:</b> ${g.d}</p>
+    </div>`).join('');
+  openCustomSheet(`
+    <div style="border-bottom:3px solid #000; padding-bottom:2mm; margin-bottom:4mm;">
+      <h1 style="font-size:16pt; margin:0; font-weight:800;">NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) · 📖 Glosario</h1>
+      <p style="font-size:9.5pt; margin:1mm 0 0;">Siglas y términos técnicos con su significado · 4.º año · Escuela Secundaria · Argentina</p>
+    </div>
+    ${rows}
+    <p style="font-size:7.5pt; color:#555; margin-top:6mm;">Hoja generada automáticamente por el Aula Interactiva NTiCx · ${new Date().toLocaleString('es-AR')}</p>`);
+}
+
+/* ============================================================
+   10) DESAFÍOS POR MÓDULO (sin Inicio) · 3 preguntas cada uno
+   ============================================================ */
+const CHALLENGES = {
+  organizacion:{ name:'Organización de Redes', qs:[
+    { q:'¿Quién puede acceder a una Intranet?', o:['Cualquier persona del mundo','Solo los miembros autorizados de la organización','Únicamente los proveedores','Nadie: es secreta y no se usa'], a:1 },
+    { q:'Una empresa comparte su sistema de pedidos SOLO con sus proveedores autorizados, usando una VPN (Virtual Private Network — Red Privada Virtual). Está usando una…', o:['Intranet','Extranet','Internet pública','Red en bus'], a:1 },
+    { q:'La WWW (World Wide Web — Red Mundial) es…', o:['Un sinónimo exacto de Internet','Uno de los servicios de Internet, basado en páginas web','Una topología de red','Un tipo de cable'], a:1 }
+  ]},
+  tcpip:{ name:'Protocolo TCP/IP (Transmission Control Protocol / Internet Protocol)', qs:[
+    { q:'¿Qué información contiene principalmente la "etiqueta" IP (Internet Protocol — Protocolo de Internet) de un paquete?', o:['El precio del mensaje','Las direcciones IP (Internet Protocol — Protocolo de Internet) de origen y destino','El nombre de usuario del router (enrutador)','El tamaño de la pantalla'], a:1 },
+    { q:'Si un paquete TCP (Transmission Control Protocol — Protocolo de Control de Transmisión) no llega y nunca se recibe su ACK (Acknowledgement — Acuse de Recibo)…', o:['Se da por perdido para siempre','TCP lo retransmite automáticamente','Se apaga el router (enrutador)','El mensaje se borra del disco'], a:1 },
+    { q:'HTTP (HyperText Transfer Protocol — Protocolo de Transferencia de Hipertexto), SMTP (Simple Mail Transfer Protocol — Protocolo Simple de Transferencia de Correo) y DNS (Domain Name System — Sistema de Nombres de Dominio) son protocolos de la capa…', o:['De acceso a la red','De transporte','De Internet (Protocolo de Internet)','De aplicación'], a:3 }
+  ]},
+  topologias:{ name:'Topologías y Arquitecturas', qs:[
+    { q:'¿En qué topología, si falla el dispositivo central (switch — conmutador), cae TODA la red?', o:['Malla','Bus','Estrella','Árbol (solo las hojas)'], a:2 },
+    { q:'La principal ventaja de la topología en malla es…', o:['Usar pocos cables','La redundancia: hay caminos alternativos ante fallas','Que es la más barata','Que no necesita nodos'], a:1 },
+    { q:'En la arquitectura P2P (Peer to Peer — Par a Par)…', o:['Un servidor central controla todo','Todos los nodos son iguales y comparten recursos entre sí','Solo existe un cliente','Los datos no viajan por la red'], a:1 }
+  ]},
+  conexion:{ name:'Formas de Conexión', qs:[
+    { q:'El conector RJ-45 (Registered Jack 45 — Conector Registrado 45) y el cable de par trenzado corresponden a…', o:['Wi-Fi (Wireless Fidelity — Fidelidad Inalámbrica)','Fibra óptica','Ethernet','Satélite'], a:2 },
+    { q:'¿Qué medio transmite pulsos de luz y es inmune a interferencias electromagnéticas?', o:['Fibra óptica','Par trenzado','Wi-Fi (Fidelidad Inalámbrica)','Cable coaxial'], a:0 },
+    { q:'Que tres PC del aula usen la misma impresora de red es un ejemplo de…', o:['Topología en anillo','La red como centro de recursos compartidos','Un protocolo de aplicación','Un error de configuración'], a:1 }
+  ]},
+  ancho:{ name:'Ancho de Banda y Transferencia', qs:[
+    { q:'¿Cuántos bits (binary digits — dígitos binarios) forman 1 Byte (octeto)?', o:['2','4','8','16'], a:2 },
+    { q:'El ancho de banda de una conexión se mide habitualmente en…', o:['MB/s (megabytes por segundo)','Mbps (megabits por segundo)','GB (gigabytes) de almacenamiento','Hertz (ciclos por segundo) del monitor'], a:1 },
+    { q:'Descargás un archivo de 64 MB (megabytes) con 64 Mbps (megabits por segundo) efectivos y 100% de eficiencia. ¿Cuánto tarda? (Pista: 1 Byte = 8 bits)', o:['1 segundo','8 segundos','64 segundos','1 minuto'], a:1 }
+  ]},
+  comunicacion:{ name:'Tipos de Comunicación', qs:[
+    { q:'Un foro donde cada uno responde cuando puede es un ejemplo de comunicación…', o:['Sincrónica','Asincrónica','Telefónica','Satelital'], a:1 },
+    { q:'Una clase en vivo por videollamada con preguntas al instante es comunicación…', o:['Asincrónica','Sincrónica','Grabada unidireccional','Una Intranet'], a:1 },
+    { q:'La diferencia esencial entre comunicación sincrónica y asincrónica es…', o:['El tipo de cable usado','Si los participantes coinciden o no en el mismo momento','La cantidad de gigabytes (GB) contratados','El idioma del mensaje'], a:1 }
+  ]}
+};
+
+const chState = {};
+
+function initChallenges(){
+  document.querySelectorAll('.challenge-block').forEach(block=>{
+    const mod = block.dataset.ch;
+    if(!CHALLENGES[mod]) return;               // (Inicio ya no tiene desafío)
+    chState[mod] = { mod, block, idx:0, score:0, answers:[] };
+    block.innerHTML = `
+      <h3 class="font-display font-extrabold text-xl text-white">🎯 Desafío del módulo · ${CHALLENGES[mod].name}</h3>
+      <p class="text-sm text-slate-400 mt-1 mb-4">3 preguntas con corrección instantánea (+10 pts por acierto en Mi Reporte). Si acertás 2 o más, el módulo se marca como completado 🏅.
+      Al terminar podés <strong class="text-cyan">imprimir el resultado en A4</strong> con tu Nombre, Escuela y Curso.</p>
+      <div class="ch-body"></div>`;
+    chRenderStart(mod);
+  });
+}
+
+function chRenderStart(mod){
+  const body = chState[mod].block.querySelector('.ch-body');
+  const prev = report.desafios && report.desafios[mod];
+  body.innerHTML = `
+    ${prev?`<p class="text-xs text-slate-400 mb-3">Último intento: <strong class="text-neon">${prev.score}/${prev.total}</strong> (${prev.fecha})</p>`:''}
+    <button onclick="chStart('${mod}')" class="btn-neon bg-gradient-to-r from-violet to-pink text-white font-extrabold px-6 py-3 rounded-2xl">🚀 Iniciar desafío (${CHALLENGES[mod].qs.length} preguntas)</button>`;
+}
+
+function chStart(mod){
+  const st = chState[mod];
+  st.idx = 0; st.score = 0; st.answers = [];
+  chQuestion(mod);
+}
+
+function chQuestion(mod){
+  const st = chState[mod], c = CHALLENGES[mod], q = c.qs[st.idx];
+  const body = st.block.querySelector('.ch-body');
+  body.innerHTML = `
+    <div class="flex justify-between text-xs font-bold mb-2">
+      <span class="text-slate-400 uppercase tracking-widest">Pregunta ${st.idx+1} / ${c.qs.length}</span>
+      <span class="text-neon">Aciertos: ${st.score}</span>
+    </div>
+    <div class="h-1.5 rounded-full bg-navy overflow-hidden mb-4">
+      <div class="h-full bg-gradient-to-r from-violet to-pink transition-all duration-500" style="width:${st.idx/c.qs.length*100}%"></div>
+    </div>
+    <h4 class="font-display font-bold text-lg text-white mb-4">${q.q}</h4>
+    <div class="space-y-2 ch-opts"></div>
+    <div class="ch-fb mt-3 text-sm font-bold hidden"></div>`;
+  const opts = body.querySelector('.ch-opts');
+  q.o.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className = 'quiz-opt w-full text-left bg-navy border-2 border-violet/30 rounded-xl px-4 py-3 text-sm font-semibold text-slate-200';
+    b.innerHTML = `<span class="text-cyan font-black mr-2">${'ABCD'[i]}</span>${o}`;
+    b.onclick = ()=> chPick(mod, i, b);
+    opts.appendChild(b);
+  });
+}
+
+function chPick(mod, i, btn){
+  const st = chState[mod], q = CHALLENGES[mod].qs[st.idx];
+  if(btn.disabled) return;
+  const correct = i === q.a;
+  if(correct){ st.score++; addPoints(10, 'Desafío de módulo', `Respuesta correcta en el desafío "${CHALLENGES[mod].name}"`); }
+  st.answers.push({ mod: CHALLENGES[mod].name, q: q.q, chosen: q.o[i], correct, right: q.o[q.a] });
+
+  btn.closest('.ch-opts').querySelectorAll('button').forEach((b,idx)=>{
+    b.disabled = true;
+    if(idx===q.a) b.classList.add('quiz-ok');
+    else if(idx===i) b.classList.add('quiz-bad');
+  });
+
+  const body = btn.closest('.ch-body');
+  const fb = body.querySelector('.ch-fb');
+  fb.classList.remove('hidden');
+  fb.innerHTML = correct
+    ? '<span class="text-neon">✅ ¡Correcto! +10 puntos</span>'
+    : `<span class="text-pink">❌ Incorrecto.</span> <span class="text-slate-400">La respuesta correcta era: <strong class="text-cyan">${q.o[q.a]}</strong></span>`;
+
+  const nx = document.createElement('button');
+  nx.className = 'btn-neon mt-4 bg-gradient-to-r from-cyan to-neon text-navy font-extrabold px-6 py-2.5 rounded-2xl animate-popIn';
+  nx.textContent = (st.idx === CHALLENGES[mod].qs.length-1) ? '🏁 Ver resultado' : 'Siguiente ▶';
+  nx.onclick = ()=>{ st.idx++; (st.idx < CHALLENGES[mod].qs.length) ? chQuestion(mod) : chEnd(mod); };
+  body.appendChild(nx);
+}
+
+function chEnd(mod){
+  const st = chState[mod], total = CHALLENGES[mod].qs.length;
+  /* Se guardan también las RESPUESTAS para el detalle impreso del reporte */
+  report.desafios = report.desafios || {};
+  report.desafios[mod] = { score:st.score, total, fecha:new Date().toLocaleString('es-AR'), answers:st.answers };
+  saveReport();
+
+  const body = st.block.querySelector('.ch-body');
+  body.innerHTML = `
+    <div class="text-center py-2 mb-4">
+      <div class="text-5xl mb-2 animate-popIn">${st.score===total?'🏆':st.score>=2?'🎉':'💪'}</div>
+      <div class="font-display font-extrabold text-4xl ${st.score>=2?'text-neon':'text-amber2'}">${st.score} / ${total}</div>
+      <p class="text-sm text-slate-400 mt-1">${st.score===total?'¡Perfecto! Dominás este módulo.':st.score>=2?'¡Muy bien! Módulo superado.':'Seguí repasando la teoría y volvé a intentarlo.'}</p>
+      ${student?`<p class="text-xs text-pink mt-1">📇 Registrado en Mi Reporte de ${escapeHTML(student.nombre.split(' ')[0])} (incluye el detalle de las respuestas)</p>`:''}
+    </div>
+    <div class="rounded-2xl border border-amber2/50 bg-amber2/5 p-4">
+      <h4 class="font-bold text-amber2 text-sm mb-3">🖨️ Imprimir resultado del desafío en hoja A4</h4>
+      <div class="grid sm:grid-cols-3 gap-3">
+        <input id="chf-n-${mod}" class="ch-input" placeholder="Nombre y Apellido *" value="${student?escapeAttr(student.nombre):''}">
+        <input id="chf-e-${mod}" class="ch-input" placeholder="Escuela *" value="${student?escapeAttr(student.escuela):''}">
+        <input id="chf-c-${mod}" class="ch-input" placeholder="Grado y División / Curso *" value="${student?escapeAttr(student.grado):''}">
+      </div>
+      <p id="chf-err-${mod}" class="hidden text-pink text-xs font-bold mt-2">⚠️ Completá Nombre, Escuela y Curso para poder imprimir.</p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button onclick="printChallenge('${mod}')" class="btn-neon bg-gradient-to-r from-amber2 to-pink text-navy font-extrabold px-5 py-2.5 rounded-xl text-sm">📄 Imprimir en A4</button>
+        <button onclick="chStart('${mod}')" class="btn-neon border border-violet/50 text-violet font-bold px-5 py-2.5 rounded-xl text-sm">🔄 Reintentar desafío</button>
+      </div>
+    </div>`;
+  if(st.score >= 2) completeModule(mod);
+}
+
+function printChallenge(mod){
+  const st = chState[mod];
+  const nombre  = document.getElementById(`chf-n-${mod}`).value.trim();
+  const escuela = document.getElementById(`chf-e-${mod}`).value.trim();
+  const curso   = document.getElementById(`chf-c-${mod}`).value.trim();
+  const err = document.getElementById(`chf-err-${mod}`);
+  if(!nombre || !escuela || !curso){ err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  openPrintSheet({
+    title:'Desafío de Módulo · Resultado',
+    subtitle:`Módulo: ${CHALLENGES[mod].name} — Trivia de ${CHALLENGES[mod].qs.length} preguntas`,
+    nombre, escuela, curso,
+    fecha:new Date().toLocaleDateString('es-AR'),
+    score:st.score, total:CHALLENGES[mod].qs.length, answers:st.answers
+  });
+}
+
+/* ============================================================
+   11) EVALUACIÓN FINAL · Trivia + PDF (jsPDF) + impresión A4
+   ============================================================ */
+const QUIZ = [
+  { m:'Inicio', q:'Internet puede definirse mejor como…', o:['Una red privada de una sola empresa','Una red global de redes interconectadas que usa TCP/IP (Transmission Control Protocol / Internet Protocol — Protocolo de Control de Transmisión / Protocolo de Internet)','Un programa para navegar páginas web','Una topología en forma de anillo'], a:1 },
+  { m:'Organización', q:'La red PRIVADA de una escuela, accesible solo para su personal, es…', o:['Internet','Extranet','Intranet','Red de malla'], a:2 },
+  { m:'Organización', q:'Una Extranet se caracteriza por…', o:['Ser pública y anónima','Permitir acceso controlado a socios externos autorizados (por ejemplo con VPN — Virtual Private Network, Red Privada Virtual)','No usar protocolos IP (Internet Protocol — Protocolo de Internet)','Funcionar sin contraseñas'], a:1 },
+  { m:'TCP/IP', q:'¿Qué protocolo numera los paquetes, los confirma con ACK (Acknowledgement — Acuse de Recibo) y reenvía los perdidos?', o:['UDP (User Datagram Protocol — Protocolo de Datagrama de Usuario)','IP (Internet Protocol — Protocolo de Internet)','HTTP (HyperText Transfer Protocol — Protocolo de Transferencia de Hipertexto)','TCP (Transmission Control Protocol — Protocolo de Control de Transmisión)'], a:3 },
+  { m:'TCP/IP', q:'La dirección IP (Internet Protocol — Protocolo de Internet) cumple la función de…', o:['Identificar de forma lógica a un dispositivo dentro de la red','Acelerar la placa de video','Encriptar el disco rígido','Reemplazar al router (enrutador)'], a:0 },
+  { m:'TCP/IP', q:'En el modelo TCP/IP (Protocolo de Control de Transmisión / Protocolo de Internet), ¿qué capa convierte los datos en señales eléctricas, luz u ondas?', o:['Aplicación','Transporte','Internet','Acceso a la red (nivel físico)'], a:3 },
+  { m:'Topologías', q:'Topología donde TODOS los nodos se conectan a un dispositivo central (switch — conmutador):', o:['Bus','Estrella','Anillo','Malla'], a:1 },
+  { m:'Topologías', q:'En la topología en anillo, los datos circulan…', o:['Todos a la vez en cualquier dirección','A través de un único cable troncal','En un solo sentido, de nodo en nodo, con un token (testigo)','Siempre por un servidor central'], a:2 },
+  { m:'Arquitecturas', q:'En una red Cliente-Servidor…', o:['Todas las PC (computadoras personales) cumplen roles idénticos sin servidor','Un servidor centraliza recursos y los clientes los solicitan','No existen permisos de usuario','Cada PC es un router (enrutador)'], a:1 },
+  { m:'Conexión', q:'¿Qué medio de transmisión envía los datos como pulsos de luz por hilos de vidrio?', o:['Par trenzado Ethernet','Wi-Fi (Wireless Fidelity — Fidelidad Inalámbrica)','Fibra óptica','Bluetooth'], a:2 },
+  { m:'Recursos', q:'Que varias PC de un aula usen la misma impresora es un ejemplo de…', o:['Red como centro de recursos compartidos','Topología en bus','Comunicación asincrónica','Protocolo UDP (User Datagram Protocol — Protocolo de Datagrama de Usuario)'], a:0 },
+  { m:'Ancho de banda', q:'La diferencia entre ancho de banda y tasa de transferencia real es…', o:['Son exactamente lo mismo','El ancho de banda es la capacidad máxima teórica y la transferencia es lo que realmente se logra','La transferencia siempre supera al ancho de banda','El ancho de banda se mide en MB (megabytes) y la transferencia en GB (gigabytes)'], a:1 },
+  { m:'Comunicación', q:'¿Cuál de estas es una comunicación SINCRÓNICA?', o:['Un correo electrónico (e-mail)','Un mensaje en un foro','Una videollamada en vivo','Un mensaje de voz grabado'], a:2 },
+  { m:'Comunicación', q:'La comunicación ASINCRÓNICA se caracteriza porque…', o:['Los participantes deben estar conectados al mismo tiempo','El mensaje queda disponible y cada uno responde en su propio momento','Solo funciona por fibra óptica','No deja ningún registro'], a:1 }
+];
+
+let qIdx = 0, qScore = 0, qAnswers = [];
+
+function startQuiz(){
+  qIdx = 0; qScore = 0; qAnswers = [];
+  document.getElementById('quizStart').classList.add('hidden');
+  document.getElementById('quizEnd').classList.add('hidden');
+  document.getElementById('quizPlay').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUIZ[qIdx];
+  document.getElementById('quizCounter').textContent = `Pregunta ${qIdx+1} de ${QUIZ.length} · Módulo: ${q.m}`;
+  document.getElementById('quizScoreLive').textContent = 'Puntaje: ' + qScore;
+  document.getElementById('quizBar').style.width = (qIdx/QUIZ.length*100)+'%';
+  document.getElementById('quizQuestion').textContent = q.q;
+  const box = document.getElementById('quizOptions');
+  box.innerHTML = '';
+  q.o.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'quiz-opt w-full text-left bg-navy border-2 border-violet/30 rounded-xl px-4 py-3 text-sm font-semibold text-slate-200';
+    b.innerHTML = `<span class="text-cyan font-black mr-2">${'ABCD'[i]}</span>${opt}`;
+    b.onclick = ()=> pickAnswer(i, b);
+    box.appendChild(b);
+  });
+  document.getElementById('quizFeedback').classList.add('hidden');
+  document.getElementById('quizNext').classList.add('hidden');
+}
+
+function pickAnswer(i, btn){
+  const q = QUIZ[qIdx];
+  const correct = i === q.a;
+  if(correct){ qScore++; addPoints(20, 'Evaluación Final', `Respuesta correcta (módulo ${q.m}) en la trivia final`); }
+  qAnswers.push({ q:q.q, chosen:q.o[i], correct, right:q.o[q.a], mod:q.m });
+  document.querySelectorAll('#quizOptions .quiz-opt').forEach((b,idx)=>{
+    b.disabled = true;
+    if(idx===q.a) b.classList.add('quiz-ok');
+    else if(idx===i) b.classList.add('quiz-bad');
+  });
+  const fb = document.getElementById('quizFeedback');
+  fb.classList.remove('hidden');
+  fb.innerHTML = correct
+    ? '<span class="text-neon">✅ ¡Correcto! +20 puntos en Mi Reporte</span>'
+    : `<span class="text-pink">❌ Incorrecto.</span> <span class="text-slate-400">La respuesta correcta era: <strong class="text-cyan">${q.o[q.a]}</strong></span>`;
+  fb.className = 'mt-4 text-sm font-bold animate-popIn';
+  document.getElementById('quizScoreLive').textContent = 'Puntaje: ' + qScore;
+  const nx = document.getElementById('quizNext');
+  nx.classList.remove('hidden');
+  nx.textContent = (qIdx === QUIZ.length-1) ? '🏁 Ver resultado final' : 'Siguiente ▶';
+}
+
+function nextQuestion(){ qIdx++; (qIdx < QUIZ.length) ? renderQuestion() : finishQuiz(); }
+
+function finishQuiz(){
+  document.getElementById('quizPlay').classList.add('hidden');
+  document.getElementById('quizEnd').classList.remove('hidden');
+  const pct = Math.round(qScore/QUIZ.length*100);
+  document.getElementById('endScore').textContent = `${qScore} / ${QUIZ.length}  ·  ${pct}%`;
+  const msg = document.getElementById('endMsg');
+  const emo = document.getElementById('endEmoji');
+  if(pct>=90){ emo.textContent='🏆'; msg.textContent='¡Impresionante! Dominás las redes como un/a verdadero/a administrador/a de sistemas.'; }
+  else if(pct>=60){ emo.textContent='🎉'; msg.textContent='¡Muy bien! Aprobaste el recorrido. Repasá los módulos donde dudaste para llegar al 100%.'; }
+  else { emo.textContent='💪'; msg.textContent='Buen intento. Volvé a explorar las pestañas y reintentá la trivia: ¡se aprende practicando!'; }
+  /* Guardar resultado CON detalle de respuestas para el reporte impreso */
+  report.final = { score:qScore, total:QUIZ.length, fecha:new Date().toLocaleString('es-AR'), answers:qAnswers };
+  saveReport();
+  document.getElementById('pdfFecha').valueAsDate = new Date();
+  if(student){
+    document.getElementById('pdfNombre').value  = student.nombre;
+    document.getElementById('pdfEscuela').value = student.escuela;
+    document.getElementById('pdfCurso').value   = student.grado;
+  }
+  completeModule('evaluacion');
+}
+
+function restartQuiz(){
+  document.getElementById('quizEnd').classList.add('hidden');
+  startQuiz();
+}
+
+/* ---------- PDF de la Evaluación Final (jsPDF) ---------- */
+function generatePDF(){
+  const fecha   = document.getElementById('pdfFecha').value;
+  const escuela = document.getElementById('pdfEscuela').value.trim();
+  const curso   = document.getElementById('pdfCurso').value.trim();
+  const nombre  = document.getElementById('pdfNombre').value.trim();
+  const err = document.getElementById('pdfError');
+  if(!fecha || !escuela || !curso || !nombre){ err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  const PW = 210, PH = 297, MX = 15;
+  let y = 0;
+
+  doc.setFillColor(11,16,38); doc.rect(0,0,PW,32,'F');
+  doc.setFillColor(124,92,252); doc.rect(0,32,PW,1.5,'F');
+  doc.setTextColor(34,228,255); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.text('NTiCx (Nuevas Tecnologías de la Información y de la Conectividad)', MX, 11);
+  doc.setFontSize(13);
+  doc.text('Evaluación Final · Resultado', MX, 20);
+  doc.setTextColor(220,225,245); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+  doc.text('Redes: organización, TCP/IP (Protocolo de Control de Transmisión / Protocolo de Internet), topologías, conexión,', MX, 26);
+  doc.text('ancho de banda y tipos de comunicación · 4.º año · Escuela Secundaria · Argentina', MX, 30.5);
+  y = 42;
+
+  doc.setTextColor(30,30,30); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('Datos del alumno/a', MX, y); y += 6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  const fdate = new Date(fecha+'T12:00:00').toLocaleDateString('es-AR');
+  doc.text(`Fecha: ${fdate}`, MX, y);
+  doc.text(`Curso: ${curso}`, MX+95, y); y += 6;
+  doc.text(`Escuela: ${escuela}`, MX, y); y += 6;
+  doc.text(`Nombre y Apellido: ${nombre}`, MX, y); y += 4;
+  doc.setDrawColor(160,160,160); doc.line(MX, y, PW-MX, y); y += 8;
+
+  const pct = Math.round(qScore/QUIZ.length*100);
+  const aprobado = pct >= 60;
+  doc.setFillColor(aprobado?230:255, aprobado?248:235, aprobado?235:240);
+  doc.roundedRect(MX, y, PW-2*MX, 22, 3, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(13);
+  doc.setTextColor(aprobado?20:150, aprobado?120:30, aprobado?70:90);
+  doc.text(`Puntaje final: ${qScore} de ${QUIZ.length} (${pct}%) — ${aprobado?'APROBADO':'NECESITA REPASO'}`, MX+5, y+9);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(90,90,90);
+  doc.text('Escala: 90-100% Excelente · 60-89% Aprobado · 0-59% A reforzar', MX+5, y+16);
+  y += 30;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(30,30,30);
+  doc.text('Detalle de respuestas', MX, y); y += 6;
+
+  qAnswers.forEach((ans,i)=>{
+    if(y > PH-40){
+      doc.setFontSize(8); doc.setTextColor(140,140,140);
+      doc.text(`NTiCx — Evaluación de ${nombre} — Página ${doc.getNumberOfPages()}`, MX, PH-8);
+      doc.addPage(); y = 18; doc.setTextColor(30,30,30);
+    }
+    doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.setTextColor(ans.correct?16:180, ans.correct?122:30, ans.correct?69:90);
+    doc.text(`${i+1}. [${ans.mod}] ${ans.correct?'CORRECTA ✔':'INCORRECTA ✘'}`, MX, y); y += 5;
+    doc.setFont('helvetica','normal'); doc.setTextColor(40,40,40);
+    doc.splitTextToSize(ans.q, PW-2*MX-4).forEach(l=>{ doc.text(l, MX+3, y); y += 4.6; });
+    doc.setFontSize(9); doc.setTextColor(60,60,60);
+    doc.splitTextToSize(`Elegida por el alumno: "${ans.chosen}"`, PW-2*MX-4).forEach(l=>{ doc.text(l, MX+3, y); y += 4.4; });
+    if(!ans.correct){
+      doc.setTextColor(16,122,69);
+      doc.splitTextToSize(`Respuesta correcta: "${ans.right}"`, PW-2*MX-4).forEach(l=>{ doc.text(l, MX+3, y); y += 4.4; });
+    }
+    y += 3;
+  });
+
+  if(y > PH-45){
+    doc.setFontSize(8); doc.setTextColor(140,140,140);
+    doc.text(`NTiCx — Evaluación de ${nombre} — Página ${doc.getNumberOfPages()}`, MX, PH-8);
+    doc.addPage(); y = 20;
+  }
+  y += 8;
+  doc.setDrawColor(120,120,120);
+  doc.line(MX, y+12, MX+70, y+12);
+  doc.line(MX+105, y+12, MX+175, y+12);
+  doc.setFontSize(8.5); doc.setTextColor(80,80,80); doc.setFont('helvetica','normal');
+  doc.text('Firma del alumno/a', MX+18, y+17);
+  doc.text('Firma y sello del docente', MX+120, y+17);
+  doc.setFontSize(7.5); doc.setTextColor(150,150,150);
+  doc.text(`Documento generado automáticamente por el Aula Interactiva NTiCx · ${new Date().toLocaleString('es-AR')}`, MX, PH-8);
+
+  doc.save(`NTiCx_Evaluacion_${nombre.replace(/\s+/g,'_')}_${curso.replace(/\s+/g,'')}.pdf`);
+}
+
+function printFinalQuiz(){
+  const fecha   = document.getElementById('pdfFecha').value;
+  const escuela = document.getElementById('pdfEscuela').value.trim();
+  const curso   = document.getElementById('pdfCurso').value.trim();
+  const nombre  = document.getElementById('pdfNombre').value.trim();
+  const err = document.getElementById('pdfError');
+  if(!fecha || !escuela || !curso || !nombre){ err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  openPrintSheet({
+    title:'Evaluación Final · Resultado',
+    subtitle:'Trivia integral de todos los módulos — NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) 4.º año',
+    nombre, escuela, curso,
+    fecha:new Date(fecha+'T12:00:00').toLocaleDateString('es-AR'),
+    score:qScore, total:QUIZ.length, answers:qAnswers
+  });
+}
+
+/* ============================================================
+   12) MOTOR DE IMPRESIÓN
+   ============================================================ */
+function openCustomSheet(html){
+  document.getElementById('printArea').innerHTML = html;
+  document.body.classList.add('printing-quiz');
+  setTimeout(()=> window.print(), 150);
+}
+
+/* Genera el bloque HTML con el detalle pregunta por pregunta de una trivia */
+function answersDetailHTML(answers, startNum=1){
+  return (answers||[]).map((a,i)=>`
+    <div class="qa-item" style="margin-bottom:3.5mm; padding:2mm 3mm; border:1px solid #bbb; border-radius:2mm;">
+      <p style="font-weight:700;font-size:9.5pt;margin:0 0 1mm;">${startNum+i}. ${escapeHTML(a.q)}</p>
+      <p style="font-size:9pt;margin:0 0 1mm;">Respuesta del alumno/a: <b>«${escapeHTML(a.chosen)}»</b> —
+        <span class="${a.correct?'ok-mark':'bad-mark'}">${a.correct?'CORRECTA ✔':'INCORRECTA ✘'}</span></p>
+      ${!a.correct ? `<p style="font-size:9pt;margin:0;">Respuesta correcta: <b>«${escapeHTML(a.right)}»</b></p>` : ''}
+    </div>`).join('');
+}
+
+/* Hoja A4 de resultado de una trivia individual (desafío o final) */
+function openPrintSheet(cfg){
+  const { title, subtitle, nombre, escuela, curso, fecha, score, total, answers } = cfg;
+  const pct = Math.round(score/total*100);
+  const estado = pct>=90 ? 'EXCELENTE' : pct>=60 ? 'APROBADO' : 'A REFORZAR';
+
+  openCustomSheet(`
+    <div style="border-bottom:3px solid #000; padding-bottom:2mm; margin-bottom:4mm;">
+      <h1 style="font-size:16pt; margin:0; font-weight:800;">NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) · ${escapeHTML(title)}</h1>
+      <p style="font-size:9.5pt; margin:1mm 0 0;">${escapeHTML(subtitle)} · 4.º año · Escuela Secundaria · Argentina</p>
+    </div>
+    <table style="width:100%; font-size:10pt; border-collapse:collapse; margin-bottom:4mm;">
+      <tr><td style="padding:1.5mm 0;"><b>Nombre y Apellido:</b> ${escapeHTML(nombre)}</td>
+          <td style="padding:1.5mm 0;"><b>Curso / Grado y División:</b> ${escapeHTML(curso)}</td></tr>
+      <tr><td style="padding:1.5mm 0;"><b>Escuela:</b> ${escapeHTML(escuela)}</td>
+          <td style="padding:1.5mm 0;"><b>Fecha:</b> ${escapeHTML(fecha)}</td></tr>
+    </table>
+    <p style="font-size:12pt; font-weight:800; border:2px solid #000; border-radius:2mm; padding:2.5mm; margin:0 0 5mm;">
+      Puntaje obtenido: ${score} / ${total} (${pct}%) — ${estado}</p>
+    <h2 style="font-size:11pt; font-weight:800; margin:0 0 3mm;">Detalle de respuestas</h2>
+    ${answersDetailHTML(answers)}
+    <div style="margin-top:10mm; display:flex; gap:25mm;">
+      <div style="flex:1; border-top:1px solid #000; text-align:center; font-size:8pt; padding-top:1mm;">Firma del alumno/a</div>
+      <div style="flex:1; border-top:1px solid #000; text-align:center; font-size:8pt; padding-top:1mm;">Firma y sello del docente</div>
+    </div>
+    <p style="font-size:7.5pt; color:#555; margin-top:6mm;">Hoja generada automáticamente por el Aula Interactiva NTiCx · ${new Date().toLocaleString('es-AR')}</p>`);
+}
+
+/* ============================================================
+   Hoja A4 "Mi Reporte" · SIN "últimos movimientos" y CON el
+   detalle completo de cada trivia realizada.
+   ============================================================ */
+function printStudentReport(){
+  if(!student) return;
+  const fechaHoy = new Date().toLocaleDateString('es-AR');
+
+  /* Tabla resumen de resultados */
+  const filasDesafios = Object.keys(CHALLENGES).map(mod=>{
+    const r = report.desafios && report.desafios[mod];
+    const pct = r ? Math.round(r.score/r.total*100) : null;
+    return `<tr class="rep-row" style="border-bottom:1px solid #ccc;">
+      <td style="padding:1.5mm 2mm; font-size:9.5pt;">🎯 Desafío · ${escapeHTML(CHALLENGES[mod].name)}</td>
+      <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center; font-weight:700;">${r?`${r.score}/${r.total}`:'—'}</td>
+      <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center;">${pct!==null?`<span class="${pct>=60?'ok-mark':'bad-mark'}">${pct>=60?'Aprobado ✔':'A reforzar ✘'}</span>`:'—'}</td>
+      <td style="padding:1.5mm 2mm; font-size:8.5pt; color:#555;">${r?escapeHTML(r.fecha):'Sin intentar'}</td></tr>`;
+  }).join('');
+
+  const f = report.final;
+  const fPct = f ? Math.round(f.score/f.total*100) : null;
+  const cl = report.clasificador;
+
+  const modsCompletos = MODULES.map(m=>{
+    const done = completed.has(m.id);
+    const label = m.label.replace(/\s*\(.*\)/,'');
+    return `<span class="rep-row" style="display:inline-block; font-size:8.5pt; border:1px solid #999; border-radius:2mm; padding:0.8mm 2mm; margin:0.8mm;">${done?'✔':'—'} ${escapeHTML(label)}</span>`;
+  }).join('');
+
+  /* ---- DETALLE DE LAS TRIVIAS (nuevo) ---- */
+  let detalle = '';
+  Object.keys(CHALLENGES).forEach(mod=>{
+    const r = report.desafios && report.desafios[mod];
+    if(r && r.answers && r.answers.length){
+      detalle += `
+        <div style="break-inside:avoid; margin-bottom:3mm;">
+          <h3 style="font-size:10.5pt; font-weight:800; margin:4mm 0 2mm; border-left:4px solid #000; padding-left:2mm;">
+            🎯 Desafío · ${escapeHTML(CHALLENGES[mod].name)} — ${r.score}/${r.total}
+            <span style="font-weight:400; font-size:8.5pt; color:#555;">(${escapeHTML(r.fecha)})</span>
+          </h3>
+          ${answersDetailHTML(r.answers)}
+        </div>`;
+    }
+  });
+  if(f && f.answers && f.answers.length){
+    detalle += `
+      <div style="break-inside:avoid; margin-bottom:3mm;">
+        <h3 style="font-size:10.5pt; font-weight:800; margin:4mm 0 2mm; border-left:4px solid #000; padding-left:2mm;">
+          🏁 Evaluación Final — ${f.score}/${f.total} (${fPct}%)
+          <span style="font-weight:400; font-size:8.5pt; color:#555;">(${escapeHTML(f.fecha)})</span>
+        </h3>
+        ${answersDetailHTML(f.answers)}
+      </div>`;
+  }
+  if(!detalle){
+    detalle = '<p style="font-size:9.5pt;">Aún no se realizó ninguna trivia. Los detalles aparecerán aquí cuando completes los desafíos de los módulos o la Evaluación Final.</p>';
+  }
+
+  openCustomSheet(`
+    <div style="border-bottom:3px solid #000; padding-bottom:2mm; margin-bottom:4mm;">
+      <h1 style="font-size:16pt; margin:0; font-weight:800;">NTiCx (Nuevas Tecnologías de la Información y de la Conectividad) · 📇 Mi Reporte</h1>
+      <p style="font-size:9.5pt; margin:1mm 0 0;">Reporte de aprendizaje gamificado · Trivias, desafíos e interacciones · 4.º año · Argentina</p>
+    </div>
+    <table style="width:100%; font-size:10pt; border-collapse:collapse; margin-bottom:4mm;">
+      <tr><td style="padding:1.5mm 0;"><b>Nombre y Apellido:</b> ${escapeHTML(student.nombre)}</td>
+          <td style="padding:1.5mm 0;"><b>Grado y División:</b> ${escapeHTML(student.grado)}</td></tr>
+      <tr><td style="padding:1.5mm 0;"><b>Escuela:</b> ${escapeHTML(student.escuela)}</td>
+          <td style="padding:1.5mm 0;"><b>Fecha de emisión:</b> ${escapeHTML(fechaHoy)}</td></tr>
+    </table>
+    <p style="font-size:13pt; font-weight:800; border:2px solid #000; border-radius:2mm; padding:3mm; margin:0 0 5mm; text-align:center;">
+      ⭐ Puntos totales acumulados: ${report.puntos||0} &nbsp;·&nbsp; Módulos completados: ${MODULES.filter(m=>completed.has(m.id)).length}/${MODULES.length}
+    </p>
+    <h2 style="font-size:11pt; font-weight:800; margin:0 0 2mm;">Módulos</h2>
+    <div style="margin-bottom:5mm;">${modsCompletos}</div>
+    <h2 style="font-size:11pt; font-weight:800; margin:0 0 2mm;">Resultados de trivias y desafíos</h2>
+    <table style="width:100%; border-collapse:collapse; border:1px solid #999; margin-bottom:5mm;">
+      <thead><tr style="background:#eee;">
+        <th style="font-size:9pt; text-align:left; padding:1.5mm 2mm;">Actividad</th>
+        <th style="font-size:9pt; padding:1.5mm 2mm;">Resultado</th>
+        <th style="font-size:9pt; padding:1.5mm 2mm;">Estado</th>
+        <th style="font-size:9pt; text-align:left; padding:1.5mm 2mm;">Fecha</th></tr></thead>
+      <tbody>
+        ${filasDesafios}
+        <tr class="rep-row" style="border-bottom:1px solid #ccc;">
+          <td style="padding:1.5mm 2mm; font-size:9.5pt;">🕹️ Mini-juego clasificador (Sincrónica / Asincrónica)</td>
+          <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center; font-weight:700;">${cl?`${cl.score}/${cl.total}`:'—'}</td>
+          <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center;">${cl?`<span class="${cl.score>=6?'ok-mark':'bad-mark'}">${cl.score>=6?'Aprobado ✔':'A reforzar ✘'}</span>`:'—'}</td>
+          <td style="padding:1.5mm 2mm; font-size:8.5pt; color:#555;">${cl?escapeHTML(cl.fecha):'Sin intentar'}</td></tr>
+        <tr class="rep-row">
+          <td style="padding:1.5mm 2mm; font-size:9.5pt;">🏁 Evaluación Final (14 preguntas)</td>
+          <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center; font-weight:700;">${f?`${f.score}/${f.total} (${fPct}%)`:'—'}</td>
+          <td style="padding:1.5mm 2mm; font-size:9.5pt; text-align:center;">${f?`<span class="${fPct>=60?'ok-mark':'bad-mark'}">${fPct>=90?'EXCELENTE':fPct>=60?'Aprobado ✔':'A reforzar ✘'}</span>`:'—'}</td>
+          <td style="padding:1.5mm 2mm; font-size:8.5pt; color:#555;">${f?escapeHTML(f.fecha):'Sin intentar'}</td></tr>
+      </tbody>
+    </table>
+    <h2 style="font-size:11pt; font-weight:800; margin:0 0 2mm;">Detalle de las trivias (pregunta por pregunta)</h2>
+    ${detalle}
+    <div style="margin-top:8mm; display:flex; gap:25mm;">
+      <div style="flex:1; border-top:1px solid #000; text-align:center; font-size:8pt; padding-top:1mm;">Firma del alumno/a</div>
+      <div style="flex:1; border-top:1px solid #000; text-align:center; font-size:8pt; padding-top:1mm;">Firma y sello del docente</div>
+    </div>
+    <p style="font-size:7.5pt; color:#555; margin-top:6mm;">Reporte generado automáticamente por el Aula Interactiva NTiCx · ${new Date().toLocaleString('es-AR')}</p>`);
+}
+
+function printAllTheory(){
+  buildTopoPrintSummary();
+  document.body.classList.add('print-all-theory');
+  setTimeout(()=> window.print(), 150);
+}
+
+window.addEventListener('afterprint', ()=>{
+  document.body.classList.remove('printing-quiz','print-all-theory');
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+(function init(){
+  goTab('inicio');
+  renderProgress();
+  showTopo('estrella');
+  buildTopoPrintSummary();
+  buildClassGame();
+  updatePipe(40);
+  initChallenges();          // desafíos de los 7 módulos (Inicio ya no tiene)
+  renderGlosario('');        // deja el glosario listo para el modal
+  updateStudentChip();
+  autofillForms();
+  console.log('%c🎓 NTiCx Aula Interactiva v4: Glosario en la barra + Reporte con detalle de trivias. ¡Éxitos en la clase!', 'color:#22E4FF;font-size:14px;font-weight:bold');
+})();
+</script>
+</body>
+</html>
+
