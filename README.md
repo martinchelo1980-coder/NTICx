@@ -45,7 +45,7 @@
 
          <!-- DIAGNOSTICO HUELLA DIGITAL -->
         <p>Diagnósticos</p>
-        <li><a href="./huella_digital/">Ir Diagnostico Huella Digital</a></li>
+        <li><a href="./diagnoticos/huelladigital/">Ir Diagnostico Huella Digital</a></li>
 
         <!-- CRUCIGRAMAS -->
         <p>Cricigramas</p>
