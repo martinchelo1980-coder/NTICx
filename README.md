@@ -49,8 +49,8 @@
 
         <!-- CRUCIGRAMAS -->
         <p>Cricigramas</p>
-        <li><a href="./crucigrama_1.hardsoft/">Ir Crucigrama Hardware y Software</a></li>
-        <li><a href="./crucigrama_2.redes/">Ir Crucigrama Redes</a></li>
+        <li><a href="./clases/crucigramas/1.hardsoft/">Ir Crucigrama Hardware y Software</a></li>
+        <li><a href="./clases/crucigramas/2.redes/">Ir Crucigrama Redes</a></li>
         
     </ul>
     <p style="font-style: italic; color: #666; margin-top: 30px;">Prof. Martín Espinosa</p>
