@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTICx 4.° año · Punto de acceso, Tethering, LAN y WAN — Prof. Martín Espinosa (A4)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.18/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.18/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.19/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.19/latin-700.css">
+<style>
+  :root{
+    --navy:#0d1a3a; --navy2:#16264f; --indigo:#3348c4; --indigo-soft:#eceffd;
+    --cyan:#0e9cc4; --cyan-soft:#e4f5fa; --amber:#e08a12; --amber-soft:#fdf2df;
+    --rose:#cf3f52; --rose-soft:#fdecef; --green:#1f8a5f; --green-soft:#e6f6ee;
+    --ink:#141c33; --muted:#5a6785; --line:#d6dcea; --soft:#f4f7fc; --paper:#fff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;background:#dfe4ee;color:var(--ink);font-size:10.2pt;line-height:1.45;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:'Space Grotesk','Inter',sans-serif;margin:0;}
+  p{margin:0 0 .4em;}
+  ul,ol{margin:.2em 0 .45em;padding-left:1.1em;}
+  li{margin-bottom:.15em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* Toolbar */
+  .toolbar{position:sticky;top:0;z-index:99;background:rgba(13,26,58,.96);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:9px 18px;box-shadow:0 2px 14px rgba(0,0,0,.25);}
+  .toolbar .brand{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:.5px;font-size:11pt;margin-right:4px;}
+  .toolbar .brand span{color:#7fd8ee;}
+  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:9pt;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:6px;}
+  .btn:hover{background:rgba(255,255,255,.2);transform:translateY(-1px);}
+  .btn.primary{background:linear-gradient(135deg,#0e9cc4,#3348c4);border-color:transparent;}
+  .progress-wrap{margin-left:auto;display:flex;align-items:center;gap:9px;font-size:8.8pt;color:#c9d6f5;}
+  .bar{width:140px;height:8px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden;}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7fd8ee,#3348c4);transition:width .35s ease;}
+
+  /* Hojas */
+  .stack{padding:20px 0 56px;}
+  .page{position:relative;width:210mm;min-height:297mm;margin:0 auto 20px;padding:13mm 14mm 16mm;background:var(--paper);box-shadow:0 10px 34px rgba(13,26,58,.20);overflow:hidden;}
+  .page-foot{position:absolute;left:14mm;right:14mm;bottom:7mm;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:5px;font-size:7.4pt;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;}
+  .page-foot b{color:var(--indigo);}
+
+  .head-row{display:flex;align-items:center;gap:10px;margin-bottom:3px;}
+  .num-badge{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 6px;border-radius:8px;background:var(--navy);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11pt;flex:none;}
+  .sec-title{font-size:15pt;font-weight:700;color:var(--navy);line-height:1.14;letter-spacing:-.2px;}
+  .sec-sub{color:var(--muted);font-size:9.2pt;margin-top:2px;}
+  .rule{height:3px;width:54px;background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:3px;margin:7px 0 10px;}
+
+  .box{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;}
+  .box.soft{background:var(--soft);}
+  .box.indigo{background:var(--indigo-soft);border-color:#cdd6f6;}
+  .box.cyan{background:var(--cyan-soft);border-color:#c3e6f1;}
+  .box.amber{background:var(--amber-soft);border-color:#f3ddb2;}
+  .box.rose{background:var(--rose-soft);border-color:#f4ccd3;}
+  .box.green{background:var(--green-soft);border-color:#c6e6d5;}
+  .box h4{font-size:9.8pt;color:var(--navy);margin-bottom:3px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .grid-2-1{display:grid;grid-template-columns:1.5fr 1fr;gap:11px;}
+  .grid-1-2{display:grid;grid-template-columns:1fr 1.7fr;gap:11px;}
+
+  /* Portada */
+  .cover-band{background:linear-gradient(115deg,#0d1a3a 0%,#1c2f6b 48%,#0e9cc4 132%);color:#fff;border-radius:14px;padding:14px 18px 0;overflow:hidden;}
+  .cover-band .inst{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
+  .tagline{font-size:7.6pt;letter-spacing:2.1px;text-transform:uppercase;color:#8fe3f6;font-weight:700;}
+  .teacher-name{display:inline-flex;align-items:center;gap:6px;margin-top:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.32);border-radius:99px;padding:3px 11px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:9.2pt;letter-spacing:.3px;color:#fff;}
+  .teacher-name i{font-style:normal;color:#f0a020;font-size:10pt;}
+  .cover-band h1{font-size:22pt;line-height:1.07;margin:6px 0 5px;letter-spacing:-.6px;}
+  .cover-band .sub{font-size:9.6pt;color:#d6e2ff;max-width:80%;}
+  .cover-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .chip{font-size:7.4pt;font-weight:700;letter-spacing:.7px;text-transform:uppercase;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:3px 9px;border-radius:99px;}
+  .cover-art{margin:4px -18px -2px;}
+  .cover-art svg{display:block;width:100%;height:auto;}
+
+  .data-card{border:1.5px solid var(--navy);border-radius:10px;padding:8px 11px;margin-top:10px;}
+  .data-grid{display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:6px 14px;}
+  .field label{display:block;font-size:7pt;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;}
+  .field .line{border-bottom:1.4px dotted #9aa6c2;height:17px;}
+  .field .fixed{border-bottom:1.4px solid #9aa6c2;height:17px;font-size:9pt;color:var(--navy);font-weight:600;}
+
+  .io-card{border-radius:10px;padding:9px 10px;border:1px solid var(--line);position:relative;overflow:hidden;}
+  .io-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;}
+  .io-card.o::before{background:var(--indigo);}
+  .io-card.p::before{background:var(--cyan);}
+  .io-card.a::before{background:var(--amber);}
+  .io-card .lbl{font-size:7.2pt;letter-spacing:1.3px;text-transform:uppercase;font-weight:800;color:var(--muted);}
+  .io-card p{margin:2px 0 0;font-size:9.3pt;}
+
+  /* Conceptos mínimos */
+  .mini-term{border:1px solid var(--line);border-left:3px solid var(--indigo);border-radius:8px;padding:6px 9px;background:#fff;}
+  .mini-term b{font-family:'Space Grotesk',sans-serif;font-size:9.3pt;color:var(--navy);display:block;}
+  .mini-term span{font-size:8.7pt;color:#2b3654;display:block;}
+  .mini-term em{display:block;font-size:8pt;color:var(--muted);font-style:normal;margin-top:2px;}
+  .mini-term em::before{content:"🔧 Lo usás cuando: ";font-weight:700;color:var(--cyan);}
+
+  table{width:100%;border-collapse:collapse;font-size:8.7pt;}
+  th,td{border:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top;}
+  thead th{background:var(--navy);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:8.2pt;letter-spacing:.4px;text-transform:uppercase;}
+  tbody tr:nth-child(even){background:#f7f9fd;}
+
+  .task{display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px dotted var(--line);}
+  .task:last-child{border-bottom:none;}
+  .task input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;width:14px;height:14px;margin-top:2px;border:1.6px solid var(--indigo);border-radius:4px;background:#fff;cursor:pointer;position:relative;transition:.15s;}
+  .task input[type=checkbox]:checked{background:var(--indigo);}
+  .task input[type=checkbox]:checked::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg);}
+  .task p{margin:0;font-size:9.2pt;}
+  .task.done p{color:var(--muted);text-decoration:line-through;text-decoration-color:#b9c2d8;}
+
+  .alpha{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 6px;}
+  .alpha span{font-size:7.8pt;font-weight:700;padding:3px 8px;border-radius:7px;background:#fff;border:1px solid var(--line);color:var(--muted);}
+  .alpha span.on{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .alpha span.half{background:var(--indigo-soft);color:var(--indigo);border-color:#cdd6f6;}
+
+  .note{font-size:8.2pt;color:var(--muted);}
+  .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:7.8pt;background:var(--navy);color:#8fe3f6;padding:1px 6px;border-radius:5px;}
+  .tag.l{background:var(--indigo-soft);color:var(--indigo);}
+  .tag.w{background:var(--amber-soft);color:#8a5a06;}
+  .tag.r{background:var(--rose-soft);color:#a02b3c;}
+  .tag.g{background:var(--green-soft);color:#146c4a;}
+
+  figure{margin:6px 0 3px;}
+  figure svg{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:10px;background:#fff;}
+  figcaption{font-size:7.8pt;color:var(--muted);margin-top:3px;text-align:center;}
+
+  .role{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--soft);}
+  .role b{display:block;font-size:8.6pt;color:var(--navy);font-family:'Space Grotesk',sans-serif;}
+  .role span{font-size:8pt;color:var(--muted);display:block;margin-top:1px;}
+
+  @page{size:A4;margin:0;}
+  @media print{
+    body{background:#fff;font-size:9.8pt;}
+    .toolbar{display:none !important;}
+    .stack{padding:0;}
+    .page{margin:0;box-shadow:none;width:210mm;min-height:296mm;page-break-after:always;break-after:page;border-radius:0;}
+    .page:last-child{page-break-after:auto;break-after:auto;}
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  }
+  @media screen and (max-width:820px){
+    .page{width:100%;min-height:0;padding:8mm 6mm;}
+    .grid2,.grid3,.grid4,.grid-2-1,.grid-1-2,.data-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand">NTICx<span>·</span>4.° año<span>·</span>PBA<span>·</span>Prof. Martín Espinosa</div>
+  <button class="btn primary" id="btnPrint">🖨️ Imprimir / Guardar PDF</button>
+  <button class="btn" id="btnReset">↺ Reiniciar marcas</button>
+  <div class="progress-wrap"><span id="progText">Práctica: 0 / 0 pasos</span><div class="bar"><i id="progBar"></i></div></div>
+</div>
+
+<div class="stack">
+
+<!-- ================= PÁGINA 1 · PORTADA + TEORÍA MÍNIMA ================= -->
+<section class="page">
+  <div class="cover-band">
+    <div class="inst">
+      <div style="max-width:70%">
+        <div class="tagline">NTICx · 4.° año · Provincia de Buenos Aires · Unidad: Redes y conectividad</div>
+        <div class="teacher-name"><i>👨‍🏫</i> Prof. Martín Espinosa</div>
+        <h1>Punto de acceso, tethering, LAN y WAN</h1>
+        <div class="sub">Guía teórico-práctica <b>ajustada a la ejecución</b>.</div>
+        <div class="cover-chips">
+          <span class="chip">Teoría mínima</span><span class="chip">Práctica guiada</span><span class="chip">Registro en carpeta</span><span class="chip">Anexos de referencia</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Space Grotesk';font-weight:700;font-size:30pt;line-height:1">4.°</div>
+        <div style="font-size:7.6pt;letter-spacing:1.5px;text-transform:uppercase;color:#8fe3f6">año · PBA</div>
+        <div style="margin-top:6px;font-size:7.8pt;color:#d6e2ff">Clase N.º ____<br>Duración: 80 min</div>
+      </div>
+    </div>
+    <div class="cover-art">
+      <svg viewBox="0 0 920 170" role="img" aria-label="Celular hotspot conectado a notebook, tablet y otro teléfono, con antena del operador">
+        <defs>
+          <linearGradient id="gPhone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0ff"/></linearGradient>
+          <linearGradient id="gScr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd8ee"/><stop offset="1" stop-color="#3348c4"/></linearGradient>
+          <linearGradient id="gDev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eaf2ff"/><stop offset="1" stop-color="#b9cdf0"/></linearGradient>
+        </defs>
+        <g fill="none" stroke="#ffffff" stroke-opacity=".20" stroke-dasharray="4 6">
+          <circle cx="468" cy="92" r="52"/><circle cx="468" cy="92" r="84"/><circle cx="468" cy="92" r="118"/>
+        </g>
+        <g stroke="#8fe3f6" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M62 156 L86 48"/><path d="M114 156 L90 48"/><path d="M70 120 L106 120"/><path d="M76 92 L100 92"/><path d="M86 48 L86 32"/>
+        </g>
+        <circle cx="86" cy="28" r="4" fill="#f0a020"/>
+        <g stroke="#f0a020" stroke-width="2" fill="none"><path d="M102 28 a20 20 0 0 1 0 26"/><path d="M112 20 a34 34 0 0 1 0 42"/></g>
+        <path d="M118 58 C 210 30, 320 48, 412 72" fill="none" stroke="#7fd8ee" stroke-width="2" stroke-dasharray="7 5"/>
+        <g>
+          <rect x="248" y="76" width="46" height="76" rx="9" fill="url(#gDev)" stroke="#8fe3f6" stroke-width="2"/>
+          <rect x="254" y="86" width="34" height="52" rx="4" fill="#0d1a3a" opacity=".55"/><circle cx="271" cy="145" r="3.5" fill="#8fe3f6"/>
+        </g>
+        <path d="M296 110 C 336 100, 378 96, 420 92" fill="none" stroke="#7fd8ee" stroke-width="2" stroke-dasharray="6 5"/>
+        <g>
+          <rect x="430" y="34" width="74" height="126" rx="14" fill="url(#gPhone)" stroke="#ffffff" stroke-width="3"/>
+          <rect x="438" y="46" width="58" height="98" rx="7" fill="url(#gScr)"/>
+          <g stroke="#ffffff" stroke-width="3.2" fill="none" stroke-linecap="round"><path d="M452 108 a24 24 0 0 1 32 0"/><path d="M458 98 a15 15 0 0 1 20 0"/></g>
+          <circle cx="468" cy="116" r="4" fill="#ffffff"/><rect x="456" y="150" width="22" height="4" rx="2" fill="#9db4e0"/>
+        </g>
+        <g fill="none" stroke="#f0a020" stroke-width="2.2" opacity=".9" stroke-linecap="round">
+          <path d="M518 66 a44 44 0 0 1 0 62"/><path d="M534 54 a66 66 0 0 1 0 88"/><path d="M550 42 a88 88 0 0 1 0 112"/>
+        </g>
+        <g>
+          <rect x="616" y="74" width="120" height="66" rx="6" fill="url(#gDev)" stroke="#8fe3f6" stroke-width="2"/>
+          <rect x="624" y="82" width="104" height="50" rx="3" fill="#0d1a3a" opacity=".5"/>
+          <path d="M604 140 L748 140 L758 152 L594 152 Z" fill="#8fe3f6" opacity=".55"/>
+          <path d="M636 114 h26 l8-12 8 22 8-14 8 8 h18" fill="none" stroke="#7fd8ee" stroke-width="2"/>
+        </g>
+        <path d="M562 88 C 588 82, 596 84, 614 90" fill="none" stroke="#7fd8ee" stroke-width="2" stroke-dasharray="6 5"/>
+        <g>
+          <rect x="796" y="68" width="70" height="92" rx="10" fill="url(#gDev)" stroke="#8fe3f6" stroke-width="2"/>
+          <rect x="804" y="78" width="54" height="68" rx="4" fill="#0d1a3a" opacity=".5"/><circle cx="831" cy="153" r="3.5" fill="#8fe3f6"/>
+        </g>
+        <path d="M562 132 C 676 168, 738 154, 794 126" fill="none" stroke="#7fd8ee" stroke-width="2" stroke-dasharray="6 5"/>
+        <g fill="#f0a020"><circle cx="196" cy="128" r="4"/><circle cx="356" cy="40" r="4"/><circle cx="596" cy="36" r="4"/><circle cx="766" cy="42" r="4"/></g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="data-card">
+    <div class="data-grid">
+      <div class="field"><label>Apellido y nombre</label><div class="line"></div></div>
+      <div class="field"><label>Curso / División</label><div class="line"></div></div>
+      <div class="field"><label>Fecha</label><div class="line"></div></div>
+      <div class="field"><label>Grupo de trabajo</label><div class="line"></div></div>
+      <div class="field"><label>Docente</label><div class="fixed">Prof. Martín Espinosa</div></div>
+      <div class="field"><label>Nota</label><div class="line"></div></div>
+    </div>
+  </div>
+
+  <div class="grid3" style="margin-top:10px">
+    <div class="io-card o"><div class="lbl">🎯 Objetivo</div><p>Diferenciar el rol de un <b>módem/router</b>, la creación de una <b>LAN</b> y la salida a la <b>WAN</b>.</p></div>
+    <div class="io-card p"><div class="lbl">🧪 Práctica</div><p>Un integrante activa <b>“Anclar red / Zona Wi-Fi portátil”</b> y comparte sus datos móviles; el resto del grupo se conecta.</p></div>
+    <div class="io-card a"><div class="lbl">📓 Actividad</div><p><b>Graficar la topología</b> de la red transitoria, identificar <b>gateway</b>, <b>clientes</b> e <b>interfaces</b> de entrada y salida.</p></div>
+  </div>
+
+  <div style="margin-top:12px">
+    <div class="head-row"><span class="num-badge">1</span>
+      <div><h2 class="sec-title">Teoría mínima indispensable para ejecutar la práctica</h2>
+      <div class="sec-sub">Ocho conceptos. Si entendés estos ocho, podés hacer la actividad completa.</div></div>
+    </div>
+    <div class="rule"></div>
+    <div class="grid4">
+      <div class="mini-term"><b>LAN</b><span>Red de alcance chico que <b>ustedes administran</b>: aula, casa, hotspot. Velocidad alta, IPs privadas.</span><em>encendés el hotspot y dibujás el óvalo de tu red</em></div>
+      <div class="mini-term"><b>WAN</b><span>Red de gran alcance del <b>operador</b> que lleva a Internet. No es tuya: la alquilás con tu plan de datos.</span><em>dibujás la nube y la antena fuera de tu óvalo</em></div>
+      <div class="mini-term"><b>Gateway</b><span>Puerta de enlace: el dispositivo que une LAN con WAN. Acá es <b>el celular</b> (IP <span class="mono">192.168.43.1</span>).</span><em>marcás la “puerta de enlace” en la IP del cliente</em></div>
+      <div class="mini-term"><b>Cliente</b><span>Dispositivo que se asocia a la red y pide IP: notebook, tablet, otro celular.</span><em>anotás la IP de cada equipo del grupo</em></div>
+      <div class="mini-term"><b>Punto de acceso (AP)</b><span>Parte del celular que <b>irradia Wi-Fi</b> (SSID + contraseña WPA2).</span><em>configurás nombre y clave de la red</em></div>
+      <div class="mini-term"><b>Módem</b><span>Parte del celular que <b>traduce la radio 4G/5G</b> a datos digitales.</span><em>observás la barra de señal del operador</em></div>
+      <div class="mini-term"><b>Router / NAT</b><span>Reparte IPs (<b>DHCP</b>) y traduce las IPs privadas a <b>una sola IP pública</b> al salir.</span><em>explicás por qué todos salen con la misma IP</em></div>
+      <div class="mini-term"><b>Interfaz</b><span>Medio por donde entra/sale la información: <span class="tag l">radio LTE/5G</span> <span class="tag l">Wi-Fi 2,4/5 GHz</span> <span class="tag l">RJ-45</span> <span class="tag l">USB</span>.</span><em>rotulás las dos flechas del gráfico</em></div>
+    </div>
+  </div>
+
+  <div class="grid-2-1" style="margin-top:11px">
+    <div class="box soft">
+      <h4>🔗 Tabla de correspondencia: qué hacés ↔ qué concepto necesitás</h4>
+      <table>
+        <thead><tr><th style="width:44%">Acción de la práctica</th><th style="width:28%">Concepto que aplica</th><th>Cómo lo verificás</th></tr></thead>
+        <tbody>
+          <tr><td>Activar “Zona Wi-Fi portátil / Anclar red”</td><td>Punto de acceso + tethering</td><td>Aparece el SSID en los demás equipos</td></tr>
+          <tr><td>Definir SSID y contraseña WPA2</td><td>Seguridad de la LAN</td><td>Los clientes piden clave para asociarse</td></tr>
+          <tr><td>Activar datos móviles (4G/5G)</td><td>Módem + WAN del operador</td><td>Barra de señal y nombre del operador</td></tr>
+          <tr><td>Conectar notebook/tablet al SSID</td><td>Cliente + asociación Wi-Fi</td><td>Ícono de Wi-Fi conectado, sin “!” de error</td></tr>
+          <tr><td>Leer IP, máscara y puerta de enlace</td><td>DHCP + gateway</td><td><span class="mono">ipconfig</span> o detalles de la red</td></tr>
+          <tr><td>Abrir una página desde el cliente</td><td>Router + NAT + WAN</td><td>La página carga ⇒ el camino funciona</td></tr>
+          <tr><td>Medir velocidad y ping</td><td>Ancho de banda + latencia</td><td>Tester de velocidad (Mbps / ms)</td></tr>
+          <tr><td>Dibujar la red con óvalo y nube</td><td>Límite LAN ↔ WAN + topología estrella</td><td>Gráfico con leyenda e interfaces</td></tr>
+          <tr><td>Apagar el hotspot al terminar</td><td>Superficie de ataque / consumo</td><td>Desaparece el SSID del aire</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="box amber">
+        <h4>💡 Idea fuerza (la única que hay que saber de memoria)</h4>
+        <p style="margin:0;font-size:9.3pt">El celular con anclaje activado es <b>tres equipos en uno</b>:<br>
+        <b>MÓDEM</b> → entra la radio del operador (WAN).<br>
+        <b>ROUTER</b> → reparte IPs y hace NAT.<br>
+        <b>PUNTO DE ACCESO</b> → sale el Wi-Fi (LAN).<br>
+        Por eso es el <b>gateway</b> del grupo.</p>
+      </div>
+      <div class="box cyan" style="margin-top:9px">
+        <h4>🧭 Roles del grupo (3–4)</h4>
+        <div class="grid2" style="gap:6px;margin-top:4px">
+          <div class="role"><b>🛠️ Administrador</b><span>Celular-gateway: SSID y clave.</span></div>
+          <div class="role"><b>💻 Técnicos</b><span>Clientes: IP y conectividad.</span></div>
+          <div class="role"><b>📝 Documentalista</b><span>Registro en carpeta y gráfico.</span></div>
+          <div class="role"><b>⏱️ Auditor</b><span>Tiempo, consumo, apagado.</span></div>
+        </div>
+      </div>
+      <div class="box green" style="margin-top:9px">
+        <h4>🚫 Lo que NO necesitás para esta práctica</h4>
+        <p style="margin:0;font-size:8.8pt">Modelo OSI de 7 capas, submáscaras complejas, configuración de VLAN, IPv6, routing dinámico, historia detallada de ARPANET. Si aparece en tu búsqueda, guardalo para la unidad de protocolos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot"><span>NTICx · 4.° año · PBA · Prof. Martín Espinosa</span><span><b>1. Teoría mínima indispensable</b></span><span>Página 1 de 4</span></div>
+</section>
+
+<!-- ================= PÁGINA 2 · CONTEXTO BREVE + CURRICULAR + SEGURIDAD ================= -->
+<section class="page">
+  <div class="head-row"><span class="num-badge">1.2</span>
+    <div><h2 class="sec-title">Contexto mínimo y encuadre curricular</h2><div class="sec-sub">Solo lo necesario para entender qué están haciendo y por qué importa</div></div>
+  </div>
+  <div class="rule"></div>
+
+  <div class="grid-2-1">
+    <div>
+      <div class="box soft">
+        <h4>📜 Tres pasos de historia (suficiente para la práctica)</h4>
+        <table>
+          <thead><tr><th style="width:16%">Época</th><th style="width:34%">Cómo se salía a Internet</th><th>Qué cambia para nosotros</th></tr></thead>
+          <tbody>
+            <tr><td><b>1990s</b><br>dial-up</td><td>Módem sobre línea telefónica: ocupaba el teléfono y cortaba si llamaban.</td><td>El módem y la PC eran aparatos <b>separados</b>.</td></tr>
+            <tr><td><b>2000s</b><br>ADSL / cable</td><td>Caja única en casa: módem + router + Wi-Fi integrado.</td><td>Aparece la <b>LAN hogareña</b> con IPs <span class="mono">192.168.x.x</span>.</td></tr>
+            <tr><td><b>2010 → hoy</b><br>4G / 5G</td><td>El <b>celular</b> hace de módem, router y AP: hotspot portátil.</td><td>La red deja de ser un lugar fijo: <b>se enciende y se apaga</b>. Eso es lo que vamos a reproducir en el aula.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box indigo" style="margin-top:9px">
+        <h4>📐 Vinculación con el Diseño Curricular de PBA</h4>
+        <div class="alpha">
+          <span class="on">Tecnológica ★ eje</span><span class="on">Digital ★ eje</span><span class="half">Informacional</span><span class="half">Comunicacional</span><span>Medial</span><span>Visual</span>
+        </div>
+        <p style="font-size:9pt;margin:0"><b>Núcleos temáticos:</b> redes según alcance (LAN/WAN) · hardware de red (módem, router, AP) · direccionamiento IP, DHCP y NAT · ciberseguridad y privacidad · ciudadanía digital y netiqueta · brecha digital.<br>
+        <b>Capacidades:</b> resolución de problemas técnicos reales, trabajo con otros, pensamiento crítico, comunicación con vocabulario técnico y responsabilidad en el uso de recursos compartidos.</p>
+      </div>
+    </div>
+
+    <div>
+      <figure style="margin-top:0">
+        <svg viewBox="0 0 330 190" role="img" aria-label="Dos LAN dentro de una WAN">
+          <rect x="2" y="2" width="326" height="186" rx="10" fill="#f4f7fc" stroke="#d6dcea"/>
+          <ellipse cx="165" cy="98" rx="148" ry="80" fill="none" stroke="#3348c4" stroke-width="1.6" stroke-dasharray="6 5"/>
+          <text x="165" y="22" text-anchor="middle" font-family="Space Grotesk" font-size="10.5" font-weight="700" fill="#3348c4">WAN · INTERNET</text>
+          <ellipse cx="92" cy="108" rx="58" ry="44" fill="#eceffd" stroke="#3348c4" stroke-width="1.4"/>
+          <text x="92" y="78" text-anchor="middle" font-family="Space Grotesk" font-size="9" font-weight="700" fill="#0d1a3a">LAN casa</text>
+          <ellipse cx="238" cy="108" rx="58" ry="44" fill="#e4f5fa" stroke="#0e9cc4" stroke-width="1.4"/>
+          <text x="238" y="78" text-anchor="middle" font-family="Space Grotesk" font-size="9" font-weight="700" fill="#0d1a3a">LAN celular</text>
+          <g fill="#0d1a3a">
+            <circle cx="70" cy="108" r="5"/><circle cx="92" cy="128" r="5"/><circle cx="114" cy="108" r="5"/>
+            <circle cx="216" cy="108" r="5"/><circle cx="238" cy="128" r="5"/><circle cx="260" cy="108" r="5"/>
+          </g>
+          <g stroke="#5a6785" stroke-width="1.2">
+            <line x1="70" y1="108" x2="92" y2="128"/><line x1="92" y1="128" x2="114" y2="108"/><line x1="70" y1="108" x2="114" y2="108"/>
+            <line x1="216" y1="108" x2="238" y2="132"/><line x1="238" y1="128" x2="260" y2="108"/><line x1="216" y1="108" x2="260" y2="108"/>
+          </g>
+          <rect x="146" y="96" width="38" height="22" rx="4" fill="#e08a12"/>
+          <text x="165" y="111" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#fff">GW</text>
+          <g stroke="#e08a12" stroke-width="1.6" stroke-dasharray="4 3"><line x1="120" y1="107" x2="146" y2="107"/><line x1="184" y1="107" x2="212" y2="107"/></g>
+          <text x="165" y="146" text-anchor="middle" font-family="Inter" font-size="8.4" fill="#5a6785">Sin gateway, la LAN queda aislada</text>
+        </svg>
+        <figcaption>Tu hotspot crea la LAN celeste: es transitoria y depende de un solo equipo.</figcaption>
+      </figure>
+
+      <div class="box rose">
+        <h4>🌎 Impacto social (3 ideas para el cierre)</h4>
+        <ul style="font-size:8.9pt;margin:0">
+          <li>El celular es <b>infraestructura</b>: de él dependen tarea, trámites y trabajo.</li>
+          <li>Compartir datos es solidario, pero <b>lo paga una sola persona</b> → brecha digital visible en el aula.</li>
+          <li>Toda la red depende de <b>un punto único</b>: sin batería o señal, se cae todo.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px">
+    <div class="head-row"><span class="num-badge">2</span>
+      <div><h2 class="sec-title">Condiciones de seguridad para ejecutar la práctica</h2>
+      <div class="sec-sub">Se marcan durante la actividad y forman parte de la evaluación del grupo</div></div>
+    </div>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="box soft">
+        <h4>🔐 Antes de encender</h4>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>SSID sin datos personales</b> (nada de nombre, apodo, DNI o curso completo).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>WPA2/WPA3 activado</b> (nunca red abierta).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Contraseña larga</b>: 12+ caracteres, frase de paso.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Permiso del titular de la línea y del/la docente.</b></p></label>
+      </div>
+      <div class="box soft">
+        <h4>🛰️ Durante</h4>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Revisar la lista de conectados</b>: solo el grupo.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Descargas automáticas en pausa</b> (nube, tiendas, actualizaciones).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>No operar datos sensibles</b> (banco, contraseñas, trámites).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Netiqueta de ancho de banda:</b> nada de video en HD si hay compañeros trabajando.</p></label>
+      </div>
+      <div class="box soft">
+        <h4>🧯 Al cerrar</h4>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Apagar el hotspot</b> (red encendida sin uso = puerta abierta).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Desconectar clientes</b> y volver a la red habitual.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>Registrar consumo y tiempo</b> de la prueba.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>No difundir</b> SSID ni contraseña fuera del grupo.</p></label>
+      </div>
+    </div>
+    <div class="box amber" style="margin-top:9px">
+      <h4>⚠️ Dos riesgos que van a observar en vivo</h4>
+      <p style="margin:0;font-size:9.1pt"><b>1) Responsabilidad por IP compartida:</b> con NAT todo el grupo sale con <b>la IP pública del titular</b>. Si alguien hace algo indebido desde la red, el rastro apunta a ese celular. <b>2) Privacidad:</b> el gateway ve horarios, IPs y dominios de sus clientes (metadatos). Compartir la conexión es también compartir información sobre los demás.</p>
+    </div>
+  </div>
+
+  <div class="page-foot"><span>NTICx · 4.° año · PBA · Prof. Martín Espinosa</span><span><b>1.2 Contexto · 2. Seguridad operativa</b></span><span>Página 2 de 4</span></div>
+</section>
+
+<!-- ================= PÁGINA 3 · PARTE A ================= -->
+<section class="page">
+  <div class="head-row"><span class="num-badge">3</span>
+    <div><h2 class="sec-title">Guía de ejecución · Parte A: crear la red</h2><div class="sec-sub">Tiempo estimado: 20 minutos · trabajar en grupos de 3 a 4 · anotar los datos observados en la carpeta</div></div>
+  </div>
+  <div class="rule"></div>
+
+  <div class="grid2">
+    <div class="box cyan">
+      <h4>📱 Configuración del punto de acceso (Administrador)</h4>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>1. Repartir roles</b> y anotar la hora de inicio: ______ : ______</p></label>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>2. Ir a</b> <span class="mono">Ajustes → Conexiones / Redes e Internet → Zona Wi-Fi portátil · Anclar red · Compartir Internet</span>.</p></label>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>3. Escribir SSID y contraseña WPA2 en la carpeta</b> antes de activar (si no, el celular los genera al azar).</p></label>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>4. Elegir banda:</b> <span class="tag l">2,4 GHz</span> más alcance · <span class="tag l">5 GHz</span> más velocidad. Anotar cuál usaron.</p></label>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>5. Activar datos móviles</b> (4G/5G) y luego el hotspot. Verificar señal del operador: ▮▮▮▯</p></label>
+      <label class="task"><input type="checkbox" class="task-cb"><p><b>6. Abrir “Dispositivos conectados”</b> y dejar la pantalla a la vista para controlar quién entra.</p></label>
+      <div class="note" style="margin-top:6px">🔎 La ruta cambia según la marca. Tabla rápida a la derecha.</div>
+    </div>
+
+    <div>
+      <div class="box soft">
+        <h4>🗜️ Rutas por marca (referencia rápida)</h4>
+        <table>
+          <thead><tr><th style="width:26%">Equipo</th><th>Ruta habitual</th></tr></thead>
+          <tbody>
+            <tr><td><b>Samsung</b></td><td class="mono" style="font-size:7.8pt">Conexiones → Mobile Hotspot y Anclaje de red</td></tr>
+            <tr><td><b>Motorola</b></td><td class="mono" style="font-size:7.8pt">Red e Internet → Zona Wi-Fi / Anclaje a red</td></tr>
+            <tr><td><b>Xiaomi</b></td><td class="mono" style="font-size:7.8pt">Conexión y compartir → Zona Wi-Fi portátil</td></tr>
+            <tr><td><b>iPhone</b></td><td class="mono" style="font-size:7.8pt">Configuración → Compartir Internet</td></tr>
+            <tr><td><b>Windows</b></td><td class="mono" style="font-size:7.8pt">Configuración → Red e Internet → Zona con cobertura inalámbrica</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box green" style="margin-top:9px">
+        <h4>🎲 Generador de credenciales para la práctica</h4>
+        <p class="note" style="margin-bottom:5px">Crea un SSID sin datos personales y una frase de paso larga. Copiarlos al hotspot <b>solo durante la clase</b> y anotarlos en la carpeta.</p>
+        <button class="btn primary" id="btnGen" style="background:linear-gradient(135deg,#1f8a5f,#0e9cc4)">⚡ Generar SSID y contraseña</button>
+        <button class="btn" id="btnCopy" style="background:#fff;color:var(--navy);border-color:var(--line)">⧉ Copiar</button>
+        <div id="genOut" class="mono" style="margin-top:6px;font-size:8.4pt;color:var(--navy);background:#fff;border:1px dashed #b7c6e6;border-radius:7px;padding:5px 7px">— todavía no se generó —</div>
+      </div>
+
+      <div class="box cyan" style="margin-top:9px">
+        <h4>💻 Conexión y verificación (Técnicos)</h4>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>7.</b> Buscar el SSID en <span class="mono">Wi-Fi</span>, asociarse y cargar la contraseña.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>8.</b> Probar conectividad: abrir una página y medir en un tester (<span class="mono">fast.com</span>): bajada / subida / ping.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>9.</b> Leer la IP propia: celular <span class="mono">Ajustes → Wi-Fi → detalles</span>; notebook <span class="mono">ipconfig</span> (Windows) o <span class="mono">ip a</span> (Linux/Mac). Anotar <b>IPv4, máscara y puerta de enlace</b>.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>10.</b> Confirmar que la <b>puerta de enlace de todos coincide</b> con la IP del celular.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>11.</b> Registrar hora de fin, tiempo total y consumo estimado de datos.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p><b>12.</b> <b>Apagar el hotspot</b> y desconectar los clientes.</p></label>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:11px">
+    <h3 style="font-size:11.6pt;color:var(--navy);margin-bottom:4px">🧾 Datos a anotar en la carpeta durante la práctica</h3>
+    <div class="box soft" style="margin-bottom:9px">
+      <p style="margin:0;font-size:9pt"><span class="tag l">SSID</span> <span class="tag l">Seguridad / contraseña</span> <span class="tag l">Banda Wi-Fi</span> <span class="tag l">Operador y señal</span> <span class="tag l">Tecnología (3G/4G/5G)</span> <span class="tag l">IP del gateway</span> <span class="tag l">Máscara</span> <span class="tag l">IP de cada cliente</span> <span class="tag l">Bajada / subida</span> <span class="tag l">Ping</span> <span class="tag l">Hora de inicio y fin</span> <span class="tag l">Consumo estimado</span> — estos valores son los que después van rotulados en el gráfico de topología.</p>
+    </div>
+    <div class="grid2">
+      <div class="box indigo">
+        <h4>🧪 Prueba de funcionamiento (marcar lo observado)</h4>
+        <label class="task"><input type="checkbox" class="task-cb"><p>El SSID aparece visible en los otros equipos.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p>Al asociarse, cada cliente recibió una IP <span class="mono">192.168.43.x</span> distinta (DHCP funcionó).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p>Todos los clientes tienen la <b>misma puerta de enlace</b>.</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p>Los clientes navegan <b>al mismo tiempo</b> sin cortarse (NAT + ancho de banda compartido).</p></label>
+        <label class="task"><input type="checkbox" class="task-cb"><p>Al apagar los datos móviles del celular, los clientes <b>pierden Internet</b> aunque sigan conectados al Wi-Fi (prueba de que la LAN ≠ WAN).</p></label>
+      </div>
+      <div class="box amber">
+        <h4>⚠️ Solución de problemas frecuentes</h4>
+        <table>
+          <thead><tr><th style="width:44%">Síntoma</th><th>Causa probable y acción</th></tr></thead>
+          <tbody>
+            <tr><td>No aparece el SSID</td><td>Banda de 5 GHz no soportada → cambiar a 2,4 GHz; acercar el equipo.</td></tr>
+            <tr><td>“Conectado, sin Internet”</td><td>Datos móviles apagados o sin señal → revisar el modo avión y el plan.</td></tr>
+            <tr><td>Rechaza la contraseña</td><td>Teclado en otro idioma o mayúsculas → verificar y volver a tipear.</td></tr>
+            <tr><td>Muy lento</td><td>Ancho de banda repartido: cerrar streaming y descargas; medir ping.</td></tr>
+            <tr><td>Se desconecta solo</td><td>Ahorro de batería del celular → desactivar optimización para el hotspot.</td></tr>
+            <tr><td>El celular calienta</td><td>Normal bajo carga: pausar 5 min, quitar la funda, no cargar y compartir a la vez.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot"><span>NTICx · 4.° año · PBA · Prof. Martín Espinosa</span><span><b>3. Parte A · Configuración y verificación</b></span><span>Página 3 de 4</span></div>
+</section>
+
+<!-- ================= PÁGINA 4 · ANEXOS ================= -->
+<section class="page">
+  <div class="head-row"><span class="num-badge">📎</span>
+    <div><h2 class="sec-title">Anexos de referencia para el gráfico en carpeta</h2>
+    <div class="sec-sub">Modelos orientadores: usar la estructura, no los valores (tu red tiene otro SSID, otras IP y otros equipos)</div></div>
+  </div>
+  <div class="rule"></div>
+
+  <div class="box soft" style="margin-bottom:4px">
+    <p style="margin:0;font-size:9pt">📓 <b>Recordatorio de la actividad en carpeta:</b> graficar la topología de la red transitoria creada e identificar <b>gateway</b>, <b>clientes</b> y las <b>interfaces</b> por donde entra y sale la información. El gráfico debe incluir: nube WAN y antena del operador <b>fuera</b> del óvalo de la LAN, las IPs reales observadas por el grupo, flechas rotuladas de entrada (radio LTE/5G) y salida (Wi-Fi), leyenda de símbolos y tipo de topología.</p>
+  </div>
+
+  <div>
+    <div class="head-row"><span class="num-badge">A</span><h3 style="font-size:12pt;color:var(--navy)">Anexo A · Modelo orientador de topología</h3></div>
+    <figure>
+      <svg viewBox="0 0 960 440" role="img" aria-label="Topología: WAN con antena del operador, celular gateway y clientes Wi-Fi en la LAN">
+        <rect x="2" y="2" width="956" height="436" rx="12" fill="#fbfcff" stroke="#d6dcea"/>
+        <rect x="18" y="34" width="326" height="238" rx="12" fill="#f4f7fc" stroke="#3348c4" stroke-width="1.6" stroke-dasharray="8 6"/>
+        <text x="28" y="26" font-family="Space Grotesk" font-size="12.5" font-weight="700" fill="#3348c4">WAN · no es nuestra (del operador)</text>
+        <g>
+          <path d="M62 124 c-16 0 -26 -12 -26 -24 c0 -14 11 -24 25 -24 c3 -18 19 -30 37 -30 c15 0 28 8 34 20 c5 -4 12 -6 19 -6 c18 0 32 14 32 31 c0 18 -14 33 -32 33 z" fill="#e7ecfb" stroke="#3348c4" stroke-width="1.8"/>
+          <text x="100" y="98" text-anchor="middle" font-family="Space Grotesk" font-size="11.5" font-weight="700" fill="#0d1a3a">INTERNET</text>
+          <text x="100" y="113" text-anchor="middle" font-family="Inter" font-size="8.6" fill="#5a6785">servidores · DNS · apps</text>
+        </g>
+        <line x1="164" y1="108" x2="236" y2="146" stroke="#3348c4" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="198" y="118" text-anchor="middle" font-family="Inter" font-size="8.2" fill="#5a6785">fibra / backbone</text>
+        <g stroke="#0d1a3a" stroke-width="2" fill="none">
+          <path d="M246 250 L270 146"/><path d="M294 250 L270 146"/><path d="M254 210 L286 210"/><path d="M260 178 L280 178"/><path d="M270 146 L270 130"/>
+        </g>
+        <g fill="none" stroke="#e08a12" stroke-width="2"><path d="M286 128 a22 22 0 0 1 0 30"/><path d="M298 120 a36 36 0 0 1 0 46"/></g>
+        <circle cx="270" cy="126" r="4" fill="#e08a12"/>
+        <text x="270" y="266" text-anchor="middle" font-family="Space Grotesk" font-size="10.5" font-weight="700" fill="#0d1a3a">Antena del operador (ISP móvil)</text>
+        <line x1="298" y1="162" x2="414" y2="162" stroke="#e08a12" stroke-width="2.6"/>
+        <g fill="none" stroke="#e08a12" stroke-width="2"><path d="M328 152 q10 -12 20 0"/><path d="M358 152 q10 -12 20 0"/></g>
+        <text x="356" y="140" text-anchor="middle" font-family="Inter" font-size="8.6" font-weight="700" fill="#8a5a06">ENTRADA</text>
+        <text x="356" y="182" text-anchor="middle" font-family="JetBrains Mono" font-size="8.6" fill="#8a5a06">radio LTE/5G · IP pública</text>
+
+        <rect x="392" y="34" width="550" height="368" rx="12" fill="#f6fbfd" stroke="#0e9cc4" stroke-width="1.8" stroke-dasharray="9 6"/>
+        <text x="406" y="26" font-family="Space Grotesk" font-size="12.5" font-weight="700" fill="#0e9cc4">LAN transitoria · 192.168.43.0/24 · administrada por el grupo</text>
+
+        <g>
+          <rect x="420" y="92" width="72" height="132" rx="12" fill="#0d1a3a"/>
+          <rect x="428" y="106" width="56" height="100" rx="6" fill="#7fd8ee"/>
+          <g stroke="#0d1a3a" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M442 168 a23 23 0 0 1 30 0"/><path d="M448 157 a14 14 0 0 1 18 0"/></g>
+          <circle cx="457" cy="176" r="4" fill="#0d1a3a"/><rect x="446" y="214" width="22" height="4" rx="2" fill="#8fe3f6"/>
+          <text x="456" y="244" text-anchor="middle" font-family="Space Grotesk" font-size="11" font-weight="700" fill="#0d1a3a">CELULAR = GATEWAY</text>
+          <text x="456" y="258" text-anchor="middle" font-family="Inter" font-size="8.6" fill="#5a6785">módem + router + punto de acceso</text>
+          <text x="456" y="272" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#3348c4">192.168.43.1 · DHCP · NAT</text>
+          <text x="456" y="286" text-anchor="middle" font-family="Inter" font-size="8.2" fill="#5a6785">SSID: ____________ · WPA2</text>
+        </g>
+        <g fill="none" stroke="#0e9cc4" stroke-width="2" opacity=".85"><path d="M508 132 a48 48 0 0 1 0 58"/><path d="M526 118 a72 72 0 0 1 0 86"/></g>
+        <text x="558" y="114" text-anchor="middle" font-family="Inter" font-size="8.6" font-weight="700" fill="#0b6f8c">SALIDA</text>
+        <text x="558" y="127" text-anchor="middle" font-family="JetBrains Mono" font-size="8.2" fill="#0b6f8c">Wi-Fi 2,4/5 GHz · 802.11</text>
+        <g stroke="#0e9cc4" stroke-width="2" stroke-dasharray="7 5" fill="none">
+          <path d="M532 144 C 596 116, 636 106, 684 104"/><path d="M532 164 C 604 164, 646 184, 684 190"/><path d="M532 184 C 596 232, 646 276, 684 294"/>
+        </g>
+        <g>
+          <rect x="688" y="72" width="108" height="58" rx="5" fill="#fff" stroke="#0d1a3a" stroke-width="2"/>
+          <rect x="695" y="79" width="94" height="44" rx="3" fill="#eceffd"/>
+          <path d="M678 130 L806 130 L816 142 L668 142 Z" fill="#b9cdf0" stroke="#0d1a3a" stroke-width="1.4"/>
+          <text x="742" y="160" text-anchor="middle" font-family="Space Grotesk" font-size="10" font-weight="700" fill="#0d1a3a">CLIENTE 1 · Notebook</text>
+          <text x="742" y="173" text-anchor="middle" font-family="JetBrains Mono" font-size="8.6" fill="#3348c4">192.168.43.20 · GW .43.1</text>
+        </g>
+        <g>
+          <rect x="694" y="192" width="80" height="56" rx="7" fill="#0d1a3a"/>
+          <rect x="701" y="199" width="66" height="42" rx="3" fill="#7fd8ee"/><circle cx="734" cy="244" r="3.5" fill="#8fe3f6"/>
+          <text x="790" y="216" font-family="Space Grotesk" font-size="10" font-weight="700" fill="#0d1a3a">CLIENTE 2 · Tablet</text>
+          <text x="790" y="230" font-family="JetBrains Mono" font-size="8.6" fill="#3348c4">192.168.43.21</text>
+        </g>
+        <g>
+          <rect x="694" y="278" width="44" height="72" rx="8" fill="#0d1a3a"/>
+          <rect x="700" y="287" width="32" height="52" rx="3" fill="#7fd8ee"/>
+          <text x="758" y="308" font-family="Space Grotesk" font-size="10" font-weight="700" fill="#0d1a3a">CLIENTE 3 · Celular</text>
+          <text x="758" y="322" font-family="JetBrains Mono" font-size="8.6" fill="#3348c4">192.168.43.22</text>
+        </g>
+        <rect x="612" y="358" width="310" height="32" rx="8" fill="#fdf2df" stroke="#e08a12"/>
+        <text x="767" y="379" text-anchor="middle" font-family="Inter" font-size="9.6" font-weight="700" fill="#8a5a06">TOPOLOGÍA FÍSICA: ESTRELLA · punto único de falla</text>
+        <g font-family="Inter" font-size="8.6" fill="#2b3654">
+          <rect x="24" y="298" width="316" height="106" rx="10" fill="#fff" stroke="#d6dcea"/>
+          <text x="38" y="318" font-family="Space Grotesk" font-size="10.5" font-weight="700" fill="#0d1a3a">LEYENDA</text>
+          <line x1="38" y1="334" x2="66" y2="334" stroke="#e08a12" stroke-width="2.6"/><text x="74" y="338">Enlace WAN (radio del operador)</text>
+          <line x1="38" y1="352" x2="66" y2="352" stroke="#0e9cc4" stroke-width="2" stroke-dasharray="7 5"/><text x="74" y="356">Enlace LAN inalámbrico (Wi-Fi)</text>
+          <rect x="38" y="366" width="28" height="11" rx="3" fill="#0d1a3a"/><text x="74" y="375">Dispositivo activo (gateway / cliente)</text>
+          <rect x="38" y="386" width="28" height="11" rx="3" fill="#f6fbfd" stroke="#0e9cc4" stroke-dasharray="4 3"/><text x="74" y="395">Frontera de la red administrada</text>
+        </g>
+      </svg>
+      <figcaption>La misma información atraviesa <b>dos redes distintas</b>: entra por la WAN del operador y se entrega en la LAN Wi-Fi del grupo.</figcaption>
+    </figure>
+  </div>
+
+  <div style="margin-top:9px">
+    <div class="head-row"><span class="num-badge">B</span><h3 style="font-size:12pt;color:var(--navy)">Anexo B · Recorrido del paquete (ida y vuelta)</h3></div>
+    <figure>
+      <svg viewBox="0 0 960 176" role="img" aria-label="Flujo del paquete desde el cliente hasta el servidor y su regreso">
+        <rect x="2" y="2" width="956" height="172" rx="12" fill="#fbfcff" stroke="#d6dcea"/>
+        <defs>
+          <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#3348c4"/></marker>
+          <marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#0e9cc4"/></marker>
+        </defs>
+        <g font-family="Space Grotesk" font-size="10" font-weight="700" text-anchor="middle">
+          <rect x="18" y="44" width="128" height="54" rx="9" fill="#e4f5fa" stroke="#0e9cc4" stroke-width="1.6"/>
+          <text x="82" y="66" fill="#0d1a3a">CLIENTE</text><text x="82" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">192.168.43.20</text>
+          <rect x="184" y="44" width="140" height="54" rx="9" fill="#eceffd" stroke="#3348c4" stroke-width="1.6"/>
+          <text x="254" y="66" fill="#0d1a3a">GATEWAY</text><text x="254" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">AP Wi-Fi → router → NAT</text>
+          <rect x="362" y="44" width="140" height="54" rx="9" fill="#fdf2df" stroke="#e08a12" stroke-width="1.6"/>
+          <text x="432" y="66" fill="#0d1a3a">RADIO MÓVIL</text><text x="432" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">módem LTE/5G → antena</text>
+          <rect x="540" y="44" width="128" height="54" rx="9" fill="#f4f7fc" stroke="#5a6785" stroke-width="1.6"/>
+          <text x="604" y="66" fill="#0d1a3a">RED DEL ISP</text><text x="604" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">fibra · routers</text>
+          <rect x="706" y="44" width="106" height="54" rx="9" fill="#f4f7fc" stroke="#5a6785" stroke-width="1.6"/>
+          <text x="759" y="66" fill="#0d1a3a">INTERNET</text><text x="759" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">DNS · rutas</text>
+          <rect x="846" y="44" width="98" height="54" rx="9" fill="#e6f6ee" stroke="#1f8a5f" stroke-width="1.6"/>
+          <text x="895" y="66" fill="#0d1a3a">SERVIDOR</text><text x="895" y="82" font-family="Inter" font-size="8.2" font-weight="400" fill="#5a6785">app / sitio</text>
+        </g>
+        <g stroke="#3348c4" stroke-width="2" marker-end="url(#ar)" fill="none">
+          <line x1="148" y1="64" x2="180" y2="64"/><line x1="326" y1="64" x2="358" y2="64"/><line x1="504" y1="64" x2="536" y2="64"/><line x1="670" y1="64" x2="702" y2="64"/><line x1="814" y1="64" x2="842" y2="64"/>
+        </g>
+        <text x="480" y="32" text-anchor="middle" font-family="Inter" font-size="8.8" font-weight="700" fill="#3348c4">SALIDA (petición): IP privada → IP pública por NAT</text>
+        <g stroke="#0e9cc4" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar2)" fill="none"><path d="M895 124 L82 124"/></g>
+        <text x="480" y="144" text-anchor="middle" font-family="Inter" font-size="8.8" font-weight="700" fill="#0b6f8c">REGRESO (respuesta): el gateway devuelve cada paquete al cliente correcto según IP y puerto</text>
+        <text x="480" y="164" text-anchor="middle" font-family="Inter" font-size="8.2" fill="#5a6785">Cada salto suma latencia: la velocidad final depende de la señal móvil, de la cantidad de clientes y del ancho de banda compartido.</text>
+      </svg>
+    </figure>
+  </div>
+
+  <div class="page-foot"><span>NTICx · 4.° año · PBA · Prof. Martín Espinosa</span><span><b>Anexos A y B · Modelos de referencia</b></span><span>Página 4 de 4</span></div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.task-cb'));
+  var progBar = document.getElementById('progBar');
+  var progText = document.getElementById('progText');
+  function updateProgress(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var total = boxes.length;
+    var pct = total ? Math.round((done/total)*100) : 0;
+    progBar.style.width = pct + '%';
+    progText.textContent = 'Práctica: ' + done + ' / ' + total + ' pasos · ' + pct + '%';
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var row = b.closest('.task');
+      if(row){ row.classList.toggle('done', b.checked); }
+      updateProgress();
+    });
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; var r = b.closest('.task'); if(r){ r.classList.remove('done'); } });
+    document.getElementById('genOut').textContent = '— todavía no se generó —';
+    updateProgress();
+  });
+
+  var palabras = ['delta','nodo','orbita','pixel','cuark','vector','faro','bruma','atlas','sigma','lumen','ronda','cable','nube','zenit','tramo','fibra','pulso'];
+  function azar(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function num(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function generar(){
+    var ssid = 'NTICx-' + azar(palabras).toUpperCase() + num(10,99);
+    var p1 = azar(palabras), p2 = azar(palabras);
+    while(p2 === p1){ p2 = azar(palabras); }
+    var pass = cap(p1) + '-' + cap(p2) + num(100,999) + azar(['#','$','%','&','*','?','!','@']);
+    return { ssid: ssid, pass: pass };
+  }
+  var btnGen = document.getElementById('btnGen');
+  var btnCopy = document.getElementById('btnCopy');
+  var out = document.getElementById('genOut');
+  var ultimo = null;
+  btnGen.addEventListener('click', function(){
+    ultimo = generar();
+    out.innerHTML = 'SSID: <b>' + ultimo.ssid + '</b><br>Clave (WPA2): <b>' + ultimo.pass + '</b><br><span style="color:#5a6785">' + ultimo.pass.length + ' caracteres · anotar en la carpeta</span>';
+  });
+  btnCopy.addEventListener('click', function(){
+    if(!ultimo){ out.textContent = 'Primero generá un par de credenciales.'; return; }
+    var texto = 'SSID: ' + ultimo.ssid + '\nClave: ' + ultimo.pass;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(function(){
+        btnCopy.textContent = '✓ Copiado';
+        setTimeout(function(){ btnCopy.textContent = '⧉ Copiar'; }, 1600);
+      }).catch(function(){ out.textContent = texto; });
+    } else { out.textContent = texto; }
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
+
