@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cuaderno de clases NTICx 4.° año — 35 clases con desarrollo teórico y práctico, imprimibles. DGCyE, Pcia. de Buenos Aires.">
+<title>NTICx 4.° · Cuaderno de Clases Interactivo (35 clases imprimibles)</title>
+
+<!-- Tailwind CSS (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Fuentes (CDN Fontsource) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/space-grotesk@latest/index.css">
+<script>
+tailwind.config = {
+  theme: { extend: { fontFamily: {
+    sans: ['Inter','ui-sans-serif','system-ui','sans-serif'],
+    display: ['"Space Grotesk"','Inter','sans-serif']
+  } } }
+};
+</script>
+<style>
+  html{scroll-behavior:smooth}
+  ::-webkit-scrollbar{width:10px;height:8px}
+  ::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:8px}
+  .clase{display:none}
+  .clase.active{display:block}
+  @page{size:A4;margin:14mm}
+  @media print{
+    .no-print{display:none !important}
+    body{background:#fff !important;padding:0 !important}
+    .clase{display:none !important}
+    .clase.active{display:block !important}
+    body.print-all .clase{display:block !important;page-break-before:always}
+    body.print-all .clase.active{page-break-before:auto}
+    .card{box-shadow:none !important;border:1px solid #cbd5e1 !important}
+    .chk{border:1.4px solid #334155 !important}
+  }
+</style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 font-sans antialiased">
+
+<!-- ================= HEADER ================= -->
+<header class="no-print sticky top-0 z-40 bg-gradient-to-r from-indigo-700 via-sky-600 to-teal-500 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
+    <svg viewBox="0 0 48 48" class="w-10 h-10 shrink-0" aria-hidden="true">
+      <rect x="4" y="8" width="40" height="30" rx="4" fill="#fff"/>
+      <rect x="8" y="12" width="32" height="18" rx="2" fill="#0ea5e9"/>
+      <path d="M12 26l7-8 5 5 6-7 6 10z" fill="#e0f2fe"/>
+      <rect x="18" y="38" width="12" height="4" rx="2" fill="#fff"/>
+    </svg>
+    <div class="min-w-0 flex-1">
+      <h1 class="font-display font-bold text-lg md:text-xl leading-tight truncate">NTICx 4.° año · Cuaderno de Clases</h1>
+      <p class="text-[11px] md:text-xs text-sky-100 truncate">35 clases + anexo · teoría y práctica · Ciclo Superior ES4 — DGCyE, Pcia. de Bs. As. · Enfoque ADI crítico-reflexivo</p>
+    </div>
+    <div class="flex items-center gap-2 no-print">
+      <input id="buscar" type="search" placeholder=" Buscar clase…"
+        class="w-32 md:w-56 rounded-xl border-0 bg-white/95 px-3 py-2 text-xs md:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400">
+      <button id="btnPrintOne" class="rounded-xl bg-white text-indigo-700 font-bold text-xs md:text-sm px-3 py-2 hover:bg-amber-300 hover:text-slate-900 transition shadow">🖨️ Imprimir esta clase</button>
+      <button id="btnPrintAll" class="rounded-xl bg-indigo-900/60 text-white font-bold text-xs md:text-sm px-3 py-2 hover:bg-indigo-900 transition shadow border border-white/30">📚 Imprimir cuaderno completo</button>
+    </div>
+  </div>
+  <!-- Chips numéricos (mobile / acceso rápido) -->
+  <div id="chips" class="no-print max-w-7xl mx-auto px-3 pb-2 flex gap-1.5 overflow-x-auto"></div>
+</header>
+
+<div class="max-w-7xl mx-auto flex gap-6 px-3 md:px-4 py-6">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="no-print hidden lg:block w-80 shrink-0">
+    <div class="sticky top-32 bg-white rounded-2xl shadow-md p-4 max-h-[75vh] overflow-y-auto">
+      <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Unidades y clases</p>
+      <div id="sideList" class="space-y-4"></div>
+      <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 leading-snug">
+        💡 Cada pestaña es una <strong>clase imprimible en A4</strong>. Usá “Imprimir esta clase” para la hoja suelta del alumno, o “Imprimir cuaderno completo” para encuadernar las 35 + anexo.
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="flex-1 min-w-0">
+    <div id="clasesWrap" class="space-y-6"></div>
+    <footer class="no-print text-center text-[11px] text-slate-500 pb-8 pt-4">
+      Cuaderno de clases <strong>NTICx 4.° año</strong> · Alineado al Diseño Curricular ES4 (DGCyE, 2010), Módulos 1 a 7 de la Alfabetización Digital-Informacional (ADI).<br>
+      Recursos teóricos elaborados sobre la planificación anual, materiales didácticos y actividades del aula interactiva del curso.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* =========================================================
+   NTICx 4.° · CUADERNO DE CLASES (35 + ANEXO)
+   Datos pedagógicos + render + impresión · JS Vanilla
+   ========================================================= */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+/* ---------- Unidades ---------- */
+const UNIDADES = [
+  { name:'Apertura y recursos digitales',      badge:'bg-sky-100 text-sky-800 border-sky-300',       dot:'bg-sky-500' },
+  { name:'Fundamentos del procesamiento',      badge:'bg-indigo-100 text-indigo-800 border-indigo-300', dot:'bg-indigo-500' },
+  { name:'Hardware',                           badge:'bg-amber-100 text-amber-800 border-amber-300',  dot:'bg-amber-500' },
+  { name:'Software y licencias',               badge:'bg-violet-100 text-violet-800 border-violet-300', dot:'bg-violet-500' },
+  { name:'Alfabetización visual',              badge:'bg-pink-100 text-pink-800 border-pink-300',     dot:'bg-pink-500' },
+  { name:'Seguridad informática',              badge:'bg-rose-100 text-rose-800 border-rose-300',     dot:'bg-rose-500' },
+  { name:'Comunicación y medios digitales',    badge:'bg-teal-100 text-teal-800 border-teal-300',     dot:'bg-teal-500' },
+  { name:'Multimedia',                         badge:'bg-cyan-100 text-cyan-800 border-cyan-300',     dot:'bg-cyan-500' },
+  { name:'Medición, imagen e infografías',     badge:'bg-lime-100 text-lime-800 border-lime-300',     dot:'bg-lime-500' },
+  { name:'Redes digitales',                    badge:'bg-blue-100 text-blue-800 border-blue-300',     dot:'bg-blue-500' },
+  { name:'Robótica e Inteligencia Artificial', badge:'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-300', dot:'bg-fuchsia-500' },
+  { name:'Anexos y regularización',            badge:'bg-slate-200 text-slate-700 border-slate-400',  dot:'bg-slate-500' }
+];
+
+/* ---------- CLASES ---------- */
+const CLASES = [
+{ n:1, u:0, mod:'ADI · presentación', t:'Introducción. Metodología de trabajo. Carátula. URL, Podcast, PDF, Blog. Carpeta.',
+  obj:['Conocer la materia NTICx, su enfoque (ADI) y la metodología de trabajo del curso.','Organizar la carpeta física y digital de la materia.','Identificar y diferenciar recursos digitales básicos: URL, PDF, podcast y blog.'],
+  teo:[
+    { h:'¿Qué es NTICx y por qué la estudiamos?', p:['Materia del Ciclo Superior (4.° año, todas las orientaciones) centrada en la Alfabetización Digital-Informacional (ADI).','No aprendemos solo a “usar” tecnología: la pensamos con mirada crítica en tres dimensiones: comunicativa, tecnológica y social.','La información superabundante solo vale si la transformamos en conocimiento colaborativo.'] },
+    { h:'Metodología y evaluación del curso', p:['Trabajo por talleres, Aprendizaje Basado en Proyectos y producción colaborativa (wikis, blogs, podcast, video).','Evaluación como proceso: diagnóstico al inicio, seguimiento formativo y cierre integrador por unidad.','Carpeta (física o digital) como portafolio de evidencias del recorrido.'] },
+    { h:'Cuatro recursos digitales que usaremos todo el año', p:['URL: dirección web única (protocolo + dominio + ruta). Ej.: https://www.abc.gba.gov.ar/…','PDF: formato portable de documento, mantiene diseño en cualquier dispositivo.','Podcast: programa de audio distribuido por Internet (suscripción por RSS).','Blog: bitácora en línea con entradas cronológicas, comentarios y autoría.'] }
+  ],
+  pra:['Diseñar la CARÁTULA de la materia: nombre, año, orientación, escuela e identidad visual propia (boceto de logotipo o isologo personal).','Armar la CARPETA: divisoria física + estructura digital /NTICx4 → /Teoría, /Práctica, /Proyectos.','Explorar los ejemplos dejados por el docente: abrir una URL, descargar un PDF, escuchar 2 min de un podcast y leer un blog educativo.','Registrar en la carpeta un mini-glosario con las 4 definiciones de recursos.'],
+  rec:['Hojas, colores o editor de dibujo','Examples de blog, PDF y podcast provistos por el docente','Carpeta o carpeta digital (Drive)'],
+  cie:'Puesta en común de carátulas y acuerdo de organización de la carpeta.' },
+
+{ n:2, u:0, mod:'M7 · ciudadanía / evaluación', t:'URL, PDF, Podcast, Blog. Formulario de Diagnóstico. Contrato pedagógico.',
+  obj:['Aplicar los cuatro recursos digitales en una navegación guiada.','Realizar el diagnóstico inicial de saberes NTICx.','Acordar y firmar el contrato pedagógico del curso.'],
+  teo:[
+    { h:'Navegación con propósito', p:['Toda búsqueda eficaz empieza por una URL confiable o un buscador con operadores.','El PDF garantiza citación estable; el podcast permite consumo ubicuo; el blog habilita la conversación (comentarios).'] },
+    { h:'El diagnóstico: para qué', p:['El Diseño Curricular exige partir de los saberes que los estudiantes ya tienen sobre las NTICx.','El Formulario 01 (14 ítems multiple choice, uno por cada contenido nuclear de los 7 módulos) perfila al curso como principiante / intermedio / avanzado.'] },
+    { h:'Contrato pedagógico y netiquette', p:['Acuerdo explícito de responsabilidades: estudiante, familia y escuela.','Incluye normas de convivencia digital (netiquette), cuidado de equipos, uso ético de la información y criterios de evaluación y entrega.'] }
+  ],
+  pra:['Navegación guiada: abrir URL institucional, descargar y anotar un PDF, escuchar un episodio de podcast y comentar una entrada del blog del curso.','Resolver el FORM 01 · Diagnóstico multiple choice (14 ítems por módulo).','Leer, discutir y FIRMAR el Contrato Pedagógico (compromiso tripartito). Copia en carpeta.'],
+  rec:['Form 01 impreso o Google Forms','Contrato pedagógico impreso','Dispositivos con conexión'],
+  cie:'Devolución grupal (anónima) del perfil diagnóstico y ajustes a la planificación.' },
+
+{ n:3, u:1, mod:'M1 · M2', t:'Esquema del procesamiento informático. Correo electrónico. Servicios en la nube.',
+  obj:['Comprender el proceso entrada → procesamiento → salida.','Manejar el correo electrónico y sus partes.','Identificar servicios en la nube y sus riesgos.'],
+  teo:[
+    { h:'Esquema del procesamiento informático', p:['ENTRADA: periféricos cargan datos (teclado, mic, escáner).','PROCESAMIENTO: la CPU (ALU + UC) opera sobre los datos en la RAM.','SALIDA: monitor, impresora, parlantes devuelven información.','Almacenamiento: persistencia en disco, pen drive o nube.'] },
+    { h:'Correo electrónico', p:['Formato: usuario@servidor.dominio (ej.: alumna@gmail.com).','Servidores webmail; adjuntos; asunto claro; netiquette del mail profesional.'] },
+    { h:'Servicios en la nube', p:['Cloud computing: software como servicio en la red; webstoring: almacenamiento virtual (Drive, Fotos, backups).','Ventajas: ubicuidad y colaboración. Riesgos: privacidad, dependencia de conexión, pérdida de control del dato.'] }
+  ],
+  pra:['Completar el esquema de procesamiento con ejemplos cotidianos (cargar una foto → editarla → publicarla).','Identificar partes en mails reales provistos; redactar y enviar un mail con asunto, saludo, cuerpo y adjunto.','Listar los servicios en la nube que usa el grupo y clasificarlos: almacenamiento / productividad / comunicación. Señalar 1 riesgo de cada uno.'],
+  rec:['Pizarra o esquema impreso','Cuentas de correo y Drive'],
+  cie:'Ticket de salida: 3 servicios en la nube + 1 recaudo de privacidad.' },
+
+{ n:4, u:1, mod:'M1', t:'Sistema binario. Bits y bytes. Caracteres ASCII. Unidades de almacenamiento.',
+  obj:['Comprender el sistema binario como base de la digitalización.','Relacionar bit, byte y código ASCII.','Manejar la escala de unidades de almacenamiento.'],
+  teo:[
+    { h:'Sistema binario', p:['La computadora solo distingue dos estados eléctricos: 1 y 0.','Toda información (texto, imagen, sonido) se digitaliza como secuencias binarias.'] },
+    { h:'Bit, byte y ASCII', p:['Bit: unidad mínima (0/1). Byte: 8 bits = 1 carácter.','Código ASCII: tabla que asigna un número (y su binario) a cada letra, dígito y símbolo.'] },
+    { h:'Unidades de medida', p:['bit → byte → KB → MB → GB → TB → PB → EB → ZB → YB.','Cada salto práctico multiplica aprox. ×1024 (2¹⁰).'] }
+  ],
+  pra:['Apuntes: tabla de conversión decimal ↔ binario de 0 a 15.','Escribir el NOMBRE PROPIO en binario usando la tabla ASCII.','Recortes: pegar cada unidad en una escala y asignarle un ejemplo real (foto 3 MB, canción 8 MB, película 4 GB, backup 1 TB…).'],
+  rec:['Tabla ASCII','Tijeras, pegamento, fotocopia de escala'],
+  cie:'Desafío rápido: ¿cuántos bits ocupa tu nombre? Puesta en común.' },
+
+{ n:5, u:1, mod:'M1', t:'Hardware y Software. Autoevaluación clases 01-04. Juego de clasificar. Form 02.',
+  obj:['Diferenciar hardware, software e infoware.','Autoevaluar el propio aprendizaje de la unidad.','Integrar con juego y formulario.'],
+  teo:[
+    { h:'Tres capas del sistema informático', p:['HARDWARE: componentes físicos (CPU, memorias, periféricos).','SOFTWARE: programas e instrucciones (lógico, intangible).','INFOWARE: la información y los datos que el sistema procesa.'] },
+    { h:'Clasificación básica de software', p:['De sistema (SO), de aplicación (ofimática, navegadores) y de programación.','La clasificación permite elegir la herramienta correcta para cada tarea.'] }
+  ],
+  pra:['Autoevaluación escrita de las clases 1 a 4 (checklist de logros personales).','JUEGO DE CLASIFICAR: por equipos y contra reloj, tarjetas de elementos al tazón Hardware / Software / Infoware.','Resolver el FORM 02 · cuestionario corto de la unidad.'],
+  rec:['Tarjetas del juego','Form 02'],
+  cie:'Corrección colectiva del Form 02 y registro de dudas en el pizarrón.' },
+
+{ n:6, u:2, mod:'M1', t:'Hardware interno. Introducción a puertos. Recortes: nombres a dispositivos.',
+  obj:['Reconocer los componentes internos del equipo.','Introducir el concepto de puerto como interfaz de conexión.'],
+  teo:[
+    { h:'Por dentro del gabinete', p:['CPU: ALU (opera) + UC (controla).','Memorias: RAM (volátil, trabajo) y ROM/BIOS (firmware de arranque).','Placa madre: eje que interconecta todo; puertos: puertas de entrada/salida de datos.'] },
+    { h:'¿Qué es un puerto?', p:['Interfaz física y lógica donde se conecta un periférico o red.','Adelanto de tipos: USB, SD, audio, video, RJ45 (se profundiza en Clase 7).'] }
+  ],
+  pra:['Recortes: colocar el nombre correcto a cada dispositivo de una lámina de motherboard.','Observación de un gabinete abierto real (o simulador) identificando CPU, RAM, ROM y placa.','Esquema rotulado propio para la carpeta.'],
+  rec:['Gabinete en desuso o simulador','Láminas y recortes'],
+  cie:'Ronda de señalamiento: cada estudiante ubica un componente a pedido.' },
+
+{ n:7, u:2, mod:'M1', t:'Puertos de la PC. Video “PC por dentro” (min 2:11 a 4:26). Nombres de puertos y conectores.',
+  obj:['Identificar puertos y conectores habituales de una PC.','Vincular cada puerto con su periférico típico.'],
+  teo:[
+    { h:'Familia de puertos y conectores', p:['USB: periféricos universales (teclado, mouse, pen drive).','SD / microSD: memorias de cámaras y celulares.','Audio 3,5 mm: auriculares y micrófono.','Video: HDMI y VGA (monitor, proyector).','RJ45: red cableada; alimentación: ficha de poder.'] }
+  ],
+  pra:['Ver el fragmento 2:11–4:26 del video “PC por dentro” registrando los puertos mencionados.','Completar la lámina con nombres de puertos y conectores.','Unir con flechas: dispositivo → puerto correcto (mouse→USB, monitor→HDMI, red→RJ45…).'],
+  rec:['Video “PC por dentro” (fragmento indicado)','Lámina de conectores'],
+  cie:'Verificación oral señalando puertos en el gabinete del aula.' },
+
+{ n:8, u:2, mod:'M1', t:'Dispositivos de entrada y salida. Informe del bimestre marzo-abril. Clasificar dispositivos.',
+  obj:['Clasificar periféricos por función.','Cerrar el primer bimestre con informe de situación.'],
+  teo:[
+    { h:'Clasificación de periféricos', p:['ENTRADA: teclado, mouse, micrófono, escáner, cámara.','SALIDA: monitor, impresora, parlantes.','ALMACENAMIENTO MASIVO: disco externo, pen drive.','CONECTIVIDAD: placa de red, adaptador Wi-Fi, módem.'] }
+  ],
+  pra:['Clasificar 20 dispositivos en tabla de cuatro columnas (entrada / salida / almacenamiento / conectividad).','INFORME DEL BIMESTRE marzo-abril: revisar notas, completar entregas pendientes y firmar conforme.','Autoevaluación bimestral breve.'],
+  rec:['Tabla de dispositivos','Informe de situación impreso'],
+  cie:'Cierre de bimestre: compromisos de mejora personales por escrito.' },
+
+{ n:9, u:2, mod:'M1', t:'Hardware interno: motherboard y sus partes. Cuestionario.',
+  obj:['Detallar los componentes de la placa madre.','Integrar el hardware interno con cuestionario.'],
+  teo:[
+    { h:'La motherboard pieza por pieza', p:['Socket: zócalo del CPU. Slots RAM: bancos de memoria.','Slots de expansión: PCIe (placas de video, red).','Chipset: coordina comunicaciones internas.','BIOS/UEFI + pila CMOS: arranque y configuración persistente.','Conectores: alimentación ATX, SATA (discos), panel frontal (USB, audio).'] }
+  ],
+  pra:['Cuestionario escrito de hardware interno (clases 6 a 9).','Diagrama mudo de motherboard: rotular con flechas al menos 8 componentes.'],
+  rec:['Cuestionario impreso','Diagrama mudo'],
+  cie:'Corrección cruzada entre pares con clave proyectada.' },
+
+{ n:10, u:2, mod:'Integración · efeméride', t:'Integración de contenidos. Crucigrama. Preparación del Acto 25 de Mayo.',
+  obj:['Integrar los contenidos de la unidad de hardware.','Participar de la preparación del acto del 25 de Mayo con producción digital.'],
+  teo:[
+    { h:'Repaso integrador', p:['Sistema completo: entrada → CPU (ALU/UC) + RAM → salida + almacenamiento.','Puertos y periféricos como puentes entre personas y proceso.','La motherboard como ciudad donde circulan los datos.'] },
+    { h:'Comunicación visual de una efeméride', p:['Identidad visual del acto: paleta patria, isologos institucionales, jerarquía tipográfica (anticipa Módulo 4).'] }
+  ],
+  pra:['Crucigrama de integración (conceptos de clases 3 a 9).','Diseñar flyer o afiche digital del Acto 25 de Mayo con identidad visual propia (boceto o editor).','Organizar roles para el acto (sonido, proyección, difusión).'],
+  rec:['Crucigrama','Editor de diseño o papel afiche'],
+  cie:'Exposición de afiches y asignación final de roles del acto.' , nota:'🇦 Vinculación con Acto 25 de Mayo.' },
+
+{ n:11, u:3, mod:'M1', t:'Software: funciones y tipos. Cuestionario.',
+  obj:['Comprender las funciones del software.','Clasificar tipos de software.'],
+  teo:[
+    { h:'Programa y software', p:['Programa: secuencia finita de instrucciones que la CPU ejecuta.','Funciones del software: administrar el hardware, ofrecer herramientas y resolver tareas.'] },
+    { h:'Tipos', p:['De SISTEMA: sistemas operativos, controladores.','De APLICACIÓN: ofimática, navegadores, editores, juegos.','De PROGRAMACIÓN: compiladores, entornos de desarrollo.'] }
+  ],
+  pra:['Cuestionario: funciones y tipos de software.','Clasificar una lista real: Windows, Word, Chrome, juego, compilador, driver de impresora.'],
+  rec:['Cuestionario','Lista de programas'],
+  cie:'Puesta en común y corrección.' },
+
+{ n:12, u:3, mod:'M1 · soberanía tecnológica', t:'Sistemas Operativos: funciones. Software libre vs propietario. SO para PC y móviles.',
+  obj:['Enumerar funciones del sistema operativo.','Comparar licencias propietarias y libres.','Conocer SO de PC y móviles.'],
+  teo:[
+    { h:'Funciones del SO', p:['Arranque y gestión de memoria, archivos, periféricos e interfaz de usuario.','Sin SO, el hardware es una caja muda.'] },
+    { h:'Propietario vs código abierto', p:['PROPIETARIO (Windows, macOS): licencia restrictiva, código cerrado.','LIBRE (Linux, Huayra GNU/Linux de Conectar Igualdad): uso, estudio, modificación y redistribución; soberanía tecnológica y ahorro de licencias.'] },
+    { h:'SO móviles', p:['Android (base Linux, abierto) y iOS (cerrado): misma lógica de licencia en el bolsillo.'] }
+  ],
+  pra:['Cuadro comparativo Windows / Linux / Android / iOS: licencia, costo, personalización, ecosistema.','Debate: ¿por qué el Estado argentino eligió software libre para las netbooks escolares?'],
+  rec:['Cuadro comparativo impreso'],
+  cie:'Ticket de salida: una ventaja y una limitación de cada modelo.' },
+
+{ n:13, u:3, mod:'M1 · M7', t:'Aplicaciones: clasificación. Licencias: Freeware, Shareware, Adware.',
+  obj:['Clasificar aplicaciones por función.','Diferenciar licencias de software gratuito y propietario.'],
+  teo:[
+    { h:'Aplicaciones por rubro', p:['Ofimática, diseño, comunicación, educación, entretenimiento, seguridad.'] },
+    { h:'Licencias frecuentes', p:['FREEWARE: gratis pero cerrado (no modificable).','SHAREWARE: prueba gratuita con pago posterior.','ADWARE: gratis financiado con publicidad (a veces invasiva).','OPEN SOURCE: libre (repaso). Puente hacia Creative Commons en ciudadanía digital.'] }
+  ],
+  pra:['Auditoría de la netbook: listar 10 aplicaciones instaladas con rubro y licencia.','Casos: “programa gratis que muestra banners” → adware; “trial de 30 días” → shareware; etc.'],
+  rec:['Netbooks','Ficha de casos'],
+  cie:'Reflexión: uso legal y seguro del software.' },
+
+{ n:14, u:4, mod:'M4', t:'La comunicación visual. La imagen digital. Denotación y connotación.',
+  obj:['Diferenciar denotación y connotación.','Comprender la imagen digital raster y vector.'],
+  teo:[
+    { h:'La imagen como mensaje', p:['Toda imagen comunica: se lee (denota/connota) y se escribe (compone).','DENOTACIÓN: lo literal y objetivo. CONNOTACIÓN: lo cultural y subjetivo.'] },
+    { h:'Imagen digital', p:['RASTER: grilla de píxeles (foto, captura). Se pixela al ampliar.','VECTOR: fórmulas matemáticas (logo, ícono). Escala infinita.'] }
+  ],
+  pra:['Analizar una publicidad gráfica: listar 5 elementos denotativos y 5 connotativos.','Experimento del epígrafe: misma imagen, tres epígrafes distintos → ¿cómo cambia el sentido?'],
+  rec:['Publicidades impresas','Epígrafes preparados'],
+  cie:'Puesta en común: la imagen “no habla sola”, la hacemos hablar.' },
+
+{ n:15, u:4, mod:'M4', t:'Ícono. Cultura icónica. Los memes. Lenguaje visual. Creación de logos.',
+  obj:['Comprender ícono y cultura icónica.','Analizar memes como lenguaje visual.','Diseñar logotipo, isotipo e isologo.'],
+  teo:[
+    { h:'Ícono y cultura icónica', p:['Ícono: signo que se parece a lo representado.','Cultura icónica: sociedad donde la imagen domina sobre el texto.'] },
+    { h:'El meme', p:['Unidad visual viral: remix de un ícono + texto breve + humor o crítica.','Funciona por connotación compartida: quien no conoce el origen, no ríe.'] },
+    { h:'Identidad visual', p:['LOGOTIPO (solo texto) · ISOTIPO (solo símbolo) · ISOLOGO (fusionados).'] }
+  ],
+  pra:['Analizar un meme viral: ¿qué ícono remixa? ¿qué connota? ¿qué comunidad lo entiende?','Crear logo, isotipo e isologo de un emprendimiento ficticio (papel o editor).'],
+  rec:['Photopea / Canva / papel','Galería de memes'],
+  cie:'Galería de marcas y votación fundamentada.' },
+
+{ n:16, u:4, mod:'M4', t:'Software de diseño de imagen. Creación de flyers. La publicidad.',
+  obj:['Usar un editor de imágenes con capas y texto.','Aplicar color y retórica publicitaria en un flyer.'],
+  teo:[
+    { h:'Publicidad y persuasión', p:['Concepto de publicidad: mensaje pago con intención de persuadir.','Color como código emocional (rojo energía, azul confianza, verde naturaleza…).','Recursos retóricos: metáfora, comparación, hipérbole, personificación.'] },
+    { h:'Editor de imagen', p:['Capas, texto, alineación, exportación PNG (transparencia) vs JPG (foto) vs PDF (impresión).'] }
+  ],
+  pra:['Crear un FLYER para un evento escolar: jerarquía visual, tipografía legible, paleta coherente e isologo propio.','Exportar en PNG y PDF y justificar la elección de cada formato.'],
+  rec:['GIMP / Photopea / Canva'],
+  cie:'Crítica de piezas con criterios: jerarquía, contraste, mensaje, ética.' },
+
+{ n:17, u:4, mod:'M4 · M3', t:'Mapas conceptuales. Simbologías. Elaboración de mapas.',
+  obj:['Aplicar la simbología del mapa conceptual.','Producir mapas con CmapTools o similar.'],
+  teo:[
+    { h:'Mapa conceptual', p:['Conceptos (cajas/óvalos) + palabras de enlace (líneas) = PROPOSICIONES.','Jerarquía (de lo general a lo particular) y enlaces cruzados.'] },
+    { h:'Representación visual del conocimiento', p:['El mapa es abstracción visual: sintetiza y descubre significados (DC).','Herramientas: CmapTools, MindMeister, dibujado a mano.'] }
+  ],
+  pra:['Identificar conceptos, enlaces y proposiciones en un mapa ejemplo.','Elaborar en CmapTools el mapa de “Sistema informático” o de la unidad elegida.'],
+  rec:['CmapTools instalado o web'],
+  cie:'Intercambio de mapas y corrección de proposiciones mal formadas.' },
+
+{ n:18, u:5, mod:'M1 · M7', t:'Seguridad informática: malware. Virus, troyanos, spyware y 5 casos más.',
+  obj:['Clasificar los principales tipos de malware.','Relacionar cada amenaza con su prevención.'],
+  teo:[
+    { h:'Malware = software malicioso', p:['VIRUS: se adhiere a archivos y se replica con acción del usuario.','GUSANO: se autopropaga por red sin ayuda.','TROYANO: se disfraza de programa útil.','SPYWARE: espía hábitos y datos.','RANSOMWARE: secuestra datos y extorsiona.','KEYLOGGER: registra pulsaciones de teclas.','ADWARE malicioso y PHISHING: publicidad invasiva y engaño para robar credenciales.'] }
+  ],
+  pra:['Tabla amenaza → acción → prevención (7 filas).','Casos: “la PC pide un pago para liberar archivos” → ransomware; “falso mail del banco pide clave” → phishing; etc.'],
+  rec:['Ficha de casos','Tabla impresa'],
+  cie:'Decálogo de prevención construido entre todos.' },
+
+{ n:19, u:5, mod:'M1 · M7', t:'Cómo funcionan los antivirus. Firewall y otros sistemas de protección.',
+  obj:['Explicar el funcionamiento del antivirus.','Comprender firewall y capas de protección.'],
+  teo:[
+    { h:'Antivirus', p:['Base de firmas (huellas conocidas) + análisis heurístico (comportamiento sospechoso).','Protección en tiempo real y actualización constante: sin updates, el antivirus envejece.'] },
+    { h:'Firewall y compañía', p:['FIREWALL: filtro de tráfico entrante/saliente entre redes.','Antispyware, antispam, parches del sistema y copias de seguridad (regla 3-2-1).'] }
+  ],
+  pra:['Esquema: red interna ← firewall → Internet, con ejemplos de paquetes permitidos/bloqueados.','Auditoría de la netbook: nombre del antivirus, versión, último análisis.','Plan de prevención familiar en 5 puntos.'],
+  rec:['Netbooks','Esquema impreso'],
+  cie:'Puesta en común de planes familiares.' },
+
+{ n:20, u:6, mod:'M5 · M3 · M4', t:'Comunicación digital. Medios. Lenguaje digital. Fake news y manipulación mediática.',
+  obj:['Analizar el proceso de comunicación digital.','Detectar fake news y manipulación mediática y publicitaria.'],
+  teo:[
+    { h:'Comunicación digital', p:['Modelo comunicativo + ubicuidad + “tercer entorno”.','Lenguaje digital: hipertexto, multimedia, interactividad, inmediatez.'] },
+    { h:'Fake news y manipulación', p:['Señales: título clickbait, sin fuente ni fecha, apelo emocional, imagen fuera de contexto.','Manipulación publicitaria (retoque, promesas imposibles) y mediática (encuadre, agenda).','Burbujas de filtro: el algoritmo muestra lo que ya pensás.'] }
+  ],
+  pra:['Aplicar checklist de verificación (fuente, autor, fecha, imagen inversa) a 3 noticias reales.','Debate: ¿las redes informan o confirman? Ejemplos locales de rumores virales.'],
+  rec:['Noticias impresas/links','Checklist de verificación'],
+  cie:'Decálogo de compartición responsable.' },
+
+{ n:21, u:6, mod:'M5', t:'Periodismo digital. Medios colaborativos: Padlet, blog. Proyecto de revista digital.',
+  obj:['Conocer el periodismo digital y los medios colaborativos.','Lanzar el proyecto anual de revista digital.'],
+  teo:[
+    { h:'Periodismo digital', p:['Hipertexto + multimedia + interactividad + actualización continua.','Roles: editor, redactor, fotógrafo, community manager.'] },
+    { h:'Medios colaborativos', p:['Blog (autoría cronológica), wiki (escritura colectiva), Padlet (mural colaborativo), redes sociales.'] }
+  ],
+  pra:['Explorar Padlet y blog del curso; publicar un aporte con netiquette.','Lanzar REVISTA DIGITAL: tema, nombre, roles por equipo y plan editorial (3 secciones).'],
+  rec:['Padlet, blog del curso'],
+  cie:'Presentación de planes editoriales por equipo.' },
+
+{ n:22, u:7, mod:'M6', t:'Contenido multimedia: presentaciones, videos y podcast.',
+  obj:['Reconocer los lenguajes multimedia y sus formatos.','Elegir formato para el producto propio.'],
+  teo:[
+    { h:'Multimedia e hipermedia', p:['Integración de texto, sonido, imagen fija y en movimiento en documentos NO lineales.','Interactividad: el usuario decide el recorrido.'] },
+    { h:'Formatos usuales', p:['Presentaciones (diapositivas), video (MP4), audio/podcast (MP3), imagen (JPG/PNG/SVG).'] }
+  ],
+  pra:['Clasificar ejemplos multimedia por lenguaje dominante.','Elegir y fundamentar el formato del producto del equipo de revista.','Efeméride: reconocimiento a los docentes con pieza digital respetuosa (tarjeta o meme positivo).'],
+  rec:['Ejemplos multimedia'],
+  cie:'Ronda de elecciones fundamentadas.' , nota:'🌹 11/09 · Día del Maestro.' },
+
+{ n:23, u:7, mod:'M6', t:'Producción de podcast: guionado. Aplicaciones. Publicación.',
+  obj:['Guionar, grabar, editar y publicar un podcast.'],
+  teo:[
+    { h:'Anatomía de un podcast', p:['Guion: apertura, cortina, bloques, cierre; tiempos y responsables.','Grabación: ambiente silencioso, micrófono a un palmo, pruebas de nivel.','Edición: cortes, música con licencia CC, normalización de volumen (Audacity).','Publicación: plataformas y feed RSS; difusión por blog y redes.'] }
+  ],
+  pra:['Escribir el guion de un episodio de 3 min sobre el tema de la revista.','Grabar y editar en Audacity o app móvil.','Publicar el episodio en el blog/plataforma del curso.'],
+  rec:['Micrófono o celular','Audacity / Anchor'],
+  cie:'Escucha colectiva y devolución entre pares.' },
+
+{ n:24, u:7, mod:'M6 · M4', t:'Creación de video: guionado, storyboard, producción y edición. Software específico.',
+  obj:['Aplicar gramática audiovisual y storyboard.','Editar video con software específico.'],
+  teo:[
+    { h:'Gramática audiovisual', p:['Planos (general, medio, primer plano), ángulos y movimientos de cámara.','Storyboard: viñetas con imagen, sonido y duración.'] },
+    { h:'Edición', p:['Corte, transición, subtítulos, música CC (CapCut, DaVinci Resolve, editor del celular).'] }
+  ],
+  pra:['Storyboard de un video de 60 s para la revista.','Rodaje con celular y edición con música licenciada CC.','Exportar y subir al repositorio del curso.'],
+  rec:['Celulares','CapCut / DaVinci'],
+  cie:'Proyección y análisis de planos utilizados.' },
+
+{ n:25, u:7, mod:'M6 · M4', t:'La presentación de diapositivas. Elementos multimedia. Herramientas digitales.',
+  obj:['Diseñar presentaciones eficaces como constructoras de información visual.'],
+  teo:[
+    { h:'Presentar es comunicar', p:['Una idea por diapositiva; jerarquía, contraste y aire.','Texto mínimo, imagen con función (no adorno).','Elementos multimedia: imagen, video, audio, hipervínculos.'] },
+    { h:'Herramientas', p:['Google Slides, Canva, Impress: plantillas, maestro de diapositivas, exportación PDF.'] }
+  ],
+  pra:['Rediseñar una diapositiva “saturada” provista por el docente aplicando los criterios.','Armar la base de 5 diapositivas del proyecto multimedia del equipo.'],
+  rec:['Editor de presentaciones','Diapositiva saturada de ejemplo'],
+  cie:'Comparación antes/después proyectada.' },
+
+{ n:26, u:7, mod:'M6', t:'Proyecto grupal de contenido multimedia: desarrollo.',
+  obj:['Producir colaborativamente el proyecto multimedia integrador.'],
+  teo:[
+    { h:'Gestión del proyecto', p:['Tareas, tiempos y roles; versión final vs borradores; backup permanente.','Integración de lenguajes: podcast + video + presentación + gráfica.'] }
+  ],
+  pra:['Taller de producción por equipos con planilla de avance.','Tutorías del docente equipo por equipo.','Control de calidad: créditos y licencias de todo material usado.'],
+  rec:['Planilla de avance','Editores y netbooks'],
+  cie:'Semáforo de avance por equipo (verde/ámbar/rojo).' },
+
+{ n:27, u:7, mod:'M6 · M7', t:'Documentación y exposición del proyecto multimedia.',
+  obj:['Documentar el proyecto con créditos y licencias.','Exponer oralmente con apoyo visual.'],
+  teo:[
+    { h:'Documentación responsable', p:['Ficha técnica: objetivo, equipo, herramientas, fuentes.','Créditos con licencias Creative Commons de imágenes y músicas.','Responsabilidad de emisión en el ciberespacio (DC M7).'] },
+    { h:'Exposición oral', p:['Guion de exposición, manejo de tiempos, apoyo visual sin leer.'] }
+  ],
+  pra:['Completar ficha técnica y créditos del proyecto.','Exposición de 5 min por equipo + ronda de preguntas.','Coevaluación con rúbrica compartida.'],
+  rec:['Proyector','Rúbrica impresa'],
+  cie:'Coevaluación y cierre del proyecto multimedia.' },
+
+{ n:28, u:7, mod:'M6', t:'Sintetizadores de voz. Sistemas TTS (Text To Speech). Ejercicios multimedia.',
+  obj:['Comprender y aplicar sistemas TTS en producciones propias.'],
+  teo:[
+    { h:'Del texto a la voz', p:['Digitalización del sonido: muestreo y formatos (WAV sin compresión, MP3 comprimido).','TTS: motor que convierte texto en habla; usos en accesibilidad, asistentes y locución.'] }
+  ],
+  pra:['Generar locuciones TTS para el video propio; comparar voces, velocidad y tono.','Integrar la locución elegida al proyecto multimedia.','Reflexión: ¿cómo ayuda el TTS a usuarios con discapacidad visual?'],
+  rec:['TTS en línea o del SO','Auriculares'],
+  cie:'Puesta en común sobre accesibilidad digital.' },
+
+{ n:29, u:8, mod:'M1 · M4', t:'Unidades de medida. Tamaños de archivo. Imágenes: concepto de píxel.',
+  obj:['Relacionar unidades, tamaños de archivo y resolución.','Comprender el píxel como unidad de la imagen raster.'],
+  teo:[
+    { h:'Tamaños reales', p:['Foto 3 MB · canción 8 MB · película 4 GB · backup 1 TB.','Mbps vs MB/s: 8 bits = 1 byte (puente con redes).'] },
+    { h:'El píxel', p:['Unidad mínima de la imagen raster; resolución = ancho × alto en px + DPI de impresión.','Más resolución = más peso: elegir según el uso (pantalla vs impresión).'] }
+  ],
+  pra:['Cálculo: ¿cuántas fotos de 3 MB entran en un pen drive de 16 GB?','Zoom extremo sobre una foto hasta ver los píxeles; comparar resoluciones.','Comparar pesos de una misma foto en PNG, JPG y WEBP y concluir.'],
+  rec:['Netbooks','Imágenes de prueba'],
+  cie:'Síntesis: resolución ↔ peso ↔ uso correcto.' },
+
+{ n:30, u:8, mod:'M4 · M3', t:'Creación de infografías. Láminas didácticas y mapas conceptuales. Evaluación.',
+  obj:['Sintetizar contenidos en infografías y láminas.','Evaluar la unidad.'],
+  teo:[
+    { h:'Infografía', p:['Título gancho, datos jerarquizados, íconos, paleta coherente y FUENTES citadas.','Síntesis visual = abstracción que descubre significados (DC M4).'] }
+  ],
+  pra:['Crear una infografía o lámina didáctica de la unidad multimedia (digital o papel).','EVALUACIÓN de la unidad (escrita y práctica).'],
+  rec:['Editores o papel afiche','Evaluación impresa'],
+  cie:'Muestra de láminas en el aula.' , nota:'🇦🇷 20/11 · Día de la Soberanía Nacional.' },
+
+{ n:31, u:9, mod:'M2', t:'Redes digitales. Medios de transmisión. Topología de redes.',
+  obj:['Comprender el concepto de red.','Clasificar medios de transmisión y topologías.'],
+  teo:[
+    { h:'Red informática', p:['Conjunto de equipos interconectados que comparten recursos e información.'] },
+    { h:'Medios de transmisión', p:['Cable par trenzado (RJ45), coaxial, fibra óptica (luz, larga distancia).','Inalámbricos: radio (Wi-Fi), microondas, satélite.'] },
+    { h:'Topologías', p:['Bus, estrella, anillo y malla: cómo se distribuyen nodos y cables.'] }
+  ],
+  pra:['Dibujar las 4 topologías con una ventaja y una desventaja de cada una.','Identificar los medios de transmisión de la conexión del hogar y de la escuela.'],
+  rec:['Fotocopia de topologías'],
+  cie:'Cuestionario relámpago oral.' },
+
+{ n:32, u:9, mod:'M2', t:'Redes LAN, MAN, WAN, PAN, SAN. Redes wireless y generaciones: WLAN, WMAN, WWAN.',
+  obj:['Clasificar redes por alcance.','Diferenciar redes inalámbricas y sus generaciones.'],
+  teo:[
+    { h:'Por alcance', p:['PAN (personal, Bluetooth) · LAN (local, aula/oficina) · MAN (metropolitana) · WAN (mundial, Internet) · SAN (almacenamiento).'] },
+    { h:'Wireless', p:['WLAN (Wi-Fi), WMAN (WiMAX metropolitana), WWAN (telefonía 3G/4G/5G).','Generaciones móviles: de voz (1G) a datos masivos e IoT (4G/5G).'] }
+  ],
+  pra:['Clasificar casos: auriculares Bluetooth, aula de informática, fibra de la ciudad, videollamada interprovincial, cabina de discos.','Cuadro WLAN / WMAN / WWAN: alcance, tecnología, uso típico.'],
+  rec:['Cuadro impreso','Casos'],
+  cie:'Puesta en común del cuadro.' },
+
+{ n:33, u:9, mod:'M2', t:'Velocidades. Test de velocidad. Generaciones de telefonía.',
+  obj:['Medir e interpretar velocidades de conexión.','Relacionar generaciones de telefonía con capacidades reales.'],
+  teo:[
+    { h:'Ancho de banda y tasa de transferencia', p:['Mbps (megabits/segundo) vs MB/s (megabytes/segundo): dividir por 8.','Latencia (ping): tiempo de respuesta; clave en videollamadas y juegos.'] },
+    { h:'Test de velocidad', p:['Mide descarga, subida y ping; comparar Wi-Fi escolar vs datos móviles.'] }
+  ],
+  pra:['Ejecutar test de velocidad en dos conexiones y tabular resultados.','Conversión y cálculo: 100 Mbps = 12,5 MB/s → ¿cuánto tarda una película de 700 MB?','Analizar: ¿alcanza el ancho de banda escolar para videollamar con 30 cámaras?'],
+  rec:['Celulares o netbooks','Sitio de speedtest'],
+  cie:'Informe breve de conectividad real del aula.' },
+
+{ n:34, u:9, mod:'M2 · M3', t:'Historia de Internet. Video. Línea de tiempo. Formulario de autoevaluación.',
+  obj:['Reconstruir la historia de Internet y la Web.','Autoevaluar el recorrido anual.'],
+  teo:[
+    { h:'Hitos', p:['1969 ARPANET · 1983 TCP/IP · 1989-91 Web (Berners-Lee) · años 90 masificación.','2004+ Web 2.0 participativa · Web 3.0 semántica · Web 4.0 con IA.','Argentina: conexión en los 90, planes de inclusión (Conectar Igualdad), fibra y ARSAT.'] }
+  ],
+  pra:['Línea de tiempo grupal en papel o digital con hitos e imágenes.','Video guiado de historia de Internet.','FORMULARIO DE AUTOEVALUACIÓN del año: logros, dificultades y compromisos.'],
+  rec:['Papel afiche o KnightLab','Formulario de autoevaluación'],
+  cie:'Galería de líneas de tiempo y devolución del formulario.' },
+
+{ n:35, u:10, mod:'M1 · M7 · transversal', t:'Robótica: clasificación, leyes, origen del término, Asimov. Componentes. Niveles. Inteligencia Artificial: origen y evolución. Mapa conceptual.',
+  obj:['Introducir robótica e inteligencia artificial.','Integrar el año en un mapa conceptual final.'],
+  teo:[
+    { h:'Robótica', p:['Origen del término: Karel Čapek, obra R.U.R. (1920), “robota” = trabajo forzado.','Clasificación: industrial, de servicio, autónoma; niveles de autonomía.','Componentes: sensores (entrada), actuadores (salida), controlador (proceso), fuente de energía → ¡el esquema de procesamiento aplicado!'] },
+    { h:'Las leyes de Asimov', p:['1) No dañar humanos · 2) Obedecer órdenes (salvo conflicto con la 1.ª) · 3) Protegerse (salvo conflicto con las anteriores). Luego agrega la Ley Cero (humanidad).'] },
+    { h:'Inteligencia Artificial', p:['1950 Test de Turing · 1956 Conferencia de Dartmouth (nace el término).','Evolución: sistemas expertos → machine learning → deep learning → IA generativa actual.'] }
+  ],
+  pra:['Mapa conceptual final: robótica + IA + los 7 módulos de la ADI del año.','Debate: ¿las leyes de Asimov alcanzan para un auto autónomo o un chatbot?','Cierre del año: ronda de aprendizajes y proyección a 5.° año.'],
+  rec:['CmapTools','Fragmentos de R.U.R. / casos de IA'],
+  cie:'Cierre anual: el mapa como síntesis del recorrido ADI.' },
+
+{ n:36, u:11, mod:'Regularización', t:'ANEXO · Actividades pendientes de dictado: esquemas, video de puertos y test de conocimientos.',
+  obj:['Regularizar las actividades no desarrolladas durante el ciclo.'],
+  teo:[
+    { h:'Recordatorio teórico mínimo', p:['Procesamiento: entrada → CPU (ALU+UC) + RAM → salida + almacenamiento.','Puertos: USB, SD, audio 3,5 mm, HDMI/VGA, RJ45, alimentación.','El hardware completa el esquema: cada bloque del procesamiento tiene su componente físico.'] }
+  ],
+  pra:['ESQUEMA DEL PROCESAMIENTO incluyendo componentes de hardware en cada etapa (entrada/proceso/salida/almacenamiento).','PUERTOS DE LA PC: ver el video completo y completar la lámina de conectores.','ESQUEMA INFORMÁTICO CON HARDWARE: unir conceptos y dispositivos con flechas.','FORM · TEST DE CONOCIMIENTOS: cuestionario integrador multiple choice (hardware, software, redes, imagen, multimedia, ciudadanía).'],
+  rec:['Láminas y video','Test impreso o Forms'],
+  cie:'Entrega firmada de las cuatro actividades para regularización.' }
+];
+
+/* ---------- Render de una clase ---------- */
+function renderClase(c){
+  const U = UNIDADES[c.u];
+  const num = String(c.n).padStart(2,'0');
+  return `
+  <section class="clase card bg-white rounded-2xl shadow-md overflow-hidden" data-n="${c.n}">
+    <div class="bg-gradient-to-r from-slate-800 to-slate-700 text-white px-6 py-4 flex flex-wrap items-center gap-3">
+      <span class="font-display text-3xl font-bold text-amber-400">${c.n===36?'ANX':num}</span>
+      <div class="flex-1 min-w-0">
+        <h2 class="font-display font-bold text-lg md:text-xl leading-snug">${c.t}</h2>
+        <p class="text-[11px] text-slate-300 mt-1">NTICx 4.° año · ${U.name} · Módulos DC: ${c.mod} · Duración: 2 hs cátedra (80 min)</p>
+      </div>
+      <span class="text-[10px] font-bold px-3 py-1 rounded-full border ${U.badge}">${U.name}</span>
+    </div>
+
+    ${c.nota ? `<p class="px-6 pt-4"><span class="inline-block text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300 rounded-full px-3 py-1">${c.nota}</span></p>` : ''}
+
+    <div class="p-6 space-y-6">
+      <div>
+        <h3 class="font-display font-bold text-indigo-700 mb-2">🎯 Objetivos de la clase</h3>
+        <ul class="space-y-1 text-sm">${c.obj.map(o=>`<li class="flex gap-2"><span class="text-emerald-600 font-bold">✓</span>${o}</li>`).join('')}</ul>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
+        <h3 class="font-display font-bold text-slate-900 mb-3">📖 Desarrollo teórico</h3>
+        <div class="space-y-4">
+          ${c.teo.map(b=>`
+            <div>
+              <h4 class="font-bold text-sm text-indigo-800 mb-1">${b.h}</h4>
+              <ul class="space-y-1 text-sm text-slate-700 leading-snug">
+                ${b.p.map(l=>`<li class="flex gap-2"><span class="text-slate-400">•</span><span>${l}</span></li>`).join('')}
+              </ul>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display font-bold text-slate-900 mb-3">🛠️ Actividades prácticas</h3>
+        <ol class="space-y-2">
+          ${c.pra.map((p,i)=>`
+            <li class="flex gap-3 text-sm bg-white border border-slate-200 rounded-xl p-3">
+              <span class="chk shrink-0 w-5 h-5 rounded border-slate-400 bg-white"></span>
+              <span><strong class="text-indigo-700">${i+1}.</strong> ${p}</span>
+            </li>`).join('')}
+        </ol>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="rounded-xl bg-teal-50 border border-teal-200 p-4">
+          <h4 class="font-bold text-teal-800 text-sm mb-1">🧰 Recursos</h4>
+          <ul class="text-[13px] text-teal-900 space-y-1">${c.rec.map(r=>`<li>• ${r}</li>`).join('')}</ul>
+        </div>
+        <div class="rounded-xl bg-amber-50 border border-amber-200 p-4">
+          <h4 class="font-bold text-amber-800 text-sm mb-1">✅ Cierre y evaluación</h4>
+          <p class="text-[13px] text-amber-900 leading-snug">${c.cie}</p>
+        </div>
+      </div>
+
+      <p class="text-[10px] text-slate-400 border-t border-slate-100 pt-3">
+        NTICx · 4.° año · Ciclo Superior — Diseño Curricular ES4, DGCyE (Pcia. de Buenos Aires). Enfoque: Alfabetización Digital-Informacional (ADI), mirada crítico-reflexiva. Clase ${c.n===36?'anexo':c.n} de 35.
+      </p>
+    </div>
+  </section>`;
+}
+
+/* ---------- Boot ---------- */
+$('#clasesWrap').innerHTML = CLASES.map(renderClase).join('');
+
+/* Sidebar agrupado */
+$('#sideList').innerHTML = UNIDADES.map((u,ui)=>{
+  const items = CLASES.filter(c=>c.u===ui);
+  if(!items.length) return '';
+  return `
+  <div data-ugroup="${ui}">
+    <p class="flex items-center gap-2 text-[11px] font-bold text-slate-600 mb-1.5"><span class="w-2.5 h-2.5 rounded-full ${u.dot}"></span>${u.name}</p>
+    <div class="space-y-1">
+      ${items.map(c=>`
+        <button data-go="${c.n}" class="sideBtn w-full text-left rounded-lg px-3 py-1.5 text-[12px] font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition" data-search="${String(c.n).padStart(2,'0')} ${c.t.toLowerCase()}">
+          <span class="font-display font-bold text-indigo-500 mr-1">${c.n===36?'ANX':String(c.n).padStart(2,'0')}</span>${c.t.split('.')[0]}…
+        </button>`).join('')}
+    </div>
+  </div>`;
+}).join('');
+
+/* Chips numéricos */
+$('#chips').innerHTML = CLASES.map(c=>`
+  <button data-go="${c.n}" class="chipBtn shrink-0 w-9 h-9 rounded-xl border border-white/40 bg-white/10 text-white text-xs font-bold hover:bg-white hover:text-indigo-700 transition">${c.n===36?'ANX':String(c.n).padStart(2,'0')}</button>`).join('');
+
+/* Navegación */
+function goTo(n){
+  $$('.clase').forEach(s=>s.classList.toggle('active', +s.dataset.n === +n));
+  $$('[data-go]').forEach(b=>{
+    const on = +b.dataset.go === +n;
+    if (b.classList.contains('sideBtn')) { b.classList.toggle('bg-indigo-600', on); b.classList.toggle('text-white', on); b.classList.toggle('text-slate-600', !on); }
+    else { b.classList.toggle('bg-white', on); b.classList.toggle('text-indigo-700', on); b.classList.toggle('bg-white/10', !on); b.classList.toggle('text-white', !on); }
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+$$('[data-go]').forEach(b=>b.addEventListener('click', ()=>goTo(b.dataset.go)));
+
+/* Búsqueda */
+$('#buscar').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  $$('.sideBtn').forEach(b=>{
+    const hit = !q || b.dataset.search.includes(q);
+    b.style.display = hit ? '' : 'none';
+  });
+  $$('[data-ugroup]').forEach(g=>{
+    g.style.display = [...g.querySelectorAll('.sideBtn')].some(b=>b.style.display!=='none') ? '' : 'none';
+  });
+});
+
+/* Impresión */
+$('#btnPrintOne').addEventListener('click', ()=>{ document.body.classList.remove('print-all'); window.print(); });
+$('#btnPrintAll').addEventListener('click', ()=>{ document.body.classList.add('print-all'); window.print(); });
+window.addEventListener('afterprint', ()=>document.body.classList.remove('print-all'));
+
+goTo(1);
+</script>
+</body>
+</html>
+
