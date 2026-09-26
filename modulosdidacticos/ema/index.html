@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo Didáctico · Lo virtual es real · 4to Año · Docente Martín Espinosa</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/fraunces@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/fraunces@latest/latin-900-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.css">
+<style>
+:root{
+  --violet:#5B21B6; --violet2:#7C3AED; --magenta:#DB2777; --lav:#EFE9FB; --lav2:#F7F3FD;
+  --ink:#241436; --muted:#6B5F80; --paper:#FAF7F2; --card:#FFFFFF; --line:#E5DDF2;
+  --ok:#0E9F6E; --warn:#D97706; --bad:#DC2626; --shadow:0 10px 30px rgba(91,33,182,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;font-size:15.5px}
+h1,h2,h3,.serif{font-family:'Fraunces',serif}
+a{color:var(--violet2)}
+img{max-width:100%;display:block}
+
+#barraProgreso{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--violet2),var(--magenta));width:0;z-index:1200}
+
+.topMovil{display:none;position:fixed;top:0;left:0;right:0;z-index:1100;background:rgba(250,247,242,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;align-items:center;gap:12px}
+.topMovil .btnMenu{background:var(--violet);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:16px;cursor:pointer}
+.topMovil strong{font-family:'Fraunces',serif;color:var(--violet)}
+
+aside{position:fixed;top:0;left:0;bottom:0;width:290px;background:#fff;border-right:1px solid var(--line);overflow-y:auto;z-index:1150;padding:22px 18px 40px;transition:transform .3s ease}
+aside .logo{display:flex;gap:10px;align-items:center;margin-bottom:18px}
+aside .logo .dot{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--violet2),var(--magenta));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fraunces',serif;font-weight:900;font-size:18px;flex:none}
+aside .logo small{display:block;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+aside .logo b{font-family:'Fraunces',serif;color:var(--violet);font-size:17px;line-height:1.1}
+nav .grupo{margin-bottom:6px}
+nav a.nivel1{display:block;padding:8px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600;font-size:13.5px}
+nav a.nivel1:hover{background:var(--lav2)}
+nav a.nivel1.activo{background:var(--lav);color:var(--violet)}
+nav a.nivel2{display:block;padding:5px 10px 5px 26px;color:var(--muted);text-decoration:none;font-size:12.5px;border-left:2px solid var(--line);margin-left:14px}
+nav a.nivel2:hover{color:var(--violet2)}
+nav a.nivel2.activo{color:var(--magenta);border-left-color:var(--magenta);font-weight:600}
+nav .etiqueta{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 10px 4px}
+aside .acciones{margin-top:16px;display:flex;gap:8px}
+aside .acciones button{flex:1;border:1px solid var(--line);background:var(--lav2);color:var(--violet);border-radius:10px;padding:8px;font-size:12px;font-weight:600;cursor:pointer}
+aside .acciones button:hover{background:var(--lav)}
+
+main{margin-left:290px;padding:0 0 60px}
+.contenedor{max-width:980px;margin:0 auto;padding:0 34px}
+
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#2E1065 0%,#5B21B6 55%,#86198F 100%);color:#fff;padding:64px 0 0}
+.hero .contenedor{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:end}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+.chip.docente{background:rgba(249,168,212,.25);border-color:rgba(249,168,212,.6)}
+.hero h1{font-size:clamp(30px,4vw,46px);line-height:1.08;font-weight:900;margin-bottom:14px}
+.hero h1 em{color:#F9A8D4;font-style:normal}
+.hero p.sub{color:#E9D5FF;font-size:16px;max-width:52ch;margin-bottom:22px}
+.hero .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:480px;margin-bottom:34px}
+.hero .meta div{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 12px}
+.hero .meta small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#D8B4FE}
+.hero .meta b{font-size:13.5px}
+.hero .imagenHero{border-radius:18px 18px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3)}
+.hero .franja{position:absolute;bottom:0;left:0;right:0;height:8px;background:linear-gradient(90deg,var(--magenta),var(--violet2),var(--magenta))}
+
+section.bloque{padding:56px 0 8px}
+.cabSec{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px}
+.cabSec .num{flex:none;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--violet2),var(--magenta));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:900;font-size:20px;box-shadow:var(--shadow)}
+.cabSec h2{font-size:clamp(22px,2.6vw,30px);font-weight:900;color:var(--violet);line-height:1.15}
+.cabSec .unidad{display:inline-block;margin-top:6px;background:var(--lav);color:var(--violet);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 12px}
+.introSec{color:var(--muted);max-width:75ch;margin:10px 0 22px}
+hr.sep{border:none;border-top:1px dashed var(--line);margin:44px 0 0}
+
+.tarjeta{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px;margin-bottom:18px}
+.tarjeta h3{color:var(--violet);font-size:18px;margin-bottom:10px}
+.tarjeta h4{color:var(--magenta);font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
+.tarjeta ul{padding-left:20px}
+.tarjeta li{margin-bottom:6px}
+.tarjeta li::marker{color:var(--magenta)}
+
+.fichaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fichaGrid .celda{background:var(--lav2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.fichaGrid .celda.destacada{background:#FDF2F8;border-color:#FBCFE8}
+.fichaGrid small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.fichaGrid b{font-size:13.5px;color:var(--ink)}
+.fichaGrid .celda.destacada b{color:var(--magenta)}
+
+.clase{position:relative;border:1px solid var(--line);border-radius:16px;background:#fff;margin:0 0 16px 34px;box-shadow:var(--shadow);overflow:hidden}
+.clase::before{content:"";position:absolute;left:-24px;top:26px;bottom:-16px;width:2px;background:var(--line)}
+.clase:last-child::before{bottom:auto;height:0}
+.clase .punto{position:absolute;left:-31px;top:20px;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--magenta));border:3px solid var(--paper)}
+.clase .cabClase{width:100%;display:flex;align-items:center;gap:14px;padding:16px 20px;background:#fff;border:none;cursor:pointer;text-align:left}
+.clase .cabClase:hover{background:var(--lav2)}
+.clase .nClase{flex:none;width:40px;height:40px;border-radius:12px;background:var(--lav);color:var(--violet);font-family:'Fraunces',serif;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:16px}
+.clase .titClase{flex:1}
+.clase .titClase b{display:block;font-family:'Fraunces',serif;font-size:16.5px;color:var(--ink)}
+.clase .titClase small{color:var(--muted);font-size:12px}
+.clase .chipsMini{display:flex;gap:6px;flex-wrap:wrap}
+.miniChip{background:var(--lav);color:var(--violet);border-radius:999px;font-size:11px;font-weight:700;padding:3px 10px}
+.miniChip.rosa{background:#FCE7F3;color:var(--magenta)}
+.clase .flecha{transition:transform .3s;color:var(--violet)}
+.clase.abierta .flecha{transform:rotate(180deg)}
+.clase .cuerpoClase{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.clase .interno{padding:0 22px 22px;border-top:1px dashed var(--line)}
+.momento{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.momento:last-of-type{border-bottom:none}
+.momento > .etapa{grid-column:1;grid-row:1}
+.momento > :not(.etapa){grid-column:2;min-width:0}
+.momento .etapa{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;border-radius:10px;padding:6px 8px;text-align:center;height:fit-content}
+.etapa.ini{background:#7C3AED}.etapa.des{background:#DB2777}.etapa.cie{background:#0E9F6E}
+.momento p{font-size:14px}
+.recursos{margin-top:12px;background:var(--lav2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px}
+.recursos b{color:var(--violet)}
+
+/* botón material de lectura */
+.btnLectura{display:inline-flex;align-items:center;gap:8px;margin-top:12px;border:none;cursor:pointer;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(135deg,var(--violet2),var(--magenta));border-radius:999px;padding:9px 18px;box-shadow:var(--shadow);transition:transform .2s,filter .2s}
+.btnLectura:hover{transform:translateY(-2px);filter:brightness(1.08)}
+
+.notaDoc{border-left:4px solid var(--violet2);background:var(--lav2);border-radius:0 12px 12px 0;padding:14px 18px;margin:14px 0;font-size:14px}
+.notaDoc b{color:var(--violet)}
+.ideaClave{border-left:4px solid var(--magenta);background:#FDF2F8;border-radius:0 12px 12px 0;padding:14px 18px;margin:14px 0;font-size:14.5px}
+.ideaClave b{color:var(--magenta)}
+
+.dosCol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.colNo,.colSi{border-radius:14px;padding:16px 18px;font-size:14px}
+.colNo{background:#FEF2F2;border:1px solid #FECACA}
+.colSi{background:#ECFDF5;border:1px solid #A7F3D0}
+.colNo h5{color:var(--bad);margin-bottom:8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.colSi h5{color:var(--ok);margin-bottom:8px;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.colNo li,.colSi li{margin-bottom:6px}
+.colNo li::marker{color:var(--bad)}.colSi li::marker{color:var(--ok)}
+
+.pasos{counter-reset:paso;list-style:none;padding:0}
+.pasos li{counter-increment:paso;position:relative;padding:12px 16px 12px 58px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;font-size:14px}
+.pasos li::before{content:counter(paso,decimal-leading-zero);position:absolute;left:14px;top:12px;font-family:'Fraunces',serif;font-weight:900;color:var(--magenta);font-size:16px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;width:100%}
+.stat{background:linear-gradient(150deg,#5B21B6,#7C3AED);color:#fff;border-radius:14px;padding:16px;text-align:center}
+.stat.rosa{background:linear-gradient(150deg,#9D174D,#DB2777)}
+.stat.verde{background:linear-gradient(150deg,#065F46,#0E9F6E)}
+.stat .numGrande{font-family:'Fraunces',serif;font-weight:900;font-size:30px}
+.stat small{font-size:11.5px;opacity:.92}
+
+.tablaWrap{overflow-x:auto}
+table.rubrica{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:12px;overflow:hidden}
+table.rubrica th{background:var(--violet);color:#fff;padding:10px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+table.rubrica td{border:1px solid var(--line);padding:10px;vertical-align:top}
+table.rubrica td:first-child{font-weight:700;color:var(--violet);background:var(--lav2)}
+
+.acc{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;overflow:hidden}
+.acc .accBtn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:#fff;border:none;cursor:pointer;text-align:left;font-weight:700;color:var(--violet);font-size:14.5px}
+.acc .accBtn:hover{background:var(--lav2)}
+.acc .accBtn .fl{transition:transform .3s;color:var(--magenta)}
+.acc.abierta .accBtn .fl{transform:rotate(180deg)}
+.acc .accBody{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.acc .accInt{padding:0 18px 16px;font-size:14px;color:#3d3352}
+.acc .accInt small{color:var(--muted)}
+
+.recGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.recCard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:6px}
+.recCard b{color:var(--violet);font-size:14px}
+.recCard span{font-size:12.5px;color:var(--muted)}
+.recCard a{font-size:12px;word-break:break-all}
+
+/* ===== glosario ===== */
+.gloBuscador{display:flex;gap:10px;align-items:center;margin:14px 0 18px}
+.gloBuscador input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 18px;font-size:14px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);outline:none}
+.gloBuscador input:focus{border-color:var(--violet2);box-shadow:0 0 0 3px var(--lav)}
+.gloBuscador .contador{font-size:12px;color:var(--muted);white-space:nowrap}
+.gloGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gloCard{border:1px solid var(--line);border-left:4px solid var(--violet2);border-radius:12px;padding:12px 16px;background:#fff}
+.gloCard.rosa{border-left-color:var(--magenta)}
+.gloCard.verde{border-left-color:var(--ok)}
+.gloCard b{display:block;color:var(--violet);font-size:14px;margin-bottom:4px}
+.gloCard.rosa b{color:var(--magenta)}
+.gloCard.verde b{color:var(--ok)}
+.gloCard p{font-size:12.8px;color:#3d3352}
+.gloVacio{display:none;text-align:center;color:var(--muted);padding:20px;font-size:14px}
+
+.cierreBox{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:center}
+.cierreBox img{border-radius:18px;box-shadow:var(--shadow)}
+.fraseEma{font-family:'Fraunces',serif;font-size:clamp(20px,2.4vw,26px);font-weight:900;color:var(--violet);line-height:1.3;margin:14px 0}
+.fraseEma em{color:var(--magenta);font-style:normal}
+
+footer{background:#2E1065;color:#E9D5FF;padding:34px 0;margin-top:60px}
+footer .contenedor{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+footer small{font-size:12px}
+footer b{font-family:'Fraunces',serif;color:#fff}
+
+/* ===== modal lectura ===== */
+#modalLectura{position:fixed;inset:0;z-index:1300;display:none;align-items:center;justify-content:center;padding:20px}
+#modalLectura.visible{display:flex}
+#modalLectura .fondo{position:absolute;inset:0;background:rgba(36,20,54,.6);backdrop-filter:blur(4px)}
+#modalLectura .cajaModal{position:relative;background:#fff;border-radius:18px;max-width:760px;width:100%;max-height:84vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.35);border-top:6px solid var(--magenta)}
+#modalLectura .cabModal{position:sticky;top:0;background:#fff;padding:18px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;z-index:2}
+#modalLectura .cabModal h3{color:var(--violet);font-size:17px}
+#modalLectura .cabModal small{display:block;color:var(--muted);font-size:11.5px}
+#modalLectura .btnCerrar{border:none;background:var(--lav);color:var(--violet);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;flex:none}
+#modalLectura .btnCerrar:hover{background:var(--magenta);color:#fff}
+#modalLectura .cuerpoModal{padding:20px 26px 28px;font-size:14px;color:#3d3352}
+#modalLectura .cuerpoModal h4{color:var(--magenta);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;margin:16px 0 6px}
+#modalLectura .cuerpoModal blockquote{border-left:4px solid var(--violet2);background:var(--lav2);border-radius:0 12px 12px 0;padding:12px 16px;margin:12px 0;font-style:italic}
+#modalLectura .cuerpoModal ul{padding-left:20px;margin:8px 0}
+#modalLectura .cuerpoModal li{margin-bottom:6px}
+#modalLectura .cuerpoModal li b{color:var(--violet)}
+#modalLectura .cuerpoModal a{word-break:break-all}
+
+#btnSubir{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:none;background:var(--violet);color:#fff;font-size:18px;cursor:pointer;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s;z-index:1000}
+#btnSubir.visible{opacity:1;pointer-events:auto}
+
+@media (max-width:1080px){
+  aside{transform:translateX(-100%)}
+  aside.abierto{transform:translateX(0)}
+  main{margin-left:0}
+  .topMovil{display:flex}
+  .hero{padding-top:76px}
+  .hero .contenedor{grid-template-columns:1fr}
+  .fichaGrid{grid-template-columns:1fr 1fr}
+  .dosCol,.recGrid,.gloGrid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .cierreBox{grid-template-columns:1fr}
+  .contenedor{padding:0 20px}
+  .clase{margin-left:26px}
+}
+@media (max-width:700px){
+  .momento{grid-template-columns:1fr}
+  .momento > .etapa{grid-column:1;grid-row:auto;justify-self:start;margin-bottom:2px}
+  .momento > :not(.etapa){grid-column:1}
+}
+@media print{
+  aside,.topMovil,#btnSubir,#barraProgreso,#modalLectura{display:none!important}
+  main{margin-left:0}
+  .clase .cuerpoClase,.acc .accBody{max-height:none!important}
+}
+</style>
+</head>
+<body>
+
+<div id="barraProgreso"></div>
+
+<header class="topMovil">
+  <button class="btnMenu" id="btnMenu" aria-label="Abrir menú">☰</button>
+  <strong>Guía Ema · Módulo 4to Año · Prof. Martín Espinosa</strong>
+</header>
+
+<aside id="panelNav">
+  <div class="logo">
+    <div class="dot">E</div>
+    <div><small>Módulo didáctico · Guía Ema</small><b>Lo virtual es real</b></div>
+  </div>
+  <nav id="navPrincipal">
+    <div class="etiqueta">Apertura</div>
+    <a class="nivel1" href="#portada">Portada del módulo</a>
+    <a class="nivel1" href="#ficha">Ficha técnica y fundamentación</a>
+    <div class="etiqueta">Secuencia didáctica</div>
+    <a class="nivel1" href="#sec1">1 · Palabras preliminares</a>
+    <a class="nivel2" href="#sec1">Prefacio · Introducción</a>
+    <a class="nivel2" href="#sec1b">¿Por qué? · ¿Qué encontrar?</a>
+    <a class="nivel1" href="#sec2">2 · Marco conceptual</a>
+    <a class="nivel2" href="#sec2">Tipos y modalidades</a>
+    <a class="nivel2" href="#sec2b">Violencias digitales sexuales</a>
+    <a class="nivel2" href="#sec2c">Otras modalidades</a>
+    <a class="nivel1" href="#sec3">3 · Detección y prevención</a>
+    <a class="nivel2" href="#sec3">Detección temprana</a>
+    <a class="nivel2" href="#sec3b">Rol docente · Familias</a>
+    <a class="nivel1" href="#sec4">4 · Actuación ante un caso</a>
+    <a class="nivel2" href="#sec4">Responsabilidad escolar</a>
+    <a class="nivel2" href="#sec4b">Pasos de intervención</a>
+    <a class="nivel1" href="#sec5">5 · Articulación institucional</a>
+    <a class="nivel2" href="#sec5">Cuándo · Con quiénes</a>
+    <a class="nivel2" href="#sec5b">Modalidades · Registro</a>
+    <a class="nivel1" href="#sec6">6 · Reparación y protección</a>
+    <a class="nivel2" href="#sec6">Procesos restaurativos</a>
+    <a class="nivel2" href="#sec6b">Sanciones · Medidas</a>
+    <a class="nivel1" href="#sec7">7 · Capacitación y ESI</a>
+    <a class="nivel2" href="#sec7">Educación digital</a>
+    <a class="nivel2" href="#sec7b">Ciudadanía digital · ESI</a>
+    <div class="etiqueta">Cierre y anexos</div>
+    <a class="nivel1" href="#evaluacion">Evaluación (rúbrica)</a>
+    <a class="nivel1" href="#glosario">Glosario del módulo</a>
+    <a class="nivel1" href="#cierre">A modo de cierre</a>
+    <a class="nivel1" href="#anexos">Anexos</a>
+    <a class="nivel2" href="#herramientas">Caja de herramientas</a>
+    <a class="nivel2" href="#normativa">Marco normativo</a>
+    <a class="nivel2" href="#bibliografia">Bibliografía</a>
+  </nav>
+  <div class="acciones">
+    <button id="btnExpandir">▼ Expandir todo</button>
+    <button id="btnImprimir">🖨 Imprimir</button>
+  </div>
+</aside>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <div class="hero" id="portada">
+    <div class="contenedor">
+      <div>
+        <div class="chips">
+          <span class="chip">🇦🇷 Provincia de Buenos Aires</span>
+          <span class="chip">🎓 4to Año · Secundaria</span>
+          <span class="chip docente">👨‍🏫 Docente: Martín Espinosa</span>
+          <span class="chip">💻 Informática / Tecnología</span>
+          <span class="chip">🟣 ESI · Ley 26.150</span>
+        </div>
+        <h1>Módulo didáctico<br><em>“Lo virtual es real”</em></h1>
+        <p class="sub">Violencias digitales, ciudadanía digital y ESI. Secuencia didáctica de 12 clases de 80 minutos basada en la <b>Guía Ema</b>, para trabajar prevención, detección y reparación de la difusión no consentida de material íntimo en entornos digitales.</p>
+        <div class="meta">
+          <div><small>Destinatarios</small><b>Estudiantes de 15–16 años</b></div>
+          <div><small>Docente a cargo</small><b>Martín Espinosa</b></div>
+          <div><small>Duración</small><b>12 módulos · 80 min c/u</b></div>
+          <div><small>Proyecto final</small><b>Campaña + protocolo escolar</b></div>
+        </div>
+      </div>
+      <img class="imagenHero" src="https://image.qwenlm.ai/public_source/1dfe025e-1909-4da6-b29e-d8927d716/14b36bfbd-952e-412c-8b37-ec1dc642d716.png" alt="Ilustración de adolescentes con celulares y símbolos de cuidado frente a una escuela">
+    </div>
+    <div class="franja"></div>
+  </div>
+
+  <div class="contenedor">
+
+    <!-- ============ FICHA ============ -->
+    <section class="bloque" id="ficha">
+      <div class="cabSec"><div class="num">✦</div>
+        <div><h2>Ficha técnica, fundamentación y propósitos</h2>
+        <span class="unidad">Documento para el equipo docente</span></div>
+      </div>
+      <p class="introSec">Este módulo traduce la <b>Guía Ema</b> —construida por la familia de Ema Bondaruk junto a Ley Olimpia Argentina, Género y TIC, Faro Digital, Defensoras Digitales de México, Fundación Encuentro y los despachos de la Diputada Mónica Macha y la Senadora Laura Clark— en una secuencia de enseñanza situada para 4to año de secundaria en la Provincia de Buenos Aires.</p>
+
+      <div class="tarjeta">
+        <h3>Datos de identificación</h3>
+        <div class="fichaGrid">
+          <div class="celda destacada"><small>Docente</small><b>Martín Espinosa</b></div>
+          <div class="celda"><small>Nivel</small><b>Educación Secundaria · 4to año</b></div>
+          <div class="celda"><small>Jurisdicción</small><b>Provincia de Buenos Aires, Argentina</b></div>
+          <div class="celda"><small>Espacio curricular</small><b>Informática / Tecnología (articulado con Formación Ética y Ciudadana y ESI)</b></div>
+          <div class="celda"><small>Temporalización</small><b>12 clases de 80 min · 6 a 8 semanas</b></div>
+          <div class="celda"><small>Formato</small><b>Taller participativo · aula y entorno digital</b></div>
+          <div class="celda"><small>Anclaje normativo</small><b>Leyes 27.736 · 26.061 · 26.485 · 26.150 · 26.892 · 27.590</b></div>
+          <div class="celda"><small>Enfoques</small><b>Género y diversidad · Derechos · Cuidado</b></div>
+          <div class="celda"><small>Producto final</small><b>Campaña “Lo virtual es real” + protocolo estudiantil</b></div>
+        </div>
+        <h4>Fundamentación</h4>
+        <p>Los entornos digitales son parte de la vida cotidiana de nuestras y nuestros estudiantes: allí se construyen vínculos, emociones y ciudadanías. Sin embargo, también se reproducen violencias —especialmente la <b>difusión no consentida de material íntimo</b>, una violencia por motivos de género que afecta de manera desproporcionada a mujeres y disidencias—. Como señala la Guía, casi el <b>96%</b> de las infancias y adolescencias de Argentina accede a Internet (UNICEF, Kids Online 2025), y la escuela aún atraviesa el desafío de incorporar los territorios digitales a su ejercicio cotidiano. Este módulo propone que el aula de Informática sea un espacio de <b>prevención, reflexión y producción</b>: nombrar las violencias, comprender el rol del consentimiento, conocer los circuitos de protección y ejercer una ciudadanía digital crítica, ética y cuidadosa —una “<b>cuidadanía</b>” (Najmanovich, 2019)— donde lo virtual se asuma como real.</p>
+        <h4>Propósitos de enseñanza</h4>
+        <ul>
+          <li>Problematizar las violencias digitales con perspectiva de género y diversidad, desnaturalizando el “chiste”, la culpa de la víctima y la complicidad digital.</li>
+          <li>Enseñar los conceptos del marco normativo vigente (Ley Olimpia 27.736, ESI, protección integral de NNyA) con lenguaje accesible y situado.</li>
+          <li>Entrenar la escucha empática, la detección de señales de alerta y el conocimiento de los circuitos institucionales de protección (EOE, directivos, Línea 102).</li>
+          <li>Promover la producción estudiantil de campañas y acuerdos de convivencia digital, incluyendo al centro de estudiantes como agente de cuidado.</li>
+        </ul>
+        <h4>Capacidades y objetivos de aprendizaje</h4>
+        <ul>
+          <li><b>Conceptual:</b> identificar y nombrar los distintos tipos y modalidades de violencias digitales, especialmente las sexuales (apoyándose en el glosario del módulo).</li>
+          <li><b>Analítico:</b> analizar casos ficticios reconociendo consentimiento, responsabilidad y marcos legales aplicables.</li>
+          <li><b>Ético-ciudadano:</b> construir prácticas de cuidado mutuo, respeto por la intimidad y no revictimización.</li>
+          <li><b>Procedimental:</b> conocer los pasos de actuación escolar y los organismos de articulación (comunicar no es denunciar).</li>
+          <li><b>Productivo:</b> diseñar piezas de concientización y propuestas de protocolo escolar (proyecto integrador).</li>
+        </ul>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 1 ============ -->
+    <section class="bloque" id="sec1">
+      <div class="cabSec"><div class="num">01</div>
+        <div><h2>Palabras preliminares</h2>
+        <span class="unidad">Unidad 1 · Clases 1–2 · Prefacio · Introducción · Por qué · Qué</span></div>
+      </div>
+      <p class="introSec">La secuencia se abre con la dimensión sensible: la historia de Ema como punto de partida ético, el prefacio que explica quiénes construyeron la guía, y la introducción conceptual (ciudadanía digital, enfoque de género y diversidad). Luego se trabaja <b>por qué es necesaria</b> la guía (datos, emergencia del problema) y <b>qué vamos a encontrar</b> en ella (lectura del índice como contrato de trabajo del módulo).</p>
+
+      <div class="tarjeta" id="sec1b">
+        <h3>Contenidos de la unidad</h3>
+        <ul>
+          <li>La historia de Ema y el lema <b>“lo virtual es real”</b>: dimensión ética y emocional.</li>
+          <li>Prefacio: el movimiento Ley Olimpia y el trabajo colectivo de organizaciones y familia.</li>
+          <li>Introducción: ciudadanía digital (UNESCO, 2015), tecnología no neutral (Friedman y Nissenbaum), enfoque de género, interseccionalidad y derechos.</li>
+          <li>¿Por qué es necesaria la guía?: la difusión no consentida como violencia de género emergente en las escuelas; datos de Faro Digital (2023) y UNICEF (Kids Online 2025).</li>
+          <li>¿Qué vamos a encontrar?: recorrido del índice y acuerdos de trabajo del módulo.</li>
+        </ul>
+      </div>
+
+      <!-- CLASE 1 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">1</div>
+          <div class="titClase"><b>“La historia de Ema: lo virtual es real”</b><small>Lectura sensible, presentación del módulo y acuerdos de cuidado.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Apertura</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 15'</span><p>Lectura en voz alta de las <b>Palabras preliminares</b> (la madre de Ema). Ronda de primeras impresiones con pregunta guía: <i>“¿Qué nos genera esta historia? ¿Qué significa que lo virtual sea real?”</i>. Acuerdos de confidencialidad y cuidado del grupo (nadie está obligado a hablar; no se comparten experiencias personales sensibles sin consentimiento).</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 40'</span><p>Lectura del <b>Prefacio</b> y la <b>Introducción</b> en pequeños grupos con guía de análisis: ¿quiénes escribieron la guía y por qué?, ¿qué es el movimiento Ley Olimpia?, ¿qué es la ciudadanía digital según UNESCO? Puesta en común y construcción de una definición colectiva de ciudadanía digital en el pizarrón.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Mural colectivo (papel afiche o Padlet): <i>“Lo que nos pasa en lo digital también es real”</i>. Cada estudiante aporta una emoción, una práctica y un deseo para los vínculos digitales. Se presenta la secuencia completa del módulo y el proyecto final.</p></div>
+          <button class="btnLectura" data-lectura="lec1">📖 Material de lectura · Palabras preliminares, Prefacio e Introducción (Guía Ema, pp. 3–6)</button>
+          <div class="recursos"><b>Recursos:</b> Guía Ema impresa, afiches, marcadores, Padlet opcional. <b>Evaluación:</b> participación respetuosa en la ronda y calidad de la definición colectiva (observación).</div>
+        </div></div>
+      </div>
+
+      <!-- CLASE 2 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">2</div>
+          <div class="titClase"><b>“¿Por qué es necesaria esta guía? Datos que interpelan”</b><small>Análisis de estadísticas y lectura del índice como contrato del módulo.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Datos</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Recuperación del mural de la clase anterior. Pregunta disparadora: <i>“¿Cuánto nos preocupa que circulen imágenes íntimas sin consentimiento?”</i>.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>Análisis de datos en parejas y producción de inferencias:</p>
+            <div class="stats">
+              <div class="stat"><div class="numGrande">92%</div><small>de mujeres e identidades no binarias preocupa la difusión no consentida como efecto no deseado del sexting (Faro Digital, 2023)</small></div>
+              <div class="stat rosa"><div class="numGrande">63%</div><small>acuerda en que la difusión no consentida es una forma de violencia de género (Faro Digital, 2023)</small></div>
+              <div class="stat verde"><div class="numGrande">96%</div><small>de NNyA en Argentina accede a Internet; las mediaciones adultas reducen conductas de riesgo (UNICEF Kids Online 2025)</small></div>
+            </div>
+            <p>Debate: ¿por qué preocupa más a mujeres y disidencias?, ¿qué significa que la tecnología no sea neutral? Luego, recorrido del apartado <b>“¿Qué van a encontrar en esta guía?”</b>: lectura del índice y armado del “contrato” del módulo (qué aprenderemos, cómo, con qué productos).</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Diseño (opcional, con autorización institucional) de una breve encuesta anónima al curso sobre hábitos y preocupaciones digitales (Formularios), que alimentará el proyecto final. Ticket de salida: <i>“Una cosa que me sorprendió de los datos”</i>.</p></div>
+          <div class="recursos"><b>Recursos:</b> tarjetas con datos, índice de la Guía, formulario digital. <b>Evaluación:</b> inferencias sobre los datos y pertinencia de preguntas de encuesta.</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 2 ============ -->
+    <section class="bloque" id="sec2">
+      <div class="cabSec"><div class="num">02</div>
+        <div><h2>Marco conceptual: violencias digitales</h2>
+        <span class="unidad">Unidad 2 · Clases 3–5 · Tipos · Sexuales · Otras modalidades</span></div>
+      </div>
+      <p class="introSec">Siguiendo la <b>Ley Olimpia 27.736</b>, entendemos violencia digital como toda conducta, acción u omisión cometida con asistencia de tecnologías de la información y la comunicación que cause daños físicos, psicológicos, económicos, sexuales o morales —incluida la obtención, reproducción y difusión sin consentimiento de material íntimo—. Esta unidad construye el vocabulario para <b>nombrar lo que pasa</b>, primer paso para prevenirlo.</p>
+
+      <div class="tarjeta" id="sec2b">
+        <h3>Contenidos de la unidad</h3>
+        <ul>
+          <li><b>Definición legal</b> de violencia digital (Ley 27.736) y su vínculo con el continuo de la violencia de género.</li>
+          <li id="sec2c"><b>Violencias digitales sexuales:</b> obtención y difusión no consentida de material íntimo/desnudez/explotación; violencia sexual exhibida en internet; sextorsión; deep fake y porn deep fake; grooming (Ley Mica Ortega); abusos sexuales telemáticos; captación y trata virtual; acoso virtual sexual; ciberflashing.</li>
+          <li><b>Otras modalidades:</b> ciberbullying, acoso digital, discurso de odio, cibercontrol, doxing, suplantación de identidad, amenazas virtuales, phishing/hackeo/daños informáticos, ataques coordinados (trolling), exclusión virtual, happy slapping y sharenting.</li>
+          <li>Idea eje: <b>el consentimiento para obtener una imagen no se extiende a su difusión</b>.</li>
+        </ul>
+        <div class="ideaClave"><b>Idea clave para el aula:</b> que una imagen haya sido obtenida con consentimiento no justifica su difusión sin consentimiento. La responsabilidad nunca es de la víctima.</div>
+      </div>
+
+      <!-- CLASE 3 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">3</div>
+          <div class="titClase"><b>“¿Qué es la violencia digital? La Ley Olimpia en el aula”</b><small>Lectura comentada de la Ley 27.736 y glosario colectivo.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Conceptos</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Lluvia de ideas: <i>“¿Qué violencias conocemos que pasan en redes o chats?”</i>. Registro en el pizarrón sin juzgar términos.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>Lectura comentada y subrayado colectivo de la definición de la <b>Ley 27.736</b> (p. 11 de la Guía). Comparación entre lo que el grupo había nombrado y lo que la ley reconoce. Actividad <b>“glosario vivo”</b>: cada pareja recibe un término del marco conceptual y produce una ficha: definición propia + ejemplo ficticio + derecho vulnerado (pueden apoyarse en el <a href="#glosario">glosario del módulo</a>).</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Armado del glosario mural del aula (físico o digital) que se completará durante toda la unidad. Pregunta de cierre: <i>“¿Qué situaciones que antes llamábamos ‘chiste’ ahora podemos nombrar como violencia?”</i>.</p></div>
+          <button class="btnLectura" data-lectura="lec3">📖 Material de lectura · Marco conceptual y Ley Olimpia 27.736 (Guía Ema, pp. 10–12)</button>
+          <div class="recursos"><b>Recursos:</b> texto de la ley impreso, fichas, mural, glosario del módulo. <b>Evaluación:</b> precisión conceptual de las fichas del glosario (formativa).</div>
+        </div></div>
+      </div>
+
+      <!-- CLASE 4 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">4</div>
+          <div class="titClase"><b>“Violencias digitales sexuales: el consentimiento en el centro”</b><small>Postas de casos ficticios y puente con ESI.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">ESI</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Pregunta ESI: <i>“¿Qué es el consentimiento?”</i>. Construcción de la noción aplicable también a lo digital (libre, informado, reversible, específico).</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 50'</span><p><b>Postas rotativas</b> con casos ficticios breves y respetuosos, uno por modalidad: difusión no consentida, sextorsión, porn deep fake con IA, grooming, ciberflashing, captación con anuncios engañosos. En cada posta el grupo responde: ¿qué modalidad es?, ¿dónde se rompe el consentimiento?, ¿qué dice la ley?, ¿a quién pedir ayuda? Se recuerda: <b>reenviar material íntimo de NNyA es un delito</b>, aun “entre pares”.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 20'</span><p>Plenaria: <i>“Tres cosas que aprendimos y una pregunta que le haríamos a una persona adulta de confianza”</i>. Las preguntas anónimas se guardan para la jornada con familias.</p></div>
+          <button class="btnLectura" data-lectura="lec4">📖 Material de lectura · Violencias digitales sexuales (Guía Ema, pp. 12–16)</button>
+          <div class="recursos"><b>Recursos:</b> tarjetas de casos ficticios (elaboradas por el docente, sin imágenes reales), glosario mural. <b>Evaluación:</b> clasificación correcta de modalidades y argumentación sobre el consentimiento.</div>
+        </div></div>
+      </div>
+
+      <!-- CLASE 5 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">5</div>
+          <div class="titClase"><b>“Otras modalidades: mapa de las violencias que circulan”</b><small>Mapa conceptual y juego “¿Mito o violencia?”.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Evaluación de unidad</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Repaso del glosario con ejemplos de <b>cibercontrol</b> (pedir contraseñas, ubicación), <b>doxing</b>, <b>suplantación</b>, <b>happy slapping</b>, <b>sharenting</b>, <b>exclusión virtual</b> y <b>trolling</b>.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>En grupos, construcción de un <b>mapa conceptual</b> que relacione todas las modalidades con: derechos vulnerados, actores (víctima/agresor/espectadores), y emociones posibles. Juego <b>“¿Mito o violencia?”</b>: el docente lee afirmaciones (“es solo un chiste”, “si lo mandó, que se aguante”, “controlar el celu de tu novia es amor”) y el grupo vota y fundamenta con el marco conceptual.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p><b>Evaluación de la unidad:</b> entrega del mapa conceptual + glosario completo. Autoevaluación breve: <i>“¿Qué término aprendí y por qué me importa?”</i>.</p></div>
+          <button class="btnLectura" data-lectura="lec5">📖 Material de lectura · Otras modalidades de violencias digitales (Guía Ema, pp. 17–21)</button>
+          <div class="recursos"><b>Recursos:</b> afiches, tarjetas de afirmaciones, rúbrica del mapa, glosario del módulo. <b>Evaluación:</b> mapa conceptual (criterios: precisión, relaciones, ejemplos propios).</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 3 ============ -->
+    <section class="bloque" id="sec3">
+      <div class="cabSec"><div class="num">03</div>
+        <div><h2>Detección y prevención en el ámbito escolar</h2>
+        <span class="unidad">Unidad 3 · Clases 6–7 · Detección temprana · Rol docente · Familias</span></div>
+      </div>
+      <p class="introSec">Muchas veces las víctimas no lo cuentan directamente, y son sus pares quienes primero lo saben. Trabajamos las <b>señales de alerta</b> (cambios de conducta, aislamiento, angustia, caída del rendimiento, ausencias, actitudes evasivas frente a dispositivos), la <b>escucha activa</b> sin revictimizar, el rol del personal educativo en la sensibilización y la <b>participación de familias y comunidad</b>, incluido el centro de estudiantes.</p>
+
+      <div class="tarjeta" id="sec3b">
+        <h3>Contenidos de la unidad</h3>
+        <ul>
+          <li>Señales de alerta y actuación temprana; el secreto entre pares y la confianza con personas adultas referentes.</li>
+          <li>Frases revictimizantes a evitar y frases de cuidado; escucha activa; la responsabilidad nunca es de la víctima.</li>
+          <li>Rol del personal educativo: sensibilizar vs. prevenir; desnaturalizar “chistes” y “cosas de adolescentes”.</li>
+          <li>Familias: crianza digital sin invadir la privacidad; mediación adulta que reduce riesgos (UNICEF); estrategias comunitarias (talleres, mesas de trabajo, guías accesibles, campañas).</li>
+        </ul>
+        <div class="dosCol">
+          <div class="colNo"><h5>🚫 Frases a evitar</h5><ul><li>“¿Por qué lo enviaste?”</li><li>“Sos inconsciente.”</li><li>“¿Para qué te sacaste esa foto?”</li><li>“Eso te pasa por confiar en alguien que no conocías.”</li></ul></div>
+          <div class="colSi"><h5>✅ Qué sí hacer</h5><ul><li>“¿Cómo te sentís?” · “¿Qué te preocupa?” · “¿Cómo podemos ayudarte?”</li><li>Entrevistar por separado, con privacidad.</li><li>Informar cada paso a la/el joven (consentimiento informado).</li><li>Frenar la cadena de viralización con estrategia colectiva.</li></ul></div>
+        </div>
+      </div>
+
+      <!-- CLASE 6 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">6</div>
+          <div class="titClase"><b>“Señales de alerta y primera respuesta: escuchar sin juzgar”</b><small>Juego de roles de escucha activa y afiche “Qué no hacer / Qué sí hacer”.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Prevención</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Presentación de señales de alerta de la Guía (pp. 22–23). Pregunta: <i>“¿Qué harías si notás esto en una amiga o amigo?”</i>.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p><b>Juego de roles</b> en tríos (quien escucha, quien cuenta, observador/a) con situaciones ficticias: una estudiante llega angustiada porque “circula un video”. Primero se actúa con frases revictimizantes, luego con escucha activa; el observador registra diferencias emocionales. Análisis grupal: ¿por qué el foco debe estar en que la responsabilidad nunca es de la víctima? ¿A qué adulta/o de la escuela podríamos recurrir?</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Producción del afiche <b>“Qué no hacer / Qué sí hacer”</b> para los pasillos de la escuela (articulación con el proyecto final). Ticket de salida: una frase de cuidado que me comprometo a usar.</p></div>
+          <div class="recursos"><b>Recursos:</b> tarjetas de roles, afiches. <b>Evaluación:</b> calidad de la escucha en el rol y pertinencia del afiche (observación + coevaluación).</div>
+        </div></div>
+      </div>
+
+      <!-- CLASE 7 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">7</div>
+          <div class="titClase"><b>“Familias y comunidad educativa: cuidar en conjunto”</b><small>Mediación adulta, diálogo intergeneracional y carta-invitación a las familias.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Comunidad</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Dato disparador: las conductas de riesgo en línea <b>se reducen</b> cuando se fortalecen las mediaciones parentales (UNICEF 2025). ¿Qué es “mediar” sin invadir la intimidad?</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>Lectura comentada de “Participación de familias y comunidad educativa” (pp. 28–30): acompañar como al cine o al médico, pero también en línea; escuchar sin revisar el celular; aprendizaje intergeneracional. Análisis de las cuatro estrategias comunitarias de la Guía (mesas de trabajo, compromiso colectivo, sensibilización a familias, guías accesibles). El grupo elige dos para proponer a la escuela.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Redacción colectiva de una <b>carta-invitación a las familias</b> para un taller “Crianza digital sin miedo”, que formará parte del proyecto final. Cierre con ronda: <i>“¿Qué conversación pendiente tenemos en casa?”</i>.</p></div>
+          <div class="recursos"><b>Recursos:</b> Guía pp. 28–30, modelos de invitación. <b>Evaluación:</b> pertinencia y tono respetuoso de la carta (formativa).</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 4 ============ -->
+    <section class="bloque" id="sec4">
+      <div class="cabSec"><div class="num">04</div>
+        <div><h2>Recomendaciones para la actuación ante un caso</h2>
+        <span class="unidad">Unidad 4 · Clase 8 · Responsabilidad escolar · Roles · Pasos inmediatos</span></div>
+      </div>
+      <p class="introSec">Aunque la intervención formal corresponde a personas adultas e institucionales, es fundamental que las y los estudiantes <b>conozcan el circuito de protección</b>: qué debe hacer la escuela, quiénes son los actores (docentes/preceptoría, EOE, directivos) y cuáles son los pasos de intervención inmediata. Esto transforma el protocolo en una herramienta de confianza, no de miedo.</p>
+
+      <div class="tarjeta">
+        <h3>Roles diferenciados y coordinados (para analizar en clase)</h3>
+        <ul>
+          <li><b>Docentes y preceptorías:</b> detectar señales, comunicar a la autoridad institucional, intervenir sin demoras. La omisión puede constituir encubrimiento.</li>
+          <li><b>Equipos de orientación (EOE):</b> articular la respuesta, acompañar emocionalmente, derivar.</li>
+          <li><b>Equipos directivos:</b> activar protocolos, formalizar comunicaciones con organismos (Servicio Local, SENAF, Defensoría, Fiscalía), dar respaldo institucional.</li>
+        </ul>
+        <h4>Acciones fundamentales desde la escuela</h4>
+        <ul><li>No minimizar ni desestimar relatos o señales.</li><li>Escucha empática y no revictimizante.</li><li>Comunicar de inmediato a directivos/EOE.</li><li>Registrar por escrito, con lenguaje claro, fechas y actores.</li><li>Acompañar emocionalmente y resguardar la privacidad.</li></ul>
+        <div class="notaDoc"><b>Nota docente:</b> trabajar con el grupo la idea de que <i>contar a una persona adulta no es “meterse” sino cuidar</i>. Reforzar que la escuela debe actuar aunque el hecho haya ocurrido “fuera” del aula, si repercute en los vínculos escolares.</div>
+      </div>
+
+      <!-- CLASE 8 -->
+      <div class="clase" id="sec4b">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">8</div>
+          <div class="titClase"><b>“El protocolo escolar paso a paso: caso ficticio ‘Sofía’”</b><small>Resolución guiada con checklist de intervención inmediata.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Protocolo</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Presentación del caso ficticio: <i>“En 4to circula por un grupo de WhatsApp un video íntimo atribuido a Sofía. Ella no va a clases hace dos días.”</i> ¿Qué debería pasar en la escuela?</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 50'</span><p>En grupos, ordenan y aplican los <b>pasos de intervención inmediata</b> de la Guía (pp. 36–37) sobre el caso:</p>
+            <ol class="pasos">
+              <li>Entrevistar por separado a estudiantes involucrados, acompañados por adulta/o de confianza.</li>
+              <li>Escucha atenta, diálogo reflexivo y consentimiento informado sobre confidencialidad.</li>
+              <li>Registro escrito de la situación y de las intervenciones.</li>
+              <li>Aviso al superior jerárquico e intervención de equipos técnicos (EOE).</li>
+              <li>Entrevistas separadas con familias; informar acciones de protección y reparación.</li>
+              <li>Indagar herramientas de acompañamiento en el hogar y garantizar su acceso.</li>
+              <li>Evaluar acciones restaurativas y espacios de reflexión grupal (incluido el centro de estudiantes).</li>
+              <li>En casos graves, sanciones pedagógicas desde el sistema de convivencia; informar a la comunidad las acciones pedagógicas.</li>
+            </ol>
+            <p>Reglas de oro que se destacan: <b>nunca reenviar el material</b> (reenviar contenido íntimo de NNyA es delito); no recolectar evidencia de celulares estudiantes (función de la justicia); las capturas no tienen validez; no borrar ni alterar evidencia recibida y dar intervención inmediata a la justicia.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 20'</span><p>Construcción de una <b>checklist de bolsillo</b> “Si circula material en mi curso, yo puedo…” (avisar a adulta/o de confianza, no reenviar, no burlarme, acompañar). Puesta en común.</p></div>
+          <div class="recursos"><b>Recursos:</b> caso ficticio impreso, pasos recortables, checklist. <b>Evaluación:</b> secuencia lógica de la resolución y justificación de cada paso.</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 5 ============ -->
+    <section class="bloque" id="sec5">
+      <div class="cabSec"><div class="num">05</div>
+        <div><h2>Mecanismos de articulación con organismos especializados</h2>
+        <span class="unidad">Unidad 4 · Clase 9 · Cuándo · Con quiénes · Modalidades · Registro</span></div>
+      </div>
+      <p class="introSec">La escuela no está sola: forma parte del <b>Sistema de Protección Integral de Derechos</b> (Ley 26.061). En esta clase el grupo conoce los organismos, entiende que <b>“comunicar no es denunciar”</b> y construye un mapa de contactos reales de su territorio.</p>
+
+      <div class="tarjeta">
+        <h3>¿Con quiénes articular? (mapa para el aula)</h3>
+        <ul>
+          <li><b>Línea Nacional 102:</b> gratuita y confidencial, para violencia/maltrato/abuso hacia NNyA.</li>
+          <li><b>Áreas provinciales y municipales de protección de derechos</b> (Servicios Locales de Niñez).</li>
+          <li><b>Equipos interdisciplinarios de niñez y adolescencia</b> (social, psicológico, legal).</li>
+          <li><b>Fiscalías especializadas</b> en violencia de género o delitos informáticos.</li>
+          <li><b>Defensorías y organismos de derechos humanos; Ministerios de Educación</b> (Convivencia Escolar y Género).</li>
+        </ul>
+        <div class="ideaClave"><b>Idea clave:</b> comunicar una situación que luego no se confirma <i>no</i> acarrea consecuencias legales; el silencio ante la desprotección, sí.</div>
+      </div>
+
+      <!-- CLASE 9 -->
+      <div class="clase" id="sec5b">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">9</div>
+          <div class="titClase"><b>“Comunicar no es denunciar: mapa de protección del territorio”</b><small>Construcción de mapa de contactos y dramatización de llamada al 102.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Protección</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Pregunta: <i>“Si necesitás ayuda por vos o por otra persona, ¿a quién llamás?”</i>. Lluvia de organismos conocidos.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>Análisis de las tres <b>modalidades de articulación</b> (intervención urgente; derivación con consentimiento informado; trabajo en red) y del <b>registro y seguimiento</b> (fechas, interlocutores, acciones acordadas). En grupos, construyen el <b>“Mapa de protección de nuestro territorio”</b>: Línea 102, Servicio Local de Niñez del distrito, fiscalía, defensoría, referentes de la escuela (EOE, preceptores, directivos). Dramatización breve: cómo sería una llamada al 102 pidiendo orientación.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>El mapa se imprime y se suma al proyecto final (cartelera + versión digital para el aula virtual). Cierre: <i>“Pedir ayuda es un derecho; acompañar, una responsabilidad.”</i></p></div>
+          <div class="recursos"><b>Recursos:</b> teléfonos y direcciones reales del distrito, afiche de mapa. <b>Evaluación:</b> completitud y corrección del mapa de protección.</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 6 ============ -->
+    <section class="bloque" id="sec6">
+      <div class="cabSec"><div class="num">06</div>
+        <div><h2>Acciones transversales: prevención, sensibilización y reparación</h2>
+        <span class="unidad">Unidad 5 · Clase 10 · Restaurativos · Sanciones · Medidas de protección</span></div>
+      </div>
+      <p class="introSec">El abordaje no termina en la sanción: la Guía propone <b>procesos restaurativos</b> (reconocimiento del daño, participación voluntaria de la persona afectada, reconstrucción de vínculos), <b>sanciones pedagógicas</b> proporcionales que incluyan la responsabilidad del entorno que avaló o difundió, y <b>medidas de protección</b> sostenidas en el tiempo.</p>
+
+      <div class="tarjeta" id="sec6b">
+        <h3>Contenidos de la unidad</h3>
+        <ul>
+          <li><b>Procesos restaurativos:</b> voluntariedad, personal capacitado, no revictimización; rol del centro de estudiantes en campañas y reintegraciones pedagógicas.</li>
+          <li><b>Sanciones institucionales:</b> proporcionales, no estigmatizantes, acompañadas de procesos formativos; responsabilidad también de la “complicidad digital”.</li>
+          <li><b>Medidas de protección:</b> cambio de grupo si hay riesgo, limitación de espacios compartidos, acompañamiento psicológico/jurídico/digital, restricción de circulación del contenido, monitoreo emocional y seguimiento.</li>
+        </ul>
+      </div>
+
+      <!-- CLASE 10 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">10</div>
+          <div class="titClase"><b>“¿Castigar o transformar? Reparación y protección”</b><small>Debate guiado y simulación de círculo restaurativo con caso ficticio.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Convivencia</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Encuesta rápida a mano alzada: <i>“Ante una agresión grave, ¿qué necesita más la escuela: castigo o aprendizaje?”</i>. Se registran posiciones.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p>Lectura de “¿Qué son los procesos restaurativos?” y de sanciones/medidas de protección (pp. 42–44). <b>Debate estructurado</b>: pros y contras de sanciones puramente punitivas vs. sanciones pedagógicas + restaurativas. Luego, <b>simulación de círculo restaurativo</b> con caso ficticio y roles (persona afectada —que participa solo si quiere—, agresor, espectadores, facilitadora, centro de estudiantes): ¿qué daño se reconoce?, ¿qué reparación proponen?, ¿qué medidas de protección garantizamos?</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Conclusiones en afiche: “Reparar no es olvidar: es reconocer, cuidar y transformar”. Se articulan propuestas con el reglamento de convivencia de la escuela (Ley 26.892).</p></div>
+          <div class="recursos"><b>Recursos:</b> Guía pp. 42–44, tarjetas de roles. <b>Evaluación:</b> argumentación en el debate y calidad de las propuestas reparatorias (coevaluación).</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ SECCIÓN 7 ============ -->
+    <section class="bloque" id="sec7">
+      <div class="cabSec"><div class="num">07</div>
+        <div><h2>Estrategias de capacitación, sensibilización y ciudadanía digital</h2>
+        <span class="unidad">Unidad 6 · Clases 11–12 · Educación digital · Currículum · ESI · Proyecto final</span></div>
+      </div>
+      <p class="introSec">La última unidad articula la <b>educación digital con perspectiva de género</b>, la <b>ESI en clave digital</b> y la incorporación transversal de la ciudadanía digital en el currículum. Culmina con el proyecto integrador: una campaña <b>“Lo virtual es real”</b> y una propuesta estudiantil de protocolo escolar, presentadas a la comunidad educativa.</p>
+
+      <div class="tarjeta" id="sec7b">
+        <h3>Contenidos de la unidad</h3>
+        <ul>
+          <li>Características del entorno digital facilitador de violencias (Guía “Hackeá la violencia digital”): acceso, inseguridad, permanencia, viralidad, anonimato, ubicuidad, distancia, regulación, actualización, desconocimiento.</li>
+          <li>Herramientas: alfabetización digital con perspectiva de género, materiales propios, reflexión sobre consentimiento y derecho al olvido, ESI digital (consentimiento en redes, sexting cuidado, vínculos virtuales).</li>
+          <li>Formación docente y directiva; ciudadanía digital transversal en el currículum; cumplimiento efectivo de la Ley 26.150.</li>
+          <li>Educación crítica de medios y convivencia democrática.</li>
+        </ul>
+      </div>
+
+      <!-- CLASE 11 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">11</div>
+          <div class="titClase"><b>“Auditoría ciudadana de nuestro entorno digital”</b><small>Las 10 características del riesgo + auditoría de privacidad + ESI digital.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min</span><span class="miniChip rosa">Ciudadanía digital</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Presentación de las 10 tarjetas del entorno digital (acceso, inseguridad, permanencia, viral, anonimato, ubicuidad, distancia, regulación, actualización, desconocimiento).</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 45'</span><p><b>Grupos expertos:</b> cada grupo analiza 2–3 características con ejemplos reales de su experiencia y propone una “contramedida ciudadana”. Puesta en común tipo rompecabezas. <b>Auditoría guiada de privacidad</b> (en el propio celular, voluntaria y en clase): revisar permisos, configuraciones de privacidad, contraseñas seguras, huella digital y derecho al olvido. Puente <b>ESI digital</b>: consentimiento en redes, intimidad, cuidado mutuo, no criminalización de la sexualidad.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 25'</span><p>Cada estudiante escribe su <b>“compromiso de ciudadanía digital”</b> (una práctica que cambia desde hoy). Presentación del proyecto final y conformación de grupos.</p></div>
+          <div class="recursos"><b>Recursos:</b> tarjetas de características, celulares con autorización, checklist de auditoría. <b>Evaluación:</b> contramedidas propuestas y compromiso personal (formativa).</div>
+        </div></div>
+      </div>
+
+      <!-- CLASE 12 -->
+      <div class="clase">
+        <div class="punto"></div>
+        <button class="cabClase" aria-expanded="false">
+          <div class="nClase">12</div>
+          <div class="titClase"><b>Proyecto integrador: Campaña “Lo virtual es real” + protocolo estudiantil</b><small>Producción y presentación a la comunidad educativa.</small></div>
+          <div class="chipsMini"><span class="miniChip">80 min + jornada</span><span class="miniChip rosa">Evaluación final</span></div>
+          <span class="flecha">▾</span>
+        </button>
+        <div class="cuerpoClase"><div class="interno">
+          <div class="momento"><span class="etapa ini">Inicio · 10'</span><p>Organización de grupos y formatos posibles: afiche/serie gráfica, podcast, hilo o video corto, intervención en cartelera + versión digital.</p></div>
+          <div class="momento"><span class="etapa des">Desarrollo · 50'</span><p>Producción guiada. Cada pieza debe incluir: (1) un concepto del marco conceptual (pueden consultar el <a href="#glosario">glosario del módulo</a>), (2) una frase de cuidado no revictimizante, (3) el circuito de ayuda (adultas/os de confianza, EOE, Línea 102), (4) una propuesta de norma o acuerdo para el <b>protocolo escolar de actuación</b> elaborado por estudiantes (con asesoramiento del EOE y directivos). Se revisan con rúbrica compartida.</p></div>
+          <div class="momento"><span class="etapa cie">Cierre · 20' + jornada</span><p><b>Jornada de presentación</b> a la comunidad educativa (familias, centro de estudiantes, equipo directivo): muestra de campañas, lectura de la propuesta de protocolo y firma simbólica de compromisos. Evaluación final con rúbrica + auto y coevaluación.</p></div>
+          <div class="recursos"><b>Recursos:</b> dispositivos, apps de edición (Canva, Audacity/CapCut), rúbrica impresa. <b>Evaluación:</b> rúbrica del proyecto (ver sección Evaluación).</div>
+        </div></div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ EVALUACIÓN ============ -->
+    <section class="bloque" id="evaluacion">
+      <div class="cabSec"><div class="num">✓</div>
+        <div><h2>Evaluación del aprendizaje</h2>
+        <span class="unidad">Formativa, procesual y criterial · Instrumentos: observación, producciones, rúbrica, autoevaluación</span></div>
+      </div>
+      <div class="tarjeta">
+        <h3>Rúbrica del proyecto integrador y del proceso</h3>
+        <div class="tablaWrap">
+        <table class="rubrica">
+          <thead><tr><th>Criterio</th><th>Avanzado</th><th>Satisfactorio</th><th>En proceso</th></tr></thead>
+          <tbody>
+            <tr><td>Dominio conceptual</td><td>Nombra y diferencia modalidades de violencia digital con precisión, citando el marco normativo (Ley Olimpia, ESI) y el glosario.</td><td>Identifica las principales modalidades con algunos errores menores.</td><td>Confunde modalidades; requiere acompañamiento para el uso del marco conceptual.</td></tr>
+            <tr><td>Consentimiento y no revictimización</td><td>Aplica el consentimiento como eje de análisis y propone prácticas de escucha sin culpa de la víctima.</td><td>Reconoce el consentimiento y evita frases revictimizantes en la mayoría de las situaciones.</td><td>Aún reproduce discursos que culpabilizan a la víctima; se trabaja en clase.</td></tr>
+            <tr><td>Conocimiento del circuito de protección</td><td>Describe roles escolares y organismos (102, Servicio Local) y los incorpora correctamente en casos y campaña.</td><td>Identifica los actores principales del circuito con ayuda puntual.</td><td>Requiere mediación constante para reconocer el circuito de protección.</td></tr>
+            <tr><td>Producción y comunicación</td><td>Pieza clara, creativa y respetuosa; incluye propuesta de protocolo viable y fundamentada.</td><td>Pieza correcta con todos los elementos requeridos, con menor originalidad.</td><td>Pieza incompleta o con contenidos que podrían revictimizar; se rehace con acompañamiento.</td></tr>
+            <tr><td>Participación y cuidado grupal</td><td>Promueve vínculos respetuosos, escucha activa y participación de todas las voces, incluido el centro de estudiantes.</td><td>Participa respetuosamente en la mayoría de las instancias.</td><td>Participación irregular; se acuerdan estrategias individuales de acompañamiento.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="notaDoc"><b>Nota docente:</b> la evaluación del módulo es también <b>institucional</b>: se sugiere registrar en el legajo las acciones realizadas, evaluar con el EOE el impacto de la jornada con familias y revisar anualmente el protocolo escolar construido.</div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ GLOSARIO ============ -->
+    <section class="bloque" id="glosario">
+      <div class="cabSec"><div class="num">G</div>
+        <div><h2>Glosario del módulo</h2>
+        <span class="unidad">Violencias digitales · Ciudadanía digital · Protección · Fuente: Guía Ema (pp. 10–21 y Anexos)</span></div>
+      </div>
+      <p class="introSec">Glosario de referencia para el “glosario vivo” de la Clase 3, el mapa conceptual de la Clase 5 y la producción de la campaña final. Usá el buscador para filtrar términos.</p>
+      <div class="tarjeta">
+        <div class="gloBuscador">
+          <input type="search" id="buscadorGlosario" placeholder="🔎 Buscar término (ej.: sextorsión, doxing, consentimiento…)" aria-label="Buscar en el glosario">
+          <span class="contador" id="contadorGlosario"></span>
+        </div>
+        <div class="gloGrid" id="grillaGlosario">
+          <div class="gloCard rosa"><b>Violencia digital (Ley 27.736)</b><p>Toda conducta, acción u omisión cometida con asistencia de TIC para causar daños físicos, psicológicos, económicos, sexuales o morales, en el ámbito privado o público, incluida la obtención y difusión sin consentimiento de material íntimo.</p></div>
+          <div class="gloCard rosa"><b>Obtención no consentida de material íntimo</b><p>Retratar o registrar sin consentimiento un encuentro sexual o la desnudez de una persona (cámaras ocultas, upskirting, etc.).</p></div>
+          <div class="gloCard rosa"><b>Difusión no consentida</b><p>Divulgar, distribuir, compilar, comercializar o publicar sin consentimiento material digital de desnudez, intimidad sexual o explotación sexual, haya sido obtenido con o sin consentimiento.</p></div>
+          <div class="gloCard rosa"><b>Sextorsión</b><p>Extorsión o amenaza de difundir material íntimo de la víctima para exigir dinero, más material u otras acciones. Puede ser paso previo a la difusión no consentida.</p></div>
+          <div class="gloCard rosa"><b>Grooming (Ley Mica Ortega)</b><p>Contacto de una persona adulta con un/a NNyA mediante TIC con el propósito de afectar su integridad sexual. Delito previsto en la Ley 27.590 (modif. del art. 131 CP).</p></div>
+          <div class="gloCard rosa"><b>Deep fake / porn deep fake</b><p>Archivos digitales creados con software o IA que superponen el rostro, cuerpo o voz de una persona; en el porn deep fake, sobre material pornográfico o de desnudez.</p></div>
+          <div class="gloCard rosa"><b>Violencia sexual exhibida en internet</b><p>Obtención y divulgación por medios digitales de material que retrata violencia y explotación sexual, comercializado en webs, deep/dark web y redes como Telegram.</p></div>
+          <div class="gloCard rosa"><b>Abusos sexuales telemáticos</b><p>Agresiones sexuales sin contacto analógico, por medios telemáticos (ej.: videollamadas), bajo coacción, amenaza o sin consentimiento suficiente.</p></div>
+          <div class="gloCard rosa"><b>Trata virtual / captación</b><p>Publicación de anuncios engañosos de trabajo o catálogos en línea que funcionan como pantalla para secuestrar o explotar personas.</p></div>
+          <div class="gloCard rosa"><b>Acoso virtual sexual</b><p>Hostigamiento digital para tener o retomar un vínculo sexoafectivo o realizar conductas sexuales; basta un único contacto para configurarlo.</p></div>
+          <div class="gloCard rosa"><b>Ciberflashing</b><p>Envío de material de desnudez o erótico sin consentimiento de quien lo recibe. Forma de acoso sexual digital; una de las primeras violencias que sufren las niñas.</p></div>
+          <div class="gloCard"><b>Ciberbullying</b><p>Acoso virtual entre pares con burlas, insultos, difamaciones, fotos o memes; se prolonga en el tiempo y se amplifica por el supuesto anonimato.</p></div>
+          <div class="gloCard"><b>Acoso digital</b><p>Hostigamiento por TIC donde el agresor puede ser ajeno a la escuela o mayor de edad; puede darse en una única oportunidad.</p></div>
+          <div class="gloCard"><b>Discurso de odio en línea</b><p>Comunicación que ataca o usa lenguaje peyorativo contra personas o grupos por religión, origen étnico, nacionalidad, raza, color, ascendencia, género u otro factor de identidad.</p></div>
+          <div class="gloCard"><b>Cibercontrol</b><p>Vigilancia de la actividad virtual o geolocalización de una persona: pedido de ubicación, contraseñas, revisión de mensajes, phishing o spyware. Típico de vínculos sexoafectivos violentos.</p></div>
+          <div class="gloCard"><b>Doxing</b><p>Difusión de datos personales o privados (dirección, celular, escuela) para generar acoso, persecución o riesgo de agresiones físicas.</p></div>
+          <div class="gloCard"><b>Suplantación de identidad digital</b><p>Creación de perfiles falsos haciéndose pasar por la víctima, para dañarla, engañar a terceros, difundir material íntimo o estafar.</p></div>
+          <div class="gloCard"><b>Amenazas virtuales</b><p>Mensajes intimidantes con intención de causar daño, enviados por medios digitales.</p></div>
+          <div class="gloCard"><b>Phishing / hackeo / daños informáticos</b><p>Engaño para robar credenciales, accesos no autorizados a dispositivos o cuentas, e instalación de virus (malware) que dañan sistemas o información.</p></div>
+          <div class="gloCard"><b>Ataques coordinados / trolling</b><p>Agresión masiva y organizada, frecuentemente contra grupos o activistas, para silenciar voces y expulsarlas de las redes.</p></div>
+          <div class="gloCard"><b>Exclusión virtual</b><p>Limitaciones al acceso o permanencia en espacios virtuales por condiciones estructurales, censura o autoexclusión tras ataques; agrava brechas y desigualdades.</p></div>
+          <div class="gloCard"><b>Happy slapping</b><p>Grabar una agresión física, verbal o sexual y difundirla por medios digitales; suele ser premeditado y con varios partícipes que comparten el contenido.</p></div>
+          <div class="gloCard"><b>Sharenting</b><p>Exposición pública y continuada de NNyA en redes por parte de familiares o docentes; genera huella digital permanente y vulnera intimidad e imagen.</p></div>
+          <div class="gloCard verde"><b>Consentimiento</b><p>Acuerdo libre, informado, reversible y específico. En lo digital: el consentimiento para obtener una imagen no se extiende a su difusión.</p></div>
+          <div class="gloCard verde"><b>Ciudadanía digital (UNESCO, 2015)</b><p>Competencias para acceder, comprender, evaluar y crear información en todos los formatos de manera crítica, ética y eficaz, participando activamente en la sociedad digital.</p></div>
+          <div class="gloCard verde"><b>Cuidadanía (Najmanovich, 2019)</b><p>Modo diferente de habitar la convivencia que incluye acciones de cuidado también en los entornos digitales; la convivencia escolar no puede escindirse de la convivencia digital.</p></div>
+          <div class="gloCard verde"><b>Revictimización</b><p>Exponer nuevamente a la víctima al relato o contenido de la violencia (múltiples entrevistas, circulación del material, frases culpabilizadoras), profundizando el daño.</p></div>
+          <div class="gloCard verde"><b>Procesos restaurativos</b><p>Mecanismos de resolución que promueven el reconocimiento del daño, la participación voluntaria de la persona afectada y la reconstrucción de vínculos; guiados por personal capacitado y sin revictimizar.</p></div>
+          <div class="gloCard verde"><b>ESI digital</b><p>Abordaje de la Educación Sexual Integral (Ley 26.150) en los entornos digitales: consentimiento en redes, intimidad, sexting cuidado, vínculos virtuales y ciberviolencias, sin criminalizar la sexualidad.</p></div>
+          <div class="gloCard verde"><b>Comunicar no es denunciar</b><p>La escuela debe comunicar toda sospecha de vulneración de derechos a los organismos de protección; esa comunicación habilita medidas de protección y no implica denuncia penal.</p></div>
+        </div>
+        <p class="gloVacio" id="glosarioVacio">😕 No se encontraron términos para tu búsqueda. Probá con otra palabra (ej.: “sexting”, “control”, “ley”).</p>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ CIERRE ============ -->
+    <section class="bloque" id="cierre">
+      <div class="cabSec"><div class="num">∞</div>
+        <div><h2>A modo de cierre</h2>
+        <span class="unidad">Ronda final · Autoevaluación · Compromisos de “cuidadanía”</span></div>
+      </div>
+      <div class="tarjeta">
+        <div class="cierreBox">
+          <div>
+            <p>Este módulo no busca cerrar preguntas sino abrirlas: los territorios digitales cambian y nos desafían a un <b>aprendizaje colectivo permanente</b>, donde infancias, adolescencias y personas adultas aprendemos juntas. Como propone la Guía, la convivencia escolar no puede escindirse de la convivencia digital: se trata de ejercer una <b>“cuidadanía”</b> (Najmanovich, 2019), un modo diferente de habitar la convivencia que incluye cuidados también en las pantallas.</p>
+            <p class="fraseEma">“Tomar conciencia de que <em>lo virtual es real</em> es urgente. Que la muerte de Ema no sea en vano.”</p>
+            <p><b>Ronda de cierre sugerida:</b> cada estudiante comparte una palabra que se lleva, una práctica que cambia y un compromiso con el grupo. Se firma el acta de compromisos de ciudadanía digital del curso y se entrega la propuesta de protocolo al equipo directivo y al centro de estudiantes para su seguimiento.</p>
+          </div>
+          <img src="https://image.qwenlm.ai/public_source/1dfe025e-1909-4da6-b29e-d8927d08d31b/164f7e692-f3b4-4379-83bb-3b2d8380eec2.png" alt="Manos diversas formando un círculo de cuidado alrededor de un celular con un corazón">
+        </div>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <!-- ============ ANEXOS ============ -->
+    <section class="bloque" id="anexos">
+      <div class="cabSec"><div class="num">A</div>
+        <div><h2>Anexos</h2>
+        <span class="unidad">Caja de herramientas · Marco normativo · Bibliografía</span></div>
+      </div>
+
+      <div class="tarjeta" id="herramientas">
+        <h3>🧰 Caja de herramientas: recursos para la prevención y promoción de derechos</h3>
+        <p style="margin-bottom:14px;color:var(--muted);font-size:13.5px">Materiales citados por la Guía Ema, listos para usar en el aula y con las familias.</p>
+        <div class="recGrid">
+          <div class="recCard"><b>Amnistía Internacional (jóvenes)</b><span>Campaña “Cortá la cadena”.</span><a href="https://actua.amnistia.org.ar/corta-la-cadena" target="_blank" rel="noopener">actua.amnistia.org.ar/corta-la-cadena</a></div>
+          <div class="recCard"><b>Fundación Avon Argentina</b><span>Campaña “Cambia el trato”.</span><a href="https://youtu.be/_l_-fbGycMY" target="_blank" rel="noopener">youtu.be/_l_-fbGycMY</a></div>
+          <div class="recCard"><b>Fundación Movistar + Faro Digital</b><span>“Historias FundaMentales”.</span><a href="https://youtu.be/stdJxMn9uSw" target="_blank" rel="noopener">youtu.be/stdJxMn9uSw</a></div>
+          <div class="recCard"><b>GOInTec + EPVS + EOE (Min. Educación CABA)</b><span>Video educativo con apoyo de equipos de orientación.</span><a href="https://youtu.be/Ds3GP7ypzes" target="_blank" rel="noopener">youtu.be/Ds3GP7ypzes</a></div>
+          <div class="recCard"><b>Instituto de las Masculinidades</b><span>Campaña “Paremos la Pelota”.</span><a href="https://sinviolenciasdegenero.ar/produccion/paremos-la-pelota/" target="_blank" rel="noopener">sinviolenciasdegenero.ar</a></div>
+          <div class="recCard"><b>Instituto de las Masculinidades</b><span>#AmigoDateCuenta (con Iniciativa Spotlight).</span><a href="https://www.youtube.com/watch?v=M1hkKfXdQn8" target="_blank" rel="noopener">youtube.com/watch?v=M1hkKfXdQn8</a></div>
+          <div class="recCard"><b>Instituto de las Masculinidades</b><span>Kit “Varones y Masculinidad(es)” para talleres con adolescentes.</span><a href="https://drive.google.com/file/d/1zZklRNyLhwZLc2ZTWu4hSYtEJDc9ftN3/view" target="_blank" rel="noopener">drive.google.com (kit pedagógico)</a></div>
+          <div class="recCard"><b>MMGYD (2023)</b><span>Guía para la prevención de las violencias de género en entornos digitales.</span><a href="https://sinviolenciasdegenero.ar/produccion_ong/guia-para-la-prevencion-de-las-violencias-de-genero-en-entornos-digitales/" target="_blank" rel="noopener">sinviolenciasdegenero.ar</a></div>
+          <div class="recCard"><b>UNFPA + Fundación Bellamente</b><span>Campaña “Lo virtual es real”.</span><a href="https://bellamente.com.ar/lo-virtual-es-real-unfpa-y-bellamente/" target="_blank" rel="noopener">bellamente.com.ar</a></div>
+          <div class="recCard"><b>UNFPA</b><span>“Un nuevo copyright para el cuerpo humano” (bodyright).</span><a href="https://www.unfpa.org/es/bodyright" target="_blank" rel="noopener">unfpa.org/es/bodyright</a></div>
+          <div class="recCard"><b>UNICEF</b><span>Cuaderno de Protección a las infancias.</span><a href="https://www.unicef.es/sites/unicef.es/files/comunicacion/GUIAPROTECCION.pdf" target="_blank" rel="noopener">unicef.es (PDF)</a></div>
+          <div class="recCard"><b>UNICEF</b><span>“Su Mayor Influencer”: cómo acompañar a tus hijxs en su vida digital.</span><a href="https://www.unicef.es/sites/unicef.es/files/educa/TRIC/unicef-educa-su-mayor-influencer-A5.pdf" target="_blank" rel="noopener">unicef.es (PDF)</a></div>
+        </div>
+      </div>
+
+      <div class="tarjeta" id="normativa">
+        <h3>⚖️ Marco normativo</h3>
+        <p style="margin-bottom:12px;color:var(--muted);font-size:13.5px">Desplegá cada instrumento para ver su aporte y su traducción al aula.</p>
+
+        <div class="acc"><button class="accBtn">Tratados internacionales (síntesis) <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt">
+            <p><b>Resolución ONU sobre DDHH en Internet (2021):</b> los derechos del mundo físico deben garantizarse en el digital; acceso universal, seguro y asequible; cerrar brechas digitales de género. <small>En la escuela: educar en derechos digitales y no tolerar agresiones en línea.</small></p>
+            <p><b>DUDH (1948):</b> privacidad (art. 12) y acceso a la información (art. 19). <b>Declaración Americana (1948):</b> protección contra abusos a la dignidad (art. V) e inviolabilidad de correspondencia (art. X). <b>PIDCP (1966):</b> privacidad (art. 17). <small>En la escuela: las instituciones tienen el deber de actuar ante violencias digitales.</small></p>
+            <p><b>CEDAW (1979):</b> eliminar discriminación y violencia contra mujeres y niñas, también en entornos digitales. <b>CDN (1989)</b> + Observación General N° 25 (2021) y Pacto Digital Mundial (2024): espacios en línea seguros para NNyA. <b>Belém do Pará (1994):</b> vida libre de violencia con independencia del ámbito. <small>En la escuela: prevenir con enfoque de género; la escuela no puede ser neutral.</small></p>
+          </div></div>
+        </div>
+
+        <div class="acc"><button class="accBtn">Ley 27.736 · Ley Olimpia (2023) <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Modifica la Ley 26.485 e incorpora la <b>violencia digital/telemática</b> como modalidad de violencia de género. Define la violencia digital, prevé estrategias de protección, educación digital y medidas cautelares que pueden ordenar a plataformas la eliminación de contenidos. Inspirada en la lucha de la activista mexicana <b>Olimpia Coral Melo</b>. <small>En la escuela: marco conceptual central del módulo (clases 3 y 4).</small></p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Ley 26.485 · Protección integral a las mujeres <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Marco de acción para prevenir, sancionar y erradicar la violencia contra las mujeres en todas sus manifestaciones, incluida la digital tras la reforma de la Ley Olimpia (arts. 5 y 6: tipos y modalidades).</p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Ley 26.061 · Protección integral de NNyA (2005) <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Derecho a la intimidad y protección contra toda violencia (arts. 9 y 20). Fundamenta el Sistema de Protección Integral y la obligación escolar de comunicar. <small>En la escuela: comunicar no es denunciar; la omisión sí genera responsabilidad.</small></p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Ley 26.150 · Educación Sexual Integral (2006) <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Derecho a recibir ESI en todos los niveles. <small>En la escuela: la ESI también se aplica al entorno digital: consentimiento, intimidad, cuidado del cuerpo y respeto por la privacidad en redes, chats y plataformas (clases 4 y 11).</small></p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Ley 26.892 · Convivencia escolar (2013) <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Promueve convivencia pacífica y democrática, prevención del hostigamiento y participación estudiantil. <small>En la escuela: base del proyecto de protocolo y de los procesos restaurativos (clase 10).</small></p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Ley 27.590 · Grooming / Ley Mica Ortega <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt"><p>Penaliza el contacto con menores por medios digitales con fines de afectar su integridad sexual. <small>En la escuela: contenido de la clase 4; articular con familias.</small></p></div></div>
+        </div>
+        <div class="acc"><button class="accBtn">Leyes 24.417 · 27.078 · 25.326 · 26.206 <span class="fl">▾</span></button>
+          <div class="accBody"><div class="accInt">
+            <p><b>24.417 (violencia familiar):</b> aplicable cuando la violencia digital proviene del grupo familiar (cibercontrol, amenazas). <b>27.078 (Argentina Digital):</b> acceso a internet como derecho; responsabilidad de prestadores en protección de datos. <b>25.326 (datos personales):</b> privacidad e intimidad. <small>En la escuela: cuidar los datos de NNyA; no reenviar ni almacenar material sensible aunque llegue por error; consultar siempre a equipos técnicos/jurídicos.</small> <b>26.206 (Educación Nacional):</b> educación de calidad con igualdad; obligatoriedad del nivel secundario.</p>
+          </div></div>
+        </div>
+        <p style="margin-top:10px;font-size:13px;color:var(--muted)">+ Resoluciones ministeriales, protocolos y disposiciones de la Provincia de Buenos Aires y de cada jurisdicción (DGCyE): circuitos de comunicación y protección de NNyA.</p>
+      </div>
+
+      <div class="tarjeta" id="bibliografia">
+        <h3>📚 Bibliografía</h3>
+        <ul style="font-size:13.5px">
+          <li>Faro Digital & Marketing y Estadística SRL (2023). <i>Impacto en mujeres e identidades no binarias de la difusión no consentida de imágenes íntimas en redes sociales.</i></li>
+          <li>Friedman, B. & Nissenbaum, H. (1996). <i>Sesgo en los sistemas informáticos.</i> ACM TOIS 14(3).</li>
+          <li>Género y TIC (2023). <i>Guía de conceptos básicos en violencia de género digital.</i></li>
+          <li>MMGYD (2023). <i>Guía para la prevención de las violencias de género en entornos digitales.</i></li>
+          <li>Najmanovich, D. (2019). <i>Cuidadanía – Ecología de los saberes y cuidados</i> [Video].</li>
+          <li>OEA/CIM/MESEVIC (2022). <i>Informe de ciberviolencia y ciberacoso contra mujeres y niñas (Belem do Pará).</i></li>
+          <li>Oropa, M. (2023 y 2022). Informes de violencia digital. Frente Nacional para la Sororidad / Defensoras Digitales.</li>
+          <li>UNESCO (2015). <i>Marco de competencias de los docentes en materia de TIC.</i></li>
+          <li>UNFPA, ONU Mujeres & Amnistía Internacional (2024). <i>Hackeá la violencia digital.</i></li>
+          <li>UNICEF (2020/2025). <i>Encuesta Kids Online Argentina.</i></li>
+          <li>Normativa citada: Leyes 25.326, 26.061, 26.904/27.590, 26.206, 26.150, 27.736, 26.892, 26.485, 24.417, 27.078.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="contenedor">
+      <div><b>Módulo “Lo virtual es real” · Docente: Martín Espinosa</b><br><small>Basado en la Guía Ema · Familia Bondaruk · Ley Olimpia Argentina · Género y TIC · Faro Digital · Defensoras Digitales MX · Fundación Encuentro</small></div>
+      <small>4to año · Secundaria · Provincia de Buenos Aires · Informática + ESI<br>Línea 102 · Atención gratuita y confidencial para NNyA</small>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ MODAL MATERIAL DE LECTURA ============ -->
+<div id="modalLectura" role="dialog" aria-modal="true" aria-labelledby="tituloModal">
+  <div class="fondo" id="fondoModal"></div>
+  <div class="cajaModal">
+    <div class="cabModal">
+      <div><h3 id="tituloModal">Material de lectura</h3><small id="subModal">Guía Ema</small></div>
+      <button class="btnCerrar" id="btnCerrarModal" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="cuerpoModal" id="cuerpoModal"></div>
+  </div>
+</div>
+
+<!-- Contenidos de lectura (ocultos) -->
+<div style="display:none">
+  <div id="lec1">
+    <h4>Palabras preliminares · La madre de Ema (p. 3)</h4>
+    <blockquote>“Esta guía lleva el nombre de Ema, mi hija. Una adolescente de casi 16 años, llena de sueños, anhelos y proyectos… En el caso de Ema, confiando en la persona equivocada, alguien que la traicionó en su confianza y difundió imágenes íntimas sin su consentimiento… 24 horas después de la viralización de este video en el colegio al que ella asistía, se quitó la vida. Nadie supo cómo ayudarle, nadie tenía las herramientas necesarias para abordarla en ese momento, el peor momento de su vida… ¡Tomar conciencia de que lo virtual es real es urgente! Que la muerte de Ema no sea en vano.”</blockquote>
+    <h4>Prefacio (p. 4)</h4>
+    <p>La guía fue realizada por la <b>familia de Ema Bondaruk</b> junto a <b>Ley Olimpia Argentina, Género y TIC, Faro Digital, Defensoras Digitales de México, Fundación Encuentro</b> y los despachos de la Diputada Nacional <b>Mónica Macha</b> y la Senadora Provincial <b>Laura Clark</b>. El movimiento Ley Olimpia surge en México por la unión de mujeres sobrevivientes de violencia digital; en Argentina logró la sanción de la Ley 27.736 en 2023. Tras el caso de Ema, las organizaciones y la familia se unieron para construir esta guía preventiva para establecimientos educativos.</p>
+    <h4>Introducción (pp. 5–6)</h4>
+    <p>La guía es una <b>herramienta marco</b> para la actuación frente a situaciones de violencia digital en el ámbito educativo, centrada en la difusión de imágenes íntimas sin consentimiento como modalidad de violencia por motivos de género. Atraviesa todo el documento una mirada de respeto de las infancias y un <b>enfoque de género, diversidad y derechos</b>. La tecnología <b>no es neutral</b> (Friedman y Nissenbaum): sus sesgos reflejan los valores de quienes la desarrollan.</p>
+    <blockquote>“La ciudadanía digital es un conjunto de competencias que faculta a los ciudadanos a acceder, recuperar, comprender, evaluar y utilizar, para crear, así como compartir información y contenidos de los medios en todos los formatos, utilizando diversas herramientas, de manera crítica, ética y eficaz, con el fin de participar y comprometerse en actividades personales, profesionales y sociales.” (UNESCO, 2015)</blockquote>
+    <p><b>Consigna de trabajo:</b> en grupos, respondan: ¿quiénes escribieron la guía y por qué?, ¿qué es el movimiento Ley Olimpia?, ¿qué significa que “lo virtual es real”?, ¿qué es la ciudadanía digital?</p>
+  </div>
+
+  <div id="lec3">
+    <h4>Marco conceptual · Definición legal (Ley Olimpia 27.736, p. 11)</h4>
+    <blockquote>“Entendemos la violencia digital como toda conducta, acción u omisión que sea cometida, instigada o agravada, en parte o en su totalidad, con la asistencia, utilización y/o apropiación de las tecnologías de la información y la comunicación, con el objeto de causar daños físicos, psicológicos, económicos, sexuales o morales tanto en el ámbito privado como en el público hacia las víctimas o su grupo familiar.”</blockquote>
+    <p>Incluye, en especial: conductas que atenten contra la integridad, dignidad, identidad, reputación y libertad en el espacio digital y/o escolar; la <b>obtención, reproducción y difusión sin consentimiento</b> de material digital real o editado, íntimo o de desnudez; discursos de odio misóginos, acoso, amenaza, extorsión, control o espionaje de la actividad virtual; accesos no autorizados; robo y difusión de datos personales; y acciones que atenten contra la integridad sexual de NNyA (Ley 26.061).</p>
+    <h4>Tipos y modalidades (p. 10)</h4>
+    <p>El capítulo conceptualiza las violencias digitales que afectan a NNyA: violencias sexuales, hostigamiento digital, grooming, acceso a contenidos inapropiados, vulneración de la privacidad y, especialmente, la <b>difusión no consentida de contenidos íntimos</b>, que naturalizada o minimizada reproduce lógicas de control, estigmatización y disciplinamiento sobre mujeres y disidencias.</p>
+    <p>🔗 Texto completo de la Ley 27.736 (Boletín Oficial): <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/296572/20231023" target="_blank" rel="noopener">boletinoficial.gob.ar/detalleAviso/primera/296572/20231023</a> · Ley 26.485 actualizada: <a href="http://argentina.gob.ar/normativa/nacional/ley-26485-152155/actualizacion" target="_blank" rel="noopener">argentina.gob.ar</a></p>
+    <p><b>Consigna de trabajo:</b> subrayá las palabras clave de la definición y producí una ficha de glosario: término + definición propia + ejemplo ficticio + derecho vulnerado.</p>
+  </div>
+
+  <div id="lec4">
+    <h4>Violencias digitales sexuales (pp. 12–16)</h4>
+    <ul>
+      <li><b>Obtención y difusión no consentida de material íntimo:</b> vulnera intimidad, integridad y libre desarrollo de la personalidad; enmarca dinámicas de control, exposición forzada y humillación pública hacia adolescentes mujeres y disidencias.</li>
+      <li><b>Idea clave:</b> la obtención puede darse con o sin consentimiento; la difusión, en estos casos, ocurre sin consentimiento. Que una imagen haya sido obtenida con consentimiento <b>no extiende</b> el consentimiento a su difusión.</li>
+      <li><b>Violencia sexual exhibida en internet:</b> divulgación de material que retrata violencia y explotación sexual, comercializado en webs, deep/dark web y redes como Telegram.</li>
+      <li><b>Sextorsión:</b> coacción bajo amenaza de difundir material íntimo; puede exigir dinero, más material o mantener una relación; a veces solo amenaza.</li>
+      <li><b>Deep fake / porn deep fake:</b> montajes con software o IA que superponen rostro/cuerpo o voz; en el porn deep fake, sobre material pornográfico o de desnudez.</li>
+      <li><b>Grooming:</b> persona adulta que abusa sexualmente de un/a NNyA mediante Internet; incluye estrategias de acercamiento y manipulación en redes o juegos en línea (Ley Mica Ortega).</li>
+      <li><b>Abusos sexuales telemáticos:</b> agresiones sin contacto analógico, por ej. en videollamadas, bajo coacción o sin consentimiento.</li>
+      <li><b>Captación / trata virtual:</b> anuncios engañosos de trabajo o catálogos en línea que revelan ubicación y contacto para explotar personas.</li>
+      <li><b>Acoso virtual sexual:</b> persecución para tener/retomar vínculo sexoafectivo o conductas sexuales; basta un único contacto.</li>
+      <li><b>Ciberflashing:</b> envío de desnudez o material erótico sin consentimiento; una de las primeras violencias que sufren las niñas.</li>
+    </ul>
+    <p><b>Consigna de trabajo:</b> en cada posta, identificá la modalidad, dónde se rompe el consentimiento y qué dice la ley. Recordá: reenviar material íntimo de NNyA es un delito.</p>
+  </div>
+
+  <div id="lec5">
+    <h4>Otras modalidades de violencias digitales (pp. 17–21)</h4>
+    <ul>
+      <li><b>Ciberbullying:</b> acoso virtual entre pares (burlas, insultos, difamaciones, memes); se prolonga en el tiempo; daños que van de la angustia al suicidio; involucra a quienes sufren, ejercen, observan y alientan.</li>
+      <li><b>Acoso digital:</b> hostigamiento por TIC; el agresor puede ser ajeno a la escuela o mayor de edad; puede darse en una única oportunidad.</li>
+      <li><b>Discurso de odio en línea:</b> ataque o lenguaje peyorativo por religión, origen étnico, nacionalidad, raza, color, ascendencia, género u otro factor de identidad.</li>
+      <li><b>Cibercontrol:</b> vigilancia de actividad virtual o geolocalización; pedido de ubicación, contraseñas, revisión de mensajes, phishing, spyware.</li>
+      <li><b>Doxing:</b> difusión de datos personales (dirección, celular, escuela) para generar acoso o riesgo de agresiones analógicas.</li>
+      <li><b>Suplantación de identidad digital:</b> perfil falso haciéndose pasar por la víctima para perjudicarla, engañar, difundir material íntimo o estafar.</li>
+      <li><b>Amenazas virtuales:</b> mensajes intimidantes con intención de causar daño.</li>
+      <li><b>Phishing / accesos no autorizados / daños informáticos:</b> robo de credenciales, hackeo, instalación de malware.</li>
+      <li><b>Ataques coordinados masivos / trolling:</b> agresión masiva para silenciar voces y expulsarlas de las redes.</li>
+      <li><b>Exclusión virtual:</b> limitaciones estructurales, censura o autoexclusión tras ataques; agrava brechas y desigualdades.</li>
+      <li><b>Happy slapping:</b> grabar una agresión física, verbal o sexual y difundirla; suele ser premeditado y con varios partícipes.</li>
+      <li><b>Sharenting:</b> exposición pública continuada de NNyA en redes por familiares o docentes; huella digital permanente; vulnera intimidad, honor e imagen.</li>
+    </ul>
+    <p><b>Consigna de trabajo:</b> construí el mapa conceptual relacionando cada modalidad con derechos vulnerados, actores y emociones; luego jugamos “¿Mito o violencia?”.</p>
+  </div>
+</div>
+
+<button id="btnSubir" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  /* ---- menú móvil ---- */
+  var panelNav = document.getElementById('panelNav');
+  document.getElementById('btnMenu').addEventListener('click', function(){ panelNav.classList.toggle('abierto'); });
+  document.querySelectorAll('#navPrincipal a').forEach(function(enlaceNav){
+    enlaceNav.addEventListener('click', function(){ panelNav.classList.remove('abierto'); });
+  });
+
+  /* ---- acordeones de clases ---- */
+  function alternarClase(botonClase){
+    var tarjetaClase = botonClase.closest('.clase');
+    var cuerpo = tarjetaClase.querySelector('.cuerpoClase');
+    var abierta = tarjetaClase.classList.toggle('abierta');
+    botonClase.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+    cuerpo.style.maxHeight = abierta ? cuerpo.scrollHeight + 'px' : '0px';
+  }
+  document.querySelectorAll('.clase .cabClase').forEach(function(botonClase){
+    botonClase.addEventListener('click', function(){ alternarClase(botonClase); });
+  });
+
+  /* ---- acordeones de anexos ---- */
+  function alternarAcc(botonAcc){
+    var caja = botonAcc.closest('.acc');
+    var cuerpoAcc = caja.querySelector('.accBody');
+    var abierta = caja.classList.toggle('abierta');
+    cuerpoAcc.style.maxHeight = abierta ? cuerpoAcc.scrollHeight + 'px' : '0px';
+  }
+  document.querySelectorAll('.acc .accBtn').forEach(function(botonAcc){
+    botonAcc.addEventListener('click', function(){ alternarAcc(botonAcc); });
+  });
+
+  /* ---- expandir / contraer todo ---- */
+  var btnExpandir = document.getElementById('btnExpandir');
+  var todoAbierto = false;
+  btnExpandir.addEventListener('click', function(){
+    todoAbierto = !todoAbierto;
+    document.querySelectorAll('.clase').forEach(function(tClase){
+      var cuerpo = tClase.querySelector('.cuerpoClase');
+      var boton = tClase.querySelector('.cabClase');
+      tClase.classList.toggle('abierta', todoAbierto);
+      boton.setAttribute('aria-expanded', todoAbierto ? 'true':'false');
+      cuerpo.style.maxHeight = todoAbierto ? cuerpo.scrollHeight + 'px' : '0px';
+    });
+    document.querySelectorAll('.acc').forEach(function(caja){
+      var cuerpoAcc = caja.querySelector('.accBody');
+      caja.classList.toggle('abierta', todoAbierto);
+      cuerpoAcc.style.maxHeight = todoAbierto ? cuerpoAcc.scrollHeight + 'px' : '0px';
+    });
+    btnExpandir.textContent = todoAbierto ? '▲ Contraer todo' : '▼ Expandir todo';
+  });
+
+  /* ---- imprimir ---- */
+  document.getElementById('btnImprimir').addEventListener('click', function(){ window.print(); });
+
+  /* ---- modal material de lectura ---- */
+  var modalLectura = document.getElementById('modalLectura');
+  var tituloModal = document.getElementById('tituloModal');
+  var subModal = document.getElementById('subModal');
+  var cuerpoModal = document.getElementById('cuerpoModal');
+  function abrirLectura(idLectura, textoBoton){
+    var origen = document.getElementById(idLectura);
+    if(!origen){ return; }
+    cuerpoModal.innerHTML = origen.innerHTML;
+    tituloModal.textContent = '📖 Material de lectura';
+    subModal.textContent = textoBoton.replace('📖 ','');
+    modalLectura.classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrarLectura(){
+    modalLectura.classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.btnLectura').forEach(function(botonLec){
+    botonLec.addEventListener('click', function(){
+      abrirLectura(botonLec.getAttribute('data-lectura'), botonLec.textContent.trim());
+    });
+  });
+  document.getElementById('btnCerrarModal').addEventListener('click', cerrarLectura);
+  document.getElementById('fondoModal').addEventListener('click', cerrarLectura);
+  document.addEventListener('keydown', function(evTecla){
+    if(evTecla.key === 'Escape' && modalLectura.classList.contains('visible')){ cerrarLectura(); }
+  });
+
+  /* ---- buscador del glosario ---- */
+  var buscadorGlosario = document.getElementById('buscadorGlosario');
+  var tarjetasGlosario = Array.prototype.slice.call(document.querySelectorAll('#grillaGlosario .gloCard'));
+  var contadorGlosario = document.getElementById('contadorGlosario');
+  var glosarioVacio = document.getElementById('glosarioVacio');
+  function normalizarTexto(textoBruto){
+    return textoBruto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+  function filtrarGlosario(){
+    var consulta = normalizarTexto(buscadorGlosario.value.trim());
+    var visibles = 0;
+    tarjetasGlosario.forEach(function(tarjetaGlo){
+      var coincide = normalizarTexto(tarjetaGlo.textContent).indexOf(consulta) !== -1;
+      tarjetaGlo.style.display = coincide ? '' : 'none';
+      if(coincide){ visibles++; }
+    });
+    contadorGlosario.textContent = visibles + ' / ' + tarjetasGlosario.length + ' términos';
+    glosarioVacio.style.display = visibles === 0 ? 'block' : 'none';
+  }
+  buscadorGlosario.addEventListener('input', filtrarGlosario);
+  filtrarGlosario();
+
+  /* ---- barra de progreso + botón subir ---- */
+  var barra = document.getElementById('barraProgreso');
+  var btnSubir = document.getElementById('btnSubir');
+  window.addEventListener('scroll', function(){
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - doc.clientHeight;
+    var pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+    barra.style.width = pct + '%';
+    btnSubir.classList.toggle('visible', doc.scrollTop > 600);
+  }, {passive:true});
+  btnSubir.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+
+  /* ---- scrollspy ---- */
+  var enlacesSpy = Array.prototype.slice.call(document.querySelectorAll('#navPrincipal a'));
+  var objetivosSpy = [];
+  enlacesSpy.forEach(function(enlace){
+    var idObj = enlace.getAttribute('href').replace('#','');
+    var elem = document.getElementById(idObj);
+    if(elem && objetivosSpy.indexOf(elem) === -1){ objetivosSpy.push(elem); }
+  });
+  function actualizarSpy(){
+    var posScroll = window.scrollY + 140;
+    var actual = objetivosSpy[0];
+    objetivosSpy.forEach(function(seccion){
+      if(seccion.offsetTop <= posScroll){ actual = seccion; }
+    });
+    enlacesSpy.forEach(function(enlace){
+      var idObj = enlace.getAttribute('href').replace('#','');
+      enlace.classList.toggle('activo', actual && actual.id === idObj);
+    });
+  }
+  window.addEventListener('scroll', actualizarSpy, {passive:true});
+  window.addEventListener('load', actualizarSpy);
+
+  /* ---- recalcular alturas al redimensionar ---- */
+  window.addEventListener('resize', function(){
+    document.querySelectorAll('.clase.abierta .cuerpoClase').forEach(function(cuerpo){ cuerpo.style.maxHeight = cuerpo.scrollHeight + 'px'; });
+    document.querySelectorAll('.acc.abierta .accBody').forEach(function(cuerpo){ cuerpo.style.maxHeight = cuerpo.scrollHeight + 'px'; });
+  });
+})();
+</script>
+</body>
+</html>
+
