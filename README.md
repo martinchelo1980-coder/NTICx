@@ -19,7 +19,7 @@
     <p>Bienvenido al espacio de recursos interactivos. Haz clic en el botón para ingresar a la clase:</p>
 
     <ul>
-        <!-- El enlace apunta exactamente a tu carpeta "2.1_Redes" respetando la mayúscula -->
+        <!-- CATEGORIA: PRACTICAS -->
         <p>Teoria Interactiva</p>
         <li><a href="./clases/practicas/1.1_tecnologias/">🌐 Ir a la Clase 1.1: Tecnologías</a></li>
         <li><a href="./clases/practicas/1.2_hardware/">🌐 Ir a la Clase 1.2: Hardware</a></li>
@@ -35,24 +35,24 @@
         <li><a href="./clases/practicas/5.3_medios/">🌐 Ir a la Clase 5.3: Medios Colaborativos</a></li>
         
 
-         <!-- OFFIMATICA NUEVO ENLACE AGREGADO -->
+         <!-- CATEGORIA: OFIMATICA -->
         <p>Prácticas de Ofimática</p>
         <li><a href="./clases/ofimatica/1.2_excelfacil/">Ir Ofimatica Excel (Facil)</a></li>
 
-         <!-- LABORATORIOS NUEVO ENLACE AGREGADO -->
+         <!-- CATEGORIA: LABORATORIOS -->
         <p>Laboratorios</p>
         <li><a href="./clases/laboratorios/1.puntoacceso/">Ir Laboratorio Punto de acceso</a></li>
 
-         <!-- DIAGNOSTICO HUELLA DIGITAL -->
+         <!-- CATEGORIA: DIAGNOSTICOS -->
         <p>Diagnósticos</p>
         <li><a href="./diagnoticos/huelladigital/">Ir Diagnostico Huella Digital</a></li>
 
-        <!-- CRUCIGRAMAS -->
+        <!-- CATEGORIA: CRUCIGRAMAS -->
         <p>Cricigramas</p>
         <li><a href="./clases/crucigramas/1.hardsoft/">Ir Crucigrama Hardware y Software</a></li>
         <li><a href="./clases/crucigramas/2.redes/">Ir Crucigrama Redes</a></li>
 
-        <!-- MODULOS DIDACTICOS -->
+        <!-- CATEGORIA: MODULOS DIDACTICOS -->
         <p>Módulos Didacticos</p>
         <li><a href="./modulosdidacticos/alfabetizacion/">Ir Alfabetización Digital</a></li>
         <li><a href="./modulosdidacticos/convivencia/">Ir Convivencia Digital</a></li>
@@ -61,7 +61,7 @@
         <li><a href="./modulosdidacticos/inclusiontec/">Ir Innovación educativa con TIC y creación de contenidos accesibles</a></li>
         <li><a href="./modulosdidacticos/interculturidad/">Ir a La interculturalidad en los entornos digitales</a></li>
 
-        <!-- PLANIFICACIONES -->
+        <!-- CATEGORIA: PLANIFICACIONES -->
         <p>Planificaciones - Teoria</p>
         <li><a href="./planificacion/1.nticxcompleto/">Ir Planificación por Diseño Curricular</a></li>
         <li><a href="./planificacion/2.clasesanual/">Ir Planificación Anual</a></li>
