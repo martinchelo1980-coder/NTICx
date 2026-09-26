@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NTiCx 4to · Nuevas Tecnologías de la Información y la Conectividad</title>
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: { ntc:'#6C5CE7', ntc2:'#8B5CF6', neon:'#22C55E', sol:'#EAB308', lila:'#F3E8FF' },
+        fontFamily: { sans:['Nunito','Inter','system-ui','sans-serif'], head:['Inter','Nunito','sans-serif'] }
+      }
+    }
+  }
+</script>
+
+<!-- Fontsource: Inter, Nunito y Atkinson Hyperlegible (accesibilidad / dislexia) -->
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;src:url('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;src:url('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-600-normal.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:800;src:url('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-800-normal.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:900;src:url('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-900-normal.woff2') format('woff2');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;src:url('https://cdn.jsdelivr.net/fontsource/fonts/nunito@latest/latin-400-normal.woff2') format('woff2');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;src:url('https://cdn.jsdelivr.net/fontsource/fonts/nunito@latest/latin-700-normal.woff2') format('woff2');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:900;src:url('https://cdn.jsdelivr.net/fontsource/fonts/nunito@latest/latin-900-normal.woff2') format('woff2');}
+@font-face{font-family:'Atkinson Hyperlegible';font-style:normal;font-weight:400;src:url('https://cdn.jsdelivr.net/fontsource/fonts/atkinson-hyperlegible@latest/latin-400-normal.woff2') format('woff2');}
+@font-face{font-family:'Atkinson Hyperlegible';font-style:normal;font-weight:700;src:url('https://cdn.jsdelivr.net/fontsource/fonts/atkinson-hyperlegible@latest/latin-700-normal.woff2') format('woff2');}
+</style>
+
+<style>
+:root{
+  --bg:#FFFFFF; --bg-soft:#F3E8FF; --surface:#FFFFFF; --surface-2:#FAF7FF;
+  --text:#1E1436; --muted:#6D6584;
+  --primary:#6C5CE7; --primary-2:#8B5CF6; --primary-ink:#FFFFFF;
+  --green:#22C55E; --yellow:#EAB308; --red:#EF4444;
+  --border:#EAE2FB; --shadow:0 12px 30px rgba(108,92,231,.12); --radius:1.35rem;
+}
+html.alto-contraste{
+  --bg:#000000; --bg-soft:#0B0B12; --surface:#0B0B12; --surface-2:#15151F;
+  --text:#FFFFFF; --muted:#F2F2F2;
+  --primary:#FFD400; --primary-2:#FFE45C; --primary-ink:#000000;
+  --green:#00E676; --yellow:#FFD400; --red:#FF6B6B;
+  --border:#FFFFFF; --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Nunito','Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+h1,h2,h3,h4,h5{font-family:'Inter','Nunito',sans-serif;font-weight:900;line-height:1.18;letter-spacing:-.015em;margin:0}
+p{margin:0}
+ul,ol{margin:0;padding-left:1.15rem}
+a{color:var(--primary)}
+html.dislexia body{font-family:'Atkinson Hyperlegible','Nunito',sans-serif;letter-spacing:.025em;word-spacing:.12em;line-height:1.95}
+html.dislexia h1,html.dislexia h2,html.dislexia h3,html.dislexia h4,html.dislexia .btn,html.dislexia .tab-btn{font-family:'Atkinson Hyperlegible','Nunito',sans-serif;letter-spacing:.02em}
+html.dislexia .card,html.dislexia .opt{padding-inline:1.35rem}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;border-radius:.6rem}
+
+/* ---------- Superficies ---------- */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow)}
+.card-soft{background:var(--bg-soft);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.1rem}
+html.alto-contraste .card,html.alto-contraste .card-soft{border-width:2px}
+.card-lila{background:linear-gradient(135deg,#8B5CF6 0%,#6C5CE7 100%);color:#fff;border:none;border-radius:var(--radius);padding:1.1rem;box-shadow:var(--shadow)}
+html.alto-contraste .card-lila{background:var(--surface);color:var(--text);border:2px solid var(--border)}
+.mod-title{font-size:clamp(1.4rem,3.6vw,2rem);display:flex;align-items:center;gap:.5rem}
+.lead{color:var(--muted);font-size:1.02rem}
+html.alto-contraste .lead{color:var(--text)}
+.h-sect{font-size:1.08rem;font-weight:900;display:flex;align-items:center;gap:.45rem;margin-bottom:.4rem}
+.tag{display:inline-flex;align-items:center;gap:.3rem;background:var(--bg-soft);border:1.5px solid var(--border);color:var(--text);border-radius:999px;padding:.15rem .6rem;font-size:.72rem;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+.callout{border-left:5px solid var(--primary);background:var(--bg-soft);border-radius:1rem;padding:.8rem .95rem;font-size:.95rem}
+.callout.verde{border-left-color:var(--green)}
+.callout.amar{border-left-color:var(--yellow)}
+.callout.rojo{border-left-color:var(--red)}
+.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+.tbl th{background:var(--bg-soft);text-align:left;font-family:'Inter',sans-serif;font-weight:800;padding:.5rem .6rem;border:1.5px solid var(--border);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+.tbl td{padding:.5rem .6rem;border:1.5px solid var(--border);vertical-align:top}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85em}
+.codebox{background:#1B1035;color:#EDE9FE;border-radius:1rem;padding:.85rem .95rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;line-height:1.6;overflow-x:auto;white-space:pre}
+html.alto-contraste .codebox{background:#000;color:#FFD400;border:2px solid #fff}
+.codebox .t{color:#7DD3FC}.codebox .a{color:#FDE047}.codebox .c{color:#A78BFA}
+
+/* ---------- Botones ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border-radius:999px;border:2px solid transparent;padding:.5rem .95rem;font-family:'Inter',sans-serif;font-weight:800;font-size:.85rem;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s,color .2s;text-decoration:none;white-space:nowrap;background:var(--surface);color:var(--text);border-color:var(--border)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(108,92,231,.22)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+html.alto-contraste .btn-primary{background:var(--primary);color:#000;border-color:#fff}
+.btn-soft{background:var(--bg-soft);color:var(--text);border-color:var(--border)}
+.btn-neon{background:var(--green);color:#04240F;border-color:var(--green)}
+.btn-sol{background:var(--yellow);color:#332500;border-color:var(--yellow)}
+.btn-mini{padding:.3rem .65rem;font-size:.75rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-toggle[aria-pressed="true"]{background:var(--yellow);color:#2A1E00;border-color:var(--yellow)}
+html.alto-contraste .btn-toggle[aria-pressed="true"]{background:#FFD400;color:#000;border-color:#fff}
+
+/* ---------- Header ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:2px solid var(--border)}
+.brand-badge{width:44px;height:44px;border-radius:16px;background:linear-gradient(135deg,#8B5CF6,#6C5CE7);display:grid;place-items:center;font-size:1.3rem;box-shadow:0 8px 20px rgba(108,92,231,.35);flex:0 0 auto}
+html.alto-contraste .brand-badge{background:#000;border:2px solid #FFD400}
+.acciones{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.acciones .sep{width:2px;align-self:stretch;background:var(--border);margin:0 .15rem;border-radius:2px}
+
+/* ---------- Tabs ---------- */
+.tabs{display:flex;gap:.5rem;overflow-x:auto;padding:.35rem .1rem .6rem;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;display:flex;align-items:center;gap:.45rem;border-radius:999px;border:2px solid var(--border);background:var(--surface);color:var(--muted);padding:.55rem .95rem;font-family:'Inter',sans-serif;font-weight:800;font-size:.86rem;cursor:pointer;transition:all .2s ease;scroll-snap-align:start}
+html.alto-contraste .tab-btn{color:var(--text)}
+.tab-btn:hover{border-color:var(--primary);color:var(--text);transform:translateY(-2px)}
+.tab-btn.active{background:var(--primary);border-color:var(--primary);color:var(--primary-ink);box-shadow:0 10px 22px rgba(108,92,231,.35)}
+html.alto-contraste .tab-btn.active{color:#000}
+.tab-btn .ok{font-size:.72rem;background:var(--green);color:#04240F;border-radius:999px;padding:0 .35rem;font-weight:900}
+.panel{display:none;animation:fade .35s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- Quiz ---------- */
+.quiz-card{border-left:6px solid var(--primary)}
+.quiz-num{width:30px;height:30px;flex:0 0 auto;border-radius:12px;background:var(--bg-soft);border:2px solid var(--border);display:grid;place-items:center;font-family:'Inter',sans-serif;font-weight:900;font-size:.85rem}
+.quiz-q{font-weight:800;font-family:'Inter',sans-serif;font-size:1rem}
+.quiz-opts{display:grid;gap:.5rem;margin-top:.7rem}
+.opt{text-align:left;border:2px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:1rem;padding:.62rem .85rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:.93rem;cursor:pointer;transition:all .18s ease;display:flex;gap:.55rem;align-items:center}
+.opt:hover:not([disabled]){border-color:var(--primary);transform:translateX(3px);background:var(--bg-soft)}
+.opt[disabled]{cursor:default;opacity:1}
+.opt .letra{flex:0 0 auto;width:24px;height:24px;border-radius:8px;background:var(--bg-soft);border:1.5px solid var(--border);display:grid;place-items:center;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:900}
+.opt.correcta{border-color:var(--green);background:rgba(34,197,94,.14)}
+.opt.correcta .letra{background:var(--green);border-color:var(--green);color:#04240F}
+.opt.incorrecta{border-color:var(--red);background:rgba(239,68,68,.12)}
+.opt.incorrecta .letra{background:var(--red);border-color:var(--red);color:#fff}
+.opt.marcada{border-color:var(--primary);background:var(--bg-soft)}
+.fb{margin-top:.65rem;border-radius:.9rem;padding:.6rem .8rem;font-weight:800;font-size:.88rem;border:2px solid}
+.fb.ok{border-color:var(--green);background:rgba(34,197,94,.14);color:#14532D}
+.fb.no{border-color:var(--red);background:rgba(239,68,68,.12);color:#7F1D1D}
+html.alto-contraste .fb.ok,html.alto-contraste .fb.no{color:#fff}
+
+/* ---------- Logros ---------- */
+.logro{display:flex;gap:.55rem;align-items:flex-start;border:2px solid var(--border);border-radius:1rem;padding:.55rem .7rem;background:var(--surface-2);transition:all .2s}
+.logro.on{border-color:var(--green);background:rgba(34,197,94,.10)}
+.logro .ic{font-size:1.15rem;line-height:1}
+.logro.off{opacity:.55;filter:grayscale(.6)}
+.logro b{display:block;font-family:'Inter',sans-serif;font-size:.84rem}
+.logro span{font-size:.76rem;color:var(--muted)}
+html.alto-contraste .logro span{color:var(--text)}
+
+/* ---------- Simulador ---------- */
+.sim-wrap{display:grid;gap:.8rem;grid-template-columns:1fr}
+@media(min-width:900px){.sim-wrap{grid-template-columns:1fr 1.35fr 1fr}}
+.zone{border:2px dashed var(--border);border-radius:1.2rem;padding:.8rem;background:var(--surface-2);min-height:190px;transition:all .3s}
+.zone.act{border-color:var(--primary);border-style:solid;background:var(--bg-soft);box-shadow:0 0 0 4px rgba(139,92,246,.16)}
+.zone h4{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;font-family:'Inter',sans-serif;display:flex;gap:.35rem;align-items:center;margin-bottom:.55rem}
+.chip{border:2px solid var(--border);background:var(--surface);border-radius:999px;padding:.28rem .7rem;font-size:.8rem;font-weight:800;font-family:'Inter',sans-serif;cursor:pointer;color:var(--text);transition:all .15s}
+.chip:hover{border-color:var(--primary);transform:translateY(-2px)}
+.chip.sel{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+html.alto-contraste .chip.sel{color:#000}
+.hw{border:2px solid var(--border);border-radius:.9rem;padding:.45rem .6rem;background:var(--surface);font-size:.8rem;font-weight:800;font-family:'Inter',sans-serif;display:flex;gap:.4rem;align-items:center;transition:all .3s}
+.hw.on{border-color:var(--green);background:rgba(34,197,94,.16);transform:scale(1.03)}
+.pipe{position:relative;height:8px;border-radius:99px;background:var(--border);overflow:visible}
+.pipe .fill{position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--primary),var(--green));border-radius:99px;transition:width .5s ease}
+.packet{position:absolute;top:-9px;left:0;width:26px;height:26px;border-radius:9px;background:var(--yellow);display:grid;place-items:center;font-size:.85rem;box-shadow:0 6px 14px rgba(0,0,0,.22);transition:left .6s cubic-bezier(.5,0,.3,1);border:2px solid #fff}
+.log{max-height:190px;overflow-y:auto;display:grid;gap:.35rem}
+.log div{font-size:.82rem;border-left:4px solid var(--primary);background:var(--surface-2);border-radius:.5rem;padding:.35rem .55rem;animation:fade .3s}
+.bits{display:flex;gap:.28rem;flex-wrap:wrap}
+.bit{width:30px;height:38px;border-radius:.55rem;border:2px solid var(--border);background:var(--surface);display:grid;place-items:center;font-family:'Inter',sans-serif;font-weight:900;cursor:pointer;transition:all .15s}
+.bit.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.bit small{display:block;font-size:.5rem;opacity:.7;font-weight:700}
+html.alto-contraste .bit.on{color:#000}
+
+/* ---------- URL / HTTP ---------- */
+.urlbar{display:flex;flex-wrap:wrap;gap:.2rem;align-items:center;background:var(--surface-2);border:2px solid var(--border);border-radius:999px;padding:.45rem .7rem;font-family:ui-monospace,Menlo,monospace;font-size:.86rem}
+.upart{border-radius:.5rem;padding:.1rem .3rem;cursor:pointer;border:2px solid transparent;font-weight:700;transition:all .15s;background:none;color:var(--text);font-family:inherit;font-size:inherit}
+.upart:hover{background:var(--bg-soft);border-color:var(--primary)}
+.upart.visto{background:rgba(34,197,94,.18);border-color:var(--green)}
+.upart.activo{background:var(--yellow);border-color:var(--yellow);color:#2A1E00}
+pre.http{background:#1B1035;color:#D6FFEF;border-radius:1rem;padding:.8rem;font-size:.78rem;overflow-x:auto;line-height:1.55;margin:0}
+html.alto-contraste pre.http{background:#000;color:#FFD400;border:2px solid #fff}
+.status-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.2rem .7rem;font-weight:900;font-family:'Inter',sans-serif;font-size:.8rem;border:2px solid}
+
+/* ---------- Resultados / nubes ---------- */
+.res{border:2px solid var(--border);border-radius:1rem;padding:.7rem .85rem;background:var(--surface);transition:all .2s}
+.res:hover{border-color:var(--primary);transform:translateY(-2px)}
+.res mark{background:rgba(234,179,8,.45);color:inherit;border-radius:.25rem;padding:0 .1rem}
+html.alto-contraste .res mark{background:#FFD400;color:#000}
+.cloud{display:flex;flex-wrap:wrap;gap:.5rem .7rem;align-items:baseline;justify-content:center;min-height:150px}
+.cloud span{font-family:'Inter',sans-serif;font-weight:900;color:var(--primary);cursor:default;line-height:1.1;transition:transform .2s}
+html.alto-contraste .cloud span{color:var(--yellow)}
+.cloud span:hover{transform:scale(1.08)}
+.cloud span.mio{color:var(--green)}
+.checkrow{display:flex;gap:.6rem;align-items:flex-start;justify-content:space-between;border-bottom:1.5px dashed var(--border);padding:.45rem 0;flex-wrap:wrap}
+.seg{display:flex;gap:.25rem}
+.seg button{border:2px solid var(--border);background:var(--surface);border-radius:999px;padding:.15rem .6rem;font-size:.75rem;font-weight:800;cursor:pointer;color:var(--text)}
+.seg button.sel{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+html.alto-contraste .seg button.sel{color:#000}
+.bar{height:12px;border-radius:99px;background:var(--border);overflow:hidden}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--green));width:0;transition:width .5s}
+
+/* ---------- Modales ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(20,10,45,.55);backdrop-filter:blur(4px);z-index:80;display:none;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+.backdrop.open{display:flex}
+.modal{background:var(--bg);border:2px solid var(--border);border-radius:1.5rem;width:100%;max-width:760px;box-shadow:0 30px 70px rgba(0,0,0,.35);animation:pop .28s ease;margin:auto}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.field label{display:block;font-family:'Inter',sans-serif;font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem;color:var(--muted)}
+html.alto-contraste .field label{color:var(--text)}
+.field input{width:100%;border:2px solid var(--border);border-radius:.85rem;padding:.6rem .8rem;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;background:var(--surface);color:var(--text)}
+.field input:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 4px rgba(139,92,246,.18)}
+.glos-item{border:2px solid var(--border);border-radius:1rem;background:var(--surface);overflow:hidden}
+.glos-item summary{cursor:pointer;padding:.6rem .8rem;font-family:'Inter',sans-serif;font-weight:800;font-size:.92rem;list-style:none;display:flex;gap:.5rem;align-items:center;justify-content:space-between}
+.glos-item summary::-webkit-details-marker{display:none}
+.glos-item[open] summary{background:var(--bg-soft)}
+.glos-item p{padding:.55rem .8rem;font-size:.9rem;color:var(--muted)}
+html.alto-contraste .glos-item p{color:var(--text)}
+
+/* ---------- Toast ---------- */
+#toastRoot{position:fixed;right:1rem;bottom:1rem;z-index:120;display:grid;gap:.5rem;max-width:330px}
+.toast{background:var(--surface);border:2px solid var(--green);border-radius:1rem;padding:.7rem .85rem;box-shadow:0 16px 34px rgba(0,0,0,.22);display:flex;gap:.6rem;align-items:center;animation:slide .35s ease}
+@keyframes slide{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+
+/* ---------- Impresión A4 ---------- */
+#printArea{display:none}
+@media print{
+  @page{size:A4 portrait;margin:13mm 12mm}
+  html,body{background:#fff !important;color:#000 !important}
+  #app,#toastRoot,.backdrop{display:none !important}
+  #printArea{display:block !important;color:#000;font-family:'Inter',Arial,Helvetica,sans-serif;font-size:10pt;line-height:1.42}
+  #printArea *{color:#000 !important;background:#fff !important;border-color:#4d4d4d !important;box-shadow:none !important;text-shadow:none !important;filter:none !important}
+  #printArea .grid,#printArea .sim-wrap{display:block !important}
+  #printArea .card,#printArea .card-soft,#printArea .card-lila,#printArea .callout{border:1px solid #4d4d !important;border-radius:6px !important;padding:7px 9px !important;margin:6px 0 !important;break-inside:avoid}
+  #printArea .card-lila{border:2px solid #000 !important}
+  #printArea h1,#printArea h2,#printArea h3,#printArea h4{break-after:avoid}
+  #printArea .tbl th,#printArea .tbl td{border:1px solid #4d4d !important;padding:3px 5px !important;font-size:8.6pt !important}
+  #printArea .codebox{border:1px solid #4d4d !important;border-radius:5px !important;font-size:8.2pt !important;white-space:pre-wrap !important}
+  #printArea ul,#printArea ol{padding-left:16px !important;margin:3px 0 !important}
+  #printArea li{margin:1px 0 !important}
+  .p-h1{font-size:19pt;font-weight:900;letter-spacing:-.02em}
+  .p-h2{font-size:12.5pt;font-weight:900;border-bottom:2px solid #000;padding-bottom:3px;margin:16px 0 7px}
+  .p-h3{font-size:10.5pt;font-weight:900;margin:9px 0 3px}
+  .p-muted{font-size:8.4pt;color:#000}
+  .p-block{break-inside:avoid}
+  .p-head{border:2px solid #000;border-radius:8px;padding:9px 11px;margin-bottom:10px}
+  .p-flex{display:flex;justify-content:space-between;gap:10px;align-items:flex-end}
+  .p-kv{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted #666;padding:3px 0;font-size:9.6pt}
+  .p-kv b{font-weight:900}
+  .p-chip{display:inline-block;border:1px solid #000;border-radius:99px;padding:1px 7px;font-size:8.2pt;font-weight:700;margin:2px 3px 0 0}
+  .p-q{border-left:3px solid #000;padding-left:7px;margin:6px 0;break-inside:avoid;font-size:9.4pt}
+  .p-ok{font-weight:900}
+  .p-cert{border:6px double #000;padding:20px;text-align:center;border-radius:4px}
+  .p-cert .titulo{font-size:13pt;letter-spacing:.28em;text-transform:uppercase}
+  .p-cert h1{font-size:29pt;margin:10px 0 4px}
+  .p-cert .nombre{font-size:26pt;font-weight:900;border-bottom:1.5px solid #000;display:inline-block;padding:0 16px 4px;margin:12px 0}
+  .p-firma{margin-top:34px;display:flex;justify-content:space-around;gap:20px;font-size:9pt}
+  .p-firma div{border-top:1px solid #000;padding-top:4px;min-width:150px}
+  .p-footer{margin-top:12px;border-top:1px solid #666;padding-top:5px;font-size:8pt;display:flex;justify-content:space-between}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ================= BARRA SUPERIOR ================= -->
+  <header class="topbar no-print">
+    <div class="max-w-[1400px] mx-auto px-3 sm:px-5 py-3">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="brand-badge" aria-hidden="true">🧠</div>
+          <div>
+            <h1 class="text-base sm:text-xl leading-none">NTiCx <span class="text-ntc2">4to año</span></h1>
+            <p class="text-[.72rem] sm:text-xs font-bold" style="color:var(--muted)">Nuevas Tecnologías de la Información y la Conectividad · Escuela Secundaria 🇦🇷</p>
+          </div>
+        </div>
+
+        <!-- Acciones superiores: Mi Reporte · Teoría · Glosario | Dislexia · Contraste -->
+        <div class="acciones" role="toolbar" aria-label="Acciones principales y accesibilidad">
+          <button class="btn btn-primary" id="btnReporte" aria-haspopup="dialog">📄 Mi Reporte</button>
+          <button class="btn btn-soft" id="btnTeoria">📚 Teoría</button>
+          <button class="btn btn-soft" id="btnGlosario" aria-haspopup="dialog">🔤 Glosario</button>
+          <span class="sep" aria-hidden="true"></span>
+          <button class="btn btn-toggle" id="btnDislexia" aria-pressed="false" title="Tipografía accesible para dislexia">🅰️ Dislexia</button>
+          <button class="btn btn-toggle" id="btnContraste" aria-pressed="false" title="Modo alto contraste">🌓 Contraste</button>
+        </div>
+      </div>
+
+      <div class="mt-3 flex items-center gap-3">
+        <div class="bar flex-1"><i id="barraGlobal"></i></div>
+        <span class="text-[.72rem] font-black font-head whitespace-nowrap" id="txtProgreso">0% del recorrido</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1400px] mx-auto px-3 sm:px-5 pb-16">
+
+    <!-- ================= HERO / TABLERO ================= -->
+    <section class="pt-5 no-print">
+      <div class="grid gap-4 lg:grid-cols-3">
+        <div class="card-lila lg:col-span-2 relative overflow-hidden">
+          <div class="absolute -right-8 -top-10 text-[9rem] opacity-15 select-none" aria-hidden="true">💜</div>
+          <span class="inline-block bg-white/25 rounded-full px-3 py-1 text-[.7rem] font-black uppercase tracking-widest">Misión NTiCx · Nivel 4</span>
+          <h2 class="text-2xl sm:text-4xl mt-3 text-white">De la señal al dato: cómo la información se organiza, se busca y se comparte en Internet</h2>
+          <p class="text-white/90 mt-2 max-w-2xl text-sm sm:text-base">Cuatro módulos con teoría ágil, simuladores y trivias. Completá las trivias, juntá logros y aprobá la evaluación final para imprimir tu certificado en A4.</p>
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-sol" data-ir="dig">🚀 Empezar por Digitalización</button>
+            <button class="btn bg-white text-ntc border-white" data-ir="examen">🎓 Ir a la Evaluación Final</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h-sect">📊 Tu progreso</div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="card-soft !p-2"><div class="text-2xl font-head font-black" id="statTrivias">0/4</div><div class="text-[.68rem] font-bold uppercase" style="color:var(--muted)">Trivias</div></div>
+            <div class="card-soft !p-2"><div class="text-2xl font-head font-black" id="statLogros">0/13</div><div class="text-[.68rem] font-bold uppercase" style="color:var(--muted)">Logros</div></div>
+            <div class="card-soft !p-2"><div class="text-2xl font-head font-black" id="statExamen">—</div><div class="text-[.68rem] font-bold uppercase" style="color:var(--muted)">Examen</div></div>
+          </div>
+          <div class="h-sect mt-4">🏅 Mis logros</div>
+          <div class="grid gap-1.5 max-h-[190px] overflow-y-auto pr-1" id="logrosGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PESTAÑAS ================= -->
+    <nav class="tabs mt-6 no-print" id="tabsNav" role="tablist" aria-label="Módulos de NTiCx">
+      <button class="tab-btn active" role="tab" aria-selected="true" data-tab="dig">💾 Digitalización <span class="ok" hidden>✓</span></button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="web">🌐 WWW y organización <span class="ok" hidden>✓</span></button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="bus">🔎 Buscadores <span class="ok" hidden>✓</span></button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="fol">🏷️ Folcsonomía <span class="ok" hidden>✓</span></button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="examen">🎓 Evaluación Final</button>
+    </nav>
+
+    <!-- ============================================================= -->
+    <!-- PESTAÑA 1 · DIGITALIZACIÓN (PRINCIPAL)                        -->
+    <!-- ============================================================= -->
+    <section class="panel active" id="panel-dig" role="tabpanel">
+
+      <div class="modulo-teoria" data-mod="Módulo 1 · Digitalización de la información">
+        <h2 class="mod-title">💾 Digitalización de la información</h2>
+        <p class="lead mt-1">Conceptos, procesos y almacenamiento: qué pasa adentro de tu celu o de la netbook del plan cuando pasás algo del mundo real al mundo de los datos.</p>
+
+        <div class="grid gap-4 md:grid-cols-2 mt-4">
+          <article class="card">
+            <div class="h-sect">🧩 ¿Qué es digitalizar?</div>
+            <p class="text-sm"><b>Digitalizar</b> es representar cualquier información (un texto, una foto, tu voz, un trámite de ANSES) mediante <b>números</b>, más exactamente con dos únicos estados: <b>0 y 1</b>. Eso permite guardarla, copiarla sin pérdida, enviarla por Internet y procesarla con programas.</p>
+            <div class="callout mt-3">📌 <b>Dato digital</b> = información codificada en bits. <b>Dato analógico</b> = información continua, como el sonido de una guitarra en el aire.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">⚖️ Analógico vs. Digital</div>
+            <table class="tbl">
+              <tr><th>Criterio</th><th>Analógico</th><th>Digital</th></tr>
+              <tr><td>Señal</td><td>Continua</td><td>Discreta (0 y 1)</td></tr>
+              <tr><td>Ejemplo</td><td>Disco de vinilo, foto en papel, cuaderno</td><td>MP3, JPEG, PDF, drive</td></tr>
+              <tr><td>Copias</td><td>Se degradan</td><td>Idénticas siempre</td></tr>
+              <tr><td>Edición</td><td>Limitada</td><td>Total (apps, filtros, IA)</td></tr>
+              <tr><td>Transmisión</td><td>Física</td><td>Instantánea por red</td></tr>
+            </table>
+          </article>
+
+          <article class="card md:col-span-2">
+            <div class="h-sect">🔢 Bit, byte y la escalera del almacenamiento</div>
+            <p class="text-sm mb-2">El <b>bit</b> es la unidad mínima (0 o 1). Con <b>8 bits</b> formás un <b>byte</b>, que equivale a un carácter: la letra “A” en ASCII es <code>01000001</code> (65).</p>
+            <table class="tbl">
+              <tr><th>Unidad</th><th>Símbolo</th><th>Equivalencia</th><th>Para que te des una idea 🇦🇷</th></tr>
+              <tr><td>Bit</td><td>b</td><td>0 o 1</td><td>Un “sí” o un “no”</td></tr>
+              <tr><td>Byte</td><td>B</td><td>8 bits</td><td>Una letra de tu nombre</td></tr>
+              <tr><td>Kilobyte</td><td>KB</td><td>1024 B</td><td>Un mail de solo texto</td></tr>
+              <tr><td>Megabyte</td><td>MB</td><td>1024 KB</td><td>Una canción MP3 ≈ 4 MB</td></tr>
+              <tr><td>Gigabyte</td><td>GB</td><td>1024 MB</td><td>≈ 250 canciones o 1 película en HD</td></tr>
+              <tr><td>Terabyte</td><td>TB</td><td>1024 GB</td><td>El disco externo de tu casa</td></tr>
+              <tr><td>Petabyte</td><td>PB</td><td>1024 TB</td><td>Lo que manejan los datacenters de Google</td></tr>
+            </table>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🔄 El proceso de digitalización</div>
+            <ol class="text-sm space-y-1.5">
+              <li><b>Captura / Entrada:</b> un dispositivo toma la señal del mundo real (micrófono, cámara, escáner, teclado, sensor).</li>
+              <li><b>Muestreo:</b> se mide la señal muchas veces por segundo (44.100 veces en un CD de audio).</li>
+              <li><b>Cuantización:</b> cada medida se convierte en un valor numérico finito.</li>
+              <li><b>Codificación:</b> esos valores se traducen a binario.</li>
+              <li><b>Compresión:</b> se reduce el tamaño del archivo.</li>
+              <li><b>Almacenamiento:</b> queda guardado en disco, pendrive o nube.</li>
+              <li><b>Transmisión y recuperación:</b> se envía por red y se vuelve a convertir en algo perceptible (sonido, imagen).</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🗜️ Compresión: con y sin pérdida</div>
+            <table class="tbl">
+              <tr><th>Tipo</th><th>Qué hace</th><th>Formatos</th></tr>
+              <tr><td><b>Sin pérdida</b></td><td>Reordena datos sin tirar nada; al descomprimir queda idéntico.</td><td>ZIP, PNG, FLAC, PDF</td></tr>
+              <tr><td><b>Con pérdida</b></td><td>Elimina detalles casi imperceptibles para achicar mucho.</td><td>MP3, JPG, MP4</td></tr>
+            </table>
+            <div class="callout amar mt-3">⚠️ Si guardás muchas veces un JPG sobre el mismo archivo, la calidad se degrada cada vez.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">📁 Formatos según el tipo de información</div>
+            <table class="tbl">
+              <tr><th>Información</th><th>Formatos frecuentes</th><th>Uso escolar típico</th></tr>
+              <tr><td>Texto</td><td>TXT, DOCX, PDF, ODT, MD</td><td>Trabajos prácticos, informes</td></tr>
+              <tr><td>Imagen</td><td>JPG, PNG, GIF, SVG, WEBP, RAW</td><td>Infografías, fotos de la feria</td></tr>
+              <tr><td>Audio</td><td>MP3, WAV, OGG, M4A</td><td>Podcast, grabación de clase</td></tr>
+              <tr><td>Video</td><td>MP4, AVI, MKV, WEBM</td><td>Videos tutoriales, TikTok educativo</td></tr>
+              <tr><td>Planilla</td><td>XLSX, ODS, CSV</td><td>Encuestas y estadísticas</td></tr>
+            </table>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">⚙️ Conceptos, procesos y almacenamiento</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>CPU (procesador):</b> ejecuta las instrucciones y hace los cálculos. Tiene Unidad de Control + ALU.</li>
+              <li><b>RAM:</b> memoria <b>volátil</b> y rapidísima donde viven los datos del programa abierto. Se borra al apagar.</li>
+              <li><b>Almacenamiento:</b> HDD, SSD, pendrive, tarjeta SD o nube. Guarda de forma <b>permanente</b>.</li>
+              <li><b>Nube:</b> discos remotos (Drive, OneDrive, iCloud) accesibles con Internet; el dato no está “en el aire”, está en un datacenter.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🛡️ Digitalizar también es cuidar</div>
+            <ul class="text-sm space-y-1">
+              <li>🔐 <b>Copias de seguridad:</b> regla 3-2-1 (3 copias, 2 soportes, 1 fuera de casa).</li>
+              <li>📝 <b>Metadatos:</b> datos sobre los datos (fecha, autor, cámara, ubicación).</li>
+              <li>🕵️ <b>Huella digital:</b> todo lo que subís deja rastro y es difícil de borrar.</li>
+              <li>♿ <b>Accesibilidad:</b> digitalizar bien incluye texto alternativo en imágenes y subtítulos en videos.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <!-- Simulador (interactivo) -->
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <div class="h-sect">🧪 Simulador del flujo de datos</div>
+            <p class="text-sm" style="color:var(--muted)">Entrada → Procesamiento (CPU + RAM + Almacenamiento) → Salida. Elegí un dispositivo de cada lado y ejecutá el ciclo.</p>
+          </div>
+          <span class="tag">Interactivo</span>
+        </div>
+
+        <div class="mt-3 grid gap-2 sm:grid-cols-2">
+          <div>
+            <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">📥 Dispositivo de entrada</div>
+            <div class="flex flex-wrap gap-1.5" id="simEntrada"></div>
+          </div>
+          <div>
+            <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">📤 Dispositivo de salida</div>
+            <div class="flex flex-wrap gap-1.5" id="simSalida"></div>
+          </div>
+        </div>
+
+        <div class="mt-4 sim-wrap">
+          <div class="zone" id="zoneIn">
+            <h4>📥 1 · Entrada</h4>
+            <div class="text-xs font-bold" style="color:var(--muted)">Señal analógica del mundo real</div>
+            <div class="mt-2 grid gap-1.5">
+              <div class="hw" id="hwSensor">🎙️ Captura / lectura</div>
+              <div class="hw" id="hwAD">🔁 Conversor A/D (muestreo)</div>
+            </div>
+          </div>
+
+          <div class="zone" id="zoneProc">
+            <h4>⚙️ 2 · Procesamiento</h4>
+            <div class="pipe mb-3"><div class="fill" id="pipeFill"></div><div class="packet" id="packet">📦</div></div>
+            <div class="grid gap-1.5">
+              <div class="hw" id="hwCPU">🧠 CPU · ejecuta instrucciones</div>
+              <div class="hw" id="hwRAM">⚡ RAM · dato temporal</div>
+              <div class="hw" id="hwSTO">💽 Almacenamiento · dato permanente</div>
+            </div>
+            <div class="mt-2 text-[.72rem] font-black uppercase" style="color:var(--muted)">Binario generado</div>
+            <div class="bits mt-1" id="simBits"></div>
+          </div>
+
+          <div class="zone" id="zoneOut">
+            <h4>📤 3 · Salida</h4>
+            <div class="text-xs font-bold" style="color:var(--muted)">El dato vuelve a ser perceptible</div>
+            <div class="mt-2 grid gap-1.5">
+              <div class="hw" id="hwRender">🖼️ Render / decodificación</div>
+              <div class="hw" id="hwDev">📱 Dispositivo de salida</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 mt-4">
+          <button class="btn btn-neon" id="simRun">▶️ Ejecutar flujo</button>
+          <button class="btn btn-mini" id="simReset">↺ Reiniciar</button>
+          <span class="text-xs font-bold" style="color:var(--muted)" id="simEstado">Listo para procesar.</span>
+        </div>
+        <div class="mt-3">
+          <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">🧾 Bitácora del proceso</div>
+          <div class="log" id="simLog"><div>Sin actividad todavía.</div></div>
+        </div>
+      </div>
+
+      <!-- Conversor binario -->
+      <div class="grid gap-4 md:grid-cols-2 mt-4 no-print widget">
+        <div class="card">
+          <div class="h-sect">🎛️ Conversor decimal → binario</div>
+          <p class="text-sm" style="color:var(--muted)">Escribí un número de 0 a 255 o tocá los bits: así “piensa” la máquina.</p>
+          <div class="flex items-center gap-2 mt-2">
+            <input id="binInput" type="number" min="0" max="255" value="65" class="field" style="width:130px;border:2px solid var(--border);border-radius:.85rem;padding:.5rem .7rem;font-weight:800;background:var(--surface);color:var(--text)" aria-label="Número decimal" />
+            <span class="text-sm font-bold">= <b id="binOut" class="mono">01000001</b></span>
+          </div>
+          <div class="bits mt-3" id="binBits"></div>
+          <div class="callout mt-3 text-sm" id="binInfo">💡 65 en ASCII es la letra <b>A</b>.</div>
+        </div>
+
+        <div class="card">
+          <div class="h-sect">🧮 ¿Cuántos bits se necesitan?</div>
+          <p class="text-sm" style="color:var(--muted)">Con <b>n</b> bits representás 2ⁿ combinaciones distintas.</p>
+          <table class="tbl mt-2">
+            <tr><th>Bits</th><th>Combinaciones</th><th>Alcanza para</th></tr>
+            <tr><td>1</td><td>2</td><td>Verdadero / Falso</td></tr>
+            <tr><td>3</td><td>8</td><td>Los días de la semana</td></tr>
+            <tr><td>8</td><td>256</td><td>Un carácter (letras, números, tildes)</td></tr>
+            <tr><td>16</td><td>65.536</td><td>Sonido de calidad básica</td></tr>
+            <tr><td>24</td><td>16.777.216</td><td>Colores de una pantalla</td></tr>
+          </table>
+          <div class="callout verde mt-3">✅ Una imagen de 12 MP guarda unos <b>36 millones de bytes</b> de información: por eso se comprime.</div>
+        </div>
+      </div>
+
+      <!-- Trivia 1 -->
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="h-sect">🎯 Mini-trivia · Digitalización (3 preguntas)</div>
+          <span class="tag" id="score-dig">Sin responder</span>
+        </div>
+        <div class="grid gap-3 mt-3" id="trivia-dig"></div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button class="btn btn-mini btn-soft" data-reiniciar="dig">↺ Reiniciar trivia</button>
+          <button class="btn btn-mini btn-soft" data-ir="web">Siguiente módulo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- PESTAÑA 2 · WWW                                               -->
+    <!-- ============================================================= -->
+    <section class="panel" id="panel-web" role="tabpanel">
+
+      <div class="modulo-teoria" data-mod="Módulo 2 · Organización de la información en la web (WWW)">
+        <h2 class="mod-title">🌐 Organización de la información en la web</h2>
+        <p class="lead mt-1">La <b>World Wide Web (WWW)</b> no es Internet: es el gigantesco sistema de documentos enlazados que viaja <b>sobre</b> Internet usando HTML, HTTP y los hipervínculos.</p>
+
+        <div class="grid gap-4 md:grid-cols-2 mt-4">
+          <article class="card">
+            <div class="h-sect">🌍 Internet ≠ Web</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>Internet:</b> la red física mundial de computadoras conectadas (cables, fibra, satélites, antenas 4G/5G).</li>
+              <li><b>Web (WWW):</b> uno de los <b>servicios</b> que circulan por Internet. Otros servicios son el correo electrónico, el chat, FTP o los juegos en línea.</li>
+            </ul>
+            <div class="callout mt-3">📌 Metáfora: Internet es la <b>red de rutas</b>; la web son los <b>camiones con mercadería</b> que circulan por ella.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🕰️ Línea de tiempo</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>1945 ·</b> Vannevar Bush imagina el <i>Memex</i>, una máquina de documentos asociados.</li>
+              <li><b>1965 ·</b> Ted Nelson acuña los términos <b>hipertexto</b> e <b>hipermedia</b>.</li>
+              <li><b>1989-1991 ·</b> <b>Tim Berners-Lee</b> (CERN, Suiza) propone la WWW: HTML + HTTP + URL.</li>
+              <li><b>1993 ·</b> Navegador <b>Mosaic</b>: la web se vuelve visual y masiva.</li>
+              <li><b>2004 ·</b> Nace el concepto de <b>Web 2.0</b>: el usuario produce contenido.</li>
+              <li><b>Hoy ·</b> Web semántica / 3.0, datos enlazados, IA y servicios en la nube.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🧱 HTML: el lenguaje que estructura la página</div>
+            <p class="text-sm mb-2"><b>HTML</b> (<i>HyperText Markup Language</i>) no es un lenguaje de programación: es un lenguaje de <b>marcado</b> que usa <b>etiquetas</b> para decir qué es cada cosa.</p>
+            <div class="codebox">&lt;<span class="t">!DOCTYPE html</span>&gt;
+&lt;<span class="t">html</span> <span class="a">lang</span>=<span class="c">"es"</span>&gt;
+ &lt;<span class="t">head</span>&gt;
+   &lt;<span class="t">title</span>&gt;Mi trabajo de NTiCx&lt;/<span class="t">title</span>&gt;
+ &lt;/<span class="t">head</span>&gt;
+ &lt;<span class="t">body</span>&gt;
+   &lt;<span class="t">h1</span>&gt;La web&lt;/<span class="t">h1</span>&gt;
+   &lt;<span class="t">p</span>&gt;Texto con un &lt;<span class="t">a</span> <span class="a">href</span>=<span class="c">"https://educ.ar"</span>&gt;enlace&lt;/<span class="t">a</span>&gt;.&lt;/<span class="t">p</span>&gt;
+   &lt;<span class="t">img</span> <span class="a">src</span>=<span class="c">"foto.jpg"</span> <span class="a">alt</span>=<span class="c">"Aula"</span>&gt;
+ &lt;/<span class="t">body</span>&gt;
+&lt;/<span class="t">html</span>&gt;</div>
+            <p class="text-sm mt-2">Etiquetas semánticas de <b>HTML5</b>: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>.</p>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🔗 Hipertexto, hipermedia e hipervínculo</div>
+            <table class="tbl">
+              <tr><th>Concepto</th><th>Definición</th></tr>
+              <tr><td><b>Hipertexto</b></td><td>Texto no lineal que se ramifica: de una palabra saltás a otro documento.</td></tr>
+              <tr><td><b>Hipermedia</b></td><td>Hipertexto + imágenes, audio, video y animaciones integrados.</td></tr>
+              <tr><td><b>Hipervínculo</b></td><td>El “puente” concreto (link) que hace posible el salto. En HTML es <code>&lt;a href="…"&gt;</code>.</td></tr>
+            </table>
+            <div class="callout verde mt-3">🧠 Así funciona tu cerebro cuando navegás: asociando ideas, no leyendo de corrido.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">📡 HTTP / HTTPS: el protocolo del pedido</div>
+            <p class="text-sm">La web funciona con el modelo <b>cliente-servidor</b>: tu navegador (cliente) hace un <b>pedido</b> (request) y el servidor devuelve una <b>respuesta</b> (response).</p>
+            <ul class="text-sm mt-2 space-y-1">
+              <li><b>Métodos:</b> <code>GET</code> (pedir datos), <code>POST</code> (enviar datos), <code>PUT</code>, <code>DELETE</code>.</li>
+              <li><b>HTTP</b> viaja en el puerto 80 (texto plano) y <b>HTTPS</b> en el 443 (cifrado con TLS).</li>
+              <li><b>Códigos de estado:</b> 2xx correcto · 3xx redirección · 4xx error del cliente · 5xx error del servidor.</li>
+            </ul>
+            <table class="tbl mt-2">
+              <tr><th>Código</th><th>Significado</th></tr>
+              <tr><td>200</td><td>OK: la página se entregó bien</td></tr>
+              <tr><td>301</td><td>Movido permanentemente</td></tr>
+              <tr><td>403</td><td>Prohibido: no tenés permiso</td></tr>
+              <tr><td>404</td><td>No encontrado</td></tr>
+              <tr><td>500</td><td>Error interno del servidor</td></tr>
+            </table>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🧭 URL, dominio y DNS</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>URL:</b> la “dirección” completa de un recurso en la web.</li>
+              <li><b>Dominio:</b> nombre fácil de recordar (<code>educ.ar</code>, <code>argentina.gob.ar</code>).</li>
+              <li><b>DNS:</b> traduce el nombre a una dirección IP numérica.</li>
+              <li><b>Navegador:</b> el programa que interpreta HTML y muestra la página (Chrome, Firefox, Edge, Safari).</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">📧 Correo electrónico</div>
+            <p class="text-sm">Servicio asíncrono de intercambio de mensajes con <b>adjuntos</b>. Partes: remitente, destinatario, <b>CC</b> (copia visible), <b>CCO</b> (copia oculta), asunto, cuerpo, firma y adjuntos.</p>
+            <table class="tbl mt-2">
+              <tr><th>Protocolo</th><th>Para qué sirve</th></tr>
+              <tr><td><b>SMTP</b></td><td>Enviar el mensaje al servidor</td></tr>
+              <tr><td><b>POP3</b></td><td>Descargarlo y borrarlo del servidor</td></tr>
+              <tr><td><b>IMAP</b></td><td>Sincronizarlo en varios dispositivos</td></tr>
+            </table>
+            <div class="callout rojo mt-3">🚨 Riesgos: <b>spam</b> (publicidad masiva), <b>phishing</b> (suplantación para robar datos) y adjuntos con malware. Nunca pases tu contraseña por mail.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">💬 Chat y comunicación sincrónica</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>Sincrónico:</b> las personas coinciden en el tiempo (WhatsApp, Discord, Meet, IRC, TikTok Live).</li>
+              <li><b>Asincrónico:</b> cada uno responde cuando puede (correo, foros, mensajes de voz).</li>
+              <li><b>Netiqueta:</b> normas de buena conducta en línea; escribir TODO EN MAYÚSCULAS equivale a gritar.</li>
+              <li><b>Bots:</b> programas que responden de forma automática (asistentes de empresas, IA conversacional).</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🎙️ Podcast</div>
+            <p class="text-sm">Programa de audio (o video, <i>videopodcast</i>) en episodios que se <b>suscribe</b> y se descarga o escucha en streaming. Se distribuye mediante un <b>feed RSS</b>, por eso cuando sale un episodio nuevo te llega solo.</p>
+            <ul class="text-sm mt-2 space-y-1">
+              <li>Formatos: entrevista, monólogo, narrativo, educativo.</li>
+              <li>Producción: guion → grabación → edición → exportar MP3 → subir a un hosting → feed RSS.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">📰 RSS: suscripción a novedades</div>
+            <p class="text-sm"><b>RSS</b> (<i>Really Simple Syndication</i>) es un archivo <b>XML</b> con los títulos, resúmenes y enlaces de las últimas publicaciones de un sitio. Un <b>lector de feeds</b> (Feedly, Inoreader) junta todos los sitios en un solo lugar.</p>
+            <div class="codebox">&lt;<span class="t">rss</span> <span class="a">version</span>=<span class="c">"2.0"</span>&gt;
+ &lt;<span class="t">channel</span>&gt;
+  &lt;<span class="t">title</span>&gt;Novedades NTiCx&lt;/<span class="t">title</span>&gt;
+  &lt;<span class="t">item</span>&gt;
+   &lt;<span class="t">title</span>&gt;Clase de buscadores&lt;/<span class="t">title</span>&gt;
+   &lt;<span class="t">link</span>&gt;https://miweb.com.ar/1&lt;/<span class="t">link</span>&gt;
+  &lt;/<span class="t">item</span>&gt;
+ &lt;/<span class="t">channel</span>&gt;
+&lt;/<span class="t">rss</span>&gt;</div>
+          </article>
+
+          <article class="card md:col-span-2">
+            <div class="h-sect">📈 Web 1.0 → 2.0 → 3.0</div>
+            <table class="tbl">
+              <tr><th>Etapa</th><th>Rol del usuario</th><th>Características</th><th>Ejemplos</th></tr>
+              <tr><td><b>Web 1.0</b> (1991-2004)</td><td>Lector pasivo</td><td>Páginas estáticas, solo lectura</td><td>Sitios institucionales, directorios</td></tr>
+              <tr><td><b>Web 2.0</b> (2004- )</td><td>Prosumidor: lee y produce</td><td>Redes sociales, colaboración, etiquetas, nube</td><td>YouTube, Wikipedia, Instagram, TikTok</td></tr>
+              <tr><td><b>Web 3.0 / semántica</b></td><td>Usuario de datos enlazados</td><td>Datos con significado, IA, descentralización</td><td>Asistentes inteligentes, datos abiertos</td></tr>
+            </table>
+          </article>
+        </div>
+      </div>
+
+      <!-- Widgets interactivos WWW -->
+      <div class="card mt-5 no-print widget">
+        <div class="h-sect">🧩 Anatomía de una URL (tocá cada parte)</div>
+        <div class="urlbar" id="urlbar" aria-label="Estructura de una URL"></div>
+        <div class="callout mt-3" id="urlInfo">👆 Tocá los fragmentos de la dirección para descubrir qué significa cada uno. Explorá los 8 para ganar el logro.</div>
+        <div class="flex gap-2 mt-2 flex-wrap"><span class="tag" id="urlCount">Partes vistas: 0/8</span></div>
+      </div>
+
+      <div class="grid gap-4 lg:grid-cols-2 mt-4 no-print widget">
+        <div class="card">
+          <div class="h-sect">⌨️ Editor HTML en vivo</div>
+          <p class="text-sm mb-2" style="color:var(--muted)">Escribí código y mirá el resultado al instante, como en un navegador.</p>
+          <div class="flex flex-wrap gap-1.5 mb-2" id="htmlBtns"></div>
+          <textarea id="htmlCode" spellcheck="false" class="w-full mono text-[.8rem] p-3 rounded-xl" rows="9" style="border:2px solid var(--border);background:var(--surface-2);color:var(--text)" aria-label="Código HTML"></textarea>
+          <div class="flex gap-2 mt-2 flex-wrap">
+            <button class="btn btn-primary btn-mini" id="htmlRun">▶️ Renderizar</button>
+            <button class="btn btn-mini btn-soft" id="htmlReset">↺ Ejemplo inicial</button>
+          </div>
+          <div class="mt-3">
+            <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">👁️ Vista previa</div>
+            <iframe id="htmlPreview" title="Vista previa HTML" class="w-full rounded-xl" style="border:2px solid var(--border);background:#fff;min-height:150px"></iframe>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h-sect">🛰️ Simulador HTTP (cliente ↔ servidor)</div>
+          <p class="text-sm mb-2" style="color:var(--muted)">Elegí método y recurso: tu navegador hace el pedido y el servidor responde con un código de estado.</p>
+          <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">Método</div>
+          <div class="flex gap-1.5 flex-wrap" id="httpMethods"></div>
+          <div class="text-[.72rem] font-black uppercase mt-2 mb-1" style="color:var(--muted)">Recurso pedido</div>
+          <div class="flex gap-1.5 flex-wrap" id="httpPaths"></div>
+          <button class="btn btn-neon mt-3" id="httpRun">📡 Enviar pedido</button>
+          <div class="grid gap-3 md:grid-cols-2 mt-3">
+            <div>
+              <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">↑ Request</div>
+              <pre class="http" id="httpReq">GET / HTTP/1.1
+Host: www.nticx.edu.ar
+Accept: text/html</pre>
+            </div>
+            <div>
+              <div class="text-[.72rem] font-black uppercase mb-1" style="color:var(--muted)">↓ Response</div>
+              <pre class="http" id="httpRes">Esperando el pedido…</pre>
+            </div>
+          </div>
+          <div class="mt-3" id="httpStatus"></div>
+        </div>
+      </div>
+
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="h-sect">🎯 Mini-trivia · WWW (3 preguntas)</div>
+          <span class="tag" id="score-web">Sin responder</span>
+        </div>
+        <div class="grid gap-3 mt-3" id="trivia-web"></div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button class="btn btn-mini btn-soft" data-reiniciar="web">↺ Reiniciar trivia</button>
+          <button class="btn btn-mini btn-soft" data-ir="bus">Siguiente módulo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- PESTAÑA 3 · BUSCADORES                                        -->
+    <!-- ============================================================= -->
+    <section class="panel" id="panel-bus" role="tabpanel">
+
+      <div class="modulo-teoria" data-mod="Módulo 3 · Buscadores de información en Internet">
+        <h2 class="mod-title">🔎 Buscadores de información en Internet</h2>
+        <p class="lead mt-1">Encontrar no es lo mismo que buscar: con la estrategia correcta pasás de 8 millones de resultados a los 5 documentos que realmente necesitás para tu trabajo práctico.</p>
+
+        <div class="grid gap-4 md:grid-cols-2 mt-4">
+          <article class="card">
+            <div class="h-sect">⚙️ ¿Cómo funciona un buscador?</div>
+            <ol class="text-sm space-y-1.5">
+              <li><b>Rastreo (crawling):</b> programas llamados <b>crawlers</b>, <b>spiders</b> o robots recorren la web saltando de enlace en enlace y copian el contenido.</li>
+              <li><b>Indexación:</b> esa información se organiza en un <b>índice</b> gigante (como el índice de un libro, pero de toda la web).</li>
+              <li><b>Ranking / relevancia:</b> al buscar, un <b>algoritmo</b> ordena los resultados según palabras clave, autoridad (PageRank: cuántos sitios confiables te enlazan), frescura, idioma, ubicación y experiencia de uso.</li>
+            </ol>
+            <div class="callout mt-3">📌 Los buscadores no “leen todo Internet”: solo lo que sus robots pudieron visitar y los sitios autorizaron.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🗂️ Tipos de herramientas de búsqueda</div>
+            <table class="tbl">
+              <tr><th>Tipo</th><th>Qué hace</th><th>Ejemplos</th></tr>
+              <tr><td><b>Buscador general</b></td><td>Índice propio de toda la web</td><td>Google, Bing, Yahoo</td></tr>
+              <tr><td><b>Buscador vertical</b></td><td>Se especializa en un tema o formato</td><td>Google Académico, SciELO, Dialnet, YouTube</td></tr>
+              <tr><td><b>Metabuscador</b></td><td>No tiene índice propio: envía tu consulta a varios buscadores y reúne los resultados</td><td>Dogpile, MetaGer, Startpage</td></tr>
+              <tr><td><b>Directorio</b></td><td>Clasificación temática hecha por personas</td><td>DMOZ (histórico), portales educativos</td></tr>
+              <tr><td><b>Buscador privado</b></td><td>No guarda tu historial ni tu perfil</td><td>DuckDuckGo</td></tr>
+            </table>
+          </article>
+
+          <article class="card md:col-span-2">
+            <div class="h-sect">🔣 Operadores booleanos</div>
+            <p class="text-sm mb-2">Vienen de la lógica de <b>George Boole</b> y permiten combinar términos para achicar o agrandar la búsqueda.</p>
+            <table class="tbl">
+              <tr><th>Operador</th><th>Efecto</th><th>Ejemplo</th><th>Resultado</th></tr>
+              <tr><td><b>AND</b> (o espacio)</td><td>Ambos términos deben estar</td><td><code>fotografía AND luz</code></td><td>Solo páginas con las dos palabras</td></tr>
+              <tr><td><b>OR</b></td><td>Basta con uno de los dos</td><td><code>celular OR móvil</code></td><td>Más resultados, incluye sinónimos</td></tr>
+              <tr><td><b>NOT</b> (o signo −)</td><td>Excluye un término</td><td><code>jaguar -auto</code></td><td>El animal, no la marca</td></tr>
+              <tr><td><b>“ ”</b> comillas</td><td>Frase exacta</td><td><code>"energía solar"</code></td><td>No separa las palabras</td></tr>
+              <tr><td><b>( )</b> paréntesis</td><td>Agrupa condiciones</td><td><code>(sol OR solar) energía</code></td><td>Controla el orden lógico</td></tr>
+              <tr><td><b>*</b> comodín</td><td>Reemplaza una palabra</td><td><code>"el * de los anillos"</code></td><td>Completa la frase</td></tr>
+            </table>
+          </article>
+
+          <article class="card md:col-span-2">
+            <div class="h-sect">🎚️ Operadores avanzados de Google</div>
+            <table class="tbl">
+              <tr><th>Operador</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
+              <tr><td><code>site:</code></td><td>Buscar dentro de un sitio o dominio</td><td><code>site:educ.ar hipertexto</code></td></tr>
+              <tr><td><code>filetype:</code></td><td>Filtrar por formato de archivo</td><td><code>filetype:pdf folcsonomía</code></td></tr>
+              <tr><td><code>intitle:</code></td><td>Que la palabra esté en el título</td><td><code>intitle:buscadores</code></td></tr>
+              <tr><td><code>inurl:</code></td><td>Que esté en la dirección URL</td><td><code>inurl:nticx</code></td></tr>
+              <tr><td><code>related:</code></td><td>Sitios parecidos a uno</td><td><code>related:wikipedia.org</code></td></tr>
+              <tr><td><code>2015..2024</code></td><td>Rango de fechas o números</td><td><code>censo argentina 2010..2022</code></td></tr>
+            </table>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🧭 Estrategia de búsqueda en 6 pasos</div>
+            <ol class="text-sm space-y-1">
+              <li>Definí con tus palabras <b>qué necesitás saber</b>.</li>
+              <li>Elegí 2 o 3 <b>palabras clave</b> (sustantivos, sin artículos).</li>
+              <li>Usá comillas, NOT y operadores avanzados.</li>
+              <li>Probá con un <b>buscador vertical</b> o un metabuscador.</li>
+              <li>Evaluá las fuentes antes de citarlas.</li>
+              <li>Guardá lo útil con marcadores o etiquetas.</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">✅ Criterios para evaluar una fuente</div>
+            <ul class="text-sm space-y-1">
+              <li><b>Autoría:</b> ¿quién lo escribió? ¿existe? ¿es especialista?</li>
+              <li><b>Actualidad:</b> ¿cuándo se publicó? ¿está desactualizado?</li>
+              <li><b>Objetividad:</b> ¿informa o quiere venderte algo?</li>
+              <li><b>Verificabilidad:</b> ¿cita fuentes y datos comprobables?</li>
+              <li><b>Cobertura:</b> ¿trata el tema en profundidad o solo lo menciona?</li>
+              <li><b>Dominio:</b> <code>.edu</code> y <code>.gob</code> suelen ser más confiables que un blog anónimo.</li>
+            </ul>
+            <div class="callout rojo mt-3">🚨 <b>Fake news:</b> titulares emocionales, sin autor ni fecha, cadenas de WhatsApp y pedidos de “compartí ya”. Contrastá siempre con al menos dos fuentes distintas.</div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Simulador booleano -->
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div>
+            <div class="h-sect">🧪 Simulador de búsqueda con operadores booleanos</div>
+            <p class="text-sm" style="color:var(--muted)">Escribí una consulta real y mirá cómo se filtra una mini base de 12 documentos.</p>
+          </div>
+          <span class="tag">Interactivo</span>
+        </div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <input id="boolInput" class="flex-1 min-w-[220px]" style="border:2px solid var(--border);border-radius:.85rem;padding:.6rem .8rem;font-weight:800;background:var(--surface);color:var(--text)" placeholder="Ej.: educación AND tecnología -publicidad" aria-label="Consulta de búsqueda" />
+          <button class="btn btn-primary" id="boolRun">🔎 Buscar</button>
+        </div>
+        <div class="flex flex-wrap gap-1.5 mt-2" id="boolExamples"></div>
+        <div class="callout mt-3 text-sm" id="boolExplain">💡 Probá con una consulta: el sistema te explica qué documentos entraron y por qué.</div>
+        <div class="grid gap-2 md:grid-cols-2 mt-3" id="boolResults"></div>
+      </div>
+
+      <div class="card mt-4 no-print widget">
+        <div class="h-sect">🔀 Metabuscador visual</div>
+        <p class="text-sm mb-2" style="color:var(--muted)">La misma consulta viaja a tres motores distintos; el metabuscador elimina duplicados y mezcla los resultados.</p>
+        <div class="flex gap-2 flex-wrap items-center">
+          <input id="metaInput" class="flex-1 min-w-[200px]" style="border:2px solid var(--border);border-radius:.85rem;padding:.55rem .8rem;font-weight:800;background:var(--surface);color:var(--text)" value="podcast educativo" aria-label="Consulta al metabuscador" />
+          <button class="btn btn-neon" id="metaRun">🚀 Enviar a 3 motores</button>
+        </div>
+        <div class="grid gap-3 md:grid-cols-3 mt-3" id="metaEngines"></div>
+        <div class="card-soft mt-3">
+          <div class="h-sect">🧾 Resultado unificado (sin duplicados)</div>
+          <ul class="text-sm" id="metaMerged"><li style="color:var(--muted)">Todavía no se ejecutó la consulta.</li></ul>
+        </div>
+      </div>
+
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="h-sect">🎯 Mini-trivia · Buscadores (3 preguntas)</div>
+          <span class="tag" id="score-bus">Sin responder</span>
+        </div>
+        <div class="grid gap-3 mt-3" id="trivia-bus"></div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button class="btn btn-mini btn-soft" data-reiniciar="bus">↺ Reiniciar trivia</button>
+          <button class="btn btn-mini btn-soft" data-ir="fol">Siguiente módulo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- PESTAÑA 4 · FOLCSONOMÍA                                       -->
+    <!-- ============================================================= -->
+    <section class="panel" id="panel-fol" role="tabpanel">
+
+      <div class="modulo-teoria" data-mod="Módulo 4 · Folcsonomía y marcadores sociales">
+        <h2 class="mod-title">🏷️ Folcsonomía o marcadores sociales</h2>
+        <p class="lead mt-1">Cuando la clasificación ya no la hace un bibliotecario sino <b>toda la comunidad</b>: etiquetas, enlaces compartidos, inteligencia colectiva… y también riesgo de intoxicación.</p>
+
+        <div class="grid gap-4 md:grid-cols-2 mt-4">
+          <article class="card">
+            <div class="h-sect">📚 Taxonomía vs. Folcsonomía</div>
+            <table class="tbl">
+              <tr><th>Aspecto</th><th>Taxonomía</th><th>Folcsonomía</th></tr>
+              <tr><td>Quién clasifica</td><td>Especialistas</td><td>Los propios usuarios</td></tr>
+              <tr><td>Estructura</td><td>Jerárquica y cerrada</td><td>Plana, libre y dinámica</td></tr>
+              <tr><td>Vocabulario</td><td>Controlado</td><td>Natural y espontáneo</td></tr>
+              <tr><td>Ejemplo</td><td>Clasificación de una biblioteca</td><td>Hashtags de Instagram o TikTok</td></tr>
+            </table>
+            <div class="callout mt-3">💡 El término <b>folcsonomía</b> lo propuso <b>Thomas Vander Wal</b> en 2004: <i>folk</i> (gente) + <i>taxonomy</i> (clasificación).</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🔖 ¿Qué es un marcador social?</div>
+            <ul class="text-sm space-y-1.5">
+              <li>Un <b>marcador social</b> es un enlace guardado <b>en Internet</b> (no en tu navegador) con un título, una descripción y <b>etiquetas</b>.</li>
+              <li>Permite <b>almacenar</b>, <b>clasificar</b> y <b>compartir</b> recursos con otras personas.</li>
+              <li>Los enlaces más etiquetados suben a la lista de <b>populares</b>: aparece la <b>inteligencia colectiva</b>.</li>
+              <li>Se pueden seguir los nuevos enlaces de la comunidad por <b>RSS</b>.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">😋 Del.icio.us, el pionero</div>
+            <ul class="text-sm space-y-1.5">
+              <li><b>2003:</b> creado por <b>Joshua Schachter</b> en Nueva York.</li>
+              <li>Guardabas tus favoritos en la nube con <b>tags</b> libres, sin carpetas.</li>
+              <li>Traía secciones <i>popular</i>, <i>recent</i> y <i>network</i> para ver qué guardaban los demás.</li>
+              <li><b>2005:</b> lo compró Yahoo!; más tarde pasó a otros dueños y perdió relevancia.</li>
+              <li>Su idea sigue viva en <b>Diigo</b>, <b>Pocket</b>, <b>Raindrop</b>, <b>Pinterest</b> y en los <b>hashtags</b> de las redes.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🧠 Ventajas y problemas</div>
+            <div class="callout verde">✅ <b>Ventajas:</b> clasificación rápida, lenguaje de los usuarios, acceso desde cualquier dispositivo, descubrimiento de recursos, colaboración y memoria compartida del grupo.</div>
+            <div class="callout rojo mt-2">⚠️ <b>Problemas:</b>
+              <ul class="mt-1 space-y-1">
+                <li><b>Sinonimia:</b> “computación”, “informática” y “computacion” (sin tilde) quedan separados.</li>
+                <li><b>Polisemia:</b> una misma etiqueta con varios sentidos (“python”, “apple”, “java”).</li>
+                <li><b>Sin jerarquía:</b> no sabés si “perro” está dentro de “animal”.</li>
+                <li><b>Spam de etiquetas:</b> tags populares puestos solo para ganar visitas.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card md:col-span-2">
+            <div class="h-sect">🤢 Intoxicación informativa (infotoxicación)</div>
+            <p class="text-sm">Vivimos rodeados de más información de la que podemos procesar. La <b>infotoxicación</b> es esa sobrecarga: demasiados datos, de calidad desigual y difíciles de filtrar, que producen confusión, ansiedad y malas decisiones.</p>
+            <div class="grid gap-3 md:grid-cols-3 mt-2">
+              <div class="card-soft">
+                <div class="h-sect">🧨 Causas</div>
+                <ul class="text-sm space-y-1"><li>Exceso de canales y notificaciones</li><li>Publicación sin edición ni filtros</li><li>Algoritmos que priorizan la emoción</li><li>Bots y granjas de contenido</li></ul>
+              </div>
+              <div class="card-soft">
+                <div class="h-sect">🥴 Síntomas</div>
+                <ul class="text-sm space-y-1"><li>Cansancio y ansiedad digital</li><li>Dificultad para decidir</li><li>Creer noticias falsas</li><li><b>FOMO</b>: miedo a quedarte afuera</li></ul>
+              </div>
+              <div class="card-soft">
+                <div class="h-sect">🧘 Dieta informativa</div>
+                <ul class="text-sm space-y-1"><li>Elegir pocas fuentes confiables</li><li>Verificar autor, fecha y origen</li><li>Curar contenidos con etiquetas</li><li>Silenciar notificaciones y poner horarios</li></ul>
+              </div>
+            </div>
+            <div class="callout amar mt-3">🔍 La <b>burbuja de filtro</b> es el otro efecto: los algoritmos te muestran solo lo que coincide con tus gustos y tus ideas, y así se empobrece tu visión del mundo.</div>
+          </article>
+
+          <article class="card">
+            <div class="h-sect">🎓 Folcsonomía en la escuela</div>
+            <ul class="text-sm space-y-1">
+              <li>Biblioteca escolar con etiquetas hechas por los estudiantes.</li>
+              <li>Hashtags de curso (#4toB2024) para juntar producciones.</li>
+              <li>Tableros colaborativos de investigación por temas.</li>
+              <li>Curaduría de fuentes para la monografía.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <!-- Nube de etiquetas -->
+      <div class="grid gap-4 lg:grid-cols-2 mt-5 no-print widget">
+        <div class="card">
+          <div class="h-sect">🏷️ Constructor de folcsonomía</div>
+          <p class="text-sm" style="color:var(--muted)">Recurso compartido: <b>“Guía de IA para usar en la escuela”</b>. Etiquetalo y mirá cómo crece la nube con los aportes de la comunidad.</p>
+          <div class="flex gap-2 mt-2">
+            <input id="tagInput" class="flex-1" style="border:2px solid var(--border);border-radius:.85rem;padding:.55rem .8rem;font-weight:800;background:var(--surface);color:var(--text)" placeholder="Escribí una etiqueta y sumala" aria-label="Nueva etiqueta" />
+            <button class="btn btn-primary" id="tagAdd">➕ Etiquetar</button>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-2" id="tagSugeridos"></div>
+          <div class="callout mt-3 text-sm" id="tagMsg">💬 Las etiquetas que agregues quedan visibles en verde.</div>
+          <div class="flex gap-2 mt-2 flex-wrap"><span class="tag" id="tagCount">0 etiquetas tuyas</span><span class="tag" id="tagTotal">0 usos totales</span></div>
+        </div>
+        <div class="card">
+          <div class="h-sect">☁️ Nube de etiquetas comunitaria</div>
+          <div class="cloud" id="tagCloud"></div>
+          <div class="callout amar mt-3 text-sm">🧐 Observá el problema de la folcsonomía: si alguien usa <b>informatica</b> sin tilde y otro <b>informática</b>, la nube los cuenta por separado.</div>
+        </div>
+      </div>
+
+      <!-- Chequeo de infotoxicación -->
+      <div class="card mt-4 no-print widget">
+        <div class="h-sect">🩺 Chequeo express: ¿qué tan intoxicado de información estás?</div>
+        <p class="text-sm mb-2" style="color:var(--muted)">Respondé con sinceridad las 8 situaciones. El puntaje alto indica mayor riesgo.</p>
+        <div id="infoCheck" class="grid gap-1"></div>
+        <div class="flex items-center gap-3 mt-3 flex-wrap">
+          <button class="btn btn-neon" id="infoRun">📊 Ver mi resultado</button>
+          <button class="btn btn-mini btn-soft" id="infoReset">↺ Reiniciar</button>
+          <span class="tag" id="infoScore">Respondidas: 0/8</span>
+        </div>
+        <div id="infoResult" class="mt-3"></div>
+      </div>
+
+      <div class="card mt-5 no-print widget">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="h-sect">🎯 Mini-trivia · Folcsonomía (3 preguntas)</div>
+          <span class="tag" id="score-fol">Sin responder</span>
+        </div>
+        <div class="grid gap-3 mt-3" id="trivia-fol"></div>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          <button class="btn btn-mini btn-soft" data-reiniciar="fol">↺ Reiniciar trivia</button>
+          <button class="btn btn-mini btn-soft" data-ir="examen">Ir a la Evaluación Final →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- PESTAÑA 5 · EVALUACIÓN FINAL                                  -->
+    <!-- ============================================================= -->
+    <section class="panel" id="panel-examen" role="tabpanel">
+      <div class="card-lila">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <span class="inline-block bg-white/25 rounded-full px-3 py-1 text-[.7rem] font-black uppercase tracking-widest text-white">Evaluación integrada</span>
+            <h2 class="text-2xl sm:text-3xl mt-2 text-white">🎓 Examen final NTiCx · 15 preguntas</h2>
+            <p class="text-white/90 text-sm mt-1 max-w-2xl">Integra los cuatro módulos. Se aprueba con <b>9 respuestas correctas (60%)</b>. Al aprobar se habilita la impresión del certificado en A4.</p>
+          </div>
+          <div class="text-white text-center bg-white/20 rounded-2xl px-4 py-3">
+            <div class="text-3xl font-head font-black" id="examMarcador">0/15</div>
+            <div class="text-[.7rem] font-black uppercase">Respondidas</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4 no-print widget">
+        <div class="grid gap-3" id="examRoot"></div>
+        <div class="flex flex-wrap gap-2 mt-4">
+          <button class="btn btn-primary" id="examCorregir">✅ Corregir examen</button>
+          <button class="btn btn-soft" id="examReiniciar">↺ Reiniciar</button>
+          <span class="tag" id="examTag">Sin corregir</span>
+        </div>
+        <div id="examResultado" class="mt-4" hidden></div>
+      </div>
+
+      <div class="card mt-4 no-print widget" id="certBox">
+        <div class="h-sect">🖨️ Certificado de aprobación (impresión A4)</div>
+        <p class="text-sm mb-3" style="color:var(--muted)">Completá los datos <b>a mano</b> (no se precargan) y generá el certificado para imprimir en hoja A4 vertical.</p>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="field"><label for="certNombre">Nombre y apellido</label><input id="certNombre" type="text" autocomplete="off" placeholder="Escribí tu nombre completo" /></div>
+          <div class="field"><label for="certEscuela">Escuela</label><input id="certEscuela" type="text" autocomplete="off" placeholder="Ej.: E.E.S.T. N° 12" /></div>
+          <div class="field"><label for="certCurso">Curso / Año</label><input id="certCurso" type="text" autocomplete="off" placeholder="Ej.: 4to" /></div>
+          <div class="field"><label for="certDivision">División</label><input id="certDivision" type="text" autocomplete="off" placeholder="Ej.: B" /></div>
+        </div>
+        <button class="btn btn-sol mt-3" id="btnCertificado" disabled>🏅 Imprimir certificado</button>
+        <p class="text-xs font-bold mt-2" id="certEstado" style="color:var(--muted)">Aprobá el examen para habilitar el certificado.</p>
+      </div>
+    </section>
+
+    <footer class="mt-10 text-center text-xs font-bold no-print" style="color:var(--muted)">
+      💜 NTiCx · 4to año · Aplicación de aula con accesibilidad (dislexia y alto contraste) e impresión A4.
+    </footer>
+  </main>
+</div>
+
+<!-- ================= MODAL MI REPORTE ================= -->
+<div class="backdrop no-print" id="modalReporte" role="dialog" aria-modal="true" aria-labelledby="repTitle">
+  <div class="modal">
+    <div class="flex items-start justify-between gap-3 p-4 border-b-2" style="border-color:var(--border)">
+      <div>
+        <h3 class="text-xl" id="repTitle">📄 Mi Reporte</h3>
+        <p class="text-xs font-bold" style="color:var(--muted)">Los datos se cargan manualmente. El reporte se imprime en A4 vertical, en escala de grises.</p>
+      </div>
+      <button class="btn btn-mini" data-close="modalReporte" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="p-4 grid gap-3 sm:grid-cols-2">
+      <div class="field"><label for="repNombre">Nombre y apellido</label><input id="repNombre" type="text" autocomplete="off" placeholder="Completá a mano" /></div>
+      <div class="field"><label for="repEscuela">Escuela</label><input id="repEscuela" type="text" autocomplete="off" placeholder="Completá a mano" /></div>
+      <div class="field"><label for="repCurso">Curso / Año</label><input id="repCurso" type="text" autocomplete="off" placeholder="Completá a mano" /></div>
+      <div class="field"><label for="repDivision">División</label><input id="repDivision" type="text" autocomplete="off" placeholder="Completá a mano" /></div>
+    </div>
+    <div class="px-4 pb-2">
+      <div class="h-sect">👀 Vista previa del contenido</div>
+      <div id="repPreview" class="card-soft text-sm" style="max-height:250px;overflow:auto"></div>
+    </div>
+    <div class="p-4 flex flex-wrap gap-2 justify-end border-t-2" style="border-color:var(--border)">
+      <button class="btn btn-soft" data-close="modalReporte">Cancelar</button>
+      <button class="btn btn-primary" id="btnImprimirReporte">🖨️ Generar e imprimir A4</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL GLOSARIO ================= -->
+<div class="backdrop no-print" id="modalGlosario" role="dialog" aria-modal="true" aria-labelledby="glosTitle">
+  <div class="modal" style="max-width:900px">
+    <div class="flex items-start justify-between gap-3 p-4 border-b-2" style="border-color:var(--border)">
+      <div>
+        <h3 class="text-xl" id="glosTitle">🔤 Glosario digital NTiCx</h3>
+        <p class="text-xs font-bold" style="color:var(--muted)">Diccionario interactivo con buscador de términos técnicos.</p>
+      </div>
+      <button class="btn btn-mini" data-close="modalGlosario" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="p-4">
+      <div class="flex gap-2 flex-wrap items-center">
+        <input id="glosSearch" class="flex-1 min-w-[200px]" style="border:2px solid var(--border);border-radius:.85rem;padding:.6rem .8rem;font-weight:800;background:var(--surface);color:var(--text)" placeholder="🔍 Buscar término… (ej.: HTTP, tag, RSS)" aria-label="Buscar en el glosario" />
+        <button class="btn btn-soft btn-mini" id="glosClear">✕ Limpiar</button>
+        <button class="btn btn-primary btn-mini" id="glosPrint">🖨️ Imprimir glosario</button>
+      </div>
+      <div class="flex flex-wrap gap-1.5 mt-2" id="glosCats"></div>
+      <div class="grid gap-2 mt-3" id="glosList" style="max-height:52vh;overflow:auto"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toastRoot" aria-live="polite"></div>
+<div id="printArea" aria-hidden="true"></div>
+
+<script>
+/* ============================================================
+   NTiCx 4to · App de aula (Vanilla JS)
+   ============================================================ */
+const $  = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const printArea = $('#printArea');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------------- LOGROS ---------------- */
+const LOGROS = [
+  { id:'bit',      ic:'🔓', nom:'Primer bit',          desc:'Ejecutar el simulador del flujo de datos' },
+  { id:'binario',  ic:'🧮', nom:'Traductor binario',   desc:'Usar el conversor decimal → binario' },
+  { id:'tridig',   ic:'🧩', nom:'Navegante exacto',    desc:'Trivia de Digitalización 3/3' },
+  { id:'url',      ic:'🔗', nom:'Analista de URLs',    desc:'Explorar las 8 partes de una URL' },
+  { id:'html',     ic:'🌐', nom:'Arquitecto web',      desc:'Renderizar código en el editor HTML' },
+  { id:'triweb',   ic:'🧠', nom:'Cazador de datos',    desc:'Trivia de WWW 3/3' },
+  { id:'boolean',  ic:'🎯', nom:'Operador booleano',   desc:'Ejecutar una búsqueda con operadores' },
+  { id:'tribus',   ic:'🔍', nom:'Detective de fuentes',desc:'Trivia de Buscadores 3/3' },
+  { id:'tag',      ic:'🏷️', nom:'Etiquetador social',  desc:'Agregar 3 etiquetas a la folcsonomía' },
+  { id:'info',     ic:'🩺', nom:'Navegante consciente',desc:'Completar el chequeo de infotoxicación' },
+  { id:'trifol',   ic:'💜', nom:'Curador experto',     desc:'Trivia de Folcsonomía 3/3' },
+  { id:'apro',     ic:'🎓', nom:'Aprobado NTiCx',      desc:'Examen final con 60% o más' },
+  { id:'maestro',  ic:'🏆', nom:'Maestro NTiCx',       desc:'Examen final con 15/15' }
+];
+
+/* ---------------- ESTADO ---------------- */
+const state = {
+  user: { nombre:'', escuela:'', curso:'', division:'' },
+  trivias: {
+    dig:{ done:false, ok:0, total:3, reg:[] },
+    web:{ done:false, ok:0, total:3, reg:[] },
+    bus:{ done:false, ok:0, total:3, reg:[] },
+    fol:{ done:false, ok:0, total:3, reg:[] }
+  },
+  examen: { sel:Array(15).fill(null), corregido:false, score:0 },
+  logros: new Set(),
+  glosCat: 'Todas'
+};
+
+function toast(msg, ic='🏅'){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<span style="font-size:1.4rem">'+ic+'</span><div><b class="font-head text-sm">¡Logro desbloqueado!</b><div class="text-xs font-bold">'+msg+'</div></div>';
+  $('#toastRoot').appendChild(t);
+  setTimeout(()=>{ t.style.transition='opacity .4s, transform .4s'; t.style.opacity='0'; t.style.transform='translateX(40px)'; setTimeout(()=>t.remove(),420); }, 3400);
+}
+function unlock(id){
+  if(state.logros.has(id)) return;
+  const l = LOGROS.find(x => x.id === id);
+  if(!l) return;
+  state.logros.add(id);
+  toast(l.nom + ' · ' + l.desc, l.ic);
+  renderLogros();
+  actualizarProgreso();
+}
+function renderLogros(){
+  $('#logrosGrid').innerHTML = LOGROS.map(l => {
+    const on = state.logros.has(l.id);
+    return '<div class="logro '+(on?'on':'off')+'"><span class="ic">'+(on?l.ic:'🔒')+'</span><div><b>'+l.nom+'</b><span>'+l.desc+'</span></div></div>';
+  }).join('');
+  $('#statLogros').textContent = state.logros.size + '/' + LOGROS.length;
+}
+function actualizarProgreso(){
+  const triviasOK = Object.keys(state.trivias).filter(k => state.trivias[k].done).length;
+  $('#statTrivias').textContent = triviasOK + '/4';
+  Object.keys(state.trivias).forEach(k => {
+    const chip = $('#score-'+k);
+    const badge = document.querySelector('.tab-btn[data-tab="'+k+'"] .ok');
+    if(state.trivias[k].done){
+      chip.textContent = 'Completada · ' + state.trivias[k].ok + '/3';
+      chip.style.background = 'rgba(34,197,94,.18)';
+      chip.style.borderColor = 'var(--green)';
+      if(badge) badge.hidden = false;
+    }
+  });
+  const ex = state.examen;
+  $('#statExamen').textContent = ex.corregido ? (ex.score+'/15') : '—';
+  const total = 4 + LOGROS.length + 1;
+  const hecho = triviasOK + state.logros.size + (ex.corregido ? 1 : 0);
+  const pct = Math.round(hecho / total * 100);
+  $('#barraGlobal').style.width = pct + '%';
+  $('#txtProgreso').textContent = pct + '% del recorrido';
+}
+
+/* ---------------- PESTAÑAS ---------------- */
+function switchTab(id){
+  $$('.tab-btn').forEach(b => {
+    const on = b.dataset.tab === id;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+  window.scrollTo({ top: 0, behavior:'smooth' });
+}
+$$('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+document.addEventListener('click', e => {
+  const ir = e.target.closest('[data-ir]');
+  if(ir){ switchTab(ir.dataset.ir); }
+});
+
+/* ---------------- ACCESIBILIDAD ---------------- */
+$('#btnDislexia').addEventListener('click', () => {
+  const on = document.documentElement.classList.toggle('dislexia');
+  $('#btnDislexia').setAttribute('aria-pressed', on ? 'true':'false');
+});
+$('#btnContraste').addEventListener('click', () => {
+  const on = document.documentElement.classList.toggle('alto-contraste');
+  $('#btnContraste').setAttribute('aria-pressed', on ? 'true':'false');
+});
+
+/* ---------------- MODALES ---------------- */
+function openModal(id){ $('#'+id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id){ $('#'+id).classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-close]');
+  if(c) closeModal(c.dataset.close);
+  if(e.target.classList.contains('backdrop')) e.target.classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') $$('.backdrop.open').forEach(m => { m.classList.remove('open'); document.body.style.overflow=''; });
+});
+$('#btnGlosario').addEventListener('click', () => { renderGlosario(); openModal('modalGlosario'); setTimeout(()=>$('#glosSearch').focus(),150); });
+$('#btnReporte').addEventListener('click', () => { renderReportePreview(); openModal('modalReporte'); setTimeout(()=>$('#repNombre').focus(),150); });
+
+/* ============================================================
+   TRIVIAS (opciones mezcladas · la correcta no se distingue)
+   ============================================================ */
+const TRIVIAS = {
+  dig: { titulo:'Digitalización', preguntas:[
+    { q:'¿Cuál es la unidad mínima de información en una computadora?',
+      o:['El bit','El byte','El hertz','El píxel'], c:0,
+      fb:'El bit solo admite dos estados (0 y 1). Con 8 bits se forma un byte.' },
+    { q:'Un archivo de 2 GB equivale aproximadamente a:',
+      o:['2048 MB','1024 KB','512 TB','2000 bits'], c:0,
+      fb:'Cada unidad multiplica por 1024: 1 GB = 1024 MB, entonces 2 GB = 2048 MB.' },
+    { q:'¿Qué tipo de compresión elimina detalles casi imperceptibles?',
+      o:['Con pérdida','Sin pérdida','Binaria','Analógica'], c:0,
+      fb:'MP3 y JPG comprimen con pérdida; ZIP y PNG conservan todos los datos.' }
+  ]},
+  web: { titulo:'WWW', preguntas:[
+    { q:'¿Quién propuso la World Wide Web en el CERN?',
+      o:['Tim Berners-Lee','Bill Gates','Steve Jobs','Marc Andreessen'], c:0,
+      fb:'Tim Berners-Lee presentó la propuesta en 1989 y la web funzionó en 1991.' },
+    { q:'¿Qué código de estado HTTP significa “recurso no encontrado”?',
+      o:['404','200','301','500'], c:0,
+      fb:'200 es OK, 301 es redirección permanente y 500 es error del servidor.' },
+    { q:'¿Qué protocolo se usa para enviar el correo al servidor?',
+      o:['SMTP','IMAP','POP3','HTTP'], c:0,
+      fb:'SMTP envía; IMAP y POP3 reciben (IMAP sincroniza, POP3 descarga).' }
+  ]},
+  bus: { titulo:'Buscadores', preguntas:[
+    { q:'¿Qué tarea cumple el crawler de un buscador?',
+      o:['Recorre páginas y copia contenido','Diseña el ranking de visitas','Bloquea el correo no deseado','Comprime imágenes del sitio'], c:0,
+      fb:'El crawler o spider salta de enlace en enlace copiando contenido para el índice.' },
+    { q:'¿Qué operador restringe la búsqueda a un solo sitio web?',
+      o:['site:','filetype:','intitle:','related:'], c:0,
+      fb:'Ejemplo: site:educ.ar hipertexto busca solo dentro del dominio educ.ar.' },
+    { q:'¿Qué hace un metabuscador con tu consulta?',
+      o:['La envía a varios buscadores','La guarda en el historial','La traduce a otros idiomas','La ordena por antigüedad'], c:0,
+      fb:'No tiene índice propio: consulta a varios motores y reúne los resultados.' }
+  ]},
+  fol: { titulo:'Folcsonomía', preguntas:[
+    { q:'¿Qué caracteriza a una folcsonomía?',
+      o:['Etiquetas creadas por usuarios','Jerarquías fijadas por expertos','Archivos comprimidos en la nube','Sitios web con certificado SSL'], c:0,
+      fb:'La clasificación surge de la comunidad, con vocabulario libre y estructura plana.' },
+    { q:'¿Qué servicio popularizó los marcadores sociales en 2003?',
+      o:['Del.icio.us','Facebook','Wikipedia','YouTube'], c:0,
+      fb:'Del.icio.us, de Joshua Schachter, permitió guardar enlaces con tags en la nube.' },
+    { q:'¿A qué se llama infotoxicación?',
+      o:['Sobrecarga de información poco fiable','Falta de conexión en zonas rurales','Aumento del ancho de banda móvil','Reducción del peso de los archivos'], c:0,
+      fb:'Es el exceso de datos difíciles de filtrar, que genera confusión y ansiedad.' }
+  ]}
+};
+
+function renderTrivia(key){
+  const root = $('#trivia-' + key);
+  const data = TRIVIAS[key];
+  root.innerHTML = data.preguntas.map((p, i) => {
+    const orden = shuffle(p.o.map((txt, idx) => ({ txt, idx })));
+    const letras = ['A','B','C','D'];
+    return ''+
+    '<div class="card quiz-card" data-qi="'+i+'">'+
+      '<div class="flex gap-2 items-start"><span class="quiz-num">'+(i+1)+'</span><p class="quiz-q">'+esc(p.q)+'</p></div>'+
+      '<div class="quiz-opts">'+
+        orden.map((op, n) => '<button class="opt" data-orig="'+op.idx+'"><span class="letra">'+letras[n]+'</span><span>'+esc(op.txt)+'</span></button>').join('')+
+      '</div>'+
+      '<div class="fb" hidden></div>'+
+    '</div>';
+  }).join('');
+
+  $$('.quiz-card', root).forEach(card => {
+    const qi = +card.dataset.qi;
+    const p = data.preguntas[qi];
+    $$('.opt', card).forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(card.dataset.answered) return;
+        card.dataset.answered = '1';
+        const elegida = +btn.dataset.orig;
+        const ok = elegida === p.c;
+        $$('.opt', card).forEach(b => {
+          b.disabled = true;
+          const orig = +b.dataset.orig;
+          if(orig === p.c) b.classList.add('correcta');
+          else if(orig === elegida) b.classList.add('incorrecta');
+        });
+        const fb = $('.fb', card);
+        fb.hidden = false;
+        fb.className = 'fb ' + (ok ? 'ok' : 'no');
+        fb.innerHTML = (ok ? '✅ ¡Correcto! ' : '❌ Respuesta correcta: <b>' + esc(p.o[p.c]) + '</b>. ') + esc(p.fb);
+        const t = state.trivias[key];
+        t.reg[qi] = { pregunta:p.q, elegida:p.o[elegida], correcta:p.o[p.c], ok };
+        if(ok) t.ok++;
+        if(t.reg.filter(Boolean).length === t.total){
+          t.done = true;
+          if(t.ok === 3) unlock({dig:'tridig',web:'triweb',bus:'tribus',fol:'trifol'}[key]);
+        }
+        actualizarProgreso();
+        renderReportePreview();
+      });
+    });
+  });
+  state.trivias[key] = { done:false, ok:0, total:3, reg:[] };
+  actualizarProgreso();
+}
+document.addEventListener('click', e => {
+  const r = e.target.closest('[data-reiniciar]');
+  if(r){
+    const k = r.dataset.reiniciar;
+    state.trivias[k] = { done:false, ok:0, total:3, reg:[] };
+    const chip = $('#score-'+k);
+    chip.textContent = 'Sin responder'; chip.style.background=''; chip.style.borderColor='';
+    const badge = document.querySelector('.tab-btn[data-tab="'+k+'"] .ok'); if(badge) badge.hidden = true;
+    renderTrivia(k);
+    renderReportePreview();
+  }
+});
+['dig','web','bus','fol'].forEach(renderTrivia);
+
+/* ============================================================
+   SIMULADOR DE FLUJO DE DATOS
+   ============================================================ */
+const ENTRADAS = [
+  { id:'teclado', ic:'⌨️', nom:'Teclado', señal:'pulsaciones de teclas' },
+  { id:'micro',   ic:'🎙️', nom:'Micrófono', señal:'ondas de sonido' },
+  { id:'camara',  ic:'📷', nom:'Cámara', señal:'luz de la escena' },
+  { id:'escaner', ic:'🖨️', nom:'Escáner', señal:'imagen en papel' },
+  { id:'sensor',  ic:'🌡️', nom:'Sensor', señal:'temperatura ambiente' }
+];
+const SALIDAS = [
+  { id:'pantalla', ic:'🖥️', nom:'Pantalla', res:'imagen renderizada' },
+  { id:'parlante', ic:'🔊', nom:'Parlantes', res:'sonido reproducido' },
+  { id:'impresora',ic:'🖨️', nom:'Impresora', res:'documento en papel' },
+  { id:'celular',  ic:'📱', nom:'Celular', res:'notificación con el archivo' }
+];
+let simIn = ENTRADAS[0], simOut = SALIDAS[0], simRunning = false;
+
+$('#simEntrada').innerHTML = ENTRADAS.map((d,i)=>'<button class="chip'+(i===0?' sel':'')+'" data-in="'+d.id+'">'+d.ic+' '+d.nom+'</button>').join('');
+$('#simSalida').innerHTML  = SALIDAS.map((d,i)=>'<button class="chip'+(i===0?' sel':'')+'" data-out="'+d.id+'">'+d.ic+' '+d.nom+'</button>').join('');
+$('#simEntrada').addEventListener('click', e => {
+  const b = e.target.closest('[data-in]'); if(!b) return;
+  $$('#simEntrada .chip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel');
+  simIn = ENTRADAS.find(d=>d.id===b.dataset.in);
+});
+$('#simSalida').addEventListener('click', e => {
+  const b = e.target.closest('[data-out]'); if(!b) return;
+  $$('#simSalida .chip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel');
+  simOut = SALIDAS.find(d=>d.id===b.dataset.out);
+});
+
+function simLogAdd(txt){
+  const log = $('#simLog');
+  if(log.children.length === 1 && log.textContent.includes('Sin actividad')) log.innerHTML = '';
+  const d = document.createElement('div');
+  d.textContent = '▸ ' + txt;
+  log.prepend(d);
+}
+function setHW(id, on){ $(id).classList.toggle('on', on); }
+function simReset(){
+  ['hwSensor','hwAD','hwCPU','hwRAM','hwSTO','hwRender','hwDev'].forEach(i=>setHW('#'+i,false));
+  ['zoneIn','zoneProc','zoneOut'].forEach(i=>$('#'+i).classList.remove('act'));
+  $('#pipeFill').style.width = '0%';
+  $('#packet').style.left = '0px';
+  $('#simBits').innerHTML = '';
+  $('#simLog').innerHTML = '<div>Sin actividad todavía.</div>';
+  $('#simEstado').textContent = 'Listo para procesar.';
+}
+$('#simReset').addEventListener('click', simReset);
+
+async function simRun(){
+  if(simRunning) return;
+  simRunning = true;
+  simReset();
+  const btn = $('#simRun'); btn.disabled = true;
+  const val = 100 + Math.floor(Math.random()*150);
+  const bin = val.toString(2).padStart(8,'0');
+  const formato = simIn.id==='micro' ? 'MP3' : simIn.id==='camara' ? 'JPG' : simIn.id==='escaner' ? 'PDF' : 'TXT';
+
+  $('#zoneIn').classList.add('act'); $('#simEstado').textContent = 'Etapa 1 · Entrada';
+  setHW('#hwSensor', true);
+  simLogAdd('ENTRADA: el ' + simIn.nom.toLowerCase() + ' captura ' + simIn.señal + ' (señal analógica continua).');
+  await sleep(900);
+  setHW('#hwAD', true);
+  simLogAdd('CONVERSIÓN A/D: se realizan muestreo y cuantización → valores numéricos discretos.');
+  await sleep(950);
+
+  $('#zoneIn').classList.remove('act'); $('#zoneProc').classList.add('act');
+  $('#simEstado').textContent = 'Etapa 2 · Procesamiento';
+  $('#pipeFill').style.width = '45%';
+  $('#packet').style.left = 'calc(45% - 13px)';
+  simLogAdd('Valor capturado: ' + val + ' → binario ' + bin + '.');
+  $('#simBits').innerHTML = bin.split('').map(b=>'<div class="bit'+(b==='1'?' on':'')+'">'+b+'</div>').join('');
+  await sleep(900);
+
+  setHW('#hwCPU', true);
+  $('#pipeFill').style.width = '60%'; $('#packet').style.left = 'calc(60% - 13px)';
+  simLogAdd('CPU: la Unidad de Control lee las instrucciones y la ALU ejecuta los cálculos.');
+  await sleep(950);
+
+  setHW('#hwRAM', true);
+  $('#pipeFill').style.width = '78%'; $('#packet').style.left = 'calc(78% - 13px)';
+  simLogAdd('RAM: los datos en uso se guardan de forma temporal y volátil.');
+  await sleep(950);
+
+  setHW('#hwSTO', true);
+  $('#pipeFill').style.width = '100%'; $('#packet').style.left = 'calc(100% - 26px)';
+  simLogAdd('ALMACENAMIENTO: se crea el archivo ' + formato + ' (permanente, con compresión).');
+  await sleep(900);
+
+  $('#zoneProc').classList.remove('act'); $('#zoneOut').classList.add('act');
+  $('#simEstado').textContent = 'Etapa 3 · Salida';
+  setHW('#hwRender', true);
+  simLogAdd('SALIDA: se decodifica el binario para volver a hacerlo perceptible.');
+  await sleep(800);
+  setHW('#hwDev', true);
+  simLogAdd('El/La ' + simOut.nom.toLowerCase() + ' muestra la ' + simOut.res + '. ✅ Ciclo completo.');
+  $('#simEstado').textContent = '✅ Ciclo Entrada → Proceso → Salida completado.';
+  await sleep(400);
+  btn.disabled = false; simRunning = false;
+  unlock('bit');
+}
+$('#simRun').addEventListener('click', simRun);
+
+/* ---------------- Conversor binario ---------------- */
+function pintarBits(n){
+  const bin = (n>>>0).toString(2).padStart(8,'0');
+  $('#binOut').textContent = bin;
+  $('#binBits').innerHTML = bin.split('').map((b,i)=>'<button class="bit'+(b==='1'?' on':'')+'" data-i="'+i+'" aria-label="Bit de peso '+Math.pow(2,7-i)+'"><div>'+b+'<small>'+Math.pow(2,7-i)+'</small></div></button>').join('');
+  const ascii = (n>=32 && n<=126) ? ' → en ASCII es el carácter <b>' + esc(String.fromCharCode(n)) + '</b>' : '';
+  $('#binInfo').innerHTML = '💡 ' + n + ' = ' + bin.split('').reduce((s,b,i)=> s + (b==='1' ? Math.pow(2,7-i) : 0), 0) + ascii;
+}
+$('#binInput').addEventListener('input', e => {
+  let v = parseInt(e.target.value, 10); if(isNaN(v)) v = 0;
+  v = Math.max(0, Math.min(255, v)); e.target.value = v;
+  pintarBits(v); unlock('binario');
+});
+$('#binBits').addEventListener('click', e => {
+  const b = e.target.closest('[data-i]'); if(!b) return;
+  const bits = $('#binOut').textContent.split('');
+  const i = +b.dataset.i;
+  bits[i] = bits[i] === '1' ? '0' : '1';
+  const v = parseInt(bits.join(''), 2);
+  $('#binInput').value = v; pintarBits(v); unlock('binario');
+});
+pintarBits(65);
+
+/* ============================================================
+   ANATOMÍA DE URL
+   ============================================================ */
+const URLPARTES = [
+  { txt:'https://', k:'protocolo', d:'<b>Protocolo:</b> HTTPS indica que la comunicación entre el navegador y el servidor viaja cifrada (puerto 443). Si fuera HTTP, iría en texto plano por el puerto 80.' },
+  { txt:'www.', k:'subdominio', d:'<b>Subdominio:</b> “www” es una subdivisión del dominio principal. Muchas escuelas usan otros, como <i>aula.</i> o <i>campus.</i>' },
+  { txt:'nticx', k:'dominio', d:'<b>Nombre de dominio:</b> la parte identificable del sitio, fácil de recordar para las personas. El DNS lo traduce a una dirección IP.' },
+  { txt:'.edu.ar', k:'tld', d:'<b>Dominio de nivel superior (TLD):</b> “.ar” indica Argentina y “.edu” señala que es una institución educativa. Otros: .com, .org, .gob.ar, .net.' },
+  { txt:':443', k:'puerto', d:'<b>Puerto:</b> la “puerta” del servidor por donde entra el pedido. 443 es HTTPS, 80 es HTTP. Suele estar oculto.' },
+  { txt:'/modulos/web.html', k:'ruta', d:'<b>Ruta o path:</b> la ubicación exacta del archivo dentro del servidor, con carpetas separadas por barras.' },
+  { txt:'?id=42&lang=es', k:'parametros', d:'<b>Parámetros de consulta:</b> datos que se envían al servidor después del signo ?. Van en pares clave=valor separados por &.' },
+  { txt:'#trivia', k:'ancla', d:'<b>Ancla o fragmento:</b> apunta a una sección interna de la misma página. No se envía al servidor: lo resuelve el navegador.' }
+];
+let urlVistas = new Set();
+function pintarURL(){
+  $('#urlbar').innerHTML = URLPARTES.map(p => '<button class="upart'+(urlVistas.has(p.k)?' visto':'')+'" data-k="'+p.k+'">'+esc(p.txt)+'</button>').join('');
+  $('#urlCount').textContent = 'Partes vistas: ' + urlVistas.size + '/8';
+}
+$('#urlbar').addEventListener('click', e => {
+  const b = e.target.closest('[data-k]'); if(!b) return;
+  $$('.upart').forEach(x=>x.classList.remove('activo'));
+  b.classList.add('activo');
+  const p = URLPARTES.find(x => x.k === b.dataset.k);
+  $('#urlInfo').innerHTML = '🔎 ' + p.d;
+  urlVistas.add(p.k);
+  pintarURL();
+  $$('.upart').forEach(x => { if(x.dataset.k === p.k) x.classList.add('activo'); });
+  if(urlVistas.size === 8) unlock('url');
+});
+pintarURL();
+
+/* ============================================================
+   EDITOR HTML EN VIVO
+   ============================================================ */
+const HTML_INICIAL = '&lt;h1&gt;Mi página de NTiCx&lt;/h1&gt;\n&lt;p&gt;Hola, soy de &lt;b&gt;4to año&lt;/b&gt;.&lt;/p&gt;\n&lt;a href="https://www.educ.ar"&gt;Portal educ.ar&lt;/a&gt;\n&lt;ul&gt;\n  &lt;li&gt;HTML&lt;/li&gt;\n  &lt;li&gt;HTTP&lt;/li&gt;\n&lt;/ul&gt;';
+const HTML_TAGS = [
+  { l:'H1', v:'<h1>Título</h1>' }, { l:'P', v:'<p>Párrafo de texto.</p>' },
+  { l:'A', v:'<a href="https://www.educ.ar">Enlace</a>' }, { l:'IMG', v:'<img src="https://placehold.co/160x70/6C5CE7/fff?text=NTiCx" alt="Imagen">' },
+  { l:'UL', v:'<ul>\n  <li>Ítem 1</li>\n  <li>Ítem 2</li>\n</ul>' }, { l:'B', v:'<b>Texto en negrita</b>' },
+  { l:'TABLE', v:'<table border="1">\n  <tr><th>Módulo</th><th>Tema</th></tr>\n  <tr><td>2</td><td>WWW</td></tr>\n</table>' }
+];
+const taCode = $('#htmlCode');
+function renderPreview(){
+  const doc = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><style>body{font-family:system-ui,Arial;padding:12px;color:#1E1436;line-height:1.5}h1{font-size:1.2rem}a{color:#6C5CE7}table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:4px 6px;font-size:.85rem}</style></head><body>' + taCode.value + '</body></html>';
+  $('#htmlPreview').srcdoc = doc;
+}
+function setCode(html){ taCode.value = html.replace(/&lt;/g,'<').replace(/&gt;/g,'>'); renderPreview(); }
+$('#htmlBtns').innerHTML = HTML_TAGS.map((t,i)=>'<button class="chip" data-tag="'+i+'">＋ '+t.l+'</button>').join('');
+$('#htmlBtns').addEventListener('click', e => {
+  const b = e.target.closest('[data-tag]'); if(!b) return;
+  const t = HTML_TAGS[+b.dataset.tag];
+  taCode.value += (taCode.value ? '\n' : '') + t.v;
+  renderPreview(); unlock('html');
+});
+$('#htmlRun').addEventListener('click', () => { renderPreview(); unlock('html'); });
+$('#htmlReset').addEventListener('click', () => setCode(HTML_INICIAL));
+taCode.addEventListener('input', () => renderPreview());
+setCode(HTML_INICIAL);
+
+/* ============================================================
+   SIMULADOR HTTP
+   ============================================================ */
+const METODOS = ['GET','POST','HEAD'];
+const RUTAS = [
+  { p:'/index.html', code:200, txt:'OK', ct:'text/html; charset=UTF-8', body:'<html>…contenido de la página…</html>' },
+  { p:'/tarea-4to.html', code:404, txt:'Not Found', ct:'text/html', body:'<h1>404</h1> El recurso no existe en el servidor.' },
+  { p:'/formulario.php', code:302, txt:'Found', ct:'text/html', body:'Location: /gracias.html' },
+  { p:'/panel-admin', code:403, txt:'Forbidden', ct:'text/html', body:'No tenés permisos para ver este recurso.' },
+  { p:'/api/datos', code:500, txt:'Internal Server Error', ct:'application/json', body:'{"error":"falló la base de datos"}' }
+];
+let httpM = 'GET', httpP = RUTAS[0];
+$('#httpMethods').innerHTML = METODOS.map((m,i)=>'<button class="chip'+(i===0?' sel':'')+'" data-m="'+m+'">'+m+'</button>').join('');
+$('#httpPaths').innerHTML = RUTAS.map((r,i)=>'<button class="chip'+(i===0?' sel':'')+'" data-p="'+i+'">'+r.p+'</button>').join('');
+$('#httpMethods').addEventListener('click', e => {
+  const b = e.target.closest('[data-m]'); if(!b) return;
+  $$('#httpMethods .chip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); httpM = b.dataset.m;
+});
+$('#httpPaths').addEventListener('click', e => {
+  const b = e.target.closest('[data-p]'); if(!b) return;
+  $$('#httpPaths .chip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); httpP = RUTAS[+b.dataset.p];
+});
+$('#httpRun').addEventListener('click', async () => {
+  const btn = $('#httpRun'); btn.disabled = true;
+  $('#httpRes').textContent = 'Enviando pedido…';
+  $('#httpStatus').innerHTML = '';
+  $('#httpReq').textContent = httpM + ' ' + httpP.p + ' HTTP/1.1\nHost: www.nticx.edu.ar\nUser-Agent: Navegador-NTiCx/4.0\nAccept: text/html,application/json\nConnection: keep-alive';
+  await sleep(850);
+  const r = httpP;
+  const color = r.code < 300 ? 'var(--green)' : (r.code < 400 ? 'var(--yellow)' : 'var(--red)');
+  $('#httpRes').textContent = 'HTTP/1.1 ' + r.code + ' ' + r.txt + '\nServer: Apache/2.4\nContent-Type: ' + r.ct + '\nContent-Length: ' + r.body.length + '\n\n' + r.body;
+  $('#httpStatus').innerHTML = '<span class="status-pill" style="border-color:'+color+';color:var(--text)">' + (r.code<300?'✅':r.code<400?'↪️':'⚠️') + ' ' + r.code + ' ' + r.txt + '</span> <span class="text-sm font-bold">' + explicarCodigo(r.code) + '</span>';
+  btn.disabled = false;
+});
+function explicarCodigo(c){
+  if(c === 200) return 'Todo bien: el servidor entregó el recurso pedido.';
+  if(c === 302) return 'Redirección: el recurso está en otra dirección.';
+  if(c === 403) return 'Prohibido: falta autorización para acceder.';
+  if(c === 404) return 'No encontrado: la dirección no existe o cambió.';
+  return 'Error del servidor: el problema no es tuyo, es del sitio.';
+}
+
+/* ============================================================
+   BUSCADOR BOOLEANO
+   ============================================================ */
+const CORPUS = [
+  { t:'Qué es la digitalización de la información', u:'https://www.educ.ar/digitalizacion', s:'educ.ar', f:'html', c:'Explica cómo una señal analógica se convierte en bits, el muestreo y la cuantización, y qué formatos de archivo existen para texto, imagen y audio.', g:['digitalización','educación','tecnología'] },
+  { t:'Bit y byte: unidades de almacenamiento', u:'https://www.educ.ar/bit-byte.pdf', s:'educ.ar', f:'pdf', c:'Guía descargable sobre bit, byte, kilobyte, megabyte y gigabyte con actividades para el aula y equivalencias de memoria.', g:['almacenamiento','educación'] },
+  { t:'Historia de la World Wide Web', u:'https://es.wikipedia.org/wiki/WWW', s:'wikipedia.org', f:'html', c:'Tim Berners-Lee presentó la WWW en el CERN en 1989. Describe HTML, HTTP, URL, hipertexto e hipermedia.', g:['web','historia','tecnología'] },
+  { t:'Protocolo HTTP y códigos de estado', u:'https://developer.mozilla.org/http', s:'mozilla.org', f:'html', c:'Referencia técnica del protocolo HTTP: métodos GET y POST, cabeceras, códigos 200, 301, 404 y 500, y HTTPS.', g:['http','web','protocolo'] },
+  { t:'Cómo escribir un correo electrónico formal', u:'https://www.argentina.gob.ar/correo', s:'argentina.gob.ar', f:'pdf', c:'Modelo de correo electrónico formal para trámites: asunto, remitente, copia oculta, adjuntos y netiqueta.', g:['correo','educación','trámites'] },
+  { t:'Podcast escolar: guion y grabación', u:'https://podcastescolar.com.ar/guia', s:'podcastescolar.com.ar', f:'html', c:'Paso a paso para producir un podcast educativo: guion, micrófono, edición, exportar en MP3 y publicar con feed RSS.', g:['podcast','educación','audio'] },
+  { t:'Sindicación de contenidos RSS en XML', u:'https://rss.org.ar/introduccion', s:'rss.org.ar', f:'html', c:'Qué es un feed RSS, estructura XML del archivo, lectores de noticias y suscripción a novedades de sitios web.', g:['rss','web','xml'] },
+  { t:'Operadores booleanos para buscar mejor', u:'https://www.educ.ar/booleanos.pdf', s:'educ.ar', f:'pdf', c:'Uso de AND, OR y NOT en buscadores, comillas para frases exactas, y operadores avanzados como site y filetype.', g:['buscadores','educación','tecnología'] },
+  { t:'Google Académico para trabajos escolares', u:'https://scholar.google.com', s:'google.com', f:'html', c:'Buscador vertical de literatura académica: artículos, tesis y libros con citas verificables para monografías.', g:['buscadores','educación','académico'] },
+  { t:'Metabuscadores: Dogpile y MetaGer', u:'https://metabuscadores.info/comparativa', s:'metabuscadores.info', f:'html', c:'Comparativa de metabuscadores que envían la consulta a varios motores y reúnen resultados sin índice propio.', g:['buscadores','metabuscador','tecnología'] },
+  { t:'Del.icio.us y los marcadores sociales', u:'https://historiaweb.com/delicious', s:'historiaweb.com', f:'html', c:'Historia del sitio de marcadores sociales de Joshua Schachter, las etiquetas o tags y la folcsonomía en la Web 2.0.', g:['folcsonomía','web','etiquetas'] },
+  { t:'Infotoxicación y dieta informativa', u:'https://www.educ.ar/infotoxicacion.pdf', s:'educ.ar', f:'pdf', c:'Sobrecarga informativa, fake news, burbuja de filtro, verificación de fuentes y curaduría de contenidos con etiquetas.', g:['folcsonomía','educación','intoxicación'] }
+];
+const EJEMPLOS_BOOL = [
+  'educación AND tecnología',
+  'podcast OR rss',
+  'web -historia',
+  '"marcadores sociales"',
+  'site:educ.ar educación',
+  'filetype:pdf buscadores',
+  'intitle:http protocolo',
+  '(folcsonomía OR etiquetas) educación'
+];
+$('#boolExamples').innerHTML = EJEMPLOS_BOOL.map((e,i)=>'<button class="chip" data-q="'+i+'">🔎 '+esc(e)+'</button>').join('');
+$('#boolExamples').addEventListener('click', e => {
+  const b = e.target.closest('[data-q]'); if(!b) return;
+  $('#boolInput').value = EJEMPLOS_BOOL[+b.dataset.q];
+  ejecutarBool();
+});
+$('#boolRun').addEventListener('click', ejecutarBool);
+$('#boolInput').addEventListener('keydown', e => { if(e.key === 'Enter') ejecutarBool(); });
+
+function parsearRama(rama){
+  const tokens = rama.match(/"[^"]+"|\S+/g) || [];
+  const r = { must:[], not:[], phrases:[], fields:{} };
+  tokens.forEach(tk => {
+    let t = tk, neg = false;
+    if(/^NOT$/i.test(t)) { neg = true; return; }
+    if(t.startsWith('-')) { neg = true; t = t.slice(1); }
+    if(/^NOT\s+/i.test(t)) t = t.replace(/^NOT\s+/i,'');
+    if(!t) return;
+    const fm = t.match(/^(site|filetype|intitle|inurl|related):(.+)$/i);
+    if(fm){
+      const k = fm[1].toLowerCase();
+      r.fields[k] = r.fields[k] || [];
+      r.fields[k].push({ v: fm[2].replace(/"/g,''), neg });
+      return;
+    }
+    if(/^AND$/i.test(t) || /^\(|^\)$/i.test(t)) {
+      const limpio = t.replace(/[()]/g,'');
+      if(limpido) (neg ? r.not : r.must).push(limpido.toLowerCase());
+      return;
+    }
+    if(t.startsWith('"') && t.endsWith('"') && t.length > 2){
+      (neg ? r.not : r.phrases).push(t.slice(1,-1).toLowerCase());
+      return;
+    }
+    t = t.replace(/[()]/g,'');
+    if(t) (neg ? r.not : r.must).push(t.toLowerCase());
+  });
+  return r;
+}
+function evaluar(query){
+  const limpio = query.replace(/\s+OR\s+/gi,'|OR|');
+  const ramasTxt = limpio.split('|OR|');
+  return ramasTxt.map(r => parsearRama(r.replace(/\|OR\|/g,'')));
+}
+function coincide(doc, r){
+  const txt = (doc.t + ' ' + doc.c + ' ' + doc.g.join(' ') + ' ' + doc.u).toLowerCase();
+  const tit = doc.t.toLowerCase();
+  for(const p of r.phrases) if(!txt.includes(p)) return false;
+  for(const m of r.must)   if(!txt.includes(m)) return false;
+  for(const n of r.not)    if(txt.includes(n))  return false;
+  const f = r.fields;
+  if(f.site)     { const ok = f.site.some(x => doc.s.toLowerCase().includes(x.v.toLowerCase()) || doc.u.toLowerCase().includes(x.v.toLowerCase())); if(!ok) return false; }
+  if(f.filetype) { const ok = f.filetype.some(x => doc.f.toLowerCase() === x.v.toLowerCase()); if(!ok) return false; }
+  if(f.intitle)  { const ok = f.intitle.some(x => tit.includes(x.v.toLowerCase())); if(!ok) return false; }
+  if(f.inurl)    { const ok = f.inurl.some(x => doc.u.toLowerCase().includes(x.v.toLowerCase())); if(!ok) return false; }
+  return true;
+}
+function destacar(txt, terminos){
+  let out = esc(txt);
+  terminos.filter(t => t && t.length > 2).slice(0,6).forEach(t => {
+    const re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi');
+    out = out.replace(re, '<mark>$1</mark>');
+  });
+  return out;
+}
+function ejecutarBool(){
+  const q = $('#boolInput').value.trim();
+  if(!q){ $('#boolExplain').innerHTML = '⚠️ Escribí una consulta para probar el simulador.'; return; }
+  const ramas = evaluar(q);
+  const terminos = [];
+  ramas.forEach(r => { terminos.push(...r.must, ...r.phrases); Object.values(r.fields).forEach(a=>a.forEach(x=>terminos.push(x.v))); });
+  const hits = CORPUS.filter(d => ramas.some(r => coincide(d, r)));
+  const opNames = [];
+  if(ramas.length > 1) opNames.push('OR (amplía: basta con una rama)');
+  ramas.forEach(r => {
+    if(r.must.length) opNames.push('AND implícito: ' + r.must.join(' + '));
+    if(r.phrases.length) opNames.push('frase exacta: “' + r.phrases.join('”, “') + '”');
+    if(r.not.length) opNames.push('NOT / exclusión: ' + r.not.join(', '));
+    Object.keys(r.fields).forEach(k => opNames.push('operador ' + k + ': ' + r.fields[k].map(x=>x.v).join(', ')));
+  });
+  $('#boolExplain').innerHTML = '<b>🧠 Lectura de tu consulta:</b> ' + esc(opNames.length ? opNames.join(' · ') : 'búsqueda simple por palabras clave') +
+    '. <br><b>Resultado:</b> ' + hits.length + ' documento(s) de ' + CORPUS.length + ' (' + (CORPUS.length - hits.length) + ' quedaron excluidos por el índice).';
+  $('#boolResults').innerHTML = hits.length
+    ? hits.map((d,i) => '<article class="res"><div class="flex items-center gap-2 flex-wrap"><span class="tag">'+d.f.toUpperCase()+'</span><span class="text-[.7rem] font-bold mono" style="color:var(--muted)">'+esc(d.u)+'</span></div><h4 class="text-sm font-head font-black mt-1">'+(i+1)+'. '+destacar(d.t, terminos)+'</h4><p class="text-xs mt-1" style="color:var(--muted)">'+destacar(d.c.slice(0,150)+'…', terminos)+'</p><div class="flex gap-1 flex-wrap mt-1.5">'+d.g.map(g=>'<span class="tag">#'+esc(g)+'</span>').join('')+'</div></article>').join('')
+    : '<div class="callout rojo md:col-span-2">😕 Ningún documento del índice coincide. Probá con OR para ampliar, sacá el NOT o usá menos palabras clave.</div>';
+  unlock('boolean');
+}
+ejecutarBool();
+
+/* ---------------- Metabuscador ---------------- */
+const MOTORES = [
+  { n:'Motor A · general', ic:'🔵', base:[0,2,3,7,8,9,10,11] },
+  { n:'Motor B · académico', ic:'🟢', base:[1,4,7,8,11,6] },
+  { n:'Motor C · privado', ic:'🟣', base:[2,5,6,9,10,3] }
+];
+$('#metaRun').addEventListener('click', () => {
+  const q = $('#metaInput').value.trim().toLowerCase();
+  const palabras = q.split(/\s+/).filter(w => w.length > 2);
+  $('#metaEngines').innerHTML = MOTORES.map(m => {
+    const res = m.base.filter(i => {
+      const d = CORPUS[i];
+      const txt = (d.t + ' ' + d.c + ' ' + d.g.join(' ')).toLowerCase();
+      return palabras.length === 0 || palabras.some(p => txt.includes(p));
+    }).slice(0,4);
+    return '<div class="card-soft"><div class="h-sect">'+m.ic+' '+m.n+'</div><div class="text-[.7rem] font-bold uppercase mb-1" style="color:var(--muted)">'+res.length+' resultados propios</div><ul class="text-xs space-y-1">'+(res.length?res.map(i=>'<li>• '+esc(CORPUS[i].t)+'</li>').join(''):'<li style="color:var(--muted)">Sin coincidencias</li>')+'</ul></div>';
+  }).join('');
+  const unicos = new Map();
+  MOTORES.forEach(m => {
+    m.base.forEach(i => {
+      const d = CORPUS[i];
+      const txt = (d.t + ' ' + d.c + ' ' + d.g.join(' ')).toLowerCase();
+      if(palabras.length === 0 || palabras.some(p => txt.includes(p))){
+        if(!unicos.has(i)) unicos.set(i, { d, n:0, motores:[] });
+        const e = unicos.get(i); e.n++; e.motores.push(m.n);
+      }
+    });
+  });
+  const lista = Array.from(unicos.values()).sort((a,b)=> b.n - a.n);
+  $('#metaMerged').innerHTML = lista.length
+    ? lista.map((e,i) => '<li><b>'+(i+1)+'. '+esc(e.d.t)+'</b> <span class="tag">'+e.n+' motor(es)</span><br><span class="text-xs mono" style="color:var(--muted)">'+esc(e.d.u)+'</span></li>').join('')
+    : '<li style="color:var(--muted)">Sin resultados para esa consulta.</li>';
+  unlock('boolean');
+});
+$('#metaRun').click();
+
+/* ============================================================
+   FOLCSONOMÍA · NUBE DE ETIQUETAS
+   ============================================================ */
+const TAGS_INICIALES = { 'educación':9,'tecnología':8,'ia':6,'inteligencia artificial':5,'escuela':4,'informática':3,'informatica':2,'web':4,'etiquetas':3,'curaduría':2,'nticx':5,'recursos':3,'futuro':1 };
+const tags = Object.assign({}, TAGS_INICIALES);
+const SINONIMOS = {
+  'informática':['informatica','computación','tics'],
+  'informatica':['informática','computacion'],
+  'tecnología':['tecnologia','tic','tics'],
+  'ia':['inteligencia artificial'],
+  'inteligencia artificial':['ia'],
+  'educación':['educacion','escuela','escuelas'],
+  'escuela':['educación','colegio'],
+  'web':['internet','www'],
+  'internet':['web','red']
+};
+const SUGERIDOS = ['educación','tecnología','ia','recursos','web','informática'];
+let tagsMios = 0;
+$('#tagSugeridos').innerHTML = SUGERIDOS.map(s=>'<button class="chip" data-t="'+s+'">#'+s+'</button>').join('');
+function normalizar(s){ return s.toLowerCase().trim().replace(/\s+/g,' '); }
+function pintarNube(){
+  const entries = Object.entries(tags).sort((a,b)=> b[1]-a[1]);
+  const max = Math.max(...entries.map(e=>e[1])), min = Math.min(...entries.map(e=>e[1]));
+  $('#tagCloud').innerHTML = entries.map(([k,v]) => {
+    const size = (0.82 + ((v-min)/(max-min || 1)) * 1.5).toFixed(2);
+    const mio = k.startsWith('*');
+    const nombre = mio ? k.slice(1) : k;
+    return '<span class="'+(mio?'mio':'')+'" style="font-size:'+size+'rem" title="'+v+' usos">#'+esc(nombre)+'</span>';
+  }).join('');
+  $('#tagCount').textContent = tagsMios + ' etiquetas tuyas';
+  $('#tagTotal').textContent = Object.values(tags).reduce((a,b)=>a+b,0) + ' usos totales';
+}
+function agregarTag(valor){
+  const t = normalizar(valor);
+  if(!t) return;
+  if(t.length > 24){ $('#tagMsg').innerHTML = '⚠️ Etiquetas cortas: en una folcsonomía real conviene 1 o 2 palabras.'; return; }
+  if(tags[t] !== undefined){
+    tags[t]++;
+    $('#tagMsg').innerHTML = '🔁 Ya existía <b>#'+esc(t)+'</b>: sumaste un uso. Así se construye la inteligencia colectiva.';
+  } else {
+    const sin = Object.keys(SINONIMOS).find(k => normalizar(k) === t);
+    const chocan = sin ? SINONIMOS[sin].map(normalizar).find(s => tags[s] !== undefined) : null;
+    tags[t] = 1;
+    $('#tagMsg').innerHTML = chocan
+      ? '⚠️ Creaste <b>#'+esc(t)+'</b>, pero otro usuario ya usaba <b>#'+esc(chocan)+'</b> para lo mismo: esto es <b>sinonimia</b>, el problema clásico de la folcsonomía.'
+      : '✅ Etiqueta nueva <b>#'+esc(t)+'</b> agregada a la nube comunitaria.';
+  }
+  tagsMios++;
+  pintarNube();
+  if(tagsMios >= 3) unlock('tag');
+}
+$('#tagAdd').addEventListener('click', () => { agregarTag($('#tagInput').value); $('#tagInput').value=''; $('#tagInput').focus(); });
+$('#tagInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ agregarTag(e.target.value); e.target.value=''; } });
+$('#tagSugeridos').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if(b) agregarTag(b.dataset.t); });
+pintarNube();
+
+/* ---------------- Chequeo de infotoxicación ---------------- */
+const ITEMS_INFO = [
+  'Reviso el celular apenas me despierto para ver noticias.',
+  'Comparto un contenido sin abrirlo ni verificarlo.',
+  'Sigo casi solo cuentas que piensan como yo.',
+  'Tengo más de 20 pestañas abiertas al mismo tiempo.',
+  'Me informo principalmente por cadenas de WhatsApp.',
+  'No recuerdo la última vez que busqué la fuente original.',
+  'Siento ansiedad cuando no reviso las notificaciones.',
+  'Guardo enlaces para leer “más adelante” y nunca los leo.'
+];
+let infoAns = Array(ITEMS_INFO.length).fill(null);
+$('#infoCheck').innerHTML = ITEMS_INFO.map((it,i)=>
+  '<div class="checkrow"><span class="text-sm font-bold flex-1 min-w-[200px]">'+(i+1)+'. '+esc(it)+'</span>'+
+  '<span class="seg" data-i="'+i+'"><button data-v="2">Sí</button><button data-v="1">A veces</button><button data-v="0">No</button></span></div>'
+).join('');
+$('#infoCheck').addEventListener('click', e => {
+  const b = e.target.closest('button[data-v]'); if(!b) return;
+  const i = +b.closest('.seg').dataset.i;
+  infoAns[i] = +b.dataset.v;
+  $$('button', b.closest('.seg')).forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel');
+  $('#infoScore').textContent = 'Respondidas: ' + infoAns.filter(v=>v!==null).length + '/8';
+});
+$('#infoRun').addEventListener('click', () => {
+  if(infoAns.some(v => v === null)){
+    $('#infoResult').innerHTML = '<div class="callout rojo">⚠️ Completá las 8 situaciones para ver tu resultado.</div>';
+    return;
+  }
+  const pts = infoAns.reduce((a,b)=>a+b,0);
+  let nivel, color, txt, tips;
+  if(pts <= 5){
+    nivel = 'Dieta informativa saludable'; color = 'verde';
+    txt = 'Tenés buenos filtros: elegís pocas fuentes y verificás antes de compartir.';
+    tips = ['Mantené una lista corta de fuentes confiables.','Seguí curando tus recursos con etiquetas.'];
+  } else if(pts <= 11){
+    nivel = 'Alerta amarilla'; color = 'amar';
+    txt = 'Consumís más información de la que podés procesar con criterio.';
+    tips = ['Verificá autor y fecha antes de compartir.','Desactivá notificaciones no esenciales.','Usá un lector RSS para elegir qué leer.'];
+  } else {
+    nivel = 'Infotoxicación'; color = 'rojo';
+    txt = 'Sobrecarga informativa clara: muchas fuentes, poco filtro y riesgo de creer noticias falsas.';
+    tips = ['Hacé un ayuno digital de 24 horas.','Elegí 3 fuentes y borrá el resto de apps.','Contrastá toda noticia con dos medios distintos.','Guardá y etiquetá solo lo que realmente vas a usar.'];
+  }
+  $('#infoResult').innerHTML =
+    '<div class="callout '+color+'"><b>📊 Resultado: '+pts+'/16 · '+nivel+'.</b><br>'+esc(txt)+
+    '<ul class="mt-1">'+tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></div>';
+  unlock('info');
+});
+$('#infoReset').addEventListener('click', () => {
+  infoAns = Array(ITEMS_INFO.length).fill(null);
+  $$('#infoCheck .seg button').forEach(b=>b.classList.remove('sel'));
+  $('#infoScore').textContent = 'Respondidas: 0/8';
+  $('#infoResult').innerHTML = '';
+});
+
+/* ============================================================
+   EVALUACIÓN FINAL (15 preguntas)
+   ============================================================ */
+const EXAMEN = [
+  { tema:'Digitalización', q:'¿Cuántos bits forman un byte?', o:['8','4','16','1024'], c:0 },
+  { tema:'Digitalización', q:'¿Cuál de estos formatos usa compresión con pérdida?', o:['MP3','PNG','TXT','ZIP'], c:0 },
+  { tema:'Digitalización', q:'¿Qué componente ejecuta las instrucciones de un programa?', o:['La CPU','El disco','El módem','La placa de red'], c:0 },
+  { tema:'Digitalización', q:'¿Qué memoria pierde su contenido al apagar el equipo?', o:['La RAM','El SSD','El pendrive','El DVD'], c:0 },
+  { tema:'WWW', q:'¿Qué lenguaje estructura el contenido de una página web?', o:['HTML','HTTP','SMTP','RSS'], c:0 },
+  { tema:'WWW', q:'Un enlace que combina texto, imagen, audio y video es un ejemplo de:', o:['Hipermedia','Hipertexto','Folcsonomía','Metadato'], c:0 },
+  { tema:'WWW', q:'¿Qué protocolo cifra la comunicación con el servidor web?', o:['HTTPS','HTTP','FTP','IRC'], c:0 },
+  { tema:'WWW', q:'¿Qué protocolo recibe el correo dejándolo guardado en el servidor?', o:['IMAP','SMTP','DNS','HTML'], c:0 },
+  { tema:'WWW', q:'El formato RSS sirve principalmente para:', o:['Suscribirse a novedades de un sitio','Comprimir videos de alta calidad','Cifrar los mensajes de correo','Editar páginas en el navegador'], c:0 },
+  { tema:'Buscadores', q:'Para buscar la frase exacta “inteligencia artificial” se usan:', o:['Comillas dobles','Paréntesis','Guiones bajos','Asteriscos'], c:0 },
+  { tema:'Buscadores', q:'El operador OR sirve para:', o:['Aceptar cualquiera de los dos términos','Excluir un término de los resultados','Buscar solo dentro de un mismo sitio','Ordenar los resultados por su fecha'], c:0 },
+  { tema:'Buscadores', q:'¿Cuál es un ejemplo de buscador vertical o temático?', o:['Google Académico','Google Chrome','Windows Search','Bloc de notas'], c:0 },
+  { tema:'Buscadores', q:'Para verificar si una fuente es confiable conviene revisar:', o:['Autoría, fecha y referencias','Colores, tipografía y tamaño','Visitas, likes y comentarios','Idioma, país y extensión'], c:0 },
+  { tema:'Folcsonomía', q:'En Del.icio.us los usuarios ordenaban los enlaces guardados con:', o:['Etiquetas o tags','Carpetas locales','Direcciones IP','Códigos QR'], c:0 },
+  { tema:'Folcsonomía', q:'Una “burbuja de filtro” ocurre cuando:', o:['Solo ves contenido afín a tus gustos','Se bloquea el acceso a los sitios web','El navegador borra todos tus datos','Se cifra toda tu navegación'], c:0 }
+];
+let examOrden = [];
+function renderExamen(){
+  examOrden = EXAMEN.map((p,i) => ({ i, orden: shuffle(p.o.map((txt,idx)=>({txt,idx}))) }));
+  state.examen = { sel:Array(15).fill(null), corregido:false, score:0 };
+  const letras = ['A','B','C','D'];
+  $('#examRoot').innerHTML = examOrden.map((e,n) => {
+    const p = EXAMEN[e.i];
+    return '<div class="card quiz-card" data-ei="'+n+'">'+
+      '<div class="flex gap-2 items-start"><span class="quiz-num">'+(n+1)+'</span>'+
+      '<div><span class="tag">'+esc(p.tema)+'</span><p class="quiz-q mt-1">'+esc(p.q)+'</p></div></div>'+
+      '<div class="quiz-opts">'+ e.orden.map((op,k)=>'<button class="opt" data-orig="'+op.idx+'"><span class="letra">'+letras[k]+'</span><span>'+esc(op.txt)+'</span></button>').join('') +'</div>'+
+      '<div class="fb" hidden></div></div>';
+  }).join('');
+  $$('#examRoot .quiz-card').forEach(card => {
+    const n = +card.dataset.ei;
+    $$('.opt', card).forEach(b => b.addEventListener('click', () => {
+      if(state.examen.corregido) return;
+      $$('.opt', card).forEach(x => x.classList.remove('marcada'));
+      b.classList.add('marcada');
+      state.examen.sel[n] = +b.dataset.orig;
+      $('#examMarcador').textContent = state.examen.sel.filter(v=>v!==null).length + '/15';
+    }));
+  });
+  $('#examMarcador').textContent = '0/15';
+  $('#examTag').textContent = 'Sin corregir';
+  $('#examResultado').hidden = true;
+  $('#examCorregir').disabled = false;
+  $('#btnCertificado').disabled = true;
+  $('#certEstado').textContent = 'Aprobá el examen para habilitar el certificado.';
+}
+$('#examReiniciar').addEventListener('click', renderExamen);
+$('#examCorregir').addEventListener('click', () => {
+  const ex = state.examen;
+  if(ex.sel.some(v => v === null)){
+    const faltan = ex.sel.map((v,i)=> v===null ? i+1 : null).filter(Boolean);
+    alert('⚠️ Te faltan las preguntas: ' + faltan.join(', ') + '. Respondé las 15 para corregir.');
+    return;
+  }
+  let score = 0;
+  examOrden.forEach((e,n) => {
+    const p = EXAMEN[e.i];
+    const card = document.querySelector('#examRoot .quiz-card[data-ei="'+n+'"]');
+    const elegida = ex.sel[n];
+    const ok = elegida === p.c;
+    if(ok) score++;
+    $$('.opt', card).forEach(b => {
+      b.disabled = true;
+      const orig = +b.dataset.orig;
+      if(orig === p.c) b.classList.add('correcta');
+      else if(orig === elegida) b.classList.add('incorrecta');
+    });
+    const fb = $('.fb', card);
+    fb.hidden = false;
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.innerHTML = (ok ? '✅ Correcto.' : '❌ Tu respuesta: <b>'+esc(p.o[elegida])+'</b> · Correcta: <b>'+esc(p.o[p.c])+'</b>.');
+  });
+  ex.corregido = true; ex.score = score;
+  const pct = Math.round(score/15*100);
+  const aprobo = score >= 9;
+  $('#examTag').textContent = 'Corregido · ' + score + '/15';
+  $('#examResultado').hidden = false;
+  $('#examResultado').innerHTML =
+    '<div class="callout '+(aprobo?'verde':'rojo')+'">'+
+    '<b>'+(aprobo?'🎉 ¡Aprobaste la evaluación final!':'💪 Todavía no llegaste al 60%')+'</b><br>'+
+    'Puntaje: <b>'+score+'/15 ('+pct+'%)</b> · Requisito de aprobación: 9/15 (60%).'+
+    (aprobo?'':' Revisá los módulos y volvé a intentarlo con el botón ↺ Reiniciar.')+
+    '</div>';
+  if(aprobo){
+    unlock('apro');
+    if(score === 15) unlock('maestro');
+    $('#btnCertificado').disabled = false;
+    $('#certEstado').textContent = '✅ Certificado habilitado. Completá tus datos a mano e imprimilo en A4.';
+  }
+  actualizarProgreso();
+  renderReportePreview();
+});
+renderExamen();
+
+/* ============================================================
+   GLOSARIO
+   ============================================================ */
+const GLOSARIO = [
+  { t:'Algoritmo', c:'Buscadores', d:'Conjunto ordenado de pasos para resolver un problema. Los buscadores usan algoritmos de relevancia para ordenar los resultados.' },
+  { t:'Almacenamiento en la nube', c:'Digitalización', d:'Guardado de datos en servidores remotos accesibles por Internet (Drive, OneDrive, iCloud), en lugar del disco local.' },
+  { t:'Analógico', c:'Digitalización', d:'Representación continua de la información, como el sonido en el aire o una foto en papel. Se opone a digital.' },
+  { t:'Ancho de banda', c:'Web', d:'Cantidad de datos que puede transmitirse por una conexión en un tiempo dado. Se mide en Mbps.' },
+  { t:'Bit', c:'Digitalización', d:'Unidad mínima de información: 0 o 1. Ocho bits forman un byte.' },
+  { t:'Burbuja de filtro', c:'Folcsonomía', d:'Efecto por el cual los algoritmos muestran solo contenidos afines a los gustos del usuario, aislando otras opiniones.' },
+  { t:'Byte', c:'Digitalización', d:'Conjunto de 8 bits que representa un carácter, por ejemplo una letra.' },
+  { t:'Chat', c:'Comunicación', d:'Comunicación escrita sincrónica entre dos o más personas a través de Internet.' },
+  { t:'Compresión con pérdida', c:'Digitalización', d:'Reducción del tamaño del archivo eliminando datos poco perceptibles. Ejemplos: MP3, JPG, MP4.' },
+  { t:'Compresión sin pérdida', c:'Digitalización', d:'Reducción del tamaño conservando toda la información original. Ejemplos: ZIP, PNG, FLAC.' },
+  { t:'CPU', c:'Digitalización', d:'Procesador: ejecuta las instrucciones y realiza los cálculos del sistema.' },
+  { t:'Crawler / Spider', c:'Buscadores', d:'Programa que recorre la web siguiendo enlaces y copia el contenido para construir el índice del buscador.' },
+  { t:'Curaduría de contenidos', c:'Folcsonomía', d:'Seleccionar, organizar y compartir los mejores recursos sobre un tema, agregando valor a la información.' },
+  { t:'Del.icio.us', c:'Folcsonomía', d:'Servicio pionero de marcadores sociales (2003) que permitía guardar enlaces en Internet con etiquetas.' },
+  { t:'Digitalización', c:'Digitalización', d:'Proceso de convertir información analógica en datos digitales representados en bits.' },
+  { t:'DNS', c:'Web', d:'Sistema de Nombres de Dominio: traduce nombres como educ.ar a direcciones IP numéricas.' },
+  { t:'Dominio', c:'Web', d:'Nombre identificable de un sitio en Internet, formado por un nombre y un TLD (ej.: argentina.gob.ar).' },
+  { t:'Etiqueta / Tag', c:'Folcsonomía', d:'Palabra clave libre asignada por un usuario a un recurso para clasificarlo y recuperarlo.' },
+  { t:'Fake news', c:'Buscadores', d:'Noticias falsas creadas para enganchar emocionalmente, viralizarse o manipular la opinión.' },
+  { t:'Feed', c:'Web', d:'Archivo con las novedades de un sitio, generalmente en formato RSS o Atom, que se puede suscribir.' },
+  { t:'Filetype:', c:'Buscadores', d:'Operador que filtra los resultados por tipo de archivo: filetype:pdf, filetype:xlsx.' },
+  { t:'Folcsonomía', c:'Folcsonomía', d:'Clasificación colectiva y libre hecha por los usuarios con etiquetas. Término acuñado por Thomas Vander Wal en 2004.' },
+  { t:'Hipertexto', c:'Web', d:'Texto no lineal enlazado con otros textos mediante hipervínculos.' },
+  { t:'Hipermedia', c:'Web', d:'Hipertexto que integra además imágenes, audio, video y animaciones.' },
+  { t:'Hipervínculo', c:'Web', d:'Enlace que permite saltar de un documento a otro. En HTML se escribe <a href="…">.' },
+  { t:'HTML', c:'Web', d:'HyperText Markup Language: lenguaje de marcado con etiquetas que estructura el contenido de una página web.' },
+  { t:'HTTP', c:'Web', d:'Protocolo de Transferencia de Hipertexto: reglas de pedido y respuesta entre navegador y servidor (puerto 80).' },
+  { t:'HTTPS', c:'Web', d:'Versión cifrada de HTTP mediante TLS (puerto 443). Protege los datos que viaján entre cliente y servidor.' },
+  { t:'IMAP', c:'Comunicación', d:'Protocolo de correo que sincroniza los mensajes en el servidor con varios dispositivos.' },
+  { t:'Indexación', c:'Buscadores', d:'Organización del contenido rastreado en un índice que permite buscarlo en milisegundos.' },
+  { t:'Infotoxicación', c:'Folcsonomía', d:'Sobrecarga de información abundante, poco fiable y difícil de filtrar; genera confusión y ansiedad.' },
+  { t:'Inteligencia colectiva', c:'Folcsonomía', d:'Conocimiento que surge del aporte coordinado de muchas personas, como en Wikipedia o en una nube de etiquetas.' },
+  { t:'Internet', c:'Web', d:'Red mundial de redes de computadoras interconectadas. La web es uno de sus servicios.' },
+  { t:'Marcadores sociales', c:'Folcsonomía', d:'Servicios que permiten guardar, clasificar con etiquetas y compartir enlaces en Internet.' },
+  { t:'Metabuscador', c:'Buscadores', d:'Herramienta sin índice propio que envía la consulta a varios buscadores y reúne los resultados (Dogpile, MetaGer).' },
+  { t:'Metadato', c:'Digitalización', d:'Dato que describe a otro dato: autor, fecha de creación, formato, ubicación, cámara.' },
+  { t:'Muestreo', c:'Digitalización', d:'Medición periódica de una señal analógica para convertirla en valores digitales.' },
+  { t:'Navegador', c:'Web', d:'Programa cliente que solicita páginas por HTTP y las interpreta para mostrarlas (Chrome, Firefox, Edge).' },
+  { t:'Netiqueta', c:'Comunicación', d:'Conjunto de normas de cortesía para comunicarse en Internet.' },
+  { t:'Nube de etiquetas', c:'Folcsonomía', d:'Representación visual de los tags de un sitio, donde el tamaño indica su frecuencia de uso.' },
+  { t:'Operadores booleanos', c:'Buscadores', d:'AND, OR y NOT: operadores lógicos para combinar o excluir términos en una búsqueda.' },
+  { t:'PageRank', c:'Buscadores', d:'Algoritmo histórico de Google que puntúa una página según la cantidad y calidad de los enlaces que recibe.' },
+  { t:'Phishing', c:'Comunicación', d:'Estafa que suplanta a una entidad confiable para robar contraseñas o datos bancarios.' },
+  { t:'Podcast', c:'Comunicación', d:'Programa de audio en episodios que se distribuye por un feed RSS y puede suscribirse o descargarse.' },
+  { t:'POP3', c:'Comunicación', d:'Protocolo que descarga el correo al equipo y suele eliminarlo del servidor.' },
+  { t:'Quntización', c:'Digitalización', d:'Asignación de un valor numérico finito a cada muestra de la señal analógica.' },
+  { t:'RAM', c:'Digitalización', d:'Memoria volátil y rápida donde residen los datos del programa en ejecución.' },
+  { t:'Ranking de resultados', c:'Buscadores', d:'Orden en que un buscador presenta los resultados según su relevancia estimada.' },
+  { t:'RSS', c:'Web', d:'Really Simple Syndication: formato XML para publicar y suscribirse a las novedades de un sitio.' },
+  { t:'Servidor', c:'Web', d:'Computadora que aloja sitios y responde los pedidos de los clientes.' },
+  { t:'SEO', c:'Buscadores', d:'Optimización de un sitio para que los buscadores lo muestren en mejores posiciones.' },
+  { t:'Site:', c:'Buscadores', d:'Operador que limita la búsqueda a un sitio o dominio determinado.' },
+  { t:'SMTP', c:'Comunicación', d:'Protocolo usado para enviar mensajes de correo electrónico al servidor.' },
+  { t:'Spam', c:'Comunicación', d:'Correo o mensaje no solicitado enviado de forma masiva, generalmente publicitario.' },
+  { t:'Taxonomía', c:'Folcsonomía', d:'Clasificación jerárquica y controlada hecha por especialistas, como la de una biblioteca.' },
+  { t:'URL', c:'Web', d:'Localizador Uniforme de Recursos: la dirección completa de un elemento en la web.' },
+  { t:'Web 2.0', c:'Web', d:'Etapa de la web en la que el usuario produce y comparte contenido (redes sociales, wikis, blogs).' },
+  { t:'WWW', c:'Web', d:'World Wide Web: sistema mundial de documentos enlazados que funciona sobre Internet.' },
+  { t:'XML', c:'Web', d:'Lenguaje de marcas extensible usado para estructurar e intercambiar datos, base del RSS.' }
+];
+const GLOS_CATS = ['Todas','Digitalización','Web','Comunicación','Buscadores','Folcsonomía'];
+$('#glosCats').innerHTML = GLOS_CATS.map((c,i)=>'<button class="chip'+(i===0?' sel':'')+'" data-cat="'+c+'">'+c+'</button>').join('');
+$('#glosCats').addEventListener('click', e => {
+  const b = e.target.closest('[data-cat]'); if(!b) return;
+  $$('#glosCats .chip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel');
+  state.glosCat = b.dataset.cat; renderGlosario();
+});
+$('#glosSearch').addEventListener('input', renderGlosario);
+$('#glosClear').addEventListener('click', () => { $('#glosSearch').value=''; renderGlosario(); });
+function glosarioFiltrado(){
+  const q = ($('#glosSearch') ? $('#glosSearch').value : '').toLowerCase().trim();
+  return GLOSARIO.filter(g => {
+    const catOk = state.glosCat === 'Todas' || g.c === state.glosCat;
+    const qOk = !q || (g.t + ' ' + g.d).toLowerCase().includes(q);
+    return catOk && qOk;
+  }).sort((a,b)=> a.t.localeCompare(b.t,'es'));
+}
+function renderGlosario(){
+  const lista = glosarioFiltrado();
+  $('#glosList').innerHTML = lista.length
+    ? lista.map(g => '<details class="glos-item"><summary><span>'+esc(g.t)+' <span class="tag">'+esc(g.c)+'</span></span><span aria-hidden="true">＋</span></summary><p>'+esc(g.d)+'</p></details>').join('')
+    : '<div class="callout rojo">😕 No se encontraron términos con ese criterio. Probá con otra palabra.</div>';
+}
+$('#glosPrint').addEventListener('click', () => imprimirGlosario());
+
+/* ============================================================
+   IMPRESIÓN A4
+   ============================================================ */
+function fechaHoy(){
+  const f = new Date();
+  const m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return f.getDate() + ' de ' + m[f.getMonth()] + ' de ' + f.getFullYear();
+}
+function cabeceraPrint(sub){
+  return '<div class="p-head"><div class="p-flex"><div>'+
+    '<div class="p-h1">NTiCx · 4to año</div>'+
+    '<div class="p-muted">Nuevas Tecnologías de la Información y la Conectividad · Escuela Secundaria</div>'+
+  '</div><div style="text-align:right"><div style="font-weight:900">'+sub+'</div><div class="p-muted">'+fechaHoy()+'</div></div></div></div>';
+}
+function doPrint(){ setTimeout(()=> window.print(), 120); }
+
+/* --- Mi Reporte --- */
+function leerUsuario(pref){
+  return {
+    nombre:  ($('#'+pref+'Nombre')   || {}).value || '',
+    escuela: ($('#'+pref+'Escuela')  || {}).value || '',
+    curso:   ($('#'+pref+'Curso')    || {}).value || '',
+    division:($('#'+pref+'Division') || {}).value || ''
+  };
+}
+['Nombre','Escuela','Curso','Division'].forEach(c => {
+  const el = $('#rep'+c);
+  if(el) el.addEventListener('input', () => { state.user = leerUsuario('rep'); renderReportePreview(); });
+});
+function datosUsuarioHTML(u){
+  return '<div class="p-block">'+
+    '<div class="p-kv"><b>Nombre y apellido</b><span>'+(esc(u.nombre)||'—')+'</span></div>'+
+    '<div class="p-kv"><b>Escuela</b><span>'+(esc(u.escuela)||'—')+'</span></div>'+
+    '<div class="p-kv"><b>Curso / Año</b><span>'+(esc(u.curso)||'—')+'</span></div>'+
+    '<div class="p-kv"><b>División</b><span>'+(esc(u.division)||'—')+'</span></div>'+
+  '</div>';
+}
+function triviasHTML(){
+  const nombres = { dig:'Trivia 1 · Digitalización de la información', web:'Trivia 2 · Organización de la información en la web', bus:'Trivia 3 · Buscadores de información', fol:'Trivia 4 · Folcsonomía y marcadores sociales' };
+  let html = '';
+  Object.keys(nombres).forEach(k => {
+    const t = state.trivias[k];
+    html += '<div class="p-h3">'+nombres[k]+(t.done ? ' — '+t.ok+'/3 correctas' : ' — sin completar')+'</div>';
+    if(!t.reg.length){ html += '<div class="p-muted">Sin respuestas registradas.</div>'; return; }
+    t.reg.forEach((r,i) => {
+      if(!r) return;
+      html += '<div class="p-q"><b>'+(i+1)+'. '+esc(r.pregunta)+'</b><br>'+
+        'Respuesta del alumno: '+(r.ok?'✔ ':'✘ ')+esc(r.elegida)+'<br>'+
+        (r.ok ? '' : 'Respuesta correcta: '+esc(r.correcta)+'<br>')+'</div>';
+    });
+  });
+  return html;
+}
+function logrosHTML(){
+  const ganados = LOGROS.filter(l => state.logros.has(l.id));
+  if(!ganados.length) return '<div class="p-muted">Aún no se desbloquearon logros.</div>';
+  return ganados.map(l => '<span class="p-chip">'+l.ic+' '+l.nom+'</span>').join('');
+}
+function renderReportePreview(){
+  const u = state.user;
+  const totalOK = Object.values(state.trivias).reduce((a,t)=>a+t.ok,0);
+  $('#repPreview').innerHTML =
+    '<div class="font-head font-black text-sm mb-1">👤 Datos del estudiante</div>'+ datosUsuarioHTML(u).replace(/p-kv/g,'p-kv" style="border-bottom:1px dotted var(--border);display:flex;justify-content:space-between;padding:2px 0').replace(/p-block/g,'div').replace(/<div class="div">/,'<div>') +
+    '<hr class="my-2" style="border-color:var(--border)">'+
+    '<div class="font-head font-black text-sm mb-1">🎯 Trivias</div>'+
+    Object.keys(state.trivias).map(k => {
+      const t = state.trivias[k];
+      const nom = {dig:'Digitalización',web:'WWW',bus:'Buscadores',fol:'Folcsonomía'}[k];
+      return '<div class="text-xs"><b>'+nom+':</b> '+(t.done? t.ok+'/3 correctas':'sin completar')+'</div>';
+    }).join('')+
+    '<div class="text-xs mt-1"><b>Total de respuestas correctas en trivias: '+totalOK+'/12</b></div>'+
+    '<div class="text-xs mt-1">🏅 Logros desbloqueados: <b>'+state.logros.size+'/'+LOGROS.length+'</b></div>';
+}
+$('#btnImprimirReporte').addEventListener('click', () => {
+  const u = leerUsuario('rep');
+  if(!u.nombre.trim() || !u.escuela.trim() || !u.curso.trim() || !u.division.trim()){
+    alert('✍️ Completá manualmente los cuatro datos: nombre, escuela, curso y división.');
+    return;
+  }
+  state.user = u;
+  const totalOK = Object.values(state.trivias).reduce((a,t)=>a+t.ok,0);
+  printArea.innerHTML =
+    cabeceraPrint('Informe de logros y trivias')+
+    '<div class="p-h2">👤 Datos del estudiante</div>'+ datosUsuarioHTML(u)+
+    '<div class="p-h2">🏅 Logros obtenidos ('+state.logros.size+'/'+LOGROS.length+')</div>'+ logrosHTML()+
+    '<div class="p-h2">🎯 Trivias completadas · '+totalOK+'/12 correctas</div>'+ triviasHTML()+
+    '<div class="p-footer"><span>NTiCx 4to año · Informe de aula</span><span>Página 1</span></div>';
+  closeModal('modalReporte');
+  doPrint();
+});
+
+/* --- Teoría --- */
+$('#btnTeoria').addEventListener('click', () => {
+  const cont = document.createElement('div');
+  cont.innerHTML = cabeceraPrint('Cuaderno teórico completo');
+  $$('[data-mod]').forEach(sec => {
+    const clone = sec.cloneNode(true);
+    clone.querySelectorAll('.no-print, .widget, iframe, button, input, select, textarea, details').forEach(el => el.remove());
+    clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+    clone.classList.add('p-mod');
+    const h = document.createElement('div');
+    h.className = 'p-h2';
+    h.textContent = sec.dataset.mod;
+    cont.appendChild(h);
+    const inner = document.createElement('div');
+    inner.appendChild(clone);
+    inner.querySelector('.mod-title')?.remove();
+    cont.appendChild(inner);
+  });
+  const foot = document.createElement('div');
+  foot.className = 'p-footer';
+  foot.innerHTML = '<span>NTiCx 4to año · Teoría impresa en A4 vertical</span><span>Módulos 1 a 4</span>';
+  cont.appendChild(foot);
+  printArea.innerHTML = '';
+  printArea.appendChild(cont);
+  doPrint();
+});
+
+/* --- Glosario --- */
+function imprimirGlosario(){
+  const lista = glosarioFiltrado();
+  let filas = lista.map(g => '<tr><td><b>'+esc(g.t)+'</b><br><span class="p-muted">'+esc(g.c)+'</span></td><td>'+esc(g.d)+'</td></tr>').join('');
+  printArea.innerHTML =
+    cabeceraPrint('Glosario de términos técnicos')+
+    '<div class="p-h2">🔤 Glosario NTiCx · '+lista.length+' términos</div>'+
+    '<table class="p-table"><tr><th style="width:28%">Término</th><th>Definición</th></tr>'+filas+'</table>'+
+    '<div class="p-footer"><span>NTiCx 4to año · Diccionario digital</span><span>'+fechaHoy()+'</span></div>';
+  closeModal('modalGlosario');
+  doPrint();
+}
+
+/* --- Certificado --- */
+$('#btnCertificado').addEventListener('click', () => {
+  const u = leerUsuario('cert');
+  if(!u.nombre.trim() || !u.escuela.trim() || !u.curso.trim() || !u.division.trim()){
+    alert('✍️ Completá manualmente nombre, escuela, curso y división para emitir el certificado.');
+    return;
+  }
+  const ex = state.examen;
+  if(!ex.corregido || ex.score < 9){ alert('El certificado se habilita al aprobar la evaluación final (9/15 o más).'); return; }
+  const pct = Math.round(ex.score/15*100);
+  printArea.innerHTML =
+    '<div class="p-cert">'+
+      '<div class="titulo">Certificado de aprobación</div>'+
+      '<h1>NTiCx</h1>'+
+      '<div class="p-muted">Nuevas Tecnologías de la Información y la Conectividad · 4to año · Escuela Secundaria</div>'+
+      '<div style="margin-top:18px;font-size:11pt">Se certifica que</div>'+
+      '<div class="nombre">'+esc(u.nombre)+'</div>'+
+      '<div style="font-size:10.5pt">estudiante de <b>'+esc(u.escuela)+'</b>, curso <b>'+esc(u.curso)+'</b>, división <b>'+esc(u.division)+'</b>,</div>'+
+      '<div style="font-size:10.5pt;margin-top:6px">ha aprobado la evaluación final integrada sobre digitalización de la información, organización de la información en la web (WWW), buscadores y metabuscadores, y folcsonomía o marcadores sociales.</div>'+
+      '<div style="margin-top:14px;border:1.5px solid #000;border-radius:8px;padding:8px;display:inline-block">'+
+        '<b style="font-size:15pt">'+ex.score+' / 15 ('+pct+'%)</b><br><span class="p-muted">Puntaje obtenido · mínimo de aprobación 9/15 (60%)</span>'+
+      '</div>'+
+      '<div style="margin-top:12px"><b>Logros desbloqueados: '+state.logros.size+' de '+LOGROS.length+'</b><br><span class="p-muted">'+LOGROS.filter(l=>state.logros.has(l.id)).map(l=>l.nom).join(' · ')+'</span></div>'+
+      '<div class="p-firma"><div>Firma del docente</div><div>Aclaración / DNI</div><div>Fecha: '+fechaHoy()+'</div></div>'+
+    '</div>'+
+    '<div class="p-footer"><span>Documento generado por la aplicación de aula NTiCx</span><span>A4 · vertical</span></div>';
+  doPrint();
+});
+
+/* ---------------- Init ---------------- */
+renderLogros();
+renderReportePreview();
+actualizarProgreso();
+</script>
+</body>
+</html>
+
