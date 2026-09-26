@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTICx · Módulo 01 — Fundamentos, evolución y conceptos clave</title>
+
+<!-- ============================================================
+     TIPOGRAFÍAS
+     Unbounded   → títulos (display, carácter tecnológico)
+     Space Grotesk → texto de lectura
+     JetBrains Mono → etiquetas técnicas, chips, consola
+============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS vía CDN (compila las clases en tiempo real) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // Paleta del módulo: tinta (ink), papel (paper) + un acento por pestaña
+  tailwind.config = {
+    theme: { extend: {
+      colors: {
+        ink:   '#0E1C2B',
+        navy:  '#0B1B2B',
+        paper: '#F1F4F1',
+        celeste: '#7FC8F8',
+        deep:  '#12304B',
+        t1: { DEFAULT:'#F59E0B', dark:'#92610A', soft:'#FEF3D9' }, // ámbar  → Técnica/Tecnología/Innovación
+        t2: { DEFAULT:'#0EA5E9', dark:'#075E8C', soft:'#E0F2FE' }, // celeste → Datos/Información
+        t3: { DEFAULT:'#10B981', dark:'#0B6E4F', soft:'#DCFCE7' }, // verde  → Tríada informática
+        t4: { DEFAULT:'#E23A77', dark:'#9C1D52', soft:'#FCE7F0' }, // frambuesa → Evolución de siglas
+      },
+      fontFamily: {
+        display: ['Unbounded','sans-serif'],
+        body:    ['"Space Grotesk"','sans-serif'],
+        mono:    ['"JetBrains Mono"','monospace'],
+      },
+      boxShadow: {
+        'hard':    '6px 6px 0 0 #0E1C2B',
+        'hard-sm': '3px 3px 0 0 #0E1C2B',
+        'hard-lg': '10px 10px 0 0 #0E1C2B',
+      },
+    }}
+  };
+</script>
+
+<style>
+/* ============================================================
+   ESTILOS PROPIOS (lo que Tailwind no resuelve por sí solo)
+============================================================ */
+body{
+  background-color:#F1F4F1;
+  /* Fondo por capas: tintes de color + grilla técnica tipo plano */
+  background-image:
+    radial-gradient(900px 480px at 6% -4%, rgba(14,165,233,.12), transparent 60%),
+    radial-gradient(820px 520px at 100% 28%, rgba(245,158,11,.12), transparent 55%),
+    radial-gradient(700px 420px at 50% 100%, rgba(226,58,119,.08), transparent 55%),
+    linear-gradient(rgba(14,28,43,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14,28,43,.05) 1px, transparent 1px);
+  background-size:auto,auto,auto,32px 32px,32px 32px;
+}
+::selection{ background:#F59E0B; color:#0E1C2B; }
+:focus-visible{ outline:3px solid #F59E0B; outline-offset:2px; }
+
+/* --- Aparición al hacer scroll --- */
+.rv{ opacity:0; transform:translateY(18px); transition:opacity .55s ease, transform .55s ease; }
+.rv.is-in{ opacity:1; transform:none; }
+
+/* --- Pestañas --- */
+.panel{ display:none; }
+.panel.active{ display:block; animation:panelIn .45s ease; }
+@keyframes panelIn{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+.tab-btn{ display:flex; align-items:center; gap:.55rem; padding:.55rem .9rem; border:2px solid #0E1C2B;
+  background:#fff; white-space:nowrap; transition:.18s; font-size:13px; }
+.tab-btn:hover{ transform:translateY(-2px); box-shadow:3px 3px 0 #0E1C2B; }
+.tab-btn.active{ transform:translateY(-2px); box-shadow:4px 4px 0 #0E1C2B; }
+.tab-btn.active[data-tab="t1"]{ background:#F59E0B; }
+.tab-btn.active[data-tab="t2"]{ background:#0EA5E9; }
+.tab-btn.active[data-tab="t3"]{ background:#10B981; }
+.tab-btn.active[data-tab="t4"]{ background:#E23A77; }
+.tab-num{ background:#0E1C2B; color:#fff; font-family:'Unbounded'; font-size:11px; padding:.25rem .4rem; }
+.tab-dot{ width:10px; height:10px; border-radius:99px; background:#fff; border:2px solid #0E1C2B; display:none; flex:none; }
+.tab-btn.earned .tab-dot{ display:block; }
+
+/* --- Etiquetas de sección --- */
+.label{ font-family:'JetBrains Mono'; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  font-weight:700; display:flex; align-items:center; gap:.55rem; color:#0E1C2B; }
+.sq{ width:11px; height:11px; border:2px solid #0E1C2B; display:inline-block; flex:none; }
+
+/* --- Consola del header --- */
+.cursor{ display:inline-block; width:.6em; height:1.05em; background:#7FC8F8; margin-left:3px;
+  vertical-align:-.15em; animation:blink 1s steps(2) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+.xchip{ display:inline-block; background:#F59E0B; color:#0E1C2B; padding:0 .18em;
+  transform:rotate(2deg) translateY(-3px); border:3px solid rgba(255,255,255,.18); }
+.pulse{ stroke-dasharray:16 260; animation:dash 3.4s linear infinite; }
+@keyframes dash{ to{ stroke-dashoffset:-552; } }
+.barcode{ height:16px; width:110px; opacity:.5;
+  background:repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 5px,#fff 5px 6px,transparent 6px 11px); }
+
+/* --- Cinta desplazable (ticker) --- */
+.ticker-track{ display:flex; width:max-content; animation:marquee 30s linear infinite; }
+.ticker:hover .ticker-track{ animation-play-state:paused; }
+.tick-group{ display:flex; align-items:center; gap:1.4rem; padding-right:1.4rem; }
+@keyframes marquee{ to{ transform:translateX(-50%); } }
+
+/* --- Animaciones utilitarias --- */
+@keyframes shake{ 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+.shake, .wrongflash{ animation:shake .4s ease; }
+@keyframes pop{ 0%{transform:scale(.7); opacity:0;} 70%{transform:scale(1.06);} 100%{transform:scale(1); opacity:1;} }
+.pop{ animation:pop .38s ease; }
+
+/* --- Comparador dinámico (Pestaña 1): atenúa columnas no enfocadas --- */
+#cmpWrap [data-col]{ transition:opacity .35s, background .35s; }
+#cmpWrap[data-focus="tecnica"]    [data-col]:not([data-col="tecnica"]),
+#cmpWrap[data-focus="tecnologia"] [data-col]:not([data-col="tecnologia"]),
+#cmpWrap[data-focus="innovacion"] [data-col]:not([data-col="innovacion"]){ opacity:.16; }
+#cmpWrap[data-focus="tecnica"]    [data-col="tecnica"]{ background:#FEF3D9; }
+#cmpWrap[data-focus="tecnologia"] [data-col="tecnologia"]{ background:#E0F2FE; }
+#cmpWrap[data-focus="innovacion"] [data-col="innovacion"]{ background:#FCE7F0; }
+.cmp-chip{ border:2px solid #0E1C2B; background:#fff; font-family:'JetBrains Mono'; font-size:11px;
+  font-weight:700; letter-spacing:.08em; padding:.4rem .75rem; transition:.15s; }
+.cmp-chip:hover{ transform:translateY(-2px); }
+.cmp-chip.on{ background:#0E1C2B; color:#fff; }
+
+/* --- Botones de juego genéricos --- */
+.game-btn{ border:2px solid #0E1C2B; background:#fff; padding:.65rem .9rem; font-weight:600;
+  transition:.15s; box-shadow:3px 3px 0 rgba(14,28,43,.15); }
+.game-btn:hover:not(:disabled){ transform:translate(-2px,-2px); box-shadow:5px 5px 0 #0E1C2B; }
+.game-btn:disabled{ cursor:default; }
+.sel{ outline:3px solid #F59E0B; outline-offset:2px; transform:translate(-2px,-2px); }
+.m-done{ background:#0EA5E9 !important; color:#fff !important; box-shadow:3px 3px 0 #075E8C !important; }
+
+/* --- Opciones del test relámpago --- */
+.opt{ font-family:'Unbounded'; font-size:.8rem; border:2px solid #0E1C2B; padding:.85rem .6rem;
+  background:#fff; transition:.15s; display:flex; align-items:center; justify-content:center; gap:.5rem; }
+.opt:hover:not(:disabled){ transform:translate(-2px,-2px); box-shadow:4px 4px 0 #0E1C2B; }
+.opt:disabled{ opacity:.5; cursor:default; }
+.opt.correct{ opacity:1 !important; background:#DCFCE7; border-color:#047857; box-shadow:3px 3px 0 #047857; }
+.opt.wrong{ opacity:1 !important; background:#FEE2E2; border-color:#B91C1C; animation:shake .4s ease; }
+.dot{ width:10px; height:10px; border:2px solid #0E1C2B; display:inline-block; flex:none; }
+
+/* --- Flashcards 3D (Pestaña 2) --- */
+.flip{ perspective:1200px; }
+.flip-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,.2,.2,1); }
+.flip.on .flip-inner{ transform:rotateY(180deg); }
+.flip-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.flip-back{ transform:rotateY(180deg); }
+
+/* --- Árbol conceptual (Pestaña 3): ramas que se despliegan --- */
+.branch-body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s ease; }
+.branch.open > .branch-body{ grid-template-rows:1fr; }
+.branch-body > div{ overflow:hidden; }
+.branch-toggle .chev{ transition:transform .3s; display:inline-block; margin-left:auto; }
+.branch.open > .branch-toggle .chev{ transform:rotate(90deg); }
+.branch-kids{ margin-left:1rem; border-left:3px dashed rgba(14,28,43,.25); padding-left:1rem; }
+
+/* --- Zonas del clasificador --- */
+.zone{ border:2px dashed rgba(14,28,43,.4); min-height:9.5rem; transition:.15s; background:#fff; width:100%; }
+.zone:hover{ border-color:#0E1C2B; background:#F7FAF7; }
+.zone-chip{ display:inline-block; border:2px solid #0E1C2B; background:#DCFCE7; padding:.1rem .45rem;
+  font-size:11px; font-family:'JetBrains Mono'; margin:.2rem; }
+
+/* --- Línea de tiempo (Pestaña 4) --- */
+.tl-node{ display:flex; flex-direction:column; align-items:center; gap:.35rem; width:92px; }
+.tl-dot{ width:46px; height:46px; border-radius:99px; border:2px solid #0E1C2B; background:#fff;
+  display:grid; place-items:center; font-family:'Unbounded'; font-size:.85rem; transition:.25s; }
+.tl-node:hover .tl-dot{ transform:translateY(-3px); }
+.tl-node.done .tl-dot{ background:#0E1C2B; color:#fff; }
+.tl-node.now .tl-dot{ background:#E23A77; color:#fff; transform:scale(1.14); box-shadow:4px 4px 0 #0E1C2B; }
+.tl-node.now .tl-sigla{ color:#9C1D52; }
+
+/* --- Juego de orden cronológico --- */
+.ord-slot{ border:2px dashed rgba(14,28,43,.4); min-height:5.6rem; display:flex; flex-direction:column;
+  gap:.4rem; align-items:center; justify-content:center; padding:.5rem; background:#fff; transition:.2s; }
+.ord-slot.ord-filled{ border-style:solid; background:#FCE7F0; }
+
+/* --- Logros --- */
+.hbadge{ width:30px; height:30px; display:grid; place-items:center; border:2px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.35); filter:grayscale(1); opacity:.55; font-size:13px; transition:.3s; }
+.hbadge.earned{ filter:none; opacity:1; border-color:#0E1C2B; }
+.hbadge[data-badge="t1"].earned{ background:#F59E0B; }
+.hbadge[data-badge="t2"].earned{ background:#0EA5E9; }
+.hbadge[data-badge="t3"].earned{ background:#10B981; }
+.hbadge[data-badge="t4"].earned{ background:#E23A77; }
+
+/* --- Confeti de celebración --- */
+.confetti{ position:fixed; top:-14px; width:10px; height:14px; z-index:100; pointer-events:none;
+  animation:fall linear forwards; }
+@keyframes fall{ to{ transform:translateY(106vh) rotate(720deg); opacity:.85; } }
+
+/* --- Accesibilidad: respetar la preferencia de menos movimiento --- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  .rv{ opacity:1; transform:none; }
+}
+</style>
+</head>
+
+<body class="font-body text-ink antialiased">
+<noscript><p class="bg-t1 border-b-2 border-ink p-3 text-center font-bold">⚠️ Esta aula interactiva necesita JavaScript habilitado.</p></noscript>
+
+<!-- ═══════════ BARRA DE PROGRESO GLOBAL ═══════════ -->
+<div class="fixed top-0 left-0 right-0 h-1 z-50 bg-ink/10">
+  <div id="pfill" class="h-full w-0 transition-all duration-700"
+       style="background:linear-gradient(90deg,#F59E0B,#0EA5E9,#10B981,#E23A77)"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ENCABEZADO · "CONSOLA DE APERTURA"
+     En lugar de un hero genérico: una ficha técnica de módulo
+     con secuencia de arranque tipeada y circuito animado.
+════════════════════════════════════════════════════════════ -->
+<header class="relative bg-navy text-white overflow-hidden">
+  <!-- Circuito decorativo de fondo (pulso de datos animado) -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-70" aria-hidden="true"
+       preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 420">
+    <g fill="none" stroke="#27476B" stroke-width="1.5">
+      <path d="M0 330 H180 L225 285 H430"/>
+      <path d="M1200 80 H1010 L965 125 H800"/>
+      <path d="M0 110 H95 L140 155 V270"/>
+      <path d="M1200 360 H900 L860 320 H640"/>
+      <path class="pulse" d="M0 210 H250 L295 165 H540 L585 210 H790" stroke="#7FC8F8" stroke-width="2"/>
+    </g>
+    <g fill="#3E6690">
+      <circle cx="430" cy="285" r="4"/><circle cx="800" cy="125" r="4"/>
+      <circle cx="140" cy="270" r="4"/><circle cx="640" cy="320" r="4"/>
+    </g>
+    <circle cx="790" cy="210" r="5" fill="#F59E0B"/>
+  </svg>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-16 grid gap-10 lg:grid-cols-[1.15fr_.85fr] items-end">
+    <!-- Columna principal -->
+    <div>
+      <p class="flex flex-wrap gap-2 items-center">
+        <span class="font-mono text-[10px] md:text-xs font-bold tracking-[.18em] bg-celeste text-ink px-2.5 py-1 border-2 border-ink">MÓDULO 01</span>
+        <span class="font-mono text-[10px] md:text-xs font-bold tracking-[.18em] border border-celeste/40 text-celeste px-2.5 py-1">4.º AÑO · SECUNDARIA</span>
+        <span class="font-mono text-[10px] md:text-xs font-bold tracking-[.18em] border border-celeste/40 text-celeste px-2.5 py-1">🇦🇷 ARGENTINA</span>
+      </p>
+
+      <h1 class="font-display font-black leading-[.95] text-6xl md:text-8xl mt-6">
+        NTIC<span class="xchip">x</span>
+      </h1>
+      <p class="font-mono uppercase tracking-[.22em] text-celeste text-[10px] md:text-sm mt-5">
+        Nuevas Tecnologías de la Información y la Conectividad
+      </p>
+
+      <!-- Secuencia de arranque tipeada en vivo -->
+      <p class="mt-3 font-mono text-sm text-white/85">
+        <span class="text-celeste">›</span> <span id="typewriter"></span><span class="cursor"></span>
+      </p>
+
+      <p class="mt-5 max-w-xl text-white/85 text-base md:text-lg leading-relaxed">
+        Un recorrido interactivo por el corazón de la materia: qué separa a la <b>técnica</b> de la
+        <b>tecnología</b>, cómo un <b>dato</b> se vuelve <b>información</b>, qué hay adentro de un
+        <b>sistema informático</b> y por qué la sigla cambió <b>cuatro veces</b>.
+      </p>
+    </div>
+
+    <!-- Ficha técnica del módulo -->
+    <aside class="rv bg-deep border-2 border-celeste/30 p-5 md:p-6 relative">
+      <span class="absolute -top-3 left-4 bg-t1 text-ink font-mono text-[10px] font-bold px-2 py-0.5 border-2 border-ink">FICHA DEL MÓDULO</span>
+      <dl class="font-mono text-[11px] md:text-xs space-y-2.5 mt-2 text-white/90">
+        <div class="flex justify-between gap-3 border-b border-white/10 pb-1.5"><dt class="text-celeste">MATERIA</dt><dd class="text-right">NTICx</dd></div>
+        <div class="flex justify-between gap-3 border-b border-white/10 pb-1.5"><dt class="text-celeste">EJE</dt><dd class="text-right">Fundamentos teóricos · Evolución · Conceptos clave</dd></div>
+        <div class="flex justify-between gap-3 border-b border-white/10 pb-1.5"><dt class="text-celeste">NIVEL</dt><dd class="text-right">4.º año · Ciclo Superior</dd></div>
+        <div class="flex justify-between gap-3 border-b border-white/10 pb-1.5"><dt class="text-celeste">DURACIÓN</dt><dd class="text-right">4 bloques de clase aprox.</dd></div>
+        <div class="flex justify-between gap-3"><dt class="text-celeste">MODO DE USO</dt><dd class="text-right">Leé → tocá → jugá → comprobá</dd></div>
+      </dl>
+
+      <!-- Progreso del módulo (se llena al completar micro-actividades) -->
+      <div class="mt-4 pt-4 border-t border-white/15">
+        <p class="font-mono text-[10px] tracking-[.2em] text-celeste mb-2">PROGRESO DEL MÓDULO
+          <span id="pct" class="float-right text-white">0%</span></p>
+        <div class="h-3 bg-black/40 border border-white/20">
+          <div id="pfillHead" class="h-full w-0 transition-all duration-700"
+               style="background:linear-gradient(90deg,#F59E0B,#0EA5E9,#10B981,#E23A77)"></div>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <span class="hbadge" data-badge="t1" title="Logro: Test relámpago">🔧</span>
+          <span class="hbadge" data-badge="t2" title="Logro: Conectá conceptos">🃏</span>
+          <span class="hbadge" data-badge="t3" title="Logro: Clasificador">🧩</span>
+          <span class="hbadge" data-badge="t4" title="Logro: Línea de tiempo">⏳</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-4">
+        <p class="font-mono text-[10px] text-emerald-300">● SISTEMA EN LÍNEA — listo para explorar</p>
+        <div class="barcode" aria-hidden="true"></div>
+      </div>
+    </aside>
+  </div>
+</header>
+
+<!-- ═══════════ CINTA DE CONCEPTOS (marquee) ═══════════ -->
+<div class="ticker bg-t1 border-y-2 border-ink overflow-hidden py-2" aria-hidden="true">
+  <div class="ticker-track font-mono text-xs md:text-sm font-bold tracking-[.18em]">
+    <div class="tick-group"><span>TÉCNICA</span><span>✦</span><span>TECNOLOGÍA</span><span>✦</span><span>INNOVACIÓN</span><span>✦</span><span>DATOS → INFORMACIÓN</span><span>✦</span><span>HARDWARE</span><span>✦</span><span>SOFTWARE</span><span>✦</span><span>INFOWARE</span><span>✦</span><span>TIC → NTIC → NTIT → NTICx</span><span>✦</span><span>CONOCIMIENTO + CONECTIVIDAD</span><span>✦</span></div>
+    <div class="tick-group"><span>TÉCNICA</span><span>✦</span><span>TECNOLOGÍA</span><span>✦</span><span>INNOVACIÓN</span><span>✦</span><span>DATOS → INFORMACIÓN</span><span>✦</span><span>HARDWARE</span><span>✦</span><span>SOFTWARE</span><span>✦</span><span>INFOWARE</span><span>✦</span><span>TIC → NTIC → NTIT → NTICx</span><span>✦</span><span>CONOCIMIENTO + CONECTIVIDAD</span><span>✦</span></div>
+  </div>
+</div>
+
+<!-- ═══════════ NAVEGACIÓN POR PESTAÑAS (sticky) ═══════════ -->
+<nav id="tabbar" class="sticky top-0 z-40 bg-paper/95 backdrop-blur-sm border-b-2 border-ink">
+  <div class="max-w-6xl mx-auto px-4 flex gap-2 md:gap-3 overflow-x-auto py-3" role="tablist" aria-label="Bloques temáticos">
+    <button id="tab-t1" data-tab="t1" role="tab" aria-selected="true" aria-controls="panel-t1" class="tab-btn active">
+      <span class="tab-num">01</span><span class="text-lg" aria-hidden="true">🛠️</span>
+      <span class="font-semibold leading-tight text-left">Técnica y tecnología</span><span class="tab-dot"></span>
+    </button>
+    <button id="tab-t2" data-tab="t2" role="tab" aria-selected="false" aria-controls="panel-t2" class="tab-btn">
+      <span class="tab-num">02</span><span class="text-lg" aria-hidden="true">📊</span>
+      <span class="font-semibold leading-tight text-left">Datos e información</span><span class="tab-dot"></span>
+    </button>
+    <button id="tab-t3" data-tab="t3" role="tab" aria-selected="false" aria-controls="panel-t3" class="tab-btn">
+      <span class="tab-num">03</span><span class="text-lg" aria-hidden="true">🖥️</span>
+      <span class="font-semibold leading-tight text-left">La tríada informática</span><span class="tab-dot"></span>
+    </button>
+    <button id="tab-t4" data-tab="t4" role="tab" aria-selected="false" aria-controls="panel-t4" class="tab-btn">
+      <span class="tab-num">04</span><span class="text-lg" aria-hidden="true">🛰️</span>
+      <span class="font-semibold leading-tight text-left">De las TIC a la NTICx</span><span class="tab-dot"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PESTAÑA 1 · TÉCNICA, TECNOLOGÍA E INNOVACIÓN
+════════════════════════════════════════════════════════════ -->
+<section id="panel-t1" role="tabpanel" aria-labelledby="tab-t1" class="panel active">
+  <div class="max-w-6xl mx-auto px-4 py-12 md:py-14">
+
+    <div class="rv">
+      <p class="label"><span class="sq bg-t1"></span>PESTAÑA 01 · CONCEPTOS FUNDACIONALES</p>
+      <h2 class="font-display font-black text-3xl md:text-5xl mt-3 leading-tight">Técnica, Tecnología <span class="text-t1">&</span> Innovación</h2>
+      <p class="mt-3 max-w-2xl text-ink/75">Tres palabras que se usan como sinónimos todo el tiempo… y no lo son.
+      Acá está el cimiento de todo el módulo: primero hay que separarlas, después todo lo demás tiene sentido.</p>
+    </div>
+
+    <!-- 1.1 · Tarjetas conceptuales -->
+    <p class="label mt-10 rv"><span class="sq bg-t1"></span>01.1 · EXPLICACIÓN</p>
+    <div class="grid md:grid-cols-3 gap-6 mt-4">
+      <article class="rv bg-white border-2 border-ink shadow-hard hover:-translate-y-1 hover:shadow-hard-lg transition-all">
+        <div class="h-2 bg-t1 border-b-2 border-ink"></div>
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            <span class="text-4xl" aria-hidden="true">🔧</span>
+            <span class="font-mono text-[10px] font-bold bg-t1-soft border border-t1 text-t1-dark px-2 py-1">SABER HACER</span>
+          </div>
+          <h3 class="font-display text-xl mt-4">Técnica</h3>
+          <p class="mt-2 text-sm leading-relaxed">Conjunto de <b>procedimientos, habilidades y reglas</b> que se ponen en práctica para lograr un objetivo.</p>
+          <div class="mt-4 border-l-4 border-t1 bg-t1-soft p-3 text-sm"><b>En criollo:</b> el “cómo”. Una secuencia de pasos y mañas que se aprende y se mejora practicando.</div>
+          <p class="mt-3 text-sm"><span class="font-mono text-[10px] font-bold text-t1-dark">🇦🇷 EJEMPLO →</span> El <b>repulgue de la empanada</b>: una serie exacta de dobleces que se aprende mirando y se perfecciona haciendo.</p>
+        </div>
+      </article>
+
+      <article class="rv bg-white border-2 border-ink shadow-hard hover:-translate-y-1 hover:shadow-hard-lg transition-all" style="transition-delay:.08s">
+        <div class="h-2 bg-t2 border-b-2 border-ink"></div>
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            <span class="text-4xl" aria-hidden="true">⚙️</span>
+            <span class="font-mono text-[10px] font-bold bg-t2-soft border border-t2 text-t2-dark px-2 py-1">RESOLVER</span>
+          </div>
+          <h3 class="font-display text-xl mt-4">Tecnología</h3>
+          <p class="mt-2 text-sm leading-relaxed">Conjunto organizado de <b>conocimientos científicos aplicados</b> a la resolución de problemas.</p>
+          <div class="mt-4 border-l-4 border-t2 bg-t2-soft p-3 text-sm"><b>En criollo:</b> cuando la ciencia se organiza para resolver un problema concreto, y el resultado puede ser un objeto, un sistema o un proceso.</div>
+          <p class="mt-3 text-sm"><span class="font-mono text-[10px] font-bold text-t2-dark">🇦🇷 EJEMPLO →</span> El <b>horno industrial</b>: termodinámica, materiales y control de temperatura al servicio de cocinar parejo y a gran escala.</p>
+        </div>
+      </article>
+
+      <article class="rv bg-white border-2 border-ink shadow-hard hover:-translate-y-1 hover:shadow-hard-lg transition-all" style="transition-delay:.16s">
+        <div class="h-2 bg-t4 border-b-2 border-ink"></div>
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            <span class="text-4xl" aria-hidden="true">🚀</span>
+            <span class="font-mono text-[10px] font-bold bg-t4-soft border border-t4 text-t4-dark px-2 py-1">ADOPTAR</span>
+          </div>
+          <h3 class="font-display text-xl mt-4">Innovación</h3>
+          <p class="mt-2 text-sm leading-relaxed"><b>Modificar, mejorar o crear</b> un producto o proceso… y lograr su <b>introducción exitosa en la sociedad</b>.</p>
+          <div class="mt-4 border-l-4 border-t4 bg-t4-soft p-3 text-sm"><b>En criollo:</b> no alcanza con inventar algo: hay que lograr que la gente lo use y que algo de su vida cambie.</div>
+          <p class="mt-3 text-sm"><span class="font-mono text-[10px] font-bold text-t4-dark">🇦🇷 EJEMPLO →</span> La <b>app de delivery con IA</b>: predice tu pedido, llega en minutos… y ya no te imaginás sin ella.</p>
+        </div>
+      </article>
+    </div>
+
+    <!-- Idea clave -->
+    <div class="rv mt-8 bg-white border-2 border-ink shadow-hard p-5 md:flex items-center gap-5">
+      <span class="text-3xl" aria-hidden="true">💡</span>
+      <p class="text-sm md:text-base mt-2 md:mt-0"><b>Idea clave:</b> toda tecnología se apoya en técnicas y toda innovación necesita tecnología…
+      pero recién hay <b class="text-t4-dark">innovación</b> cuando la sociedad la adopta. La técnica vive en tus manos;
+      la tecnología, en el sistema; la innovación, en las costumbres.</p>
+    </div>
+
+    <!-- 1.2 · Cuadro comparativo dinámico -->
+    <p class="label mt-12 rv"><span class="sq bg-t1"></span>01.2 · CUADRO COMPARATIVO DINÁMICO</p>
+    <p class="rv text-sm mt-2 text-ink/70">Tocá un concepto para dejarlo en foco y comparar sin distraerte:</p>
+
+    <div id="cmpWrap" data-focus="all" class="rv mt-4">
+      <div class="flex flex-wrap gap-2 mb-4" id="cmpChips">
+        <button class="cmp-chip on" data-focus="all">TODOS</button>
+        <button class="cmp-chip" data-focus="tecnica">🔧 TÉCNICA</button>
+        <button class="cmp-chip" data-focus="tecnologia">⚙️ TECNOLOGÍA</button>
+        <button class="cmp-chip" data-focus="innovacion">🚀 INNOVACIÓN</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[680px] bg-white border-2 border-ink shadow-hard text-sm">
+          <thead>
+            <tr class="bg-ink text-white font-display text-xs">
+              <th class="p-3 text-left w-44 font-normal font-mono tracking-widest text-celeste">COMPARAR POR</th>
+              <th data-col="tecnica" class="p-3 text-left">🔧 Técnica</th>
+              <th data-col="tecnologia" class="p-3 text-left">⚙️ Tecnología</th>
+              <th data-col="innovacion" class="p-3 text-left">🚀 Innovación</th>
+            </tr>
+          </thead>
+          <tbody class="align-top">
+            <tr class="border-t-2 border-ink/10"><td class="p-3 font-mono text-[11px] uppercase bg-paper font-bold">¿Qué es?</td><td data-col="tecnica" class="p-3">Saber hacer: procedimientos, habilidades y reglas para lograr un objetivo.</td><td data-col="tecnologia" class="p-3">Conocimientos científicos organizados y aplicados para resolver problemas.</td><td data-col="innovacion" class="p-3">Creación, mejora o modificación de un producto/proceso y su adopción social.</td></tr>
+            <tr class="border-t-2 border-ink/10"><td class="p-3 font-mono text-[11px] uppercase bg-paper font-bold">Pregunta guía</td><td data-col="tecnica" class="p-3">¿Cómo se hace?</td><td data-col="tecnologia" class="p-3">¿Con qué se resuelve?</td><td data-col="innovacion" class="p-3">¿Qué cambia en la vida de la gente?</td></tr>
+            <tr class="border-t-2 border-ink/10"><td class="p-3 font-mono text-[11px] uppercase bg-paper font-bold">El foco</td><td data-col="tecnica" class="p-3">El procedimiento.</td><td data-col="tecnologia" class="p-3">La solución al problema.</td><td data-col="innovacion" class="p-3">El impacto y la adopción.</td></tr>
+            <tr class="border-t-2 border-ink/10"><td class="p-3 font-mono text-[11px] uppercase bg-paper font-bold">Ejemplo argentino</td><td data-col="tecnica" class="p-3">El repulgue de la empanada.</td><td data-col="tecnologia" class="p-3">El horno industrial con control térmico.</td><td data-col="innovacion" class="p-3">La app de delivery con IA.</td></tr>
+            <tr class="border-t-2 border-ink/10"><td class="p-3 font-mono text-[11px] uppercase bg-paper font-bold">Palabra clave</td><td data-col="tecnica" class="p-3 font-display text-t1-dark">Practicar</td><td data-col="tecnologia" class="p-3 font-display text-t2-dark">Aplicar</td><td data-col="innovacion" class="p-3 font-display text-t4-dark">Adoptar</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 1.3 · Micro-actividad: Test relámpago -->
+    <div class="rv mt-12 bg-white border-2 border-ink shadow-hard">
+      <header class="bg-t1 border-b-2 border-ink px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="font-display text-sm md:text-base">⚡ MICRO-ACTIVIDAD · Test relámpago: ¿Técnica, Tecnología o Innovación?</h3>
+        <span id="q1Progress" class="font-mono text-xs font-bold bg-ink text-white px-2 py-1">1/6</span>
+      </header>
+      <div class="p-5 md:p-7">
+        <div id="q1Live">
+          <div class="h-2 bg-ink/10 border border-ink/20 mb-6"><div id="q1Bar" class="h-full bg-t1 transition-all duration-500" style="width:16.6%"></div></div>
+          <p id="q1Case" class="text-lg md:text-xl font-semibold leading-snug"></p>
+          <div id="q1Answers" class="grid sm:grid-cols-3 gap-3 mt-5"></div>
+          <div id="q1Feedback" class="hidden mt-4 border-2 p-4 text-sm"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-5">
+            <span id="q1Score" class="font-mono text-xs font-bold">PUNTOS: 0</span>
+            <button id="q1Next" class="hidden font-display text-xs bg-ink text-white px-5 py-3 border-2 border-ink hover:bg-t1 hover:text-ink transition-colors">SIGUIENTE ▸</button>
+          </div>
+        </div>
+        <div id="q1Result" class="hidden text-center py-6"></div>
+        <p class="font-mono text-[10px] text-ink/50 mt-4">▸ Al terminar este test desbloqueás el logro de la Pestaña 01.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PESTAÑA 2 · DATOS, INFORMACIÓN Y GLOSARIO DIGITAL
+════════════════════════════════════════════════════════════ -->
+<section id="panel-t2" role="tabpanel" aria-labelledby="tab-t2" class="panel">
+  <div class="max-w-6xl mx-auto px-4 py-12 md:py-14">
+
+    <div class="rv">
+      <p class="label"><span class="sq bg-t2"></span>PESTAÑA 02 · LA ERA DIGITAL EN PALABRAS</p>
+      <h2 class="font-display font-black text-3xl md:text-5xl mt-3 leading-tight">Datos, Información y el <span class="text-t2">Glosario</span> clave</h2>
+      <p class="mt-3 max-w-2xl text-ink/75">Vivimos rodeados de datos, pero los datos sueltos no dicen nada.
+      La era digital se trata, justamente, de transformarlos en información. Y para eso nacieron un montón de disciplinas con nombres raros: conocelas todas.</p>
+    </div>
+
+    <!-- 2.1 · Dato vs Información -->
+    <p class="label mt-10 rv"><span class="sq bg-t2"></span>02.1 · LA DIFERENCIA FUNDAMENTAL</p>
+    <div class="grid md:grid-cols-2 gap-6 mt-4">
+      <div class="rv bg-white border-2 border-ink shadow-hard p-6">
+        <span class="font-mono text-[10px] font-bold bg-ink text-white px-2 py-1">DATO</span>
+        <p class="mt-3 text-sm leading-relaxed">Elemento <b>primario, crudo, sin contexto</b>: un número, una palabra, un símbolo aislado. Todavía no “dice” nada.</p>
+        <p class="mt-3 font-mono text-2xl font-bold text-t2-dark">« 38,2 »</p>
+        <p class="text-xs text-ink/60 mt-1">¿38,2 de qué? ¿de altura, de precio, de nota…? Sin contexto, no significa nada.</p>
+      </div>
+      <div class="rv bg-white border-2 border-ink shadow-hard p-6" style="transition-delay:.08s">
+        <span class="font-mono text-[10px] font-bold bg-t2 text-white px-2 py-1">INFORMACIÓN</span>
+        <p class="mt-3 text-sm leading-relaxed">Datos <b>procesados, ordenados y con significado</b>: ya responden una pregunta y sirven para decidir.</p>
+        <p class="mt-3 font-mono text-lg font-bold text-t2-dark">« Hoy a las 14 h hay 38,2 °C en CABA »</p>
+        <p class="text-xs text-ink/60 mt-1">Ahora sí: mismo número, pero con contexto se convirtió en un mensaje útil.</p>
+      </div>
+    </div>
+
+    <!-- Máquina "dato → información" -->
+    <div class="rv mt-6 bg-ink text-white border-2 border-ink shadow-hard p-6">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <p class="font-mono text-[10px] tracking-[.25em] text-celeste">MÁQUINA DE PROCESAMIENTO</p>
+        <span id="convCount" class="font-mono text-[10px] text-white/60">Ejemplo 1/3</span>
+      </div>
+      <div class="grid md:grid-cols-[1fr_auto_1fr] gap-4 items-center mt-4">
+        <div class="border border-celeste/30 bg-deep p-4 min-h-[96px]">
+          <p class="font-mono text-[10px] text-celeste mb-2">ENTRADA · DATOS CRUDOS</p>
+          <div id="convTokens" class="flex flex-wrap gap-2"></div>
+        </div>
+        <button id="procBtn" class="font-display text-xs bg-t2 text-white border-2 border-celeste px-5 py-4 hover:-translate-y-0.5 transition-transform whitespace-nowrap">PROCESAR ▶</button>
+        <div class="border border-celeste/30 bg-deep p-4 min-h-[96px]">
+          <p class="font-mono text-[10px] text-celeste mb-2">SALIDA · INFORMACIÓN</p>
+          <div id="convOut" class="hidden"><p class="text-sm leading-relaxed text-white"></p></div>
+          <p id="convIdle" class="text-xs italic text-white/40">— esperando procesamiento… —</p>
+        </div>
+      </div>
+      <button id="convNext" class="font-mono text-[11px] font-bold text-celeste hover:text-white transition-colors mt-4">↻ OTRO EJEMPLO</button>
+    </div>
+
+    <!-- 2.2 · Glosario interactivo (flashcards 3D) -->
+    <p class="label mt-12 rv"><span class="sq bg-t2"></span>02.2 · GLOSARIO INTERACTIVO — 8 DISCIPLINAS</p>
+    <p class="rv text-sm mt-2 text-ink/70">Tocá cada tarjeta para darla vuelta: definición + ejemplo bien argentino. 👆</p>
+    <div id="glossaryGrid" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 mt-5"><!-- Se genera con JS --></div>
+
+    <!-- 2.3 · Micro-actividad: emparejar -->
+    <div class="rv mt-12 bg-white border-2 border-ink shadow-hard">
+      <header class="bg-t2 border-b-2 border-ink px-5 py-3">
+        <h3 class="font-display text-sm md:text-base">🃏 MICRO-ACTIVIDAD · Conectá cada disciplina con su situación</h3>
+      </header>
+      <div class="p-5 md:p-7">
+        <p class="text-sm text-ink/75">Elegí un <b>concepto</b> de la columna izquierda y después tocá la <b>situación cotidiana</b> que le corresponde.</p>
+        <div class="grid md:grid-cols-2 gap-6 mt-5">
+          <div>
+            <p class="font-mono text-[10px] font-bold tracking-widest mb-2">① CONCEPTO</p>
+            <div id="matchLeft" class="space-y-2"></div>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] font-bold tracking-widest mb-2">② SITUACIÓN COTIDIANA</p>
+            <div id="matchRight" class="space-y-2"></div>
+          </div>
+        </div>
+        <p id="matchMsg" class="text-sm font-semibold mt-4 min-h-[1.5rem]"></p>
+        <div id="matchWin" class="hidden mt-2 border-2 border-emerald-600 bg-emerald-50 text-emerald-900 p-4 text-sm pop"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PESTAÑA 3 · HARDWARE, SOFTWARE E INFOWARE
+════════════════════════════════════════════════════════════ -->
+<section id="panel-t3" role="tabpanel" aria-labelledby="tab-t3" class="panel">
+  <div class="max-w-6xl mx-auto px-4 py-12 md:py-14">
+
+    <div class="rv">
+      <p class="label"><span class="sq bg-t3"></span>PESTAÑA 03 · ANATOMÍA DE UN SISTEMA</p>
+      <h2 class="font-display font-black text-3xl md:text-5xl mt-3 leading-tight">La Tríada del <span class="text-t3">Sistema Informático</span></h2>
+      <p class="mt-3 max-w-2xl text-ink/75">Cualquier sistema informático —desde tu celu hasta el servidor de ANSES— se sostiene sobre tres patas:
+      <b>hardware</b>, <b>software</b> e <b>infoware</b>. Sacá una y el sistema se cae.</p>
+    </div>
+
+    <!-- 3.1 · Las tres patas (metáfora) -->
+    <p class="label mt-10 rv"><span class="sq bg-t3"></span>03.1 · LAS TRES PATAS</p>
+    <div class="grid md:grid-cols-3 gap-6 mt-4">
+      <div class="rv bg-white border-2 border-ink shadow-hard p-6 hover:-translate-y-1 transition-transform">
+        <div class="flex items-center justify-between"><span class="text-3xl">🫀</span><span class="font-mono text-[10px] font-bold bg-t3-soft border border-t3 text-t3-dark px-2 py-1">SE TOCA</span></div>
+        <h3 class="font-display text-lg mt-3">Hardware</h3>
+        <p class="text-sm mt-2">El <b>cuerpo</b> del sistema: componentes físicos y tangibles. Se tocan, se rompen, se actualizan.</p>
+      </div>
+      <div class="rv bg-white border-2 border-ink shadow-hard p-6 hover:-translate-y-1 transition-transform" style="transition-delay:.08s">
+        <div class="flex items-center justify-between"><span class="text-3xl">🧠</span><span class="font-mono text-[10px] font-bold bg-t3-soft border border-t3 text-t3-dark px-2 py-1">SE EJECUTA</span></div>
+        <h3 class="font-display text-lg mt-3">Software</h3>
+        <p class="text-sm mt-2">La <b>mente</b> del sistema: programas e instrucciones. La parte lógica que le dice al hardware qué hacer.</p>
+      </div>
+      <div class="rv bg-white border-2 border-ink shadow-hard p-6 hover:-translate-y-1 transition-transform" style="transition-delay:.16s">
+        <div class="flex items-center justify-between"><span class="text-3xl">📚</span><span class="font-mono text-[10px] font-bold bg-t3-soft border border-t3 text-t3-dark px-2 py-1">VALE</span></div>
+        <h3 class="font-display text-lg mt-3">Infoware</h3>
+        <p class="text-sm mt-2">La <b>memoria</b> del sistema: la información entendida como recurso de valor, el contenido estructurado.</p>
+      </div>
+    </div>
+
+    <!-- 3.2 · Diagrama en árbol interactivo -->
+    <p class="label mt-12 rv"><span class="sq bg-t3"></span>03.2 · DIAGRAMA INTERACTIVO</p>
+    <p class="rv text-sm mt-2 text-ink/70">👆 Tocá cada rama para desplegarla. Adentro de SOFTWARE, seguí tocando cada categoría.</p>
+
+    <div class="rv mt-5 bg-white border-2 border-ink shadow-hard p-5 md:p-8 overflow-x-auto">
+      <!-- Raíz del árbol -->
+      <div class="inline-block bg-ink text-white border-2 border-ink shadow-hard-sm px-5 py-3 font-display text-sm md:text-base">🖥️ SISTEMA INFORMÁTICO</div>
+
+      <div class="branch-kids mt-4 space-y-4">
+
+        <!-- Rama HARDWARE (abierta por defecto para mostrar la mecánica) -->
+        <div class="branch open">
+          <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-paper px-4 py-3 hover:bg-t3-soft transition-colors" aria-expanded="true">
+            <span class="font-display text-sm md:text-base">🔩 HARDWARE</span>
+            <span class="text-xs text-ink/60 hidden sm:inline">la parte física</span>
+            <span class="chev">▸</span>
+          </button>
+          <div class="branch-body"><div>
+            <p class="text-sm mt-3">Componentes <b>físicos y tangibles</b>: todo lo que podés tocar. Se agrupan según qué hacen con la información:</p>
+            <div class="grid sm:grid-cols-3 gap-3 mt-3 mb-2">
+              <div class="border-2 border-ink/20 p-3"><p class="font-mono text-[10px] font-bold tracking-widest text-t3-dark">ENTRADA ▸</p><p class="flex flex-wrap gap-1.5 mt-2"><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Teclado</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Mouse</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Micrófono</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Cámara</span></p></div>
+              <div class="border-2 border-ink/20 p-3"><p class="font-mono text-[10px] font-bold tracking-widest text-t3-dark">SALIDA ▸</p><p class="flex flex-wrap gap-1.5 mt-2"><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Monitor</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Parlantes</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Impresora</span></p></div>
+              <div class="border-2 border-ink/20 p-3"><p class="font-mono text-[10px] font-bold tracking-widest text-t3-dark">PROCESO Y MEMORIA ▸</p><p class="flex flex-wrap gap-1.5 mt-2"><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">CPU</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">GPU</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">RAM</span><span class="font-mono text-[11px] border border-ink bg-white px-2 py-0.5">Disco SSD</span></p></div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- Rama SOFTWARE con sus 3 sub-ramas desplegables -->
+        <div class="branch">
+          <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-paper px-4 py-3 hover:bg-t3-soft transition-colors" aria-expanded="false">
+            <span class="font-display text-sm md:text-base">💿 SOFTWARE</span>
+            <span class="text-xs text-ink/60 hidden sm:inline">la parte lógica · tocá para ver la clasificación</span>
+            <span class="chev">▸</span>
+          </button>
+          <div class="branch-body"><div>
+            <p class="text-sm mt-3">Programas e instrucciones: no se tocan, se <b>ejecutan</b>. Se clasifican en tres grandes grupos:</p>
+            <div class="branch-kids mt-3 space-y-3 mb-2">
+
+              <div class="branch">
+                <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-white px-3 py-2.5 hover:bg-t3-soft transition-colors" aria-expanded="false">
+                  <span class="font-semibold text-sm">1 · De Sistema</span><span class="chev">▸</span>
+                </button>
+                <div class="branch-body"><div>
+                  <p class="text-xs mt-2">La <b>base que hace funcionar la máquina</b>: administra recursos y permite que todo lo demás exista.</p>
+                  <p class="flex flex-wrap gap-1.5 mt-2 mb-2"><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Windows</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Linux</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Android</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">iOS</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Controladores (drivers)</span></p>
+                </div></div>
+              </div>
+
+              <div class="branch">
+                <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-white px-3 py-2.5 hover:bg-t3-soft transition-colors" aria-expanded="false">
+                  <span class="font-semibold text-sm">2 · De Aplicación</span><span class="chev">▸</span>
+                </button>
+                <div class="branch-body"><div>
+                  <p class="text-xs mt-2">Programas para <b>tareas concretas del usuario</b>: estudiar, trabajar, jugar, comunicarse.</p>
+                  <p class="flex flex-wrap gap-1.5 mt-2 mb-2"><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Chrome</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Word / Docs</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">WhatsApp</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Spotify</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Fortnite</span></p>
+                </div></div>
+              </div>
+
+              <div class="branch">
+                <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-white px-3 py-2.5 hover:bg-t3-soft transition-colors" aria-expanded="false">
+                  <span class="font-semibold text-sm">3 · De Programación</span><span class="chev">▸</span>
+                </button>
+                <div class="branch-body"><div>
+                  <p class="text-xs mt-2">Herramientas para <b>crear otros programas</b>: traducen el código humano a instrucciones de la máquina.</p>
+                  <p class="flex flex-wrap gap-1.5 mt-2 mb-2"><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">VS Code</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Compilador de C++</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Intérprete de Python</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Scratch</span></p>
+                </div></div>
+              </div>
+
+            </div>
+          </div></div>
+        </div>
+
+        <!-- Rama INFOWARE -->
+        <div class="branch">
+          <button class="branch-toggle w-full text-left flex items-center gap-3 border-2 border-ink bg-paper px-4 py-3 hover:bg-t3-soft transition-colors" aria-expanded="false">
+            <span class="font-display text-sm md:text-base">📚 INFOWARE</span>
+            <span class="text-xs text-ink/60 hidden sm:inline">la información como recurso</span>
+            <span class="chev">▸</span>
+          </button>
+          <div class="branch-body"><div>
+            <p class="text-sm mt-3">La <b>información entendida como recurso de valor</b>: contenido estructurado que el sistema procesa, guarda y protege. Sin infoware, hardware y software no tendrían nada que procesar.</p>
+            <p class="flex flex-wrap gap-1.5 mt-3 mb-2"><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Wikipedia</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Índice de Google</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Base de datos de ANSES</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Aula virtual del colegio</span><span class="font-mono text-[11px] border border-ink bg-t3-soft px-2 py-0.5">Archivos en la nube</span></p>
+            <p class="text-xs text-ink/60 border-l-4 border-t3 bg-t3-soft p-2 mb-2">💬 Pensalo así: el hardware es la biblioteca, el software es el bibliotecario y el infoware… son los libros.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3.3 · Micro-actividad: clasificador -->
+    <div class="rv mt-12 bg-white border-2 border-ink shadow-hard">
+      <header class="bg-t3 border-b-2 border-ink px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="font-display text-sm md:text-base">🧩 MICRO-ACTIVIDAD · Clasificá los componentes</h3>
+        <span id="clScore" class="font-mono text-xs font-bold bg-ink text-white px-2 py-1">0/10</span>
+      </header>
+      <div class="p-5 md:p-7">
+        <p class="text-sm text-ink/75">Tocá una <b>tarjeta del mazo</b> y después tocá la <b>zona</b> donde creas que va.
+        ¿Se toca? → Hardware · ¿Se ejecuta? → Software · ¿Es información que vale? → Infoware.</p>
+        <div id="clPool" class="flex flex-wrap gap-2 mt-4"></div>
+        <div class="grid md:grid-cols-3 gap-4 mt-6">
+          <button class="zone p-3" data-zone="hw"><span class="font-display text-sm block">🔩 HARDWARE</span><span class="font-mono text-[10px] text-ink/60 block mt-0.5 mb-2">lo que se toca</span><span class="zone-list flex flex-wrap justify-center"></span></button>
+          <button class="zone p-3" data-zone="sw"><span class="font-display text-sm block">💿 SOFTWARE</span><span class="font-mono text-[10px] text-ink/60 block mt-0.5 mb-2">lo que se ejecuta</span><span class="zone-list flex flex-wrap justify-center"></span></button>
+          <button class="zone p-3" data-zone="iw"><span class="font-display text-sm block">📚 INFOWARE</span><span class="font-mono text-[10px] text-ink/60 block mt-0.5 mb-2">la información que vale</span><span class="zone-list flex flex-wrap justify-center"></span></button>
+        </div>
+        <p id="clMsg" class="text-sm font-semibold mt-4 min-h-[1.5rem]"></p>
+        <div id="clWin" class="hidden mt-2 border-2 border-emerald-600 bg-emerald-50 text-emerald-900 p-4 text-sm pop"></div>
+        <button id="clReset" class="font-mono text-[11px] font-bold text-ink/60 hover:text-ink mt-2">⟲ REINICIAR JUEGO</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PESTAÑA 4 · DE LAS TIC A LA NTICx
+════════════════════════════════════════════════════════════ -->
+<section id="panel-t4" role="tabpanel" aria-labelledby="tab-t4" class="panel">
+  <div class="max-w-6xl mx-auto px-4 py-12 md:py-14">
+
+    <div class="rv">
+      <p class="label"><span class="sq bg-t4"></span>PESTAÑA 04 · EVOLUCIÓN TEÓRICA</p>
+      <h2 class="font-display font-black text-3xl md:text-5xl mt-3 leading-tight">De las <span class="text-t4">TIC</span> a la <span class="text-t4">NTICx</span></h2>
+      <p class="mt-3 max-w-2xl text-ink/75">La sigla cambió cuatro veces… porque la tecnología cambió cuatro veces.
+      Cada letra nueva cuenta una época: recorré la línea de tiempo paso a paso.</p>
+    </div>
+
+    <!-- 4.1 · Línea de tiempo interactiva -->
+    <p class="label mt-10 rv"><span class="sq bg-t4"></span>04.1 · LÍNEA DE TIEMPO INTERACTIVA</p>
+
+    <div class="rv mt-5 bg-white border-2 border-ink shadow-hard p-5 md:p-8">
+      <div class="overflow-x-auto pb-2">
+        <div class="relative min-w-[620px] mx-1 pt-1">
+          <div class="absolute left-0 right-0 top-[23px] h-1.5 bg-ink/10"></div>
+          <div id="tlFill" class="absolute left-0 top-[23px] h-1.5 bg-t4 transition-all duration-500" style="width:0%"></div>
+          <div id="tlNodes" class="relative flex justify-between"></div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-4">
+        <button id="tlPrev" class="font-display text-xs border-2 border-ink bg-white px-4 py-2.5 hover:bg-t4 hover:text-white transition-colors disabled:opacity-30">◀ ANTERIOR</button>
+        <span class="font-mono text-xs font-bold">ETAPA <span id="tlCount">1</span>/4</span>
+        <button id="tlNext" class="font-display text-xs border-2 border-ink bg-white px-4 py-2.5 hover:bg-t4 hover:text-white transition-colors disabled:opacity-30">HITO SIGUIENTE ▶</button>
+      </div>
+      <!-- Detalle de la etapa seleccionada -->
+      <div id="tlDetail" class="mt-6 border-t-2 border-ink/10 pt-6 min-h-[300px]"></div>
+    </div>
+
+    <!-- 4.2 · Micro-actividad: ordenar la evolución -->
+    <div class="rv mt-12 bg-white border-2 border-ink shadow-hard">
+      <header class="bg-t4 border-b-2 border-ink px-5 py-3">
+        <h3 class="font-display text-sm md:text-base text-white">⏳ MICRO-ACTIVIDAD · La evolución, en orden</h3>
+      </header>
+      <div class="p-5 md:p-7">
+        <p class="text-sm text-ink/75">Ubicá las cuatro etapas <b>de la más antigua a la más reciente</b>: tocá una ficha y se coloca en el próximo casillero.</p>
+        <div id="ordPool" class="flex flex-wrap gap-3 mt-5"></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6" id="ordSlots">
+          <div class="ord-slot" data-slot="0"><span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">1.º · LA MÁS ANTIGUA</span></div>
+          <div class="ord-slot" data-slot="1"><span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">2.º</span></div>
+          <div class="ord-slot" data-slot="2"><span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">3.º</span></div>
+          <div class="ord-slot" data-slot="3"><span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">4.º · LA MÁS RECIENTE</span></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 mt-6">
+          <button id="ordCheck" class="font-display text-xs bg-ink text-white px-5 py-3 border-2 border-ink hover:bg-t4 transition-colors">COMPROBAR ✔</button>
+          <button id="ordUndo" class="font-display text-xs border-2 border-ink bg-white px-4 py-3 hover:-translate-y-0.5 transition-transform">↶ DESHACER</button>
+          <button id="ordReset" class="font-display text-xs border-2 border-ink bg-white px-4 py-3 hover:-translate-y-0.5 transition-transform">⟲ REINICIAR</button>
+          <span id="ordMsg" class="text-sm font-semibold"></span>
+        </div>
+        <div id="ordWin" class="hidden mt-3 border-2 border-emerald-600 bg-emerald-50 text-emerald-900 p-4 text-sm pop"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════ PIE · LOGROS Y CIERRE PEDAGÓGICO ═══════════ -->
+<footer class="bg-ink text-white mt-6 border-t-4 border-t4">
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div id="finalBanner" class="hidden mb-8 border-2 border-t1 bg-t1 text-ink p-5 md:p-6 shadow-hard">
+      <p class="font-display text-xl md:text-2xl">🏆 ¡MÓDULO COMPLETADO!</p>
+      <p class="text-sm mt-1">Desbloqueaste los 4 logros. Ya tenés la base teórica: ahora sí, a hablar de NTICx con conocimiento de causa.</p>
+    </div>
+
+    <p class="label !text-white"><span class="sq bg-t4"></span>MI PROGRESO · LOGROS DEL MÓDULO</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5" id="badgeGrid">
+      <div class="badge border-2 border-dashed border-white/30 p-4 opacity-60 transition" data-badge="t1"><span class="badge-icon text-3xl grayscale inline-block">⚡</span><p class="font-display text-sm mt-2">Test relámpago</p><p class="badge-state text-[11px] mt-1 opacity-80">Pendiente…</p></div>
+      <div class="badge border-2 border-dashed border-white/30 p-4 opacity-60 transition" data-badge="t2"><span class="badge-icon text-3xl grayscale inline-block">🃏</span><p class="font-display text-sm mt-2">Mente conectada</p><p class="badge-state text-[11px] mt-1 opacity-80">Pendiente…</p></div>
+      <div class="badge border-2 border-dashed border-white/30 p-4 opacity-60 transition" data-badge="t3"><span class="badge-icon text-3xl grayscale inline-block">🧩</span><p class="font-display text-sm mt-2">Arquitecto de sistemas</p><p class="badge-state text-[11px] mt-1 opacity-80">Pendiente…</p></div>
+      <div class="badge border-2 border-dashed border-white/30 p-4 opacity-60 transition" data-badge="t4"><span class="badge-icon text-3xl grayscale inline-block">⏳</span><p class="font-display text-sm mt-2">Viajero del tiempo</p><p class="badge-state text-[11px] mt-1 opacity-80">Pendiente…</p></div>
+    </div>
+
+    <div class="mt-10 pt-6 border-t border-white/15 grid md:grid-cols-3 gap-6 font-mono text-[11px] text-white/60 leading-relaxed">
+      <p>Alineado con el módulo <b class="text-white">NTICx — 4.º año</b> del Ciclo Superior de Educación Secundaria (Argentina): eje “Fundamentos teóricos, evolución teórica y conceptos clave”.</p>
+      <p>Construido con <b class="text-white">HTML5 + Tailwind CSS + JavaScript Vanilla</b>. Un solo archivo, sin instalación: se abre en cualquier navegador.</p>
+      <p>💡 Sugerencia didáctica: proyectar en el aula, resolver las micro-actividades en parejas y cerrar cada pestaña con puesta en común.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   JAVASCRIPT DEL MÓDULO — organizado por secciones:
+   0. Utilidades          4. Pestaña 2: máquina + glosario + match
+   1. Pestañas y reveals  5. Pestaña 3: árbol + clasificador
+   2. Consola del header  6. Pestaña 4: línea de tiempo + orden
+   3. Pestaña 1: comparador + test relámpago
+   7. Sistema de logros y confeti
+═══════════════════════════════════════════════════════════════ */
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- 1 · NAVEGACIÓN POR PESTAÑAS ---------- */
+const TABS = ['t1','t2','t3','t4'];
+function selectTab(id){
+  TABS.forEach(t=>{
+    const btn=$('#tab-'+t), panel=$('#panel-'+t), on=(t===id);
+    btn.classList.toggle('active',on); btn.setAttribute('aria-selected',on);
+    panel.classList.toggle('active',on);
+  });
+  window.scrollTo({top:$('#tabbar').offsetTop, behavior: REDUCED?'auto':'smooth'});
+  setTimeout(checkReveals,60); // reactiva apariciones en la pestaña visible
+}
+$$('.tab-btn').forEach(b=>b.addEventListener('click',()=>selectTab(b.dataset.tab)));
+// Accesibilidad: flechas ← → sobre la barra de pestañas
+$('#tabbar').addEventListener('keydown',e=>{
+  const i=TABS.indexOf(document.activeElement?.dataset?.tab);
+  if(i<0) return;
+  if(e.key==='ArrowRight') selectTab(TABS[(i+1)%4]), $('#tab-'+TABS[(i+1)%4]).focus();
+  if(e.key==='ArrowLeft')  selectTab(TABS[(i+3)%4]), $('#tab-'+TABS[(i+3)%4]).focus();
+});
+
+/* Aparición de elementos al hacer scroll (solo dentro de la pestaña activa) */
+function checkReveals(){
+  $$('.panel.active .rv:not(.is-in)').forEach(el=>{
+    if(el.getBoundingClientRect().top < window.innerHeight*0.94) el.classList.add('is-in');
+  });
+}
+window.addEventListener('scroll',()=>requestAnimationFrame(checkReveals),{passive:true});
+window.addEventListener('resize',checkReveals);
+
+/* ---------- 2 · CONSOLA DEL HEADER (máquina de escribir) ---------- */
+const TW=['inicializando módulo…','cargando: técnica · tecnología · innovación','procesando: datos → información','montando: hardware + software + infoware','conectando: TIC → NTIC → NTIT → NTICx','✔ módulo listo. ¡buen viaje!'];
+const twEl=$('#typewriter');
+if(REDUCED){ twEl.textContent=TW[TW.length-1]; }
+else{
+  let twI=0,twPos=0,twDel=false;
+  (function loop(){
+    const f=TW[twI];
+    if(!twDel){ twPos++; twEl.textContent=f.slice(0,twPos);
+      twPos>=f.length ? (twDel=true, setTimeout(loop,1900)) : setTimeout(loop,42);
+    }else{ twPos-=2; twEl.textContent=f.slice(0,Math.max(0,twPos));
+      twPos<=0 ? (twDel=false, twPos=0, twI=(twI+1)%TW.length, setTimeout(loop,380)) : setTimeout(loop,17);
+    }
+  })();
+}
+
+/* ---------- 3 · PESTAÑA 1 · Comparador dinámico ---------- */
+$$('.cmp-chip').forEach(ch=>ch.addEventListener('click',()=>{
+  $$('.cmp-chip').forEach(c=>c.classList.remove('on'));
+  ch.classList.add('on');
+  $('#cmpWrap').dataset.focus=ch.dataset.focus; // 'all' | concepto → atenúa columnas vía CSS
+}));
+
+/* ---------- 3b · PESTAÑA 1 · Test relámpago ---------- */
+const QUIZ=[
+ {case:'El repulgue de la empanada: esa secuencia exacta de dobleces para que no se abra en el horno.', a:'tecnica',
+  why:'Es un procedimiento aprendido, con pasos y reglas, orientado a un objetivo concreto. Pura técnica.'},
+ {case:'Un horno industrial con sensores que regula solo la temperatura para cocinar parejo.', a:'tecnologia',
+  why:'Aplica conocimiento científico organizado (termodinámica, electrónica) para resolver un problema: tecnología.'},
+ {case:'Una app de delivery que usa IA para anticipar tu pedido y sugerírtelo antes de que lo pienses.', a:'innovacion',
+  why:'Crea un servicio nuevo y lo instala con éxito en la sociedad, cambiando hábitos: innovación.'},
+ {case:'Los secretos para cebar un buen mate: temperatura del agua, orden del cebado, cómo mover la yerba.', a:'tecnica',
+  why:'Saberes y reglas prácticas que se transmiten y se perfeccionan practicando: técnica.'},
+ {case:'La tarjeta SUBE: pagar el bondi, el tren y el subte en todo el país sin usar monedas.', a:'innovacion',
+  why:'Una solución nueva, adoptada masivamente, que transformó un hábito cotidiano: innovación.'},
+ {case:'La agricultura de precisión: sensores, mapas satelitales y cálculo para decidir dónde sembrar.', a:'tecnologia',
+  why:'Conocimientos científicos organizados y aplicados a la producción: tecnología.'},
+];
+const OPTS={ tecnica:{t:'🔧 Técnica',dot:'#F59E0B'}, tecnologia:{t:'⚙️ Tecnología',dot:'#0EA5E9'}, innovacion:{t:'🚀 Innovación',dot:'#E23A77'} };
+let q1={i:0,score:0};
+
+function renderQ1(){
+  const q=QUIZ[q1.i];
+  $('#q1Case').textContent=`Caso ${q1.i+1}. ${q.case}`;
+  $('#q1Progress').textContent=`${q1.i+1}/${QUIZ.length}`;
+  $('#q1Bar').style.width=((q1.i+1)/QUIZ.length*100)+'%';
+  $('#q1Score').textContent='PUNTOS: '+q1.score;
+  $('#q1Feedback').classList.add('hidden');
+  $('#q1Next').classList.add('hidden');
+  const box=$('#q1Answers'); box.innerHTML='';
+  Object.keys(OPTS).forEach(k=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=`<span class="dot" style="background:${OPTS[k].dot}"></span>${OPTS[k].t}`;
+    b.onclick=()=>answerQ1(k);
+    box.appendChild(b);
+  });
+}
+function answerQ1(k){
+  const q=QUIZ[q1.i], ok=(k===q.a);
+  const btns=[...$('#q1Answers').children];
+  btns.forEach((b,idx)=>{ const key=Object.keys(OPTS)[idx];
+    b.disabled=true;
+    if(key===q.a) b.classList.add('correct');
+    if(key===k && !ok) b.classList.add('wrong');
+  });
+  if(ok) q1.score++;
+  $('#q1Score').textContent='PUNTOS: '+q1.score;
+  const fb=$('#q1Feedback');
+  fb.className='mt-4 border-2 p-4 text-sm pop '+(ok?'border-emerald-600 bg-emerald-50 text-emerald-900':'border-rose-600 bg-rose-50 text-rose-900');
+  fb.innerHTML=`<b>${ok?'✔ ¡Correcto! +1 punto.':'✗ No exactamente.'}</b> ${q.why}`;
+  fb.classList.remove('hidden');
+  const nx=$('#q1Next');
+  nx.textContent = q1.i===QUIZ.length-1 ? 'VER RESULTADO 🏁' : 'SIGUIENTE ▸';
+  nx.classList.remove('hidden');
+}
+$('#q1Next').onclick=()=>{
+  if(q1.i<QUIZ.length-1){ q1.i++; renderQ1(); }
+  else{
+    $('#q1Live').classList.add('hidden');
+    const r=$('#q1Result'); r.classList.remove('hidden');
+    const s=q1.score, msg= s===6?'¡Impecable! Dominás los tres conceptos: ya podés explicárselos a cualquiera.'
+                    : s>=4 ?'¡Muy bien! Repasá el caso que se te escapó y lo tenés cerrado.'
+                    :'Buen intento. Volvé a las tarjetas de arriba y reintentá: la segunda vuelta siempre sale mejor.';
+    r.innerHTML=`<p class="font-mono text-[10px] tracking-[.25em] text-ink/50">RESULTADO FINAL</p>
+      <p class="font-display text-5xl mt-2">${s}/${QUIZ.length}</p>
+      <p class="mt-3 max-w-md mx-auto">${msg}</p>
+      <button id="q1Restart" class="font-display text-xs bg-ink text-white px-5 py-3 border-2 border-ink hover:bg-t1 hover:text-ink transition-colors mt-5">JUGAR DE NUEVO ⟲</button>`;
+    r.classList.add('pop');
+    markDone('t1'); // 🏅 logro de la pestaña 1
+    $('#q1Restart').onclick=()=>{ q1={i:0,score:0}; $('#q1Result').classList.add('hidden'); $('#q1Live').classList.remove('hidden'); renderQ1(); };
+  }
+};
+renderQ1();
+
+/* ---------- 4 · PESTAÑA 2 · Máquina dato → información ---------- */
+const CONV=[
+ {tokens:['38,2','°C','CABA','14:00'], out:'«Hoy a las 14 h hay 38,2 °C en la Ciudad de Buenos Aires: hace un calor tremendo, conviene hidratarse.»'},
+ {tokens:['8','Sofía','NTICx','2.º trim.'], out:'«Sofía sacó 8 en el segundo trimestre de NTICx: le fue bien, y con un repaso puede subir.»'},
+ {tokens:['200','mL','yerba','75 °C'], out:'«Para el mate usás 200 mL de agua a 75 °C: el dato suelto se convirtió en una instrucción útil.»'},
+];
+let conv={i:0,processed:false};
+function renderConv(){
+  const c=CONV[conv.i];
+  $('#convTokens').innerHTML=c.tokens.map(t=>`<span class="font-mono text-sm md:text-base bg-navy border border-celeste/40 text-celeste px-2 py-1">${t}</span>`).join('');
+  $('#convOut').classList.add('hidden'); $('#convIdle').classList.remove('hidden');
+  $('#procBtn').disabled=false; $('#procBtn').textContent='PROCESAR ▶';
+  $('#convCount').textContent=`Ejemplo ${conv.i+1}/${CONV.length}`;
+  conv.processed=false;
+}
+$('#procBtn').onclick=()=>{
+  if(conv.processed) return; conv.processed=true;
+  const btn=$('#procBtn'); btn.disabled=true; btn.textContent='PROCESANDO…'; btn.classList.add('animate-pulse');
+  setTimeout(()=>{ // pequeña demora dramática: simula el procesamiento
+    btn.classList.remove('animate-pulse'); btn.textContent='✔ PROCESADO';
+    $('#convIdle').classList.add('hidden');
+    const out=$('#convOut'); out.classList.remove('hidden');
+    out.querySelector('p').textContent=CONV[conv.i].out;
+    out.classList.add('pop'); setTimeout(()=>out.classList.remove('pop'),420);
+  },700);
+};
+$('#convNext').onclick=()=>{ conv.i=(conv.i+1)%CONV.length; renderConv(); };
+renderConv();
+
+/* ---------- 4b · PESTAÑA 2 · Glosario en flashcards 3D ---------- */
+const GLOSSARY=[
+ {t:'Computación',icon:'🖥️',def:'Ciencia que estudia el tratamiento automático de la información: sus fundamentos, máquinas y algoritmos. Es la base teórica.',ex:'Diseñar el algoritmo que ordena los resultados de un buscador.',note:'↔ Mirá su par: Informática'},
+ {t:'Informática',icon:'💾',def:'Disciplina que aplica la computación para resolver problemas concretos de tratamiento de la información en organizaciones y en la sociedad.',ex:'El sistema con el que tu escuela carga notas y asistencias.',note:'↔ Mirá su par: Computación'},
+ {t:'Telemática',icon:'📡',def:'TELEcomunicaciones + inforMÁTICA: la transmisión y el procesamiento de información a distancia.',ex:'El GPS del celu: recibe señal satelital y la procesa con software.'},
+ {t:'Ofimática',icon:'📊',def:'OFicina + inforMÁTICA: herramientas y técnicas que automatizan el trabajo de oficina.',ex:'Docs y Sheets para el trabajo práctico en grupo.'},
+ {t:'Burótica',icon:'🗂️',def:'De “bureau” (despacho): automatización del trabajo administrativo de un estudio o despacho. Hermana gemela de la ofimática.',ex:'Los expedientes digitales de un estudio jurídico.'},
+ {t:'Domótica',icon:'🏠',def:'DOMUS (casa) + automática: automatización inteligente de la vivienda, controlable desde una app o por voz.',ex:'Encender la estufa desde el celu antes de llegar a casa.'},
+ {t:'Orgware',icon:'🧩',def:'La organización de las personas alrededor de los sistemas: roles, procesos, reglas y la interacción humana con la tecnología.',ex:'Cómo se organiza tu curso para repartir, usar y cuidar las netbooks.'},
+ {t:'Nanotecnología',icon:'🔬',def:'Manipulación de la materia a escala atómica y molecular (1 a 100 nanómetros) para crear nuevos materiales y dispositivos.',ex:'Nanopartículas de plata que eliminan bacterias en remeras deportivas.'},
+];
+$('#glossaryGrid').innerHTML=GLOSSARY.map((g,i)=>`
+ <button class="flip h-72 w-full text-left rv" style="transition-delay:${i*45}ms" aria-pressed="false">
+  <div class="flip-inner">
+   <div class="flip-face bg-white border-2 border-ink shadow-hard-sm p-5 flex flex-col hover:shadow-hard transition-shadow">
+     <span class="text-4xl">${g.icon}</span>
+     <span class="font-display text-lg xl:text-xl mt-auto leading-tight">${g.t}</span>
+     <span class="font-mono text-[10px] tracking-[.2em] text-t2-dark mt-2">TOCÁ PARA GIRAR ↻</span>
+   </div>
+   <div class="flip-face flip-back bg-ink text-white border-2 border-ink p-5 flex flex-col">
+     <p class="text-xs leading-relaxed">${g.def}</p>
+     <div class="mt-auto pt-3">
+       <p class="font-mono text-[9px] tracking-[.2em] text-celeste">🇦🇷 EJEMPLO</p>
+       <p class="text-xs mt-1 text-white/90">${g.ex}</p>
+       ${g.note?`<p class="font-mono text-[9px] text-t1 mt-2">${g.note}</p>`:''}
+     </div>
+   </div>
+  </div>
+ </button>`).join('');
+$$('.flip').forEach(c=>c.addEventListener('click',()=>{ c.classList.toggle('on'); c.setAttribute('aria-pressed',c.classList.contains('on')); }));
+
+/* ---------- 4c · PESTAÑA 2 · Emparejar concepto ↔ situación ---------- */
+const MATCH=[
+ {term:'Domótica',        ex:'Desde el celu encendés la estufa de tu casa antes de llegar.'},
+ {term:'Telemática',      ex:'El colectivo transmite su posición por GPS a la app del mapa.'},
+ {term:'Burótica',        ex:'Una escribanía digitaliza y organiza sus expedientes en red.'},
+ {term:'Orgware',         ex:'El curso define encargados, turnos y reglas para usar las netbooks.'},
+ {term:'Nanotecnología',  ex:'Una remera deportiva con nanopartículas que frenan el mal olor.'},
+ {term:'Ofimática',       ex:'Armás la planilla de cálculo con los gastos del viaje de egresados.'},
+];
+let mSel=null, mDone=0;
+(function renderMatch(){
+  $('#matchLeft').innerHTML=MATCH.map((p,i)=>`<button class="game-btn w-full text-left text-sm font-bold" data-i="${i}">${p.term}</button>`).join('');
+  $('#matchRight').innerHTML=shuffle(MATCH.map((p,i)=>({i,ex:p.ex}))).map(o=>`<button class="game-btn w-full text-left text-xs" data-i="${o.i}">${o.ex}</button>`).join('');
+  $('#matchLeft').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||b.disabled) return;
+    if(mSel===b){ b.classList.remove('sel'); mSel=null; return; }
+    if(mSel) mSel.classList.remove('sel');
+    mSel=b; b.classList.add('sel');
+    $('#matchMsg').textContent='Ahora tocá la situación que le corresponde. 👉';
+  });
+  $('#matchRight').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||b.disabled) return;
+    if(!mSel){ $('#matchMsg').textContent='① Primero elegí un concepto de la columna izquierda.'; return; }
+    if(b.dataset.i===mSel.dataset.i){
+      b.classList.add('m-done'); b.disabled=true;
+      mSel.classList.add('m-done'); mSel.classList.remove('sel'); mSel.disabled=true; mSel=null;
+      mDone++; $('#matchMsg').textContent=`✔ ¡Bien! Ya conectaste ${mDone} de ${MATCH.length}.`;
+      b.classList.add('pop');
+      if(mDone===MATCH.length){
+        $('#matchWin').classList.remove('hidden');
+        $('#matchWin').innerHTML='🎉 <b>¡Todas conectadas!</b> Glosario dominado: cada disciplina ya tiene su situación. Logro desbloqueado.';
+        markDone('t2');
+      }
+    }else{
+      b.classList.add('wrongflash'); setTimeout(()=>b.classList.remove('wrongflash'),450);
+      $('#matchMsg').textContent='✗ Esa no es. Probá con otra situación.';
+    }
+  });
+})();
+
+/* ---------- 5 · PESTAÑA 3 · Árbol desplegable ---------- */
+$$('.branch-toggle').forEach(btn=>btn.addEventListener('click',()=>{
+  const br=btn.closest('.branch');
+  br.classList.toggle('open');
+  btn.setAttribute('aria-expanded',br.classList.contains('open'));
+}));
+
+/* ---------- 5b · PESTAÑA 3 · Clasificador Hw / Sw / Infoware ---------- */
+const CLASIFICAR=[
+ {n:'Teclado',z:'hw'},{n:'Android',z:'sw'},{n:'Wikipedia',z:'iw'},{n:'Memoria RAM',z:'hw'},
+ {n:'Compilador de C++',z:'sw'},{n:'Base de datos de ANSES',z:'iw'},{n:'Spotify',z:'sw'},
+ {n:'Micrófono',z:'hw'},{n:'Índice del buscador',z:'iw'},{n:'VS Code',z:'sw'},
+];
+const ZONE_NAME={hw:'HARDWARE',sw:'SOFTWARE',iw:'INFOWARE'};
+let clPool=[], clSel=null, clPlaced=0;
+function renderCl(){
+  clPool=shuffle(CLASIFICAR); clSel=null; clPlaced=0;
+  $('#clPool').innerHTML=clPool.map((it,i)=>`<button class="game-btn text-xs font-bold" data-id="${i}">${it.n}</button>`).join('');
+  $$('.zone-list').forEach(z=>z.innerHTML='');
+  $('#clScore').textContent='0/'+CLASIFICAR.length;
+  $('#clMsg').textContent=''; $('#clWin').classList.add('hidden');
+}
+$('#clPool').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(clSel===b){ b.classList.remove('sel'); clSel=null; return; }
+  if(clSel) clSel.classList.remove('sel');
+  clSel=b; b.classList.add('sel');
+  $('#clMsg').textContent='Ahora tocá la zona donde creés que va. 👇';
+});
+$$('.zone').forEach(z=>z.addEventListener('click',()=>{
+  if(!clSel){ $('#clMsg').textContent='① Primero tocá una tarjeta del mazo.'; return; }
+  const it=clPool[clSel.dataset.id];
+  if(it.z===z.dataset.zone){
+    z.querySelector('.zone-list').insertAdjacentHTML('beforeend',`<span class="zone-chip">${it.n} ✓</span>`);
+    clSel.remove(); clSel=null; clPlaced++;
+    $('#clScore').textContent=`${clPlaced}/${CLASIFICAR.length}`;
+    $('#clMsg').textContent=`✔ Correcto: «${it.n}» es ${ZONE_NAME[z.dataset.zone]}.`;
+    z.classList.add('pop'); setTimeout(()=>z.classList.remove('pop'),400);
+    if(clPlaced===CLASIFICAR.length){
+      $('#clWin').classList.remove('hidden');
+      $('#clWin').innerHTML='🎉 <b>¡Sistema completo!</b> Separaste hardware, software e infoware sin errores. Logro desbloqueado.';
+      markDone('t3');
+    }
+  }else{
+    z.classList.add('wrongflash'); setTimeout(()=>z.classList.remove('wrongflash'),450);
+    $('#clMsg').textContent='✗ Ups, ahí no va. Preguntate: ¿se toca, se ejecuta o es información?';
+  }
+}));
+$('#clReset').onclick=renderCl;
+renderCl();
+
+/* ---------- 6 · PESTAÑA 4 · Línea de tiempo ---------- */
+const TIMELINE=[
+ {sigla:'TIC', full:'Tecnologías de la Información y la Comunicación', years:'1920 → 1970',
+  clave:'I + C: información y comunicación, por primera vez juntas en una sigla.',
+  letra:'La base histórica: máquinas para <b>comunicar</b> (radio, televisión, teléfono) y las primeras <b>computadoras</b>, que ocupaban salas enteras y procesaban por separado.',
+  hitos:['Radio (1920)','Televisión (1930–50)','Teléfono masivo','ENIAC (1945)'],
+  arg:'1920: “los locos de la azotea” realizan la primera transmisión de radio del país. 1951: nace Canal 7, la TV pública argentina.'},
+ {sigla:'NTIC', full:'Nuevas Tecnologías de la Información y la Comunicación', years:'1971 → 1989',
+  clave:'Se suma la N de “nuevas”: la microelectrónica lo cambia todo.',
+  letra:'La N de <b>NUEVAS</b>: el microprocesador miniaturiza la electrónica y la <b>computación personal</b> llega a oficinas y escuelas. La informática empieza a meterse en la comunicación.',
+  hitos:['Microprocesador Intel 4004 (1971)','PC IBM (1981)','Disquetes','Primeros videojuegos'],
+  arg:'En los años 80 las PC llegan a escuelas y oficinas argentinas y la informática aparece como materia escolar.'},
+ {sigla:'NTIT', full:'Nuevas Tecnologías de la Información y la Telecomunicación', years:'1990 → 2009',
+  clave:'La T final pone el foco en la telecomunicación: redes globales.',
+  letra:'La T final de <b>TELECOMUNICACIÓN</b>: el salto son las <b>redes globales</b> y la transmisión digital. Las computadoras dejan de estar solas: se conectan entre sí.',
+  hitos:['World Wide Web (1991)','Fibra óptica','E-mail masivo','ADSL / banda ancha'],
+  arg:'1995: Internet se abre al público argentino y explota el dominio .com.ar.'},
+ {sigla:'NTICx', full:'Nuevas Tecnologías de la Información y la Conectividad', years:'2010 → hoy',
+  clave:'La x marca la conectividad: conectados en todo momento y lugar.',
+  letra:'La X de <b>CONECTIVIDAD</b>: la era hiperconectada. Ya no alcanza con comunicar: hay que estar conectado siempre, en todos lados, con todo. Es la sigla que da nombre a esta materia.',
+  hitos:['Smartphone masivo','Redes 4G / 5G','La nube','IoT e IA generativa'],
+  arg:'Conectar Igual (2010) reparte netbooks en las escuelas secundarias; NTICx se consolida como materia del diseño curricular.'},
+];
+let tlI=0;
+// Nodos de la línea de tiempo
+$('#tlNodes').innerHTML=TIMELINE.map((e,i)=>`
+  <button class="tl-node" data-i="${i}" aria-label="Etapa ${e.sigla}">
+    <span class="tl-dot">${i+1}</span>
+    <span class="tl-sigla font-display text-xs font-bold">${e.sigla}</span>
+    <span class="font-mono text-[9px] text-ink/50">${e.years}</span>
+  </button>`).join('');
+function setStage(i){
+  tlI=Math.max(0,Math.min(TIMELINE.length-1,i));
+  const e=TIMELINE[tlI];
+  $$('.tl-node').forEach((n,idx)=>{ n.classList.toggle('done',idx<tlI); n.classList.toggle('now',idx===tlI); });
+  $('#tlFill').style.width=(tlI/(TIMELINE.length-1)*100)+'%';
+  $('#tlCount').textContent=tlI+1;
+  $('#tlPrev').disabled = tlI===0;
+  $('#tlNext').disabled = tlI===TIMELINE.length-1;
+  const d=$('#tlDetail');
+  d.innerHTML=`
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-display font-black text-4xl md:text-6xl text-t4">${e.sigla}</span>
+      <span class="font-mono text-[11px] font-bold border-2 border-ink bg-white px-2 py-1">${e.years}</span>
+    </div>
+    <p class="font-mono text-[11px] md:text-xs uppercase tracking-[.18em] text-t4-dark mt-3 font-bold">${e.full}</p>
+    <p class="font-mono text-[11px] text-ink/60 mt-1">LA CLAVE → ${e.clave}</p>
+    <p class="mt-4 text-sm md:text-base leading-relaxed">${e.letra}</p>
+    <div class="flex flex-wrap gap-2 mt-4">${e.hitos.map(h=>`<span class="font-mono text-[10px] font-bold border-2 border-ink bg-t4-soft px-2 py-1">${h}</span>`).join('')}</div>
+    <div class="mt-4 border-l-4 border-t1 bg-t1-soft p-3 text-sm">🇦🇷 <b>En Argentina:</b> ${e.arg}</div>`;
+  d.classList.remove('pop'); void d.offsetWidth; d.classList.add('pop');
+}
+$('#tlNodes').addEventListener('click',e=>{ const n=e.target.closest('.tl-node'); if(n) setStage(+n.dataset.i); });
+$('#tlPrev').onclick=()=>setStage(tlI-1);
+$('#tlNext').onclick=()=>setStage(tlI+1);
+setStage(0);
+
+/* ---------- 6b · PESTAÑA 4 · Ordenar la evolución ---------- */
+const ORD_CLUES=['Radio, TV y computadoras gigantes','Microelectrónica y PC personal','Redes globales y web','Conectividad total: móviles y nube'];
+let ordSeq=[];
+function renderOrd(){
+  ordSeq=[];
+  $('#ordMsg').textContent=''; $('#ordWin').classList.add('hidden');
+  $('#ordPool').innerHTML=shuffle(TIMELINE.map((t,i)=>({i}))).map(c=>`
+    <button class="game-btn text-left ord-card" data-i="${c.i}">
+      <span class="font-display text-base">${TIMELINE[c.i].sigla}</span>
+      <span class="block text-[11px] opacity-70 mt-0.5">${ORD_CLUES[c.i]} · ${TIMELINE[c.i].years}</span>
+    </button>`).join('');
+  $$('.ord-slot').forEach(s=>{ s.classList.remove('ord-filled');
+    s.innerHTML=`<span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">${['1.º · LA MÁS ANTIGUA','2.º','3.º','4.º · LA MÁS RECIENTE'][s.dataset.slot]}</span>`; });
+}
+$('#ordPool').addEventListener('click',e=>{
+  const b=e.target.closest('.ord-card'); if(!b||b.disabled||ordSeq.length>=4) return;
+  const i=+b.dataset.i; ordSeq.push(i); b.disabled=true; b.style.opacity=.35;
+  const slot=$(`.ord-slot[data-slot="${ordSeq.length-1}"]`);
+  slot.classList.add('ord-filled');
+  slot.insertAdjacentHTML('beforeend',`<span class="font-display text-sm bg-t4 text-white border-2 border-ink px-2 py-1 pop">${TIMELINE[i].sigla}</span>`);
+  $('#ordMsg').textContent = ordSeq.length<4 ? `Faltan ${4-ordSeq.length} ficha(s)…` : 'Listo: ahora comprobá. 👇';
+});
+$('#ordUndo').onclick=()=>{
+  if(!ordSeq.length) return;
+  const i=ordSeq.pop();
+  const slot=$(`.ord-slot[data-slot="${ordSeq.length}"]`);
+  slot.classList.remove('ord-filled');
+  slot.innerHTML=`<span class="font-mono text-[9px] font-bold tracking-widest text-ink/50">${['1.º · LA MÁS ANTIGUA','2.º','3.º','4.º · LA MÁS RECIENTE'][ordSeq.length]}</span>`;
+  const card=$(`.ord-card[data-i="${i}"]`); card.disabled=false; card.style.opacity=1;
+  $('#ordMsg').textContent='';
+};
+$('#ordReset').onclick=renderOrd;
+$('#ordCheck').onclick=()=>{
+  if(ordSeq.length<4){ $('#ordMsg').textContent='⚠️ Todavía faltan fichas en el tablero.'; return; }
+  const ok = ordSeq.join()===('0,1,2,3');
+  if(ok){
+    $('#ordWin').classList.remove('hidden');
+    $('#ordWin').innerHTML='🎉 <b>¡Orden perfecto!</b> TIC → NTIC → NTIT → NTICx: cada letra nueva llegó cuando la tecnología lo pidió. Logro desbloqueado.';
+    $('#ordMsg').textContent='';
+    markDone('t4'); confetti(60);
+  }else{
+    $('#ordMsg').textContent='✗ Alguna ficha está fuera de época. Mirá las décadas… deshacé y probá de nuevo.';
+    $('#ordSlots').classList.add('shake'); setTimeout(()=>$('#ordSlots').classList.remove('shake'),450);
+  }
+};
+renderOrd();
+
+/* ---------- 7 · SISTEMA DE LOGROS ---------- */
+const done={t1:false,t2:false,t3:false,t4:false};
+const BADGE_COLOR={t1:'#F59E0B',t2:'#0EA5E9',t3:'#10B981',t4:'#E23A77'};
+function markDone(k){
+  if(done[k]) return; done[k]=true;
+  // Insignia del pie
+  const b=document.querySelector(`.badge[data-badge="${k}"]`);
+  if(b){ b.style.background=BADGE_COLOR[k]; b.style.borderColor='#0E1C2B'; b.style.color='#0E1C2B';
+    b.classList.remove('border-dashed','opacity-60'); b.classList.add('pop');
+    b.querySelector('.badge-state').textContent='¡Logrado! ✔';
+    b.querySelector('.badge-icon').classList.remove('grayscale'); }
+  // Punto verde en la pestaña y en la ficha del header
+  $('#tab-'+k).classList.add('earned');
+  document.querySelector(`.hbadge[data-badge="${k}"]`)?.classList.add('earned');
+  // Barras de progreso globales
+  const n=Object.values(done).filter(Boolean).length;
+  $('#pfill').style.width=(n/4*100)+'%';
+  $('#pfillHead').style.width=(n/4*100)+'%';
+  $('#pct').textContent=(n*25)+'%';
+  if(n===4){ // ¡módulo completo!
+    const f=$('#finalBanner'); f.classList.remove('hidden'); f.classList.add('pop');
+    confetti(140);
+  }
+}
+function confetti(n){
+  const colors=['#F59E0B','#0EA5E9','#10B981','#E23A77','#7FC8F8','#FDE68A'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('span');
+    s.className='confetti';
+    s.style.left=Math.random()*100+'vw';
+    s.style.background=colors[i%colors.length];
+    s.style.animationDuration=(2.6+Math.random()*2.2)+'s';
+    s.style.animationDelay=(Math.random()*0.6)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),5400);
+  }
+}
+
+/* ---------- Inicialización ---------- */
+checkReveals();
+</script>
+</body>
+</html>
