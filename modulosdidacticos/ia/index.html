@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo NTICx 4° año — Alfabetización en IA y Ciudadanía Digital Crítica</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5.0.10/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.16/wght.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: '#161a3e',
+        paper: '#f6f7fc',
+        brand: {50:'#eef0ff',100:'#e1e4ff',200:'#c9cdff',300:'#a6acff',400:'#8183f8',500:'#6159ec',600:'#4c3fd6',700:'#3e33ae',800:'#332d89',900:'#2c286e'},
+        ambr: '#f59e0b',
+        tealx: '#0d9488'
+      },
+      fontFamily: {
+        display: ['Sora','sans-serif'],
+        body: ['Inter','sans-serif']
+      },
+      boxShadow: {
+        soft: '0 10px 40px -12px rgba(44,40,110,.18)',
+        card: '0 4px 24px -6px rgba(44,40,110,.12)'
+      }
+    }
+  }
+}
+</script>
+<style>
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif}
+  .font-display{font-family:'Sora',sans-serif}
+  #progressBar{transition:width .1s linear}
+  .spy-link{position:relative;transition:color .25s}
+  .spy-link::after{content:'';position:absolute;left:0;bottom:-6px;height:2px;width:0;background:linear-gradient(90deg,#4c3fd6,#f59e0b);transition:width .3s}
+  .spy-link.active{color:#4c3fd6}
+  .spy-link.active::after{width:100%}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  .acc-panel{max-height:0;overflow:hidden;transition:max-height .5s ease}
+  .acc-icon{transition:transform .35s}
+  .tab-btn{transition:all .25s}
+  .tab-active{background:#4c3fd6 !important;color:#fff !important;box-shadow:0 8px 20px -8px rgba(76,63,214,.55)}
+  .float-chip{animation:floaty 5s ease-in-out infinite}
+  .float-chip.d2{animation-delay:1.2s}
+  .float-chip.d3{animation-delay:2.4s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hero-bg{background:
+    radial-gradient(900px 420px at 85% -10%, rgba(97,89,236,.14), transparent 60%),
+    radial-gradient(700px 380px at -10% 30%, rgba(245,158,11,.12), transparent 60%),
+    linear-gradient(180deg,#f6f7fc 0%,#eef0ff 100%)}
+  .grid-dots{background-image:radial-gradient(rgba(76,63,214,.14) 1px, transparent 1px);background-size:22px 22px}
+  .pact-check{accent-color:#4c3fd6;width:1.05rem;height:1.05rem;cursor:pointer}
+  .pact-item{transition:background .25s}
+  .pact-item:has(input:checked){background:#eef0ff}
+  .pact-item:has(input:checked) span.txt{color:#8b90a8;text-decoration:line-through}
+  @media print{
+    .no-print{display:none !important}
+    .acc-panel{max-height:none !important;overflow:visible !important}
+    .reveal{opacity:1 !important;transform:none !important}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body class="bg-paper text-ink antialiased">
+
+<!-- Barra de progreso -->
+<div class="fixed top-0 left-0 w-full h-1 z-50 no-print">
+  <div id="progressBar" class="h-full w-0 bg-gradient-to-r from-brand-600 via-brand-400 to-ambr"></div>
+</div>
+
+<!-- Navegación -->
+<header class="sticky top-0 z-40 bg-white/85 backdrop-blur border-b border-brand-100 no-print">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+    <a href="#inicio" class="flex items-center gap-3 shrink-0">
+      <div class="w-9 h-9 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center text-sm shadow-card">IA</div>
+      <div class="leading-tight">
+        <p class="font-display font-bold text-sm text-ink">NTICx · 4° año</p>
+        <p class="text-[11px] text-slate-500">Diseño Curricular — PBA</p>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+      <a href="#pilares" class="spy-link">Pilares</a>
+      <a href="#fundamentacion" class="spy-link">Fundamentación</a>
+      <a href="#contenidos" class="spy-link">Contenidos</a>
+      <a href="#secuencia" class="spy-link">Secuencia</a>
+      <a href="#evaluacion" class="spy-link">Evaluación</a>
+      <a href="#recursos" class="spy-link">Recursos</a>
+    </nav>
+    <button onclick="window.print()" class="shrink-0 inline-flex items-center gap-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 transition px-4 py-2 rounded-xl shadow-card">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+      Imprimir
+    </button>
+  </div>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section id="inicio" class="hero-bg relative overflow-hidden">
+  <div class="absolute inset-0 grid-dots opacity-60 pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto px-4 pt-14 pb-16 relative">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal in">
+        <p class="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.18em] uppercase text-brand-700 bg-brand-100 border border-brand-200 rounded-full px-3 py-1.5">
+          DGCyE · Educación Secundaria · Ciclo Superior
+        </p>
+        <h1 class="font-display font-extrabold text-4xl md:text-5xl leading-[1.08] mt-5 text-ink">
+          Alfabetización en <span class="text-brand-600">Inteligencia Artificial</span> y <span class="text-ambr">Ciudadanía Digital</span> Crítica
+        </h1>
+        <p class="mt-5 text-slate-600 text-base md:text-lg leading-relaxed">
+          Módulo didáctico para la materia <strong class="text-ink">Nuevas Tecnologías de la Información y la Conectividad (NTICx)</strong>, 4° año de la Escuela Secundaria de la Provincia de Buenos Aires — común a todas las orientaciones del Ciclo Superior.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          <span class="float-chip text-xs font-semibold bg-white border border-brand-200 text-brand-700 rounded-full px-3 py-1.5 shadow-card">Pensamiento crítico</span>
+          <span class="float-chip d2 text-xs font-semibold bg-white border border-amber-200 text-amber-600 rounded-full px-3 py-1.5 shadow-card">Ética y uso seguro</span>
+          <span class="float-chip d3 text-xs font-semibold bg-white border border-teal-200 text-tealx rounded-full px-3 py-1.5 shadow-card">Trabajo colaborativo</span>
+        </div>
+        <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-brand-100 text-center">
+            <p class="font-display font-extrabold text-2xl text-brand-600">20 h</p>
+            <p class="text-[11px] text-slate-500 mt-1">carga horaria del módulo</p>
+          </div>
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-brand-100 text-center">
+            <p class="font-display font-extrabold text-2xl text-brand-600">10</p>
+            <p class="text-[11px] text-slate-500 mt-1">encuentros de 2 h</p>
+          </div>
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-brand-100 text-center">
+            <p class="font-display font-extrabold text-2xl text-brand-600">3</p>
+            <p class="text-[11px] text-slate-500 mt-1">bloques de contenidos</p>
+          </div>
+          <div class="bg-white rounded-2xl p-4 shadow-card border border-brand-100 text-center">
+            <p class="font-display font-extrabold text-2xl text-brand-600">1</p>
+            <p class="text-[11px] text-slate-500 mt-1">proyecto integrador</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal in relative">
+        <div class="absolute -top-6 -right-4 w-24 h-24 rounded-3xl bg-ambr/20 rotate-12"></div>
+        <div class="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-brand-200/60"></div>
+        <img src="https://image.qwenlm.ai/public_source/2d624bfb-7717-458a-ba88-a94c275f96df/1ba60e074-5112-47a4-8b50-279bca7e8377.png" alt="Estudiantes secundarios colaborando con tecnologías e inteligencia artificial" class="relative rounded-3xl shadow-soft border border-white w-full object-cover">
+        <p class="relative mt-3 text-[11px] text-slate-500 text-center">Estudiantes como sujetos de acción y de derechos: comprender, crear y decidir con tecnología.</p>
+      </div>
+    </div>
+
+    <!-- Ficha técnica -->
+    <div class="mt-12 bg-white rounded-3xl shadow-soft border border-brand-100 overflow-hidden reveal">
+      <div class="bg-brand-600 text-white px-6 py-3 font-display font-bold text-sm tracking-wide">FICHA TÉCNICA DEL MÓDULO</div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 divide-brand-100 text-sm">
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Materia</p><p class="mt-1 font-semibold">NTICx — Nuevas Tecnologías de la Información y la Conectividad</p></div>
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Destinatarios</p><p class="mt-1 font-semibold">4° año, todas las orientaciones del Ciclo Superior</p></div>
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Carga horaria materia</p><p class="mt-1 font-semibold">72 h totales · 2 h semanales (materia anual)</p></div>
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Carga del módulo</p><p class="mt-1 font-semibold">20 h (10 encuentros de 2 h) · ≈ 28 % de la carga anual</p></div>
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Modalidad de trabajo</p><p class="mt-1 font-semibold">Áulica, colaborativa y por proyectos · herramientas web 2.0</p></div>
+        <div class="p-5"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Producto final</p><p class="mt-1 font-semibold">“Feria de IA”: proyecto colaborativo de ciudadanía digital</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PILARES CURRICULARES ============ -->
+<section id="pilares" class="max-w-6xl mx-auto px-4 py-16">
+  <div class="reveal">
+    <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Anclaje normativo y pedagógico</p>
+    <h2 class="font-display font-extrabold text-3xl mt-2">Pilares del Diseño Curricular que sostienen el módulo</h2>
+    <p class="text-slate-600 mt-3 max-w-3xl">El módulo retoma de manera explícita los objetivos de enseñanza y de aprendizaje del Diseño Curricular de NTICx para 4° año, garantizando la coherencia entre normativa, propuesta áulica y evaluación.</p>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 mt-10">
+    <div class="bg-white rounded-3xl shadow-card border-t-4 border-brand-600 p-7 reveal">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-lg">Objetivos de Enseñanza</h3>
+      </div>
+      <ul class="mt-5 space-y-3 text-sm text-slate-600">
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-brand-500 shrink-0"></span>Promover el <strong class="text-ink">pensamiento crítico, creativo e innovador</strong> frente a las nuevas tecnologías.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-brand-500 shrink-0"></span>Fomentar el <strong class="text-ink">debate</strong> acerca de los usos e impactos de Internet y las tecnologías dentro y fuera de la escuela.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-brand-500 shrink-0"></span>Promover, modelar y enseñar la utilización <strong class="text-ink">segura, legal y ética</strong> de la información digital, con énfasis en derechos de autor y propiedad intelectual.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-brand-500 shrink-0"></span><strong class="text-ink">Prevenir riesgos digitales</strong>: robo de identidad, desinformación, ciberacoso y exposición de datos personales.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-brand-500 shrink-0"></span>Proponer evaluaciones que <strong class="text-ink">retroalimenten y ajusten</strong> el proceso de enseñanza-aprendizaje.</li>
+      </ul>
+    </div>
+    <div class="bg-white rounded-3xl shadow-card border-t-4 border-ambr p-7 reveal">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-lg">Objetivos de Aprendizaje</h3>
+      </div>
+      <ul class="mt-5 space-y-3 text-sm text-slate-600">
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-ambr shrink-0"></span>Desarrollar habilidades para usar las tecnologías con capacidad de <strong class="text-ink">crear, innovar, comunicar e investigar</strong>.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-ambr shrink-0"></span>Adquirir destrezas para la <strong class="text-ink">resolución de problemas</strong> de la vida cotidiana y la toma de decisiones mediante el análisis crítico de la <strong class="text-ink">ciudadanía digital</strong>.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-ambr shrink-0"></span><strong class="text-ink">Trabajar colaborativamente</strong> localizando, evaluando y organizando información de diversas fuentes con herramientas digitales.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-ambr shrink-0"></span>Utilizar de modo <strong class="text-ink">seguro, legal y ético</strong> la información digital y los recursos basados en la web 2.0.</li>
+        <li class="flex gap-3"><span class="mt-1 w-2 h-2 rounded-full bg-ambr shrink-0"></span>Comunicar ideas e intercambiar información mediante medios <strong class="text-ink">sincrónicos y asincrónicos</strong>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FUNDAMENTACIÓN ============ -->
+<section id="fundamentacion" class="bg-white border-y border-brand-100">
+  <div class="max-w-6xl mx-auto px-4 py-16 grid lg:grid-cols-[1fr_340px] gap-10">
+    <div class="reveal">
+      <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Fundamentación</p>
+      <h2 class="font-display font-extrabold text-3xl mt-2">¿Por qué enseñar IA desde la ciudadanía digital crítica?</h2>
+      <div class="mt-6 space-y-4 text-slate-600 leading-relaxed text-[15px]">
+        <p>La Inteligencia Artificial ya no es una promesa futurista: organiza lo que los y las jóvenes escuchan, miran, compran y hasta lo que creen. Sistemas de recomendación, asistentes de voz, filtros, traductores y modelos generativos forman parte de su vida cotidiana. En ese escenario, la Escuela Secundaria bonaerense —obligatoria, inclusiva y formadora de ciudadanos y ciudadanas— asume la responsabilidad indelegable de brindar las herramientas para <strong class="text-ink">comprender, interrogar y decidir</strong> frente a estas tecnologías, en línea con los tres fines del nivel: la formación ciudadana, la preparación para el mundo del trabajo y la continuación de los estudios superiores.</p>
+        <p>El Diseño Curricular de NTICx propone desarrollar ambientes de aprendizaje enriquecidos por las nuevas tecnologías, promover el debate sobre sus usos y modelar una utilización <strong class="text-ink">segura, legal y ética</strong> de la información digital. La IA intensifica cada uno de estos desafíos: plantea interrogantes inéditos sobre <strong class="text-ink">autoría y propiedad intelectual</strong>, sobre los <strong class="text-ink">sesgos</strong> que reproducen discriminaciones, sobre la <strong class="text-ink">desinformación</strong> y la privacidad. Por eso, este módulo no enseña IA únicamente como herramienta técnica, sino como <strong class="text-ink">objeto de análisis de la ciudadanía digital</strong>: un territorio donde se ejercen derechos, se asumen responsabilidades y se construyen acuerdos colectivos.</p>
+        <p>Lejos de visiones idealizadoras o alarmistas, la propuesta concibe a los adolescentes como <strong class="text-ink">sujetos de acción y de derechos</strong>: no solo consumen IA, sino que pueden crear con ella, investigar sus impactos, colaborar en proyectos y proponer transformaciones. Las herramientas colaborativas de la web 2.0 —blogs, wikis, documentos compartidos— funcionan como andamiaje para ese trabajo conjunto, tal como prescribe el Diseño Curricular.</p>
+        <p>Finalmente, el módulo incorpora la <strong class="text-ink">evaluación como retroalimentación permanente</strong>: cada actividad produce información para ajustar la enseñanza y para que el estudiante reconozca su propio progreso en el uso crítico, creativo y responsable de las nuevas tecnologías.</p>
+      </div>
+    </div>
+    <aside class="space-y-5 reveal">
+      <div class="rounded-3xl bg-brand-600 text-white p-7 shadow-soft relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10"></div>
+        <svg class="w-8 h-8 text-ambr" fill="currentColor" viewBox="0 0 24 24"><path d="M9.983 3v7.391C9.983 16.095 6.252 19.961 2 21l-.995-2.027c2.565-.93 4.328-2.793 4.328-5.582V3h4.65zM20.017 3v7.391c0 5.704-3.748 9.571-8 10.609l-.996-2.027c2.566-.93 4.329-2.793 4.329-5.582V3h4.667z"/></svg>
+        <p class="mt-4 font-display font-semibold leading-relaxed text-[15px]">“Una escuela secundaria inclusiva apela a una visión de los jóvenes y los adolescentes como sujetos de acción y de derechos… que analicen críticamente tanto el acervo cultural como los contextos en que están inmersos.”</p>
+        <p class="mt-4 text-xs text-brand-100">Diseño Curricular ES — Presentación · Marco de la Educación Secundaria PBA</p>
+      </div>
+      <div class="rounded-3xl border border-brand-100 bg-paper p-6">
+        <h4 class="font-display font-bold text-sm">Sentido formativo del módulo</h4>
+        <ul class="mt-3 space-y-2 text-[13px] text-slate-600">
+          <li class="flex gap-2"><span class="text-brand-600 font-bold">→</span> Comprender cómo la IA modela decisiones cotidianas.</li>
+          <li class="flex gap-2"><span class="text-brand-600 font-bold">→</span> Ejercer una ciudadanía digital activa, ética y responsable.</li>
+          <li class="flex gap-2"><span class="text-brand-600 font-bold">→</span> Crear colaborativamente con herramientas web 2.0 e IA.</li>
+          <li class="flex gap-2"><span class="text-brand-600 font-bold">→</span> Construir acuerdos institucionales de uso responsable.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ BLOQUES DE CONTENIDOS ============ -->
+<section id="contenidos" class="max-w-6xl mx-auto px-4 py-16">
+  <div class="reveal">
+    <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Bloques de contenidos</p>
+    <h2 class="font-display font-extrabold text-3xl mt-2">Tres bloques articulados en espiral</h2>
+    <p class="text-slate-600 mt-3 max-w-3xl">Los bloques no son compartimentos estancos: los conceptos básicos se retomarán en el análisis ético y se pondrán en juego en la creación colaborativa final.</p>
+  </div>
+
+  <div class="mt-8 flex flex-wrap gap-3 no-print reveal">
+    <button data-tab="panelA" class="tab-btn tab-active rounded-2xl px-5 py-3 text-sm font-semibold bg-white border border-brand-200 text-slate-600">Bloque A · Conceptos básicos</button>
+    <button data-tab="panelB" class="tab-btn rounded-2xl px-5 py-3 text-sm font-semibold bg-white border border-amber-200 text-slate-600">Bloque B · Sesgos y ética</button>
+    <button data-tab="panelC" class="tab-btn rounded-2xl px-5 py-3 text-sm font-semibold bg-white border border-teal-200 text-slate-600">Bloque C · IA, problemas y creación</button>
+  </div>
+
+  <!-- Bloque A -->
+  <div id="panelA" data-panel class="mt-6 bg-white rounded-3xl shadow-card border border-brand-100 overflow-hidden reveal">
+    <div class="bg-gradient-to-r from-brand-600 to-brand-500 text-white px-7 py-5 flex flex-wrap items-center justify-between gap-3">
+      <h3 class="font-display font-bold text-lg">Bloque A — Conceptos básicos de Inteligencia Artificial</h3>
+      <span class="text-xs font-bold bg-white/20 rounded-full px-3 py-1">≈ 6 horas · Clases 1 a 4</span>
+    </div>
+    <div class="p-7 grid md:grid-cols-2 gap-8">
+      <div>
+        <h4 class="font-display font-bold text-sm text-brand-700 uppercase tracking-wider">Contenidos</h4>
+        <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> IA: nociones, historia y presencia en la vida cotidiana (recomendadores, asistentes, filtros, traductores, GPS).</li>
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> El dato como materia prima: recolección, huella y rastro digital.</li>
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> Aprendizaje automático: entrenar con ejemplos; predicción y clasificación.</li>
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> IA generativa: modelos de lenguaje; generación de texto, imagen y audio.</li>
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> Límites y posibilidades: inteligencia artificial vs. inteligencia humana.</li>
+          <li class="flex gap-2"><span class="text-brand-500">◆</span> Burbujas de filtro y sistemas de recomendación.</li>
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <div class="rounded-2xl bg-brand-50 border border-brand-100 p-5">
+          <h4 class="font-display font-bold text-sm text-brand-700">Situaciones de enseñanza destacadas</h4>
+          <p class="mt-2 text-sm text-slate-600">Mapeo colectivo de IA en la vida cotidiana; actividad desenchufada de entrenamiento con ejemplos; simulador <em>Teachable Machine</em>; taller de prompts y evaluación crítica de respuestas generadas.</p>
+        </div>
+        <div class="rounded-2xl bg-paper border border-brand-100 p-5">
+          <h4 class="font-display font-bold text-sm text-brand-700">Vinculación curricular</h4>
+          <p class="mt-2 text-sm text-slate-600">Desarrolla la capacidad de <strong>crear, innovar, comunicar e investigar</strong> y el conocimiento de herramientas básicas de las nuevas tecnologías (objetivos de aprendizaje del DC).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloque B -->
+  <div id="panelB" data-panel class="hidden mt-6 bg-white rounded-3xl shadow-card border border-amber-100 overflow-hidden">
+    <div class="bg-gradient-to-r from-amber-500 to-ambr text-white px-7 py-5 flex flex-wrap items-center justify-between gap-3">
+      <h3 class="font-display font-bold text-lg">Bloque B — Sesgos y ética: la IA bajo la lupa de la ciudadanía digital</h3>
+      <span class="text-xs font-bold bg-white/20 rounded-full px-3 py-1">≈ 6 horas · Clases 5 a 7</span>
+    </div>
+    <div class="p-7 grid md:grid-cols-2 gap-8">
+      <div>
+        <h4 class="font-display font-bold text-sm text-amber-600 uppercase tracking-wider">Contenidos</h4>
+        <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Sesgos algorítmicos: origen en los datos y en el diseño; casos en empleo, salud, justicia y crédito.</li>
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Desinformación: noticias falsas, <em>deepfakes</em> y técnicas de verificación.</li>
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Derechos de autor y propiedad intelectual: obras que entrenan modelos; citación y reconocimiento del uso de IA.</li>
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Privacidad, datos personales y prevención del robo de identidad.</li>
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Etiqueta digital en interacciones mediadas por IA; prevención del ciberacoso.</li>
+          <li class="flex gap-2"><span class="text-ambr">◆</span> Construcción de acuerdos áulicos e institucionales de uso responsable.</li>
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <div class="rounded-2xl bg-amber-50 border border-amber-100 p-5">
+          <h4 class="font-display font-bold text-sm text-amber-600">Situaciones de enseñanza destacadas</h4>
+          <p class="mt-2 text-sm text-slate-600">Estaciones de análisis de casos reales de sesgo; taller de verificación de imágenes y audios; debate regulado sobre autoría en IA generativa; redacción colaborativa de una guía de uso honesto.</p>
+        </div>
+        <div class="rounded-2xl bg-paper border border-amber-100 p-5">
+          <h4 class="font-display font-bold text-sm text-amber-600">Vinculación curricular</h4>
+          <p class="mt-2 text-sm text-slate-600">Modela el uso <strong>seguro, legal y ético</strong> de la información, el respeto por la <strong>propiedad intelectual</strong> y la <strong>prevención de riesgos digitales</strong> (robo de identidad, acoso, desinformación).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloque C -->
+  <div id="panelC" data-panel class="hidden mt-6 bg-white rounded-3xl shadow-card border border-teal-100 overflow-hidden">
+    <div class="bg-gradient-to-r from-teal-600 to-tealx text-white px-7 py-5 flex flex-wrap items-center justify-between gap-3">
+      <h3 class="font-display font-bold text-lg">Bloque C — Herramientas de IA para la resolución de problemas y la creación colaborativa</h3>
+      <span class="text-xs font-bold bg-white/20 rounded-full px-3 py-1">≈ 8 horas · Clases 8 a 10</span>
+    </div>
+    <div class="p-7 grid md:grid-cols-2 gap-8">
+      <div>
+        <h4 class="font-display font-bold text-sm text-tealx uppercase tracking-wider">Contenidos</h4>
+        <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
+          <li class="flex gap-2"><span class="text-tealx">◆</span> Ingeniería de prompts: rol, contexto, formato e iteración como estrategia de trabajo.</li>
+          <li class="flex gap-2"><span class="text-tealx">◆</span> IA como asistencia intelectual: resumen, lluvia de ideas, traducción, organización del estudio.</li>
+          <li class="flex gap-2"><span class="text-tealx">◆</span> Resolución de problemas de la vida cotidiana y del entorno escolar con apoyo de IA.</li>
+          <li class="flex gap-2"><span class="text-tealx">◆</span> Herramientas colaborativas web 2.0: documentos compartidos, wikis, blogs, radios y publicaciones escolares.</li>
+          <li class="flex gap-2"><span class="text-tealx">◆</span> Comunicación sincrónica y asincrónica responsable en el trabajo en equipo.</li>
+          <li class="flex gap-2"><span class="text-tealx">◆</span> Proyecto integrador: diseño, producción y comunicación pública de una propuesta con IA.</li>
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <div class="rounded-2xl bg-teal-50 border border-teal-100 p-5">
+          <h4 class="font-display font-bold text-sm text-tealx">Situaciones de enseñanza destacadas</h4>
+          <p class="mt-2 text-sm text-slate-600">Metodología de diseño de soluciones (empatizar–definizar–idear–prototipar); taller de producción con rúbrica compartida; “Feria de IA” con evaluación entre pares y acuerdos institucionales finales.</p>
+        </div>
+        <div class="rounded-2xl bg-paper border border-teal-100 p-5">
+          <h4 class="font-display font-bold text-sm text-tealx">Vinculación curricular</h4>
+          <p class="mt-2 text-sm text-slate-600">Consolida el <strong>trabajo colaborativo</strong>, la <strong>resolución de problemas</strong> y la toma de decisiones fundamentadas, con evaluación destinada a <strong>retroalimentar</strong> el aprendizaje activo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECUENCIA DIDÁCTICA ============ -->
+<section id="secuencia" class="bg-white border-y border-brand-100">
+  <div class="max-w-6xl mx-auto px-4 py-16">
+    <div class="reveal">
+      <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Secuencia didáctica</p>
+      <h2 class="font-display font-extrabold text-3xl mt-2">Diez encuentros: Inicio · Desarrollo · Cierre</h2>
+      <p class="text-slate-600 mt-3 max-w-3xl">Cada encuentro de 2 horas reloj incluye momentos de inicio (saberes previos y provocación), desarrollo (producción activa) y cierre (metacognición y evaluación). Hacé clic en cada clase para desplegarla.</p>
+    </div>
+
+    <div class="mt-10 space-y-4" id="accordion">
+
+      <!-- Clase 1 -->
+      <div class="bg-paper rounded-2xl border border-brand-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center">01</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Vivimos con IA sin saberlo</span>
+            <span class="text-xs text-slate-500">Bloque A · 2 h · Diagnóstico y motivación</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Pensamiento crítico</span>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Debate</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Encuesta áulica (pizarra o formulario): <em>“¿Dónde interactuaste con IA esta semana?”</em>. Lluvia de ideas y registro de concepciones previas.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">En grupos, clasifican “tarjetas de IA” (reconocimiento facial, recomendador musical, traductor, asistente de voz, GPS, filtros, puntaje crediticio). Sistematización guiada: características que definen a la IA.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Mural colaborativo (Padlet/wiki del curso) “Mapa de la IA en nuestras vidas”. Definición provisoria que se revisará al final del módulo. <strong>Evaluación diagnóstica</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 2 -->
+      <div class="bg-paper rounded-2xl border border-brand-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center">02</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">¿Cómo aprende una máquina? Datos y algoritmos</span>
+            <span class="text-xs text-slate-500">Bloque A · 2 h · Actividad desenchufada + simulador</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Investigar</span>
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Crear</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Juego “adiviná la regla”: la docente propone ejemplos y los estudiantes descubren el patrón oculto. Analogía con el entrenamiento por ejemplos.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Actividad desenchufada de clasificación supervisada con tarjetas; luego, entrenamiento de un modelo sencillo en <em>Teachable Machine</em> (dibujos o gestos). Análisis: ¿qué pasa si los ejemplos son pocos o erróneos?</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Ticket de salida metacognitivo: <em>“¿Qué necesita una máquina para aprender? ¿De quién es la responsabilidad por los datos?”</em> Primer anticipo del problema de los sesgos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 3 -->
+      <div class="bg-paper rounded-2xl border border-brand-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center">03</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">IA generativa: el arte de preguntar</span>
+            <span class="text-xs text-slate-500">Bloque A/C · 2 h · Taller de prompts</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Innovar</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Pensamiento crítico</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Comparación en pantalla de dos consignas (prompt pobre vs. prompt enriquecido) sobre el mismo pedido. Hipótesis sobre las diferencias.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Taller en parejas: práctica de iteración de prompts (rol, contexto, formato). Evaluación crítica de las respuestas: errores, “alucinaciones”, límites. Registro en documento compartido.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Construcción colaborativa del “Decálogo del buen prompt”. Pregunta de cierre: <em>¿todo lo que produce la IA puede copiarse tal cual? ¿Por qué?</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 4 -->
+      <div class="bg-paper rounded-2xl border border-brand-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center">04</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">¿Algoritmos que deciden por mí? Recomendaciones y burbujas</span>
+            <span class="text-xs text-slate-500">Bloque A/B · 2 h · Análisis y debate</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Debate</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Ciudadanía digital</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Disparador: <em>“¿El celular me escucha?”</em> — mitos y realidades de la personalización de contenidos.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Comparación de recomendaciones de dos plataformas (música/video). Conceptos de burbuja de filtro y cámara de eco. Registro individual de consumos y comparación grupal.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-brand-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-brand-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Debate guiado y producción de una “guía de supervivencia” con consejos para diversificar el consumo de contenidos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 5 -->
+      <div class="bg-paper rounded-2xl border border-amber-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-ambr text-white font-display font-bold flex items-center justify-center">05</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Cuando la IA discrimina: sesgos algorítmicos</span>
+            <span class="text-xs text-slate-500">Bloque B · 2 h · Estaciones de casos</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Ética</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Pensamiento crítico</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Caso real provocador (reconocimiento facial que falla según el tono de piel / software de selección laboral). Primera ronda de opiniones.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Estaciones con casos breves (empleo, salud, justicia, crédito): identificar origen del sesgo (datos/diseño), consecuencias y posibles soluciones. Rotación de grupos.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Mapa conceptual colectivo “Del dato al impacto” y pregunta ciudadana: <em>¿quiénes son responsables cuando un algoritmo discrimina?</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 6 -->
+      <div class="bg-paper rounded-2xl border border-amber-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-ambr text-white font-display font-bold flex items-center justify-center">06</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Deepfakes, noticias falsas y verificación</span>
+            <span class="text-xs text-slate-500">Bloque B · 2 h · Taller de verificación</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Prevención</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Uso seguro</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Desafío “¿real o generado?”: análisis de imágenes y audios, algunos auténticos y otros sintéticos. Explicitación de criterios intuitivos.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Taller de verificación: búsqueda inversa de imágenes, contraste de fuentes, lectura lateral, revisión de fechas y autores. Análisis de un caso viral reciente.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Checklist colectiva de verificación y reflexión sobre la responsabilidad al compartir: etiqueta digital y prevención de la desinformación.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 7 -->
+      <div class="bg-paper rounded-2xl border border-amber-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-ambr text-white font-display font-bold flex items-center justify-center">07</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Autoría en tiempos de IA: derechos de autor y propiedad intelectual</span>
+            <span class="text-xs text-slate-500">Bloque B · 2 h · Debate y acuerdos</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Uso legal y ético</span>
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Colaboración</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600"><em>“¿De quién es esta imagen?”</em> — obra generada por IA a partir de millones de obras de artistas. Debate inicial sobre autoría.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Lectura guiada de términos de uso y casos de artistas frente a modelos generativos. Discusión: ¿cómo se reconoce el uso de IA en un trabajo escolar? ¿Cómo se citan las fuentes?</p>
+            </div>
+            <div class="rounded-xl bg-white border border-amber-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-amber-600">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Redacción colaborativa (wiki/blog) de la “Guía de uso honesto de IA en NTICx”: declarar el uso, verificar, citar fuentes y respetar la privacidad.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 8 -->
+      <div class="bg-paper rounded-2xl border border-teal-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-tealx text-white font-display font-bold flex items-center justify-center">08</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">IA para resolver problemas reales</span>
+            <span class="text-xs text-slate-500">Bloque C · 2 h · Diseño de soluciones</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Resolver problemas</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Innovar</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Lluvia de problemas de la escuela y la comunidad (convivencia, comunicación, residuos, estudio, accesibilidad). Selección y priorización.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">En equipos: empatizar–definir–idear. Prototipado de una solución apoyada en IA (campaña, asistente de orientación, organizador, verificador). Planificación del proyecto final con roles.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600"><em>Pitch</em> de 2 minutos por equipo con retroalimentación entre pares (“dos estrellas y un deseo”). Ajuste de la propuesta.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 9 -->
+      <div class="bg-paper rounded-2xl border border-teal-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-tealx text-white font-display font-bold flex items-center justify-center">09</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Taller colaborativo de producción</span>
+            <span class="text-xs text-slate-500">Bloque C · 2 h · Producción con retroalimentación</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Colaboración web 2.0</span>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-600 rounded-full px-2.5 py-1">Retroalimentación</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Revisión conjunta de la rúbrica del proyecto final y del plan de trabajo. Organización de roles y canales (sincrónicos/asincrónicos).</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">Producción en documento compartido / blog / presentación. La docente recorre estaciones brindando <strong>retroalimentación formativa</strong>; se verifica citación de fuentes y declaración del uso de IA.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Bitácora de avances: logros, obstáculos y pendientes. Autoevaluación breve del funcionamiento del equipo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clase 10 -->
+      <div class="bg-paper rounded-2xl border border-teal-100 overflow-hidden reveal">
+        <button class="acc-btn w-full flex items-center gap-4 px-6 py-5 text-left">
+          <span class="shrink-0 w-11 h-11 rounded-xl bg-tealx text-white font-display font-bold flex items-center justify-center">10</span>
+          <span class="flex-1">
+            <span class="font-display font-bold text-ink block">Feria de IA: compartimos lo aprendido</span>
+            <span class="text-xs text-slate-500">Cierre · 2 h · Comunicación pública y evaluación final</span>
+          </span>
+          <span class="hidden sm:flex gap-1.5">
+            <span class="text-[10px] font-bold bg-teal-100 text-tealx rounded-full px-2.5 py-1">Comunicar</span>
+            <span class="text-[10px] font-bold bg-brand-100 text-brand-700 rounded-full px-2.5 py-1">Coevaluación</span>
+          </span>
+          <svg class="acc-icon w-5 h-5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="acc-panel">
+          <div class="px-6 pb-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Inicio · 20 min</p>
+              <p class="mt-2 text-sm text-slate-600">Montaje de stands / publicación en el blog escolar o segmento de radio. Acuerdos de presentación y criterios de escucha activa.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Desarrollo · 70 min</p>
+              <p class="mt-2 text-sm text-slate-600">“Feria de IA”: presentación de proyectos (afiche, blog, podcast). Recorrido con rúbrica de evaluación entre pares y de docentes invitados.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-teal-100 p-5">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-tealx">Cierre · 30 min</p>
+              <p class="mt-2 text-sm text-slate-600">Plenario institucional: “Diez acuerdos del curso para el uso responsable de la IA”. Revisión de la definición inicial de la Clase 1: ¿cómo cambió nuestra mirada? <strong>Evaluación sumativa y de cierre.</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVALUACIÓN ============ -->
+<section id="evaluacion" class="max-w-6xl mx-auto px-4 py-16">
+  <div class="reveal">
+    <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Criterios e instrumentos de evaluación</p>
+    <h2 class="font-display font-extrabold text-3xl mt-2">Evaluar para retroalimentar el aprendizaje activo</h2>
+    <p class="text-slate-600 mt-3 max-w-3xl">En sintonía con el Diseño Curricular, la evaluación produce información para <strong class="text-ink">retroalimentar y ajustar</strong> la enseñanza, y para que cada estudiante reconozca su propio progreso en el uso de las nuevas tecnologías.</p>
+  </div>
+
+  <!-- Momentos -->
+  <div class="grid md:grid-cols-3 gap-5 mt-10">
+    <div class="bg-white rounded-3xl shadow-card border border-brand-100 p-6 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 rounded-full px-3 py-1">Diagnóstica · Clase 1</span>
+      <h3 class="font-display font-bold mt-3">Punto de partida</h3>
+      <p class="text-sm text-slate-600 mt-2">Encuesta áulica, mural inicial y observación de la clasificación de tarjetas. Permite conocer niveles de acceso, saberes previos y representaciones sobre la IA para ajustar la secuencia.</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow-card border border-amber-100 p-6 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 rounded-full px-3 py-1">Formativa · Continua</span>
+      <h3 class="font-display font-bold mt-3">Retroalimentación permanente</h3>
+      <p class="text-sm text-slate-600 mt-2">Tickets de salida, bitácoras, portafolio de prompts, devoluciones en estaciones de trabajo y coevaluación (“dos estrellas y un deseo”). El error se analiza como oportunidad de aprendizaje.</p>
+    </div>
+    <div class="bg-white rounded-3xl shadow-card border border-teal-100 p-6 reveal">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-tealx bg-teal-50 rounded-full px-3 py-1">Sumativa · Clases 9-10</span>
+      <h3 class="font-display font-bold mt-3">Proyecto integrador</h3>
+      <p class="text-sm text-slate-600 mt-2">“Feria de IA” evaluada con rúbrica analítica compartida de antemano, combinando evaluación docente, autoevaluación y evaluación entre pares.</p>
+    </div>
+  </div>
+
+  <!-- Criterios -->
+  <div class="mt-10 bg-white rounded-3xl shadow-card border border-brand-100 overflow-hidden reveal">
+    <div class="px-7 py-4 bg-brand-600 text-white font-display font-bold text-sm">Criterios de evaluación</div>
+    <div class="p-7 grid md:grid-cols-2 gap-x-10 gap-y-4 text-sm text-slate-600">
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Comprende y explica con vocabulario propio el funcionamiento básico de sistemas de IA presentes en la vida cotidiana.</p>
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Evalúa críticamente las respuestas de la IA: verifica, contrasta fuentes y detecta errores, sesgos y desinformación.</p>
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Utiliza la información digital de modo seguro, legal y ético: cita fuentes, declara el uso de IA y respeta la propiedad intelectual.</p>
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Participa del debate respetando la etiqueta digital y los acuerdos de convivencia construidos colectivamente.</p>
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Colabora en equipos utilizando herramientas web 2.0 y medios sincrónicos/asincrónicos de manera responsable.</p>
+      <p class="flex gap-2"><span class="text-brand-600 font-bold">✓</span> Propone y comunica soluciones creativas a problemas de la vida cotidiana con apoyo de herramientas digitales.</p>
+    </div>
+  </div>
+
+  <!-- Rúbrica -->
+  <div class="mt-8 bg-white rounded-3xl shadow-card border border-brand-100 overflow-hidden reveal">
+    <div class="px-7 py-4 bg-ink text-white font-display font-bold text-sm flex justify-between items-center flex-wrap gap-2">
+      <span>Rúbrica analítica del proyecto final</span>
+      <span class="text-[11px] font-normal text-slate-300">Instrumento principal · se comparte con los estudiantes antes de iniciar el Bloque C</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm min-w-[760px]">
+        <thead>
+          <tr class="bg-paper text-left text-[11px] uppercase tracking-wider text-slate-500">
+            <th class="px-6 py-3 font-bold">Criterio</th>
+            <th class="px-4 py-3 font-bold text-brand-700">Avanzado</th>
+            <th class="px-4 py-3 font-bold text-tealx">Satisfactorio</th>
+            <th class="px-4 py-3 font-bold text-amber-600">Básico</th>
+            <th class="px-4 py-3 font-bold text-slate-500">En proceso</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-600 align-top">
+          <tr class="border-t border-brand-100">
+            <td class="px-6 py-4 font-semibold text-ink">Comprensión crítica de la IA</td>
+            <td class="px-4 py-4">Explica con precisión y autonomía cómo aprenden y deciden los sistemas de IA.</td>
+            <td class="px-4 py-4">Explica los conceptos con ejemplos y acompañamiento ocasional.</td>
+            <td class="px-4 py-4">Reconoce los conceptos con ayuda y ejemplos guiados.</td>
+            <td class="px-4 py-4">Aún no logra distinguir usos de IA; requiere mediación constante.</td>
+          </tr>
+          <tr class="border-t border-brand-100 bg-paper/60">
+            <td class="px-6 py-4 font-semibold text-ink">Uso ético, seguro y legal</td>
+            <td class="px-4 py-4">Cita fuentes, declara el uso de IA y protege datos propios y ajenos sin recordatorios.</td>
+            <td class="px-4 py-4">Aplica las normas con recordatorios puntuales.</td>
+            <td class="px-4 py-4">Aplica las normas solo con supervisión directa.</td>
+            <td class="px-4 py-4">Requiere acompañamiento sistemático en normas de uso.</td>
+          </tr>
+          <tr class="border-t border-brand-100">
+            <td class="px-6 py-4 font-semibold text-ink">Trabajo colaborativo y comunicación</td>
+            <td class="px-4 py-4">Coordina, aporta y retroalimenta a pares en entornos web 2.0 con etiqueta digital.</td>
+            <td class="px-4 py-4">Colabora activamente y comunica con claridad.</td>
+            <td class="px-4 py-4">Participa cuando se lo convoca.</td>
+            <td class="px-4 py-4">Participación esporádica; se trabaja en acuerdos de equipo.</td>
+          </tr>
+          <tr class="border-t border-brand-100 bg-paper/60">
+            <td class="px-6 py-4 font-semibold text-ink">Resolución creativa de problemas</td>
+            <td class="px-4 py-4">La propuesta es original, viable y comunica su impacto ciudadano.</td>
+            <td class="px-4 py-4">La propuesta es adecuada y se comunica con claridad.</td>
+            <td class="px-4 py-4">La propuesta reproduce modelos con ajustes menores.</td>
+            <td class="px-4 py-4">La propuesta requiere redefinirse con acompañamiento.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Instrumentos -->
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+    <div class="bg-white rounded-2xl border border-brand-100 p-5 text-sm text-slate-600 shadow-card"><p class="font-display font-bold text-ink">📋 Registros y bitácoras</p><p class="mt-2">Registro de observación docente, bitácora de avances y tickets de salida por encuentro.</p></div>
+    <div class="bg-white rounded-2xl border border-brand-100 p-5 text-sm text-slate-600 shadow-card"><p class="font-display font-bold text-ink">🗂 Portafolio digital</p><p class="mt-2">Portafolio de prompts y producciones en documento compartido, wiki o blog del curso.</p></div>
+    <div class="bg-white rounded-2xl border border-brand-100 p-5 text-sm text-slate-600 shadow-card"><p class="font-display font-bold text-ink">🤝 Auto y coevaluación</p><p class="mt-2">Guías de autoevaluación, evaluación entre pares y devolución “dos estrellas y un deseo”.</p></div>
+    <div class="bg-white rounded-2xl border border-brand-100 p-5 text-sm text-slate-600 shadow-card"><p class="font-display font-bold text-ink">🎤 Defensa en la Feria</p><p class="mt-2">Presentación pública del proyecto con rúbrica analítica y participación de la comunidad.</p></div>
+  </div>
+</section>
+
+<!-- ============ ACUERDOS INTERACTIVOS ============ -->
+<section class="bg-gradient-to-br from-brand-700 to-brand-900 text-white">
+  <div class="max-w-6xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-10 items-center">
+    <div class="reveal">
+      <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-ambr">Producto de cierre del módulo</p>
+      <h2 class="font-display font-extrabold text-3xl mt-2">Acuerdos del curso para el uso responsable de la IA</h2>
+      <p class="mt-4 text-brand-100 leading-relaxed text-[15px]">Como síntesis ciudadana, el grupo construye y firma un pacto áulico de ciudadanía digital. Versión interactiva de muestra: marcá los compromisos y observá el avance colectivo.</p>
+      <div class="mt-6">
+        <div class="flex justify-between text-xs font-bold text-brand-100 mb-2"><span>Adhesión del curso</span><span id="pactCount">0 de 8</span></div>
+        <div class="h-3 rounded-full bg-white/15 overflow-hidden"><div id="pactBar" class="h-full w-0 bg-gradient-to-r from-ambr to-amber-300 transition-all duration-500"></div></div>
+      </div>
+    </div>
+    <div class="bg-white/10 backdrop-blur rounded-3xl p-6 space-y-2 reveal no-print">
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Verifico la información antes de compartirla.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Declaro y cito el uso de IA en mis trabajos escolares.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Respeto los derechos de autor y la propiedad intelectual.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Cuido mis datos personales y los de otras personas.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Uso la etiqueta digital y rechazo el ciberacoso.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Contrasto las respuestas de la IA con otras fuentes.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Colaboro con mis pares en entornos digitales respetuosos.</span></label>
+      <label class="pact-item flex items-start gap-3 rounded-xl px-4 py-3 cursor-pointer"><input type="checkbox" class="pact-check mt-0.5"><span class="txt text-sm">Uso la tecnología para crear, proponer y transformar mi comunidad.</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECURSOS ============ -->
+<section id="recursos" class="max-w-6xl mx-auto px-4 py-16">
+  <div class="reveal">
+    <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600">Recursos y referencias</p>
+    <h2 class="font-display font-extrabold text-3xl mt-2">Para implementar el módulo</h2>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 mt-8">
+    <div class="bg-white rounded-3xl shadow-card border border-brand-100 p-7 reveal">
+      <h3 class="font-display font-bold">Recursos materiales y digitales</h3>
+      <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
+        <li class="flex gap-2"><span class="text-brand-600">●</span> Netbooks / celulares, proyector y conectividad (con alternativas desenchufadas previstas).</li>
+        <li class="flex gap-2"><span class="text-brand-600">●</span> Simulador <em>Teachable Machine</em> para entrenamiento de modelos sin programar.</li>
+        <li class="flex gap-2"><span class="text-brand-600">●</span> Herramientas web 2.0: murales colaborativos, documentos compartidos, wikis, blogs, radio escolar.</li>
+        <li class="flex gap-2"><span class="text-brand-600">●</span> Tarjetas de casos, rúbricas impresas y guías de verificación.</li>
+      </ul>
+    </div>
+    <div class="bg-white rounded-3xl shadow-card border border-brand-100 p-7 reveal">
+      <h3 class="font-display font-bold">Referencias normativas y bibliográficas</h3>
+      <ul class="mt-4 space-y-2.5 text-sm text-slate-600">
+        <li class="flex gap-2"><span class="text-ambr">●</span> DGCyE. <em>Diseño Curricular de Educación Secundaria — 4° año: NTICx</em>. La Plata.</li>
+        <li class="flex gap-2"><span class="text-ambr">●</span> Ley de Educación Provincial N° 13.688, art. 5.</li>
+        <li class="flex gap-2"><span class="text-ambr">●</span> García Aretio, L.: la web 2.0 como gestión de contenidos por usuarios (citado en el DC).</li>
+        <li class="flex gap-2"><span class="text-ambr">●</span> UNESCO (2023). <em>Orientaciones sobre IA generativa en educación e investigación</em>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="bg-ink text-slate-300">
+  <div class="max-w-6xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-brand-600 text-white font-display font-bold flex items-center justify-center text-sm">IA</div>
+      <p class="text-sm">Módulo NTICx 4° año · <span class="text-white font-semibold">Alfabetización en IA y Ciudadanía Digital Crítica</span></p>
+    </div>
+    <p class="text-xs text-slate-400 text-center md:text-right">Elaborado en el marco del Diseño Curricular de Educación Secundaria · Dirección General de Cultura y Educación · Provincia de Buenos Aires.</p>
+  </div>
+</footer>
+
+<script>
+// ----- Barra de progreso -----
+var progressBar = document.getElementById('progressBar');
+function updateProgress(){
+  var doc = document.documentElement;
+  var max = doc.scrollHeight - doc.clientHeight;
+  var pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+  progressBar.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress, {passive:true});
+updateProgress();
+
+// ----- Scrollspy -----
+var spyLinks = document.querySelectorAll('.spy-link');
+var linkById = {};
+spyLinks.forEach(function(a){ linkById[a.getAttribute('href').slice(1)] = a; });
+var spyObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      spyLinks.forEach(function(a){ a.classList.remove('active'); });
+      var target = linkById[entry.target.id];
+      if(target) target.classList.add('active');
+    }
+  });
+}, {rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section[id]').forEach(function(sec){ spyObserver.observe(sec); });
+
+// ----- Reveal on scroll -----
+var revealObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+// ----- Tabs de bloques -----
+var tabButtons = document.querySelectorAll('.tab-btn');
+tabButtons.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    tabButtons.forEach(function(b){ b.classList.remove('tab-active'); });
+    btn.classList.add('tab-active');
+    document.querySelectorAll('[data-panel]').forEach(function(p){ p.classList.add('hidden'); });
+    var panel = document.getElementById(btn.getAttribute('data-tab'));
+    if(panel){ panel.classList.remove('hidden'); }
+  });
+});
+
+// ----- Acordeón de clases -----
+document.querySelectorAll('.acc-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var panel = btn.nextElementSibling;
+    var icon = btn.querySelector('.acc-icon');
+    var isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.acc-btn.open').forEach(function(other){
+      other.classList.remove('open');
+      other.nextElementSibling.style.maxHeight = null;
+      var otherIcon = other.querySelector('.acc-icon');
+      if(otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+    });
+    if(!isOpen){
+      btn.classList.add('open');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      if(icon) icon.style.transform = 'rotate(180deg)';
+    }
+  });
+});
+
+// ----- Pacto de ciudadanía digital -----
+var pactChecks = document.querySelectorAll('.pact-check');
+var pactBar = document.getElementById('pactBar');
+var pactCount = document.getElementById('pactCount');
+function updatePact(){
+  var total = pactChecks.length;
+  var done = 0;
+  pactChecks.forEach(function(c){ if(c.checked) done++; });
+  pactBar.style.width = (total ? (done/total)*100 : 0) + '%';
+  pactCount.textContent = done + ' de ' + total;
+}
+pactChecks.forEach(function(c){ c.addEventListener('change', updatePact); });
+updatePact();
+</script>
+</body>
+</html>
+
