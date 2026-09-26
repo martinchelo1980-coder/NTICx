@@ -60,6 +60,11 @@
         <li><a href="./modulosdidacticos/ia/">Ir Alfabetización en Inteligencia Artificial y Ciudadanía Digital Crítica</a></li>
         <li><a href="./modulosdidacticos/inclusiontec/">Ir Innovación educativa con TIC y creación de contenidos accesibles</a></li>
         <li><a href="./modulosdidacticos/interculturidad/">Ir a La interculturalidad en los entornos digitales</a></li>
+
+        <!-- PLANIFICACIONES -->
+        <p>Planificaciones - Teoria</p>
+        <li><a href="./planificacion/1.nticxcompleto/">Ir Planificación por Diseño Curricular</a></li>
+        <li><a href="./planificacion/2.clasesanual/">Ir Planificación Anual</a></li>
         
     </ul>
     <p style="font-style: italic; color: #666; margin-top: 30px;">Prof. Martín Espinosa</p>
