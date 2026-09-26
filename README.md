@@ -37,11 +37,11 @@
 
          <!-- OFFIMATICA NUEVO ENLACE AGREGADO -->
         <p>Prácticas de Ofimática</p>
-        <li><a href="./Ofimatica_Excel_(Facil)/">Ir Ofimatica Excel (Facil)</a></li>
+        <li><a href="./clases/ofimatica/1.2_excelfacil/">Ir Ofimatica Excel (Facil)</a></li>
 
          <!-- LABORATORIOS NUEVO ENLACE AGREGADO -->
         <p>Laboratorios</p>
-        <li><a href="./laboratorio_punto_de_acceso/">Ir Laboratorio Punto de acceso</a></li>
+        <li><a href="./clases/laboratorios/1.puntoacceso/">Ir Laboratorio Punto de acceso</a></li>
 
          <!-- DIAGNOSTICO HUELLA DIGITAL -->
         <p>Diagnósticos</p>
