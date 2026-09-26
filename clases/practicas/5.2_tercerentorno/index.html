@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTiCx 4.º año · Web Interactiva Pedagógica (Provincia de Buenos Aires)</title>
+
+<!-- COMENTARIO DOCENTE: Tipografía Inter vía CDN fontsource (liviano). Si el aula está sin conexión, cae en las fuentes del sistema. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-800-normal.css">
+
+<style>
+/* ==========================================================================
+   NTiCx 4.º AÑO — Web Interactiva Pedagógica
+   Paleta tecnológica: azul cobalto + gris pizarra + violeta + verde neón
+   Estructura: navegación por 4 pestañas (ejes) + optimización estricta A4
+   ========================================================================== */
+
+:root{
+  --cobalto:#1d4ed8;
+  --cobalto-osc:#1e3a8a;
+  --cobalto-soft:#e8eefc;
+  --pizarra:#334155;
+  --pizarra-claro:#64748b;
+  --pizarra-suave:#f1f5f9;
+  --violeta:#7c3aed;
+  --violeta-soft:#f1eaff;
+  --neon:#12d97a;
+  --neon-osc:#0b8f52;
+  --neon-soft:#dcfce9;
+  --ambar:#f59e0b;
+  --ambar-soft:#fff6e0;
+  --rojo:#dc2626;
+  --bg:#f4f7fd;
+  --blanco:#ffffff;
+  --negro:#0f172a;
+  --borde:#dbe2ee;
+  --sombra:0 6px 18px rgba(15,23,42,.08);
+  --sombra-fuerte:0 12px 28px rgba(15,23,42,.14);
+  --radio:14px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Inter','Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  background:
+    radial-gradient(1100px 520px at 8% -8%, rgba(29,78,216,.10), transparent 60%),
+    radial-gradient(900px 460px at 100% 0%, rgba(124,58,237,.10), transparent 55%),
+    var(--bg);
+  color:var(--negro);
+  line-height:1.65;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- ENCABEZADO ---------- */
+.site-header{
+  background:linear-gradient(120deg,var(--cobalto-osc) 0%,var(--cobalto) 45%,var(--violeta) 100%);
+  color:#fff;
+  padding:2.1rem 1.2rem 1.5rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.site-header::after{
+  content:"";
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:38px 38px;
+  pointer-events:none;
+}
+.site-header .kicker{
+  display:inline-block;
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.35);
+  padding:.28rem .85rem;border-radius:999px;
+  font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+  position:relative;z-index:2;
+}
+.site-header h1{
+  font-size:clamp(1.6rem,4.2vw,2.6rem);
+  font-weight:800;letter-spacing:-.02em;margin:.7rem 0 .3rem;position:relative;z-index:2;
+}
+.site-header p.sub{
+  font-size:clamp(.95rem,2.2vw,1.08rem);opacity:.94;max-width:820px;margin:0 auto;position:relative;z-index:2;
+}
+.header-actions{margin-top:1.1rem;display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+.btn{
+  font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;
+  border-radius:999px;padding:.6rem 1.15rem;border:2px solid rgba(255,255,255,.5);
+  background:rgba(255,255,255,.12);color:#fff;transition:.25s;
+}
+.btn:hover{background:#fff;color:var(--cobalto-osc);border-color:#fff;transform:translateY(-2px);}
+.btn-solid{
+  background:var(--neon);border-color:var(--neon);color:#062b19;
+}
+.btn-solid:hover{background:#fff;color:var(--neon-osc);border-color:#fff;}
+
+/* ---------- NAVEGACIÓN POR PESTAÑAS (fija) ---------- */
+.tabs-nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--borde);
+  box-shadow:0 2px 10px rgba(15,23,42,.06);
+  padding:.65rem .8rem;
+  display:flex;gap:.5rem;justify-content:center;align-items:center;flex-wrap:wrap;
+}
+.tab-btn{
+  font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:.5rem;
+  padding:.6rem 1rem;border-radius:12px;
+  border:2px solid transparent;background:var(--pizarra-suave);
+  color:var(--pizarra);font-size:.92rem;font-weight:600;
+  transition:.22s;white-space:nowrap;
+}
+.tab-btn .num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:8px;background:#fff;
+  border:1px solid var(--borde);font-size:.78rem;font-weight:800;color:var(--cobalto);
+}
+.tab-btn:hover{transform:translateY(-2px);background:var(--cobalto-soft);color:var(--cobalto-osc);}
+.tab-btn:focus-visible{outline:3px solid var(--violeta);outline-offset:2px;}
+.tab-btn.active{
+  background:linear-gradient(120deg,var(--cobalto) 0%,var(--violeta) 100%);
+  color:#fff;box-shadow:0 6px 16px rgba(29,78,216,.32);
+}
+.tab-btn.active .num{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4);color:#fff;}
+.nav-tools{display:flex;gap:.4rem;margin-left:.4rem;}
+.tool-btn{
+  font-family:inherit;cursor:pointer;font-size:.82rem;font-weight:600;
+  padding:.55rem .8rem;border-radius:10px;border:1.5px dashed var(--pizarra-claro);
+  background:#fff;color:var(--pizarra);transition:.2s;
+}
+.tool-btn:hover{border-style:solid;border-color:var(--neon-osc);color:var(--neon-osc);background:var(--neon-soft);}
+
+/* ---------- LAYOUT PRINCIPAL ---------- */
+main{max-width:1180px;margin:1.6rem auto 3rem;padding:0 1rem;}
+
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeUp .4s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.panel-head{
+  background:var(--blanco);border:1px solid var(--borde);border-radius:var(--radio);
+  padding:1.5rem 1.6rem;box-shadow:var(--sombra);margin-bottom:1.4rem;
+  border-left:8px solid var(--cobalto);
+}
+.panel-head .eyebrow{
+  font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violeta);
+}
+.panel-head h2{
+  font-size:clamp(1.4rem,3.4vw,2rem);font-weight:800;color:var(--cobalto-osc);
+  letter-spacing:-.02em;margin:.3rem 0 .5rem;
+}
+.panel-head p{color:var(--pizarra);max-width:900px;}
+.expectativas{
+  margin-top:.9rem;display:flex;flex-wrap:wrap;gap:.45rem;
+}
+.chip{
+  font-size:.78rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;
+  background:var(--cobalto-soft);color:var(--cobalto-osc);border:1px solid #cddcf9;
+}
+.chip.violeta{background:var(--violeta-soft);color:#5b21b6;border-color:#e0d4fb;}
+.chip.neon{background:var(--neon-soft);color:var(--neon-osc);border-color:#b7edcd;}
+
+.card{
+  background:var(--blanco);border:1px solid var(--borde);border-radius:var(--radio);
+  padding:1.6rem;box-shadow:var(--sombra);margin-bottom:1.4rem;
+}
+.card h3{
+  font-size:1.22rem;font-weight:800;color:var(--cobalto-osc);margin-bottom:.7rem;
+  display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em;
+}
+.card h3::after{
+  content:"";flex:1;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--cobalto) 0%,var(--violeta) 45%,transparent 100%);
+  opacity:.35;
+}
+.card h4{font-size:1rem;font-weight:700;color:var(--pizarra);margin:1rem 0 .4rem;}
+.card p{margin-bottom:.75rem;color:#1f2937;}
+.card ul,.card ol{margin:.4rem 0 .9rem 1.35rem;}
+.card li{margin:.35rem 0;}
+.card li::marker{color:var(--violeta);}
+strong{color:var(--cobalto-osc);}
+.destacado{
+  background:linear-gradient(120deg,var(--cobalto-soft),var(--violeta-soft));
+  border-left:5px solid var(--violeta);border-radius:10px;padding:.9rem 1.1rem;margin:1rem 0;
+}
+.destacado p{margin:0;}
+.cita{
+  border-left:5px solid var(--neon);background:var(--neon-soft);
+  padding:.9rem 1.1rem;border-radius:10px;margin:1rem 0;font-style:italic;color:#0b3b25;
+}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;}
+
+/* ---------- BLOQUES INTERACTIVOS GENÉRICOS ---------- */
+.lab{
+  background:linear-gradient(180deg,#fbfcff,#f2f6ff);
+  border:1px solid var(--borde);border-radius:var(--radio);
+  padding:1.4rem;margin:1.2rem 0;
+}
+.lab-title{
+  display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+  font-weight:800;color:var(--cobalto-osc);font-size:1.08rem;margin-bottom:.3rem;
+}
+.lab-title .badge{
+  font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--neon);color:#062b19;padding:.2rem .55rem;border-radius:999px;
+}
+.lab-hint{font-size:.86rem;color:var(--pizarra-claro);margin-bottom:1rem;}
+
+/* Tooltip / contenido desplegable */
+.tip{
+  display:none;margin-top:.7rem;padding:.8rem .9rem;border-radius:10px;
+  background:#fff;border:1px solid var(--borde);border-top:4px solid var(--violeta);
+  font-size:.9rem;color:var(--pizarra);box-shadow:var(--sombra);
+}
+.open > .tip,.revealed > .tip{display:block;animation:fadeUp .25s ease both;}
+body.reveal-all .tip{display:block;}
+.tip b{color:var(--cobalto-osc);}
+
+/* ---------- PESTAÑA 1: DIAGRAMA DEL PROCESO COMUNICATIVO ---------- */
+.diagrama{
+  position:relative;background:#fff;border:2px dashed #c7d4ee;border-radius:var(--radio);
+  padding:1.6rem 1rem 1.2rem;
+}
+.diagrama .ctx-tag{
+  position:absolute;top:-14px;left:18px;background:var(--cobalto);color:#fff;
+  font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.25rem .7rem;border-radius:999px;
+}
+.flujo{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;
+}
+.nodo{
+  font-family:inherit;cursor:pointer;text-align:left;
+  background:#fff;border:2px solid var(--cobalto);border-radius:14px;
+  padding:.7rem .85rem;min-width:132px;
+  transition:.22s;position:relative;
+}
+.nodo:hover,.nodo:focus-visible,.nodo.pinned{
+  border-color:var(--violeta);transform:translateY(-4px);box-shadow:var(--sombra-fuerte);
+  background:linear-gradient(180deg,#fff,var(--violeta-soft));
+}
+.nodo .ico{font-size:1.4rem;line-height:1;display:block;margin-bottom:.25rem;}
+.nodo .nom{font-weight:800;font-size:.92rem;color:var(--cobalto-osc);display:block;}
+.nodo .sub{font-size:.74rem;color:var(--pizarra-claro);display:block;}
+.flecha{color:var(--violeta);font-size:1.5rem;font-weight:800;flex:0 0 auto;}
+.pila{display:flex;flex-direction:column;gap:.55rem;}
+.nodo-ancho{min-width:min(100%,420px);text-align:center;border-color:var(--neon-osc);background:var(--neon-soft);}
+.nodo-ancho:hover,.nodo-ancho.pinned{border-color:var(--neon-osc);background:#fff;}
+.nodo-ruido{border-style:dashed;border-color:var(--ambar);background:var(--ambar-soft);min-width:190px;}
+.retro-linea{
+  display:flex;justify-content:center;margin:.5rem 0 .8rem;color:var(--neon-osc);
+  font-size:.8rem;font-weight:700;letter-spacing:.05em;
+}
+.panel-info{
+  margin-top:1rem;background:var(--pizarra-suave);border-left:5px solid var(--neon);
+  border-radius:10px;padding:.9rem 1.1rem;font-size:.94rem;color:var(--pizarra);min-height:76px;
+}
+.panel-info .titulo-info{font-weight:800;color:var(--cobalto-osc);display:block;margin-bottom:.2rem;}
+
+/* ---------- TARJETAS QUE GIRAN (flip) ---------- */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:.6rem;}
+.flip{perspective:1200px;height:270px;cursor:pointer;}
+.flip-inner{
+  position:relative;width:100%;height:100%;transition:transform .65s;transform-style:preserve-3d;
+}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-cara{
+  position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radio);
+  padding:1.1rem;border:1px solid var(--borde);box-shadow:var(--sombra);
+  display:flex;flex-direction:column;justify-content:center;gap:.4rem;overflow:hidden;
+}
+.flip-frente{background:linear-gradient(150deg,#fff,var(--cobalto-soft));text-align:center;}
+.flip-frente .num-ent{font-size:2.4rem;font-weight:800;color:var(--cobalto);}
+.flip-frente h5{font-size:1.05rem;color:var(--cobalto-osc);}
+.flip-frente .pista{font-size:.76rem;color:var(--pizarra-claro);margin-top:.5rem;}
+.flip-dorso{
+  transform:rotateY(180deg);background:linear-gradient(150deg,var(--cobalto-osc),var(--violeta));
+  color:#fff;font-size:.86rem;
+}
+.flip-dorso ul{margin-left:1.1rem;}
+.flip-dorso li{margin:.28rem 0;}
+
+/* ---------- TABLA ---------- */
+.tabla{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.92rem;}
+.tabla th,.tabla td{border:1px solid var(--borde);padding:.6rem .7rem;text-align:left;vertical-align:top;}
+.tabla thead th{background:var(--cobalto-osc);color:#fff;font-weight:700;}
+.tabla tbody tr:nth-child(even){background:#fafcff;}
+.tabla tbody tr:hover{background:var(--cobalto-soft);}
+
+/* ---------- CONSIGNA / ESPACIO DE RESOLUCIÓN (imprimible) ---------- */
+.consigna{
+  background:var(--ambar-soft);border:2px solid var(--ambar);border-radius:var(--radio);
+  padding:1.3rem 1.4rem;margin:1.4rem 0;
+}
+.consigna h3{color:#8a5300;}
+.consigna h3::after{background:linear-gradient(90deg,var(--ambar),transparent);}
+.consigna ol{margin-left:1.4rem;}
+.consigna .meta{
+  display:flex;gap:1rem;flex-wrap:wrap;font-size:.84rem;color:#7a5a12;margin-bottom:.7rem;
+}
+.consigna .meta span{background:#fff;border:1px solid #f0d9a4;padding:.25rem .6rem;border-radius:999px;}
+.hoja{
+  background:#fff;border:2px dashed var(--pizarra-claro);border-radius:10px;
+  padding:1rem;margin-top:1rem;
+}
+.hoja .rotulo{
+  font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--pizarra-claro);margin-bottom:.6rem;
+}
+.linea{border-bottom:1px solid #b9c3d4;height:30px;}
+.cuadro-dibujo{
+  border:1.5px dashed #9aa7bd;border-radius:8px;height:170px;
+  display:flex;align-items:center;justify-content:center;color:#a6b0c2;font-size:.85rem;
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    repeating-linear-gradient(0deg,transparent 0 23px,#eef2f8 23px 24px);
+}
+
+/* ---------- PESTAÑA 2: SIMULADOR DE NOTICIA ---------- */
+.post{
+  background:#fff;border:1px solid var(--borde);border-radius:var(--radio);
+  overflow:hidden;box-shadow:var(--sombra);max-width:660px;margin:0 auto;
+}
+.post-bar{
+  display:flex;align-items:center;gap:.6rem;padding:.7rem .9rem;border-bottom:1px solid var(--borde);
+  background:#fbfcff;
+}
+.avatar{
+  width:38px;height:38px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--rojo),#f97316);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;
+}
+.post-bar .datos{font-size:.84rem;line-height:1.3;}
+.post-bar .datos b{color:var(--negro);}
+.post-bar .datos span{color:var(--pizarra-claro);}
+.post-bar .promo{
+  margin-left:auto;font-size:.68rem;font-weight:700;color:var(--ambar);
+  border:1px solid var(--ambar);border-radius:6px;padding:.15rem .4rem;background:var(--ambar-soft);
+}
+.zona{
+  border-bottom:1px solid var(--borde);position:relative;transition:.25s;
+}
+.zona:last-child{border-bottom:none;}
+.zona-btn{
+  font-family:inherit;width:100%;text-align:left;cursor:pointer;background:transparent;border:none;
+  padding:.9rem 1rem;display:block;position:relative;transition:.25s;
+}
+.zona-btn::before{
+  content:"🔎";position:absolute;right:.8rem;top:.85rem;font-size:.9rem;opacity:.35;transition:.25s;
+}
+.zona-btn:hover{background:var(--violeta-soft);}
+.zona-btn:hover::before{opacity:1;transform:scale(1.15);}
+.zona.abierta .zona-btn{background:var(--cobalto-soft);}
+.zona-tag{
+  display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--violeta);color:#fff;padding:.15rem .5rem;border-radius:6px;margin-bottom:.45rem;
+}
+.zona-titulo{font-size:1.22rem;font-weight:800;line-height:1.25;color:#111;text-transform:uppercase;}
+.zona-bajada{font-size:.95rem;color:var(--pizarra);margin-top:.35rem;}
+.zona-cuerpo{padding:.2rem 1rem 1rem;font-size:.9rem;color:var(--pizarra);}
+.zona-analisis{display:none;padding:0 1rem 1.1rem;}
+.zona.abierta .zona-analisis{display:block;animation:fadeUp .28s ease both;}
+body.reveal-all .zona-analisis{display:block;}
+.analisis-caja{
+  background:#fffdf5;border:1px solid #f1e2b8;border-left:5px solid var(--ambar);
+  border-radius:10px;padding:.85rem 1rem;font-size:.89rem;
+}
+.analisis-caja h6{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:#8a5300;margin-bottom:.4rem;}
+.analisis-caja ul{margin-left:1.15rem;}
+.analisis-caja li{margin:.25rem 0;}
+.etiqueta-oculta{
+  display:inline-block;background:#111;color:#fff;font-size:.72rem;font-weight:700;
+  padding:.15rem .5rem;border-radius:999px;margin:.2rem .2rem 0 0;
+}
+
+/* Tarjetas del lenguaje digital */
+.mini-card{
+  background:#fff;border:1px solid var(--borde);border-radius:12px;padding:1rem;
+  cursor:pointer;transition:.25s;
+}
+.mini-card:hover{border-color:var(--neon-osc);box-shadow:var(--sombra);transform:translateY(-3px);}
+.mini-card .ic{font-size:1.5rem;}
+.mini-card h5{color:var(--cobalto-osc);font-size:1rem;margin:.3rem 0 .2rem;}
+.mini-card p{font-size:.88rem;color:var(--pizarra);margin:0;}
+
+/* ---------- PESTAÑA 3: TIMELINE + COMPARADOR ---------- */
+.timeline{position:relative;margin:1rem 0 .5rem;padding-left:2rem;}
+.timeline::before{
+  content:"";position:absolute;left:.55rem;top:.2rem;bottom:.2rem;width:4px;border-radius:4px;
+  background:linear-gradient(180deg,var(--cobalto),var(--violeta),var(--neon));
+}
+.tl-item{position:relative;margin-bottom:.85rem;}
+.tl-item::before{
+  content:"";position:absolute;left:-1.72rem;top:.42rem;width:14px;height:14px;border-radius:50%;
+  background:#fff;border:4px solid var(--cobalto);transition:.25s;
+}
+.tl-item:hover::before{border-color:var(--neon);transform:scale(1.25);}
+.tl-item .anio{font-weight:800;color:var(--violeta);font-size:.85rem;}
+.tl-item .titulo-tl{font-weight:700;color:var(--cobalto-osc);}
+.tl-item p{font-size:.9rem;color:var(--pizarra);margin:.1rem 0 0;}
+
+.comparador{border:1px solid var(--borde);border-radius:var(--radio);overflow:hidden;background:#fff;}
+.comp-head{
+  display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;
+  background:linear-gradient(120deg,var(--cobalto-osc),var(--violeta));color:#fff;padding:.9rem 1rem;
+}
+.comp-head b{font-size:.98rem;}
+.modo-switch{display:flex;gap:.35rem;background:rgba(255,255,255,.15);padding:.25rem;border-radius:999px;}
+.modo-btn{
+  font-family:inherit;cursor:pointer;border:none;background:transparent;color:#fff;
+  font-size:.78rem;font-weight:700;padding:.35rem .7rem;border-radius:999px;transition:.2s;
+}
+.modo-btn.activo{background:#fff;color:var(--cobalto-osc);}
+.comp-fila{
+  display:grid;grid-template-columns:1.05fr 1fr 1fr 62px;gap:.6rem;align-items:start;
+  padding:.85rem 1rem;border-bottom:1px solid var(--borde);transition:.25s;
+}
+.comp-fila:last-child{border-bottom:none;}
+.comp-fila:hover{background:#fafcff;}
+.comp-fila .aspecto{font-weight:700;color:var(--cobalto-osc);font-size:.93rem;}
+.comp-fila .col{font-size:.88rem;color:var(--pizarra);transition:.25s;}
+.comp-fila .col.clasico{border-left:4px solid var(--pizarra-claro);padding-left:.6rem;}
+.comp-fila .col.red{border-left:4px solid var(--neon);padding-left:.6rem;}
+body.modo-clasico .comp-fila .col.red{opacity:.32;filter:grayscale(.6);}
+body.modo-red .comp-fila .col.clasico{opacity:.32;filter:grayscale(.6);}
+.comp-fila.encendida{background:var(--neon-soft);}
+.switch{
+  width:52px;height:28px;border-radius:999px;background:#cbd5e1;border:none;cursor:pointer;
+  position:relative;transition:.25s;flex:0 0 auto;
+}
+.switch::after{
+  content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.25s;
+}
+.switch[aria-checked="true"]{background:var(--neon);}
+.switch[aria-checked="true"]::after{left:27px;}
+.comp-analisis{
+  grid-column:1/-1;display:none;margin-top:.5rem;background:#fff;border:1px dashed var(--violeta);
+  border-radius:10px;padding:.7rem .9rem;font-size:.87rem;color:var(--pizarra);
+}
+.comp-fila.encendida .comp-analisis{display:block;animation:fadeUp .25s ease both;}
+body.reveal-all .comp-analisis{display:block;}
+.comp-pie{padding:.7rem 1rem;background:var(--pizarra-suave);font-size:.82rem;color:var(--pizarra-claro);}
+
+/* Diagramas SVG broadcast/red */
+.svg-duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:.8rem;}
+.svg-caja{
+  background:#fff;border:1px solid var(--borde);border-radius:12px;padding:.9rem;text-align:center;
+  transition:.25s;
+}
+.svg-caja:hover{border-color:var(--violeta);box-shadow:var(--sombra);transform:translateY(-3px);}
+.svg-caja h5{color:var(--cobalto-osc);font-size:.98rem;margin-bottom:.3rem;}
+.svg-caja p{font-size:.84rem;color:var(--pizarra);margin:0;}
+svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+.pulso{animation:pulso 2.6s ease-in-out infinite;transform-origin:center;}
+@keyframes pulso{0%,100%{opacity:.35;}50%{opacity:1;}}
+.giro-lento{animation:giro 14s linear infinite;transform-origin:110px 95px;}
+@keyframes giro{to{transform:rotate(360deg);}}
+
+/* ---------- PESTAÑA 4: INFOGRAFÍA TÉCNICA ---------- */
+.flujo-vc{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:.6rem 0 1rem;
+}
+.etapa{
+  font-family:inherit;cursor:pointer;background:#fff;border:2px solid var(--borde);border-radius:12px;
+  padding:.85rem .7rem;text-align:center;transition:.25s;position:relative;
+}
+.etapa:hover{border-color:var(--cobalto);transform:translateY(-4px);box-shadow:var(--sombra);}
+.etapa.activa{border-color:var(--neon-osc);background:var(--neon-soft);box-shadow:var(--sombra);}
+.etapa .ic{font-size:1.8rem;display:block;line-height:1.1;}
+.etapa .nom{font-weight:800;font-size:.86rem;color:var(--cobalto-osc);display:block;margin-top:.3rem;}
+.etapa .desc{font-size:.72rem;color:var(--pizarra-claro);display:block;}
+.etapa .paso{
+  position:absolute;top:-10px;left:-8px;width:24px;height:24px;border-radius:50%;
+  background:var(--violeta);color:#fff;font-size:.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.detalle-vc{
+  background:#fff;border:1px solid var(--borde);border-left:6px solid var(--cobalto);
+  border-radius:12px;padding:1rem 1.1rem;min-height:130px;
+}
+.detalle-vc h5{color:var(--cobalto-osc);font-size:1.02rem;margin-bottom:.4rem;}
+.detalle-vc .bloque{margin-top:.6rem;}
+.detalle-vc .bloque b{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--violeta);}
+.detalle-vc ul{margin:.25rem 0 0 1.2rem;font-size:.9rem;color:var(--pizarra);}
+
+/* Checklist de habilidades colaborativas */
+.check-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.55rem;margin-top:.6rem;}
+.check-item{
+  display:flex;gap:.6rem;align-items:flex-start;background:#fff;border:1px solid var(--borde);
+  border-radius:10px;padding:.65rem .8rem;cursor:pointer;transition:.22s;font-size:.9rem;
+}
+.check-item:hover{border-color:var(--neon-osc);background:var(--neon-soft);}
+.check-item input{margin-top:.25rem;width:18px;height:18px;accent-color:var(--neon-osc);cursor:pointer;}
+.barra{height:12px;background:var(--pizarra-suave);border-radius:999px;overflow:hidden;margin:.5rem 0 .3rem;border:1px solid var(--borde);}
+.barra-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cobalto),var(--neon));transition:width .45s ease;}
+.progreso-txt{font-size:.84rem;color:var(--pizarra-claro);font-weight:600;}
+
+/* Netiqueta */
+.netiqueta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin-top:.7rem;}
+.net-item{
+  background:linear-gradient(160deg,#fff,var(--pizarra-suave));border:1px solid var(--borde);
+  border-radius:12px;padding:.9rem;transition:.25s;
+}
+.net-item:hover{transform:translateY(-4px);border-color:var(--violeta);box-shadow:var(--sombra);}
+.net-item .ic{font-size:1.4rem;}
+.net-item h5{font-size:.95rem;color:var(--cobalto-osc);margin:.25rem 0;}
+.net-item p{font-size:.85rem;color:var(--pizarra);margin:0;}
+
+/* ---------- MODAL ---------- */
+.modal{
+  display:none;position:fixed;inset:0;z-index:500;background:rgba(15,23,42,.6);
+  padding:1.2rem;align-items:center;justify-content:center;
+}
+.modal.visible{display:flex;animation:fadeUp .25s ease both;}
+.modal-caja{
+  background:#fff;border-radius:16px;max-width:640px;width:100%;max-height:82vh;overflow:auto;
+  padding:1.5rem;box-shadow:var(--sombra-fuerte);border-top:8px solid var(--violeta);
+}
+.modal-caja h3{color:var(--cobalto-osc);margin-bottom:.6rem;}
+.modal-caja dl{margin-top:.6rem;}
+.modal-caja dt{font-weight:800;color:var(--violeta);margin-top:.7rem;}
+.modal-caja dd{margin-left:0;font-size:.92rem;color:var(--pizarra);}
+.modal-cerrar{
+  float:right;cursor:pointer;border:none;background:var(--pizarra-suave);color:var(--pizarra);
+  width:34px;height:34px;border-radius:50%;font-size:1.1rem;font-weight:800;transition:.2s;
+}
+.modal-cerrar:hover{background:var(--rojo);color:#fff;}
+
+/* ---------- FOOTER ---------- */
+footer{
+  text-align:center;padding:1.6rem 1rem 2.4rem;color:var(--pizarra-claro);font-size:.85rem;
+  border-top:1px solid var(--borde);background:rgba(255,255,255,.6);
+}
+footer b{color:var(--cobalto-osc);}
+
+/* ---------- SOLO IMPRESIÓN ---------- */
+.print-only{display:none;}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:820px){
+  .comp-fila{grid-template-columns:1fr 46px;}
+  .comp-fila .col.clasico,.comp-fila .col.red{grid-column:1;}
+  .comp-fila .aspecto{grid-column:1;}
+  .comp-fila .switch{grid-row:1;grid-column:2;justify-self:end;}
+  .tabs-nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;}
+  .nav-tools{margin-left:auto;}
+}
+@media (max-width:560px){
+  .card{padding:1.15rem;}
+  .flujo{flex-direction:column;}
+  .flecha{transform:rotate(90deg);}
+  .nodo{width:100%;}
+}
+
+/* ==========================================================================
+   OPTIMIZACIÓN IMPRIMIBLE EN HOJA A4
+   - Todas las pestañas se apilan secuencialmente (una hoja por eje)
+   - Se oculta la navegación, se fuerza texto negro puro y fondo blanco
+   - Se eliminan sombras/gradientes y se revela todo el contenido interactivo
+   ========================================================================== */
+@media print{
+  @page{size:A4 portrait;margin:14mm 13mm 16mm;}
+
+  html,body{background:#fff !important;color:#000 !important;font-size:11.2pt;line-height:1.45;}
+  *{
+    color:#000 !important;background:transparent !important;
+    box-shadow:none !important;text-shadow:none !important;
+    animation:none !important;transition:none !important;
+  }
+
+  /* Ocultar navegación, botones y modal */
+  .tabs-nav,.header-actions,footer,.modal,.switch,.tool-btn,.btn{display:none !important;}
+
+  /* Encabezado compacto */
+  .site-header{padding:0 0 6mm;border-bottom:2pt solid #000;}
+  .site-header::after{display:none;}
+  .site-header h1{font-size:17pt;margin:2mm 0 1mm;}
+  .site-header p.sub{font-size:10pt;}
+  .site-header .kicker{border:1pt solid #000;padding:1mm 3mm;font-size:8pt;}
+
+  /* Mostrar TODAS las pestañas, una debajo de la otra */
+  .tab-panel{display:block !important;page-break-before:always;break-before:page;}
+  .tab-panel:first-of-type{page-break-before:avoid;break-before:auto;}
+  main{max-width:none;margin:0;padding:0;}
+
+  /* Estructura de tarjetas y bloques */
+  .card,.panel-head,.lab,.diagrama,.consigna,.post,.comparador,.detalle-vc,.mini-card,
+  .net-item,.svg-caja,.etapa,.nodo,.flip-cara,.analisis-caja,.hoja,.tip,.zona-analisis,.comp-analisis{
+    border:0.8pt solid #000 !important;break-inside:avoid;page-break-inside:avoid;
+  }
+  .card,.panel-head{padding:4mm;margin-bottom:4mm;border-radius:0 !important;}
+  .panel-head{border-left:4pt solid #000 !important;}
+  .card h2,.card h3,.panel-head h2{font-size:13.5pt;margin-bottom:2mm;}
+  .card h4{font-size:11pt;}
+  .chip{border:0.6pt solid #000;padding:0.6mm 2mm;font-size:8pt;border-radius:0;}
+
+  /* Revelar TODO el contenido oculto (respuestas, tooltips, análisis) */
+  .tip,.zona-analisis,.comp-analisis,.print-only,.hidden-content{display:block !important;}
+  .tip,.zona-analisis,.comp-analisis{border:0.6pt dashed #000 !important;padding:2.5mm;margin-top:2mm;font-size:9.6pt;}
+
+  /* Tarjetas flip: mostrar ambas caras apiladas */
+  .flip{height:auto !important;break-inside:avoid;}
+  .flip-inner{transform:none !important;position:static !important;height:auto !important;}
+  .flip-cara{position:static !important;backface-visibility:visible !important;transform:none !important;
+    border:0.8pt solid #000 !important;margin-bottom:2.5mm;height:auto !important;}
+
+  /* Diagramas: nodos en fila, sin escalados */
+  .flujo{flex-direction:row;flex-wrap:wrap;gap:2mm;}
+  .nodo{min-width:26mm;transform:none !important;}
+  .flecha{font-size:12pt;}
+  .panel-info{border:0.6pt solid #000 !important;padding:2.5mm;font-size:9.6pt;}
+
+  /* SVG en negro */
+  svg *{stroke:#000 !important;}
+  svg text{fill:#000 !important;font-size:9pt !important;}
+  .svg-caja,.svg-duo{break-inside:avoid;}
+
+  /* Comparador: modo neutro, columnas visibles */
+  body.modo-clasico .comp-fila .col.red,body.modo-red .comp-fila .col.clasico{opacity:1 !important;filter:none !important;}
+  .comp-fila{grid-template-columns:1fr 1.2fr 1.2fr !important;gap:2mm;padding:2.5mm 3mm;border-bottom:0.5pt solid #000 !important;}
+  .comp-fila .col.clasico,.comp-fila .col.red{border-left:1.5pt solid #000 !important;padding-left:2mm;}
+  .comp-head{border-bottom:1pt solid #000;padding:2mm 3mm;}
+  .comp-pie{border-top:0.5pt solid #000;font-size:9pt;}
+
+  /* Tablas */
+  .tabla th,.tabla td{border:0.5pt solid #000 !important;padding:1.6mm 2mm;font-size:9.6pt;}
+  .tabla thead th{border-bottom:1.2pt solid #000 !important;}
+
+  /* Post simulado */
+  .post{max-width:none;border:1pt solid #000 !important;}
+  .zona{border-bottom:0.5pt solid #000 !important;}
+  .zona-btn{padding:2.5mm 3mm;}
+  .zona-btn::before{display:none;}
+  .zona-titulo{font-size:12pt;}
+  .etiqueta-oculta{border:0.6pt solid #000;padding:0.4mm 1.5mm;}
+
+  /* Consignas y hojas de actividad */
+  .consigna{border:1.2pt solid #000 !important;padding:4mm;break-inside:avoid;}
+  .hoja{border:1pt dashed #000 !important;padding:3mm;}
+  .linea{border-bottom:0.5pt solid #666 !important;height:7.5mm;}
+  .cuadro-dibujo{height:52mm;border:1pt dashed #000 !important;}
+  .barra,.barra-fill,.check-item input{display:none !important;}
+  .check-item{border:0.5pt solid #000 !important;padding:1.6mm 2mm;font-size:9.6pt;}
+  .check-item::before{content:"☐  ";font-weight:800;}
+
+  /* Encabezado de hoja para cada eje */
+  .print-only.ficha{
+    display:flex !important;justify-content:space-between;gap:4mm;
+    border:0.8pt solid #000;padding:2mm 3mm;margin-bottom:3mm;font-size:9pt;
+  }
+  .print-only.ficha span{border-bottom:0.5pt solid #000;flex:1;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================ ENCABEZADO ============================ -->
+<header class="site-header">
+  <span class="kicker">Nivel Secundario · Provincia de Buenos Aires</span>
+  <h1>NTiCx · 4.º año</h1>
+  <p class="sub">Nuevas Tecnologías de la Información y la Conectividad — Comunicación, medios digitales, cultura en red y trabajo colaborativo virtual.</p>
+  <div class="header-actions">
+    <button class="btn" id="btnGlosario" type="button">📖 Glosario clave</button>
+    <button class="btn btn-solid" id="btnImprimir" type="button">🖨️ Imprimir / Guardar PDF (A4)</button>
+  </div>
+</header>
+
+<!-- ============================ NAVEGACIÓN POR PESTAÑAS ============================ -->
+<!-- COMENTARIO DOCENTE: barra fija con los 4 ejes. El cambio de vista es instantáneo (JS nativo sobre clases CSS). -->
+<nav class="tabs-nav" id="tabsNav" aria-label="Ejes temáticos">
+  <button class="tab-btn active" type="button" data-tab="0" aria-selected="true"><span class="num">1</span> Tercer Entorno</button>
+  <button class="tab-btn" type="button" data-tab="1" aria-selected="false"><span class="num">2</span> Medios y realidad</button>
+  <button class="tab-btn" type="button" data-tab="2" aria-selected="false"><span class="num">3</span> Mass Media e Internet</button>
+  <button class="tab-btn" type="button" data-tab="3" aria-selected="false"><span class="num">4</span> Videoconferencia</button>
+  <span class="nav-tools">
+    <button class="tool-btn" id="btnReveal" type="button" title="Muestra en pantalla todas las respuestas ocultas">👁 Ver todo</button>
+  </span>
+</nav>
+
+<main>
+
+<!-- =======================================================================
+     PESTAÑA 1 — TERCER ENTORNO Y PROCESO GLOBAL COMUNICATIVO
+     ======================================================================= -->
+<section class="tab-panel active" id="panel-0" role="tabpanel" aria-label="Eje 1: Tercer Entorno y proceso global comunicativo">
+
+  <!-- Ficha del alumno: visible únicamente al imprimir (encabezado de hoja física) -->
+  <div class="print-only ficha">
+    <div>Eje 1 · Tercer Entorno y proceso comunicativo</div>
+    <div>Alumno/a: <span></span></div>
+    <div>Curso: <span></span> Fecha: <span></span></div>
+  </div>
+
+  <div class="panel-head">
+    <span class="eyebrow">Eje 1 · Comunicación y cultura en red</span>
+    <h2>🌐 Tercer Entorno y proceso global comunicativo</h2>
+    <p>¿Qué pasa cuando el aula, la plaza y el grupo de amigos se mudan a la red? En este eje revisamos el proceso comunicativo clásico y lo ponemos a funcionar dentro del <strong>Tercer Entorno</strong> que describe Javier Echeverría: un espacio social nuevo, sin territorio, abierto las 24 horas.</p>
+    <div class="expectativas">
+      <span class="chip">Concepto de comunicación</span>
+      <span class="chip violeta">Modelos y componentes</span>
+      <span class="chip neon">Tercer Entorno (E3)</span>
+      <span class="chip">Desterritorialización</span>
+      <span class="chip violeta">Feedback inmediato</span>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: bloque conceptual base. Editar libremente los párrafos según el marco teórico elegido. -->
+  <div class="card">
+    <h3>1. Comunicar no es sólo “pasar información”</h3>
+    <p>Comunicar viene del latín <em>communis</em>: <strong>poner algo en común</strong>. No alcanza con que yo emita un mensaje; hace falta que el otro lo reciba, lo interprete y que ese sentido circule. Por eso decimos que la comunicación es un <strong>proceso social</strong>: construye vínculos, identidades, acuerdos y también conflictos.</p>
+    <div class="destacado">
+      <p>💡 <strong>Idea fuerza:</strong> en el Tercer Entorno ya no “consumimos” comunicación: la <strong>producimos, la compartimos y la remixamos</strong> todo el tiempo. Cada story, cada meme, cada respuesta en el grupo del curso es un acto comunicativo completo.</p>
+    </div>
+
+    <h4>Modelos del proceso comunicativo</h4>
+    <ul>
+      <li><strong>Modelo lineal (Shannon y Weaver, 1948):</strong> pensado para la telefonía. Emisor → codificación → canal → decodificación → receptor. Aporta el concepto de <strong>ruido</strong>, pero supone un receptor pasivo.</li>
+      <li><strong>Modelo de Berlo (SMCR, 1960):</strong> suma las habilidades, actitudes y el bagaje cultural de cada participante: no todos decodificamos igual.</li>
+      <li><strong>Modelo circular / dialógico:</strong> incorpora el <strong>feedback</strong>. Emisor y receptor intercambian roles permanentemente.</li>
+      <li><strong>Modelo reticular o en red (E3):</strong> nodos interconectados, sin centro único. Cualquiera puede emitir, reenviar, comentar y modificar. Es el modelo de Internet y de las plataformas.</li>
+    </ul>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: esquema interactivo. Hover, foco de teclado o clic fijan la explicación en el panel inferior. -->
+  <div class="card">
+    <h3>2. Esquema interactivo: el proceso comunicativo en la red</h3>
+    <p>Pasá el cursor (o tocá) cada componente para ver <strong>cómo la red altera esa pieza</strong> del proceso.</p>
+
+    <div class="lab">
+      <div class="lab-title"><span class="badge">Interactivo</span> Modelo reticular del Tercer Entorno</div>
+      <p class="lab-hint">👉 En papel: todas las explicaciones aparecen impresas al final del esquema.</p>
+
+      <div class="diagrama">
+        <span class="ctx-tag">Contexto = Tercer Entorno (plataformas, algoritmos, conectividad)</span>
+
+        <div class="flujo">
+          <button class="nodo" type="button" data-clave="emisor">
+            <span class="ico">📤</span><span class="nom">Emisor</span><span class="sub">¿quién produce?</span>
+          </button>
+          <span class="flecha" aria-hidden="true">→</span>
+
+          <div class="pila">
+            <button class="nodo" type="button" data-clave="mensaje">
+              <span class="ico">💬</span><span class="nom">Mensaje</span><span class="sub">multimedia, remixable</span>
+            </button>
+            <button class="nodo" type="button" data-clave="codigo">
+              <span class="ico">🔤</span><span class="nom">Código</span><span class="sub">idioma, meme, emoji</span>
+            </button>
+            <button class="nodo" type="button" data-clave="canal">
+              <span class="ico">📶</span><span class="nom">Canal</span><span class="sub">fibra, 4G/5G, wifi</span>
+            </button>
+          </div>
+
+          <span class="flecha" aria-hidden="true">→</span>
+          <button class="nodo" type="button" data-clave="receptor">
+            <span class="ico">📥</span><span class="nom">Receptor</span><span class="sub">¿audiencia o usuario?</span>
+          </button>
+        </div>
+
+        <div class="retro-linea" aria-hidden="true">⟲ circulación permanente ⟲</div>
+
+        <div class="flujo">
+          <button class="nodo nodo-ancho" type="button" data-clave="feedback">
+            <span class="ico">⚡</span><span class="nom">Feedback inmediato y público</span>
+            <span class="sub">likes · comentarios · shares · stories respuesta · métricas en vivo</span>
+          </button>
+          <button class="nodo nodo-ruido" type="button" data-clave="ruido">
+            <span class="ico">⚠️</span><span class="nom">Ruidos del E3</span>
+            <span class="sub">brecha digital · algoritmo · fake news · saturación</span>
+          </button>
+          <button class="nodo nodo-ancho" type="button" data-clave="contexto">
+            <span class="ico">🌎</span><span class="nom">Contexto desterritorializado</span>
+            <span class="sub">sin lugar ni horario fijo: la red nunca cierra</span>
+          </button>
+        </div>
+
+        <div class="panel-info" id="panelInfo" aria-live="polite">
+          <span class="titulo-info">Tocá un componente del esquema</span>
+          Acá va a aparecer la explicación de cómo Internet y las plataformas transforman ese elemento del proceso comunicativo.
+        </div>
+      </div>
+
+      <!-- Contenido equivalente para impresión (oculto en pantalla) -->
+      <div class="print-only">
+        <h4>Componentes y su transformación en el Tercer Entorno</h4>
+        <table class="tabla">
+          <thead><tr><th>Componente</th><th>Modelo clásico</th><th>En el Tercer Entorno</th></tr></thead>
+          <tbody id="tablaPrint"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: tarjetas que giran al hacer clic (E1, E2, E3). En impresión se muestran ambas caras. -->
+  <div class="card">
+    <h3>3. Los tres entornos de Javier Echeverría</h3>
+    <p>El filósofo donostiarra <strong>Javier Echeverría</strong> sostiene que la vida social humana se organiza en tres entornos. El tercero —el telemático— no reemplaza a los otros dos: los atraviesa y los transforma. <strong>Hacé clic en cada tarjeta para darla vuelta.</strong></p>
+
+    <div class="flip-grid">
+      <div class="flip" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-cara flip-frente">
+            <span class="num-ent">E1</span>
+            <h5>Primer Entorno</h5>
+            <p style="font-size:.88rem;color:var(--pizarra);">Entorno natural · campo, cuerpo, naturaleza</p>
+            <span class="pista">Clic para ver características ↻</span>
+          </div>
+          <div class="flip-cara flip-dorso">
+            <ul>
+              <li>Relación directa con el ambiente natural.</li>
+              <li>Comunicación cara a cara, presencial.</li>
+              <li>Limitado por el tiempo y la distancia física.</li>
+              <li>Los sentidos y el cuerpo son el canal.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-cara flip-frente">
+            <span class="num-ent">E2</span>
+            <h5>Segundo Entorno</h5>
+            <p style="font-size:.88rem;color:var(--pizarra);">Entorno urbano e institucional · la ciudad</p>
+            <span class="pista">Clic para ver características ↻</span>
+          </div>
+          <div class="flip-cara flip-dorso">
+            <ul>
+              <li>Ciudades, escuelas, clubes, empresas, Estado.</li>
+              <li>Medios masivos: prensa, radio, TV (uno a muchos).</li>
+              <li>Presencialidad organizada por horarios e instituciones.</li>
+              <li>La ciudadanía se ejerce en un territorio determinado.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip" tabindex="0" role="button" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-cara flip-frente">
+            <span class="num-ent">E3</span>
+            <h5>Tercer Entorno</h5>
+            <p style="font-size:.88rem;color:var(--pizarra);">Entorno telemático · la red</p>
+            <span class="pista">Clic para ver características ↻</span>
+          </div>
+          <div class="flip-cara flip-dorso">
+            <ul>
+              <li><b>Desterritorializado:</b> no ocurre en un lugar físico.</li>
+              <li><b>Asincrónico y 24/7:</b> no respeta horarios.</li>
+              <li><b>Muchos a muchos:</b> todos emiten y reciben.</li>
+              <li><b>Hipertextual y multimedia:</b> enlaces, video, audio, texto.</li>
+              <li><b>Identidades múltiples:</b> perfiles, avatares, seudónimos.</li>
+              <li><b>Registrado:</b> deja huella y datos (memoria digital).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:1.2rem;">Diferencias clave entre entornos</h4>
+    <table class="tabla">
+      <thead>
+        <tr><th>Dimensión</th><th>E1 · Natural</th><th>E2 · Ciudadano</th><th>E3 · La red</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Espacio</strong></td><td>Natural, territorial</td><td>Urbano, institucional</td><td>Virtual, desterritorializado</td></tr>
+        <tr><td><strong>Tiempo</strong></td><td>Ciclos naturales</td><td>Horarios, agenda</td><td>Permanente, asincrónico</td></tr>
+        <tr><td><strong>Interacción</strong></td><td>Cara a cara</td><td>Presencial + mass media</td><td>Mediada por pantallas, en red</td></tr>
+        <tr><td><strong>Emisor</strong></td><td>Quien está presente</td><td>Instituciones y medios</td><td>Cualquier usuario conectado</td></tr>
+        <tr><td><strong>Acceso</strong></td><td>Universal (cuerpo)</td><td>Condicionado por ciudadanía y recursos</td><td>Condicionado por la <strong>brecha digital</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="cita">
+      “El Tercer Entorno no sustituye a los otros: los interpenetra. Hoy la escuela (E2) funciona también por Classroom y por el grupo de WhatsApp del curso (E3).”
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: consigna de expresión propia. Ajustar la plataforma/ejemplo según el grupo. -->
+  <div class="consigna">
+    <h3>📝 Consigna de producción: mi proceso comunicativo real</h3>
+    <div class="meta">
+      <span>⏱ 40 minutos</span><span>👥 Individual o en duplas</span><span>📄 Se entrega en la carpeta o en formato digital</span>
+    </div>
+    <p><strong>Objetivo:</strong> esquematizar un proceso comunicativo que uses todos los días y explicar qué cambia por ocurrir dentro del Tercer Entorno.</p>
+    <ol>
+      <li>Elegí <strong>una situación real</strong> de los últimos 7 días: un hilo de WhatsApp del curso, una historia de Instagram, un live de Twitch, un grupo de Discord, un comentario viral en TikTok, un mail a la preceptoría.</li>
+      <li>Dibujá el esquema identificando los <strong>7 componentes</strong> (emisor, receptor, mensaje, canal, código, contexto, feedback) y agregá al menos <strong>un ruido</strong> del E3 (mala conexión, malentendido, algoritmo, falta de contexto).</li>
+      <li>Indicá con flechas el <strong>tiempo del feedback</strong>: ¿fue inmediato, diferido, público o privado?</li>
+      <li>Respondé por escrito: ¿qué hubiera pasado si esa misma comunicación ocurría en el Primer o Segundo Entorno?</li>
+      <li>Cerrá con una reflexión de 5 renglones: <em>¿qué gano y qué pierdo cuando mi comunicación se traslada al E3?</em></li>
+    </ol>
+
+    <div class="hoja">
+      <div class="rotulo">Esquema del proceso comunicativo elegido</div>
+      <div class="cuadro-dibujo">Espacio para el esquema (usá flechas, íconos y etiquetas)</div>
+    </div>
+    <div class="hoja">
+      <div class="rotulo">Análisis y reflexión</div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================================
+     PESTAÑA 2 — MEDIOS DIGITALES Y CONSTRUCCIÓN DE LA REALIDAD
+     ======================================================================= -->
+<section class="tab-panel" id="panel-1" role="tabpanel" aria-label="Eje 2: Análisis de medios digitales y construcción de la realidad">
+
+  <div class="print-only ficha">
+    <div>Eje 2 · Medios digitales y construcción de la realidad</div>
+    <div>Alumno/a: <span></span></div>
+    <div>Curso: <span></span> Fecha: <span></span></div>
+  </div>
+
+  <div class="panel-head">
+    <span class="eyebrow">Eje 2 · Lectura crítica de medios</span>
+    <h2>🔍 Análisis de medios digitales y construcción de la realidad</h2>
+    <p>Ninguna pantalla muestra “la realidad”: muestra <strong>una versión recortada, encuadrada y editada</strong> de la realidad. En este eje aprendemos a desarmar una publicación para ver qué se dice, qué se calla, quién lo paga y para qué.</p>
+    <div class="expectativas">
+      <span class="chip">Fuentes, técnicas y códigos</span>
+      <span class="chip violeta">Realidad construida</span>
+      <span class="chip neon">Lenguaje explícito / implícito</span>
+      <span class="chip">Intencionalidad y valores</span>
+      <span class="chip violeta">Hipertexto · multimedia · interactividad</span>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: marco conceptual. Se pueden sumar ejemplos locales (medios bonaerenses, radios escolares). -->
+  <div class="card">
+    <h3>1. Fuentes, técnicas y códigos en los medios digitales</h3>
+    <div class="grid-3">
+      <div class="mini-card">
+        <span class="ic">🗂️</span><h5>Fuentes</h5>
+        <p>De dónde sale la información: agencias (Télam, AFP), comunicados oficiales, corresponsales, bases de datos abiertas, testimonios, redes sociales, algoritmos de tendencias. <strong>Pregunta clave:</strong> ¿la fuente tiene nombre, apellido e interés declarado?</p>
+      </div>
+      <div class="mini-card">
+        <span class="ic">🛠️</span><h5>Técnicas</h5>
+        <p>Cómo se fabrica: redacción, edición y recorte, titulación, fotografía, montaje de video, infografía, <em>SEO</em> y <em>clickbait</em>, métricas de audiencia, A/B testing de titulares, recortes con IA.</p>
+      </div>
+      <div class="mini-card">
+        <span class="ic">🧩</span><h5>Códigos</h5>
+        <p>Qué lenguajes se combinan: verbal (texto), visual (color, encuadre, primer plano), sonoro (música, efectos), narrativo (relato, personaje, conflicto) e interactivo (enlaces, botones, encuestas).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. La realidad que los medios construyen</h3>
+    <p>Los medios seleccionan, jerarquizan y encuadran. Ese trabajo produce lo que llamamos <strong>realidad mediática</strong>: una versión de los hechos que la mayoría de la gente toma como “lo que pasó”.</p>
+    <ul>
+      <li><strong>Agenda setting (McCombs y Shaw):</strong> los medios no siempre nos dicen <em>qué pensar</em>, pero sí <em>sobre qué pensar</em>. Lo que entra en agenda existe socialmente; lo que queda afuera, no.</li>
+      <li><strong>Encuadre o <em>framing</em>:</strong> el ángulo. “Ocuparon la escuela” / “Los estudiantes reclaman por condiciones edilicias” narran el mismo hecho con valoraciones opuestas.</li>
+      <li><strong>Gatekeeping:</strong> hay “porteros” (editores, dueños, algoritmos) que deciden qué pasa y qué no. En plataformas, el portero es el algoritmo de recomendación.</li>
+      <li><strong>Estereotipos:</strong> atajos de representación que repiten imágenes simplificadas de jóvenes, mujeres, migrantes, barrios populares.</li>
+    </ul>
+
+    <h4>Valores e intencionalidad mediática</h4>
+    <table class="tabla">
+      <thead><tr><th>Intencionalidad</th><th>Qué busca</th><th>Se reconoce por…</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Comercial</strong></td><td>Vender, retener atención, monetizar datos</td><td>Publicidad nativa, “patrocinado”, banners, <em>clickbait</em>, suscripciones</td></tr>
+        <tr><td><strong>Ideológica / política</strong></td><td>Instalar una interpretación del mundo</td><td>Adjetivación cargada, selección de voces, tapa y jerarquía</td></tr>
+        <tr><td><strong>De posicionamiento de marca</strong></td><td>Construir identidad y comunidad</td><td>Estética uniforme, tono, <em>storytelling</em>, <em>merchandising</em></td></tr>
+        <tr><td><strong>Educativa / de servicio</strong></td><td>Informar y formar</td><td>Fuentes citadas, datos verificables, contexto histórico</td></tr>
+      </tbody>
+    </table>
+    <div class="destacado">
+      <p>🧠 <strong>Dato crítico:</strong> en las plataformas el negocio suele ser la <strong>atención</strong>. Cuanto más tiempo pasás mirando, más publicidad se muestra y más datos se recogen. Por eso el contenido se diseña para generar emoción intensa: indignación, miedo, risa, pertenencia.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. Lenguaje explícito y lenguaje implícito</h3>
+    <div class="grid-2">
+      <div class="mini-card">
+        <span class="ic">🔊</span><h5>Explícito (lo que se dice)</h5>
+        <p>Contenido manifiesto, literal, verificable: datos, citas textuales, hechos fechados. Se puede comprobar contrastando fuentes.</p>
+      </div>
+      <div class="mini-card">
+        <span class="ic">🕵️</span><h5>Implícito (lo que se sugiere)</h5>
+        <p>Connotaciones, presuposiciones, ironías, estereotipos, valores. Se lee entre líneas: en la foto elegida, en el orden de las palabras, en lo que se omite.</p>
+      </div>
+    </div>
+    <table class="tabla" style="margin-top:1rem;">
+      <thead><tr><th>Enunciado explícito</th><th>Implícito posible</th><th>Estrategia usada</th></tr></thead>
+      <tbody>
+        <tr><td>“Vecinos cansados de la inseguridad”</td><td>Legitima el linchamiento; asocia delito con un grupo social</td><td>Voz colectiva sin nombre propio</td></tr>
+        <tr><td>“El polémico proyecto volvió a generar debate”</td><td>Instala que hay dos bandos equivalentes aunque uno carezca de evidencia</td><td>Adjetivación + falsa simetría</td></tr>
+        <tr><td>Foto de un joven con capucha y luz roja</td><td>Criminaliza la juventud y la tecnología</td><td>Estereotipo visual de archivo</td></tr>
+        <tr><td>“No se descartan nuevas medidas”</td><td>Genera expectativa/temor sin afirmar nada</td><td>Vaguedad estratégica</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Los tres rasgos del lenguaje digital</h4>
+    <div class="grid-3">
+      <div class="mini-card"><span class="ic">🔗</span><h5>Hipertexto</h5><p>El texto es una red de enlaces: la lectura no es lineal, la elige quien navega. Consecuencia: se pierde el contexto si no seguimos los vínculos.</p></div>
+      <div class="mini-card"><span class="ic">🎞️</span><h5>Multimedia</h5><p>Conviven texto, imagen, audio, video y animación en un mismo mensaje. Consecuencia: la imagen suele “probar” lo que el texto no puede.</p></div>
+      <div class="mini-card"><span class="ic">🎮</span><h5>Interactividad</h5><p>El usuario responde, comparte, edita, comenta, vota. Consecuencia: el sentido se negocia públicamente (y también se manipula con bots y tendencias).</p></div>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: simulador de desconstrucción. Cada zona es un botón; al hacer clic se despliega el análisis crítico. -->
+  <div class="card">
+    <h3>4. Simulador: desconstrucción de una publicación digital</h3>
+    <p>Acá tenés una nota ficticia, construida con las estrategias reales que vemos todos los días. <strong>Hacé clic en cada zona marcada</strong> para revelar el lenguaje oculto, la intencionalidad y los valores en juego.</p>
+
+    <div class="lab">
+      <div class="lab-title"><span class="badge">Interactivo</span> Post del portal “ÚLTIMA HORA YA” (caso de estudio ficticio)</div>
+      <p class="lab-hint">👉 Zonas analizables: titular · imagen · bajada · fuentes · comentarios · publicidad.</p>
+
+      <div class="post">
+        <div class="post-bar">
+          <div class="avatar">UH</div>
+          <div class="datos"><b>ÚLTIMA HORA YA!</b> · Portal de noticias<br><span>Hace 22 min · 🌐 Público · 📱 1,2 M de vistas</span></div>
+          <span class="promo">PATROCINADO</span>
+        </div>
+
+        <!-- ZONA: TITULAR -->
+        <div class="zona" id="zonaTitular">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Titular</span>
+            <div class="zona-titulo">¡Escándalo! Estudiante bonaerense “hackea” un banco y desaparecen millones</div>
+            <div class="zona-bajada">Tiene 16 años, vivía en un barrio humilde y nadie lo notó. Mirá el video.</div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>Lenguaje oculto e intencionalidad</h6>
+              <ul>
+                <li><b>Explícito:</b> una persona habría vulnerado un sistema bancario.</li>
+                <li><b>Implícito:</b> “escándalo”, comillas dudosas y “nadie lo notó” construyen <b>miedo + fascinación</b> y criminalizan la juventud y la pobreza.</li>
+                <li><b>Recursos:</b> mayúsculas, exclamación, verbo entre comillas (afirma sin probar), clase social como dato “de color”.</li>
+                <li><b>Intencionalidad:</b> maximizar clics (CTR) y tiempo en pantalla para vender publicidad.</li>
+                <li><b>Lo que falta:</b> presunción de inocencia, voz de especialistas en ciberseguridad, explicación técnica, estado de la causa.</li>
+              </ul>
+              <span class="etiqueta-oculta">#clickbait</span><span class="etiqueta-oculta">#estereotipo</span><span class="etiqueta-oculta">#sensacionalismo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA: IMAGEN -->
+        <div class="zona" id="zonaImagen">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Imagen principal</span>
+            <div class="zona-cuerpo">
+              <!-- COMENTARIO DOCENTE: ilustración vectorial de la "foto de archivo" estereotipada. -->
+              <svg viewBox="0 0 480 220" role="img" aria-label="Ilustración de un joven encapuchado frente a pantallas con alerta roja">
+                <defs>
+                  <linearGradient id="fondoRojo" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#1b1030"/><stop offset="100%" stop-color="#4a0d16"/>
+                  </linearGradient>
+                  <linearGradient id="pantalla" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#12d97a"/><stop offset="100%" stop-color="#0b6f45"/>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="480" height="220" fill="url(#fondoRojo)"/>
+                <!-- pantallas con código -->
+                <rect x="30" y="34" width="120" height="82" rx="6" fill="url(#pantalla)" opacity=".85"/>
+                <rect x="330" y="30" width="118" height="86" rx="6" fill="url(#pantalla)" opacity=".7"/>
+                <g stroke="#04170e" stroke-width="3" opacity=".8">
+                  <line x1="42" y1="52" x2="132" y2="52"/><line x1="42" y1="66" x2="112" y2="66"/>
+                  <line x1="42" y1="80" x2="138" y2="80"/><line x1="42" y1="94" x2="96" y2="94"/>
+                  <line x1="342" y1="48" x2="432" y2="48"/><line x1="342" y1="62" x2="404" y2="62"/>
+                  <line x1="342" y1="76" x2="436" y2="76"/><line x1="342" y1="90" x2="388" y2="90"/>
+                </g>
+                <!-- silueta encapuchada -->
+                <path d="M240 66c34 0 56 26 56 60 0 30-16 54-56 54s-56-24-56-54c0-34 22-60 56-60z" fill="#0b0b14"/>
+                <path d="M212 108c14-16 42-16 56 0 6 8 4 26-6 34-14 12-38 12-52 0-8-8-6-26 2-34z" fill="#1c1c2b"/>
+                <circle cx="228" cy="122" r="4" fill="#12d97a"/><circle cx="254" cy="122" r="4" fill="#12d97a"/>
+                <!-- teclado -->
+                <rect x="176" y="176" width="128" height="18" rx="4" fill="#232336"/>
+                <!-- banda de alerta -->
+                <rect x="0" y="0" width="480" height="26" fill="#dc2626"/>
+                <text x="14" y="18" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="800" fill="#fff">⚠ URGENTE · IMAGEN ILUSTRATIVA DE ARCHIVO</text>
+                <rect x="300" y="150" width="160" height="52" rx="8" fill="none" stroke="#facc15" stroke-width="4" transform="rotate(-8 380 176)"/>
+                <text x="316" y="182" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="800" fill="#facc15" transform="rotate(-8 380 176)">SIN VERIFICAR</text>
+              </svg>
+            </div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>Construcción visual del “peligro”</h6>
+              <ul>
+                <li><b>Código visual:</b> capucha + oscuridad + verde “Matrix” + rojo de alarma = estereotipo cinematográfico del hacker.</li>
+                <li><b>Anclaje:</b> la banda “URGENTE” fija una lectura emocional antes de leer una sola línea.</li>
+                <li><b>Problema ético:</b> es <b>imagen de archivo</b>, no del hecho. Ilustra una idea, no una evidencia, pero el lector la recibe como prueba.</li>
+                <li><b>Implícito:</b> la tecnología aparece como amenaza y la juventud como sospechosa.</li>
+                <li><b>Preguntas para hacerle a la imagen:</b> ¿quién la sacó?, ¿en qué contexto?, ¿por qué se eligió ésta y no otra?</li>
+              </ul>
+              <span class="etiqueta-oculta">#imagenDeArchivo</span><span class="etiqueta-oculta">#anclaje</span><span class="etiqueta-oculta">#estereotipoVisual</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA: BAJADA / CUERPO -->
+        <div class="zona" id="zonaBajada">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Bajada y primer párrafo</span>
+            <div class="zona-cuerpo">“Fuentes cercanas a la investigación aseguran que el joven, de un barrio humilde del conurbano, habría accedido al sistema desde una notebook prestada. El banco aún no confirmó el monto. <b>Seguí leyendo →</b>”</div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>Estrategias textuales</h6>
+              <ul>
+                <li><b>Falsa precisión:</b> “fuentes cercanas” da apariencia de rigor sin fuente identificable.</li>
+                <li><b>Condicional estratégico:</b> “habría accedido”, “aún no confirmó”: se afirma y se cubre a la vez.</li>
+                <li><b>Clasismo implícito:</b> “barrio humilde” + “notebook prestada” refuerzan el relato del “pibe peligroso por necesidad”.</li>
+                <li><b>Fragmentación del relato:</b> “Seguí leyendo →” es <b>hipertexto con finalidad comercial</b>: divide la nota en páginas para sumar impresiones publicitarias.</li>
+              </ul>
+              <span class="etiqueta-oculta">#hipertexto</span><span class="etiqueta-oculta">#fuenteAnónima</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA: FUENTES AUSENTES -->
+        <div class="zona" id="zonaFuentes">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Sección de fuentes</span>
+            <div class="zona-cuerpo">🚫 No hay enlace a la denuncia judicial. 🚫 No hay declaración del banco. 🚫 No hay voz del estudiante ni de su familia. 🚫 No hay especialistas en seguridad informática. ✅ Sólo dos capturas de pantalla de otra cuenta.</div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>El silencio también comunica</h6>
+              <ul>
+                <li><b>Lo que se omite construye sentido</b> tanto como lo que se dice: sin voces técnicas ni derecho a réplica, la nota juzga.</li>
+                <li><b>Circularidad:</b> citar capturas de redes como fuente es <b>autorreferencial</b>: la red “prueba” lo que la red inventó.</li>
+                <li><b>Chequeo básico que falta:</b> búsqueda inversa de imagen, verificación del dominio, contraste con dos medios independientes, fecha real del hecho.</li>
+                <li><b>Valor en juego:</b> la velocidad le gana a la verificación (lógica del “primero publico, después corrijo”).</li>
+              </ul>
+              <span class="etiqueta-oculta">#fuentesAusentes</span><span class="etiqueta-oculta">#desinformación</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA: COMENTARIOS -->
+        <div class="zona" id="zonaComentarios">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Comentarios e interacción</span>
+            <div class="zona-cuerpo">💬 3.412 comentarios · 🔁 18 mil compartidos · Encuesta: “¿Creés que debe ir preso?” Sí 78% / No 22%<br><em>“Compartí si pensás que la justicia tiene que ser dura”</em></div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>Interactividad como motor de polarización</h6>
+              <ul>
+                <li><b>Llamado a la acción emocional:</b> “compartí si…” convierte al lector en difusor de una opinión ya tomada.</li>
+                <li><b>Encuesta no científica:</b> sólo vota quien ya está indignado; luego se cita como “la opinión de la gente”.</li>
+                <li><b>Algoritmo:</b> los comentarios con enojo generan más respuestas → más alcance → más publicidad.</li>
+                <li><b>Riesgo:</b> formación de <b>opinión pública emocional</b>, escraches y daño a personas reales identificables.</li>
+              </ul>
+              <span class="etiqueta-oculta">#interactividad</span><span class="etiqueta-oculta">#polarización</span><span class="etiqueta-oculta">#engagement</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA: PUBLICIDAD -->
+        <div class="zona" id="zonaPublicidad">
+          <button class="zona-btn" type="button" aria-expanded="false">
+            <span class="zona-tag">Publicidad y monetización</span>
+            <div class="zona-cuerpo">🛒 Banner: “Antivirus PRO 70% OFF” · 🛒 “Curso de hacking ético en 30 días” · 🍪 Aviso de cookies y rastreo</div>
+          </button>
+          <div class="zona-analisis">
+            <div class="analisis-caja">
+              <h6>El modelo de negocio detrás del susto</h6>
+              <ul>
+                <li><b>Coherencia sospechosa:</b> la nota crea el miedo y el banner vende la solución. Se llama <b>publicidad contextual</b>.</li>
+                <li><b>Datos personales:</b> las cookies y los identificadores alimentan perfiles de consumo; la noticia “gratuita” se paga con información.</li>
+                <li><b>Valor dominante:</b> la seguridad como mercancía.</li>
+                <li><b>Pregunta final:</b> ¿quién gana dinero con que yo sienta miedo?</li>
+              </ul>
+              <span class="etiqueta-oculta">#modeloDeNegocio</span><span class="etiqueta-oculta">#datosPersonales</span><span class="etiqueta-oculta">#publicidadContextual</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: consigna de análisis. Se sugiere traer capturas reales del feed del grupo (sin exponer nombres). -->
+  <div class="consigna">
+    <h3>📝 Consigna: desmontá una publicación real</h3>
+    <div class="meta"><span>⏱ 2 clases</span><span>👥 Grupos de 3</span><span>🎧 Producto: informe + reel o afiche</span></div>
+    <ol>
+      <li>Elegí una noticia, post viral o publicidad que haya circulado esta semana (captura de pantalla, sin exponer datos de personas).</li>
+      <li>Identificá: <strong>medio/emisor</strong>, <strong>fuente citada</strong>, <strong>intencionalidad</strong> y <strong>modelo de financiamiento</strong>.</li>
+      <li>Separá en dos columnas el <strong>lenguaje explícito</strong> y el <strong>implícito</strong> (mínimo 4 ejemplos de cada uno).</li>
+      <li>Analizá el <strong>código visual</strong>: encuadre, color, gestos, qué o quién queda fuera de cuadro.</li>
+      <li>Señalá cómo aparecen <strong>hipertexto, multimedia e interactividad</strong> y para qué se usan.</li>
+      <li>Reescriban la publicación de forma verificable y responsable (titular + bajada + 2 fuentes reales).</li>
+      <li>Producto final: un reel de 60 segundos o un afiche con el título <em>“Así se construye lo que creés que pasó”</em>.</li>
+    </ol>
+    <div class="hoja">
+      <div class="rotulo">Borrador del análisis (explícito / implícito)</div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================================
+     PESTAÑA 3 — MASS MEDIA Y LA REVOLUCIÓN DE INTERNET
+     ======================================================================= -->
+<section class="tab-panel" id="panel-2" role="tabpanel" aria-label="Eje 3: Mass Media y la revolución de Internet">
+
+  <div class="print-only ficha">
+    <div>Eje 3 · Mass Media y la revolución de Internet</div>
+    <div>Alumno/a: <span></span></div>
+    <div>Curso: <span></span> Fecha: <span></span></div>
+  </div>
+
+  <div class="panel-head">
+    <span class="eyebrow">Eje 3 · Historia y transformación de los medios</span>
+    <h2>📺 Mass Media y la revolución de Internet</h2>
+    <p>De la imprenta al <em>feed</em>: cómo pasamos de una audiencia sentada frente al televisor a usuarios que producen, comentan y reenvían. Analizamos el salto del modelo <strong>broadcasting</strong> (uno a muchos) al modelo <strong>en red</strong> (muchos a muchos) y la aparición del <strong>prosumidor</strong>.</p>
+    <div class="expectativas">
+      <span class="chip">Prensa · radio · TV</span>
+      <span class="chip violeta">Evolución técnica</span>
+      <span class="chip neon">Broadcasting → red</span>
+      <span class="chip">Prosumidor</span>
+      <span class="chip violeta">Alcance y democratización</span>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: definición de mass media. Se puede vincular con medios locales del distrito. -->
+  <div class="card">
+    <h3>1. ¿Qué son los medios masivos de comunicación?</h3>
+    <p>Los <strong>mass media</strong> son medios técnicos capaces de emitir mensajes a una <strong>audiencia masiva</strong>: numerosa, heterogénea, anónima y dispersa. Rasgos del modelo clásico:</p>
+    <ul>
+      <li><strong>Unidireccionalidad:</strong> un emisor institucional habla, la audiencia escucha.</li>
+      <li><strong>Institucionalidad y costo:</strong> hace falta una empresa, una licencia, una imprenta o una antena.</li>
+      <li><strong>Emisión programada:</strong> el horario lo fija el medio, no el receptor (la “programación” de TV o radio).</li>
+      <li><strong>Gatekeeping fuerte:</strong> pocos deciden qué se publica.</li>
+      <li><strong>Feedback débil y diferido:</strong> cartas de lectores, rating, llamados al aire.</li>
+    </ul>
+
+    <div class="grid-3">
+      <div class="mini-card"><span class="ic">📰</span><h5>Prensa gráfica</h5><p>Primer medio masivo. Diarios y revistas: texto + foto, periodicidad diaria o semanal. Hoy migra a portales con paywall y alertas push.</p></div>
+      <div class="mini-card"><span class="ic">📻</span><h5>Radio</h5><p>Inmediatez y compañía. Barata de producir y de recibir. Sobrevivió a la TV y se potenció con el streaming y los podcasts.</p></div>
+      <div class="mini-card"><span class="ic">📺</span><h5>Televisión</h5><p>El medio hegemónico del siglo XX: audiovisual, en vivo, en el hogar. Convive hoy con plataformas bajo demanda (YouTube, Twitch, Netflix).</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. Evolución histórica de los medios técnicos</h3>
+    <p>Cada salto tecnológico reorganizó la comunicación social: cambió quién puede hablar, a cuántos y con qué velocidad.</p>
+    <div class="timeline">
+      <div class="tl-item"><span class="anio">~3500 a.C.</span> <span class="titulo-tl">Escritura</span><p>Permite almacenar y trasladar el mensaje en el tiempo y el espacio. Nace el documento.</p></div>
+      <div class="tl-item"><span class="anio">1440</span> <span class="titulo-tl">Imprenta de tipos móviles (Gutenberg)</span><p>Reproducción seriada: nace el público lector y, con él, la opinión pública moderna.</p></div>
+      <div class="tl-item"><span class="anio">1830-1840</span> <span class="titulo-tl">Telégrafo</span><p>Por primera vez la información viaja más rápido que las personas. Nace la agencia de noticias.</p></div>
+      <div class="tl-item"><span class="anio">1870-1920</span> <span class="titulo-tl">Teléfono y radio</span><p>Comunicación sonora a distancia; la radio arma comunidades nacionales en tiempo real (en Argentina, LR4 Radio Splendid, 1920).</p></div>
+      <div class="tl-item"><span class="anio">1951</span> <span class="titulo-tl">Televisión en Argentina</span><p>Imagen + sonido en el living: el medio que definió la cultura de masas del siglo XX.</p></div>
+      <div class="tl-item"><span class="anio">1969 / 1991</span> <span class="titulo-tl">ARPANET → Web</span><p>Red de redes y, luego, páginas enlazadas: hipertexto global accesible desde el navegador.</p></div>
+      <div class="tl-item"><span class="anio">2004-2010</span> <span class="titulo-tl">Web 2.0 y redes sociales</span><p>El usuario produce y publica. Blogs, Facebook, YouTube, Twitter. Nace el <strong>prosumidor</strong>.</p></div>
+      <div class="tl-item"><span class="anio">2007-hoy</span> <span class="titulo-tl">Smartphone + 4G/5G + plataformas</span><p>La red va en el bolsillo: comunicación permanente, ubicua y algorítmica.</p></div>
+      <div class="tl-item"><span class="anio">2020-hoy</span> <span class="titulo-tl">IA generativa y automatización</span><p>Producción sintética de texto, imagen, audio y video: nuevos desafíos de verificación y autoría.</p></div>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: gráficos comparativos broadcasting / red en SVG puro -->
+  <div class="card">
+    <h3>3. Del broadcasting a la red</h3>
+    <div class="svg-duo">
+      <div class="svg-caja">
+        <h5>Broadcasting · uno a muchos</h5>
+        <svg viewBox="0 0 240 170" role="img" aria-label="Esquema de comunicación broadcasting">
+          <g stroke="#1d4ed8" stroke-width="2" fill="none">
+            <line x1="120" y1="60" x2="30" y2="140"/><line x1="120" y1="60" x2="80" y2="150"/>
+            <line x1="120" y1="60" x2="160" y2="150"/><line x1="120" y1="60" x2="210" y2="140"/>
+          </g>
+          <g class="pulso" stroke="#7c3aed" stroke-width="1.4" fill="none">
+            <circle cx="120" cy="46" r="26"/><circle cx="120" cy="46" r="40"/><circle cx="120" cy="46" r="54"/>
+          </g>
+          <rect x="104" y="34" width="32" height="26" rx="4" fill="#1e3a8a"/>
+          <line x1="120" y1="34" x2="120" y2="18" stroke="#1e3a8a" stroke-width="3"/>
+          <g fill="#334155">
+            <circle cx="30" cy="146" r="7"/><circle cx="80" cy="156" r="7"/><circle cx="160" cy="156" r="7"/><circle cx="210" cy="146" r="7"/>
+          </g>
+          <text x="86" y="14" font-family="Inter,Arial" font-size="11" font-weight="700" fill="#1e3a8a">EMISOR</text>
+          <text x="70" y="170" font-family="Inter,Arial" font-size="10" fill="#334155">AUDIENCIA PASIVA</text>
+        </svg>
+        <p>Flujo vertical, audiencia dispersa y sin retorno significativo. Típico de TV, radio y diario impreso.</p>
+      </div>
+      <div class="svg-caja">
+        <h5>Red · muchos a muchos</h5>
+        <svg viewBox="0 0 240 170" role="img" aria-label="Esquema de comunicación en red">
+          <g stroke="#0b8f52" stroke-width="1.6" fill="none">
+            <line x1="120" y1="30" x2="46" y2="80"/><line x1="120" y1="30" x2="194" y2="80"/>
+            <line x1="46" y1="80" x2="80" y2="146"/><line x1="194" y1="80" x2="160" y2="146"/>
+            <line x1="80" y1="146" x2="160" y2="146"/><line x1="46" y1="80" x2="194" y2="80"/>
+            <line x1="120" y1="30" x2="80" y2="146"/><line x1="120" y1="30" x2="160" y2="146"/>
+            <line x1="46" y1="80" x2="160" y2="146"/><line x1="194" y1="80" x2="80" y2="146"/>
+          </g>
+          <g fill="#7c3aed">
+            <circle cx="120" cy="30" r="9"/><circle cx="46" cy="80" r="9"/><circle cx="194" cy="80" r="9"/>
+            <circle cx="80" cy="146" r="9"/><circle cx="160" cy="146" r="9"/>
+          </g>
+          <g class="giro-lento" stroke="#12d97a" stroke-width="2" fill="none" stroke-dasharray="5 7">
+            <circle cx="120" cy="88" r="58"/>
+          </g>
+          <text x="52" y="168" font-family="Inter,Arial" font-size="10" fill="#334155">NODOS = PROSUMIDORES</text>
+        </svg>
+        <p>Todos los nodos emiten y reciben. La conversación es multidireccional, pública, medible y permanentemente remixada.</p>
+      </div>
+    </div>
+
+    <h4>De audiencia pasiva a usuario activo: el prosumidor</h4>
+    <p>El término <strong>prosumidor</strong> (<em>prosumer</em>, propuesto por Alvin Toffler en 1980) combina <em>producer</em> + <em>consumer</em>: quien consume también produce. En la red esto es estructural:</p>
+    <ul>
+      <li><strong>Producción:</strong> subir videos, escribir hilos, hacer streams, editar memes, publicar reseñas.</li>
+      <li><strong>Curaduría:</strong> seleccionar, compartir y recomendar (el reenvío también es un acto editorial).</li>
+      <li><strong>Distribución:</strong> cada usuario amplifica mensajes y les da alcance; el algoritmo decide qué circula.</li>
+      <li><strong>Datos:</strong> al usar la plataforma generás información valiosa que se monetiza.</li>
+    </ul>
+    <div class="cita">Ser prosumidor no significa tener más poder automáticamente: las <strong>plataformas</strong> siguen concentrando la infraestructura, las reglas y el negocio. Producimos contenido; ellas producen audiencias.</div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: cuadro comparativo con interruptores. Modo global (clásico/red) + switch por aspecto que revela el análisis crítico. -->
+  <div class="card">
+    <h3>4. Cuadro comparativo dinámico</h3>
+    <div class="lab">
+      <div class="lab-title"><span class="badge">Interactivo</span> Mass Media clásicos vs. Medios digitales en red</div>
+      <p class="lab-hint">👉 Usá el selector para enfocar un modelo y activá los interruptores de cada aspecto para leer el análisis crítico.</p>
+
+      <div class="comparador">
+        <div class="comp-head">
+          <b>Enfocar modelo:</b>
+          <div class="modo-switch" role="group" aria-label="Selector de modelo">
+            <button class="modo-btn" type="button" data-modo="clasico">📺 Clásicos</button>
+            <button class="modo-btn activo" type="button" data-modo="ambos">⚖️ Ambos</button>
+            <button class="modo-btn" type="button" data-modo="red">🌐 En red</button>
+          </div>
+        </div>
+
+        <div id="filasComparador">
+          <div class="comp-fila">
+            <div class="aspecto">Alcance</div>
+            <div class="col clasico">Local, nacional. Limitado por antenas, tiradas y distribución física.</div>
+            <div class="col red">Global e inmediato: un video puede verse en todo el planeta en minutos.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar alcance"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> el alcance global no es parejo. Depende de infraestructura, idioma y de lo que el algoritmo decide mostrar. En Argentina hay zonas rurales con conectividad insuficiente: el “alcance universal” convive con la <b>brecha digital</b>.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Velocidad</div>
+            <div class="col clasico">Ciclos editoriales: cierre de diario, boletín horario, noticiero de las 20.</div>
+            <div class="col red">Tiempo real: alertas push, transmisiones en vivo, actualización permanente.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar velocidad"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> la velocidad presiona a la verificación. “Primero publicar” produce errores, rectificaciones tardías y desinformación. La inmediatez también crea <b>infoxicación</b>: sobra información y falta criterio de selección.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Democratización del mensaje</div>
+            <div class="col clasico">Barreras altas: licencia, capital, redacción, imprenta. Pocas voces.</div>
+            <div class="col red">Barreras bajas: con un celular se publica. Multiplicidad de voces.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar democratización"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> más voces ≠ más igualdad. La visibilidad la reparten algoritmos y pautas publicitarias. Además, publicar es un derecho, pero también hay que garantizar <b>conectividad, dispositivos y formación</b>: democratizar exige política pública, no solo aplicaciones.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Participación comunitaria</div>
+            <div class="col clasico">Escasa: cartas de lectores, llamadas al aire, rating como medición.</div>
+            <div class="col red">Alta: comentarios, colaboraciones, crowdfounding, comunidades y activismos.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar participación"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> la participación habilita causas colectivas (ambiente, género, escuela pública) y también <b>esclaves de la lógica del engagement</b>: indignación, polarización, cancelación. Participar bien implica organizarse, verificar y sostener el diálogo.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Direccionalidad</div>
+            <div class="col clasico">Unidireccional (uno → muchos).</div>
+            <div class="col red">Multidireccional e interactiva (muchos ↔ muchos).</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar direccionalidad"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> el feedback ya no es privado ni diferido: es público, medible y en tiempo real. Eso empodera al usuario pero también lo <b>expone</b> (huella digital, hate, métricas de popularidad que condicionan qué decimos).</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Personalización</div>
+            <div class="col clasico">Programación homogénea para audiencias masivas.</div>
+            <div class="col red">Recomendación algorítmica: cada usuario ve un feed distinto.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar personalización"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> la personalización mejora la experiencia pero crea <b>burbujas de filtro</b> y <b>cámaras de eco</b>: vemos sobre todo lo que confirma nuestras ideas. Se debilita la agenda común, base de la conversación democrática.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Modelo económico</div>
+            <div class="col clasico">Publicidad, suscripciones, pauta oficial, licencias.</div>
+            <div class="col red">Publicidad programática, datos personales, influencers, suscripciones y <em>freemium</em>.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar modelo económico"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> en las plataformas el producto suele ser <b>la atención y los datos</b> del usuario. De ahí el diseño adictivo: scroll infinito, notificaciones, autoplay. Analizar un medio es siempre analizar <b>quién lo financia</b>.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Registro y memoria</div>
+            <div class="col clasico">Archivo físico, hemeroteca; el mensaje se desvanece al emitirse.</div>
+            <div class="col red">Todo queda indexado, rastreable y copiable (huella digital).</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar registro"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> la permanencia plantea dilemas de <b>privacidad y derecho al olvido</b>. Lo que publicás a los 15 puede reaparecer a los 25. También facilita la verificación: existen archivos y capturas que permiten contrastar versiones.</div>
+          </div>
+
+          <div class="comp-fila">
+            <div class="aspecto">Gatekeeping</div>
+            <div class="col clasico">Editores y dueños deciden qué se publica.</div>
+            <div class="col red">Algoritmos, moderadores, verificadores y comunidades deciden qué se ve.</div>
+            <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Comparar gatekeeping"></button>
+            <div class="comp-analisis"><b>Análisis crítico:</b> el portero cambió de forma, no desapareció. Hoy la moderación es <b>automática, opaca y apelable con dificultad</b>. Preguntarse quién controla la circulación es preguntarse por el poder en el E3.</div>
+          </div>
+        </div>
+
+        <div class="comp-pie">💡 Activá varios interruptores y compará: las diferencias no son sólo técnicas, son <strong>políticas, económicas y culturales</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="consigna">
+    <h3>📝 Consigna: de espectador a prosumidor responsable</h3>
+    <div class="meta"><span>⏱ 3 clases</span><span>👥 Grupos de 4</span><span>🎬 Producto: pieza digital propia</span></div>
+    <ol>
+      <li>Investiguen un tema que afecte a la comunidad escolar o barrial (conectividad, ambiente, salud mental, transporte, clubes, memoria local).</li>
+      <li>Recolecten <strong>3 fuentes verificables</strong> y compárenlas: ¿coinciden?, ¿qué encuadre tiene cada una?</li>
+      <li>Produzcan una pieza propia: video de 60-90 segundos, podcast de 3 minutos, hilo o infografía.</li>
+      <li>Aplicando lo visto: titular sin clickbait, imagen pertinente y con crédito, fuentes citadas, llamado a la acción constructivo.</li>
+      <li>Publíquenla (o simulen la publicación) y registren métricas durante 48 horas.</li>
+      <li>Escriban una <strong>autocrítica</strong>: ¿qué decisiones editoriales tomaron?, ¿qué omitieron y por qué?, ¿qué harían distinto?</li>
+    </ol>
+    <div class="hoja">
+      <div class="rotulo">Guion / storyboard de la pieza</div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================================
+     PESTAÑA 4 — VIDEOCONFERENCIA Y TRABAJO COLABORATIVO
+     ======================================================================= -->
+<section class="tab-panel" id="panel-3" role="tabpanel" aria-label="Eje 4: Sistemas de videoconferencia y trabajo colaborativo">
+
+  <div class="print-only ficha">
+    <div>Eje 4 · Videoconferencia y trabajo colaborativo</div>
+    <div>Alumno/a: <span></span></div>
+    <div>Curso: <span></span> Fecha: <span></span></div>
+  </div>
+
+  <div class="panel-head">
+    <span class="eyebrow">Eje 4 · Comunicación digital colaborativa</span>
+    <h2>🎥 Sistemas de videoconferencia y trabajo colaborativo</h2>
+    <p>La videollamada dejó de ser una curiosidad empresarial para volverse aula, oficina y reunión familiar. Acá vemos <strong>cómo funciona por dentro</strong> (hardware, software, protocolos, ancho de banda) y qué <strong>habilidades y netiqueta</strong> hacen que un equipo trabaje bien a la distancia y produzca mensajes propios.</p>
+    <div class="expectativas">
+      <span class="chip">Infraestructura técnica</span>
+      <span class="chip violeta">Protocolos y ancho de banda</span>
+      <span class="chip neon">Cifrado y privacidad</span>
+      <span class="chip">Trabajo colaborativo</span>
+      <span class="chip violeta">Netiqueta y expresión digital</span>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: definición y plataformas. Actualizar según las herramientas que use la escuela (Meet, Classroom, Teams). -->
+  <div class="card">
+    <h3>1. ¿Qué es un sistema de videoconferencia?</h3>
+    <p>Es un conjunto de hardware, software y servicios de red que permite la <strong>comunicación audiovisual sincrónica</strong> entre dos o más personas ubicadas en lugares distintos. Es el medio técnico más completo del Tercer Entorno porque integra voz, imagen, texto, pantalla compartida y archivos en una sola sesión.</p>
+    <div class="grid-2">
+      <div class="mini-card"><span class="ic">🎓</span><h5>Uso educativo</h5><p>Clases sincrónicas, tutorías, defensa de proyectos, reuniones de centro de estudiantes, intercambio entre escuelas.</p></div>
+      <div class="mini-card"><span class="ic">💼</span><h5>Uso laboral y social</h5><p>Teletrabajo, entrevistas, telemedicina, reuniones familiares, comunidades y transmisiones en vivo.</p></div>
+    </div>
+    <h4>Plataformas frecuentes</h4>
+    <table class="tabla">
+      <thead><tr><th>Plataforma</th><th>Fortaleza principal</th><th>Funciones colaborativas</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Google Meet</strong></td><td>Integración con Classroom y Workspace</td><td>Chat, levantar la mano, subtítulos automáticos, pizarra, salas</td></tr>
+        <tr><td><strong>Zoom</strong></td><td>Salas simultáneas (<em>breakout rooms</em>)</td><td>Pizarra, encuestas, grabación, compartir pantalla</td></tr>
+        <tr><td><strong>Microsoft Teams</strong></td><td>Ecosistema Office y archivos</td><td>Coedición de documentos, canales, tareas</td></tr>
+        <tr><td><strong>Jitsi Meet</strong></td><td>Software libre, sin registro</td><td>Salas por enlace, chat, pantalla compartida</td></tr>
+        <tr><td><strong>Discord</strong></td><td>Comunidades y canales de voz</td><td>Voz/video, streaming, roles, foros</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>2. Requisitos de infraestructura</h3>
+    <div class="grid-2">
+      <div>
+        <h4>🖥️ Hardware</h4>
+        <ul>
+          <li><strong>Cámara:</strong> integrada o externa (720p mínimo; 1080p ideal).</li>
+          <li><strong>Micrófono:</strong> el de auriculares suele ser mejor que el de la notebook (reduce ruido ambiente y eco).</li>
+          <li><strong>Audio:</strong> auriculares o parlantes; el auricular evita acople.</li>
+          <li><strong>Dispositivo:</strong> PC, notebook, tablet o celular con capacidad de codificar video.</li>
+          <li><strong>Periféricos útiles:</strong> trípode, luz frontal, segunda pantalla.</li>
+        </ul>
+        <h4>💿 Software</h4>
+        <ul>
+          <li>Cliente o navegador compatible (WebRTC en Chrome, Edge, Firefox).</li>
+          <li><strong>Codecs</strong> de audio y video (Opus, H.264, VP8/VP9).</li>
+          <li>Sistema operativo y controladores actualizados.</li>
+          <li>Apps complementarias: documentos compartidos, pizarras, gestores de tareas.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>🔌 Protocolos y red</h4>
+        <ul>
+          <li><strong>WebRTC:</strong> comunicación en tiempo real entre navegadores.</li>
+          <li><strong>RTP / SRTP:</strong> transporte (y cifrado) de audio y video.</li>
+          <li><strong>SIP / H.323:</strong> señalización y establecimiento de la llamada en entornos corporativos.</li>
+          <li><strong>UDP vs TCP:</strong> UDP prioriza velocidad (video en vivo); TCP prioriza integridad (archivos).</li>
+          <li><strong>Servidores y <em>cloud</em>:</strong> enrutan, graban, transcriben y administran salas.</li>
+        </ul>
+        <h4>📊 Calidad de servicio</h4>
+        <ul>
+          <li><strong>Ancho de banda:</strong> capacidad de transmisión (Mbps).</li>
+          <li><strong>Latencia:</strong> retardo ida y vuelta; por encima de 200 ms la charla se pisa.</li>
+          <li><strong>Jitter:</strong> variación del retardo → audio entrecortado.</li>
+          <li><strong>Pérdida de paquetes:</strong> pixelado, congelamiento, cortes.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>Ancho de banda orientativo por participante</h4>
+    <table class="tabla">
+      <thead><tr><th>Modalidad</th><th>Bajada</th><th>Subida</th><th>Recomendación</th></tr></thead>
+      <tbody>
+        <tr><td>Sólo audio (llamada)</td><td>≈ 60-100 kbps</td><td>≈ 60-100 kbps</td><td>La opción que salva una clase con mala conexión</td></tr>
+        <tr><td>Video grupal SD (360p)</td><td>≈ 0,6-1 Mbps</td><td>≈ 0,6 Mbps</td><td>Apagar cámaras ajenas si se corta</td></tr>
+        <tr><td>Video HD (720p)</td><td>≈ 1,5-2,5 Mbps</td><td>≈ 1,5 Mbps</td><td>Conexión cableada o wifi cerca del router</td></tr>
+        <tr><td>Full HD (1080p) + pantalla compartida</td><td>≈ 3-4 Mbps</td><td>≈ 3 Mbps</td><td>Exposiciones y presentaciones formales</td></tr>
+      </tbody>
+    </table>
+    <div class="destacado"><p>📶 <strong>Recordá:</strong> el ancho de banda se <em>comparte</em> en la casa. Streaming, descargas y juegos compiten con la videollamada. Ante problemas: cámara apagada, micrófono silenciado y calidad de video reducida.</p></div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: infografía técnica interactiva por etapas. Cada ícono muestra buenas prácticas técnicas y de netiqueta. -->
+  <div class="card">
+    <h3>3. Infografía técnica interactiva: el recorrido de una videollamada</h3>
+    <div class="lab">
+      <div class="lab-title"><span class="badge">Interactivo</span> Hacé clic en cada ícono del circuito</div>
+      <p class="lab-hint">👉 Captura → codificación → router → nube → cifrado → recepción y colaboración.</p>
+
+      <div class="flujo-vc" id="flujoVC">
+        <button class="etapa activa" type="button" data-etapa="captura">
+          <span class="paso">1</span><span class="ic">📹</span><span class="nom">Cámara y micrófono</span>
+          <span class="desc">captura de imagen y voz</span>
+        </button>
+        <button class="etapa" type="button" data-etapa="codificacion">
+          <span class="paso">2</span><span class="ic">🗜️</span><span class="nom">Codecs</span>
+          <span class="desc">compresión de datos</span>
+        </button>
+        <button class="etapa" type="button" data-etapa="router">
+          <span class="paso">3</span><span class="ic">📡</span><span class="nom">Router / red</span>
+          <span class="desc">ancho de banda y latencia</span>
+        </button>
+        <button class="etapa" type="button" data-etapa="nube">
+          <span class="paso">4</span><span class="ic">☁️</span><span class="nom">Servidores en la nube</span>
+          <span class="desc">salas, grabación, mezclado</span>
+        </button>
+        <button class="etapa" type="button" data-etapa="cifrado">
+          <span class="paso">5</span><span class="ic">🔐</span><span class="nom">Cifrado y privacidad</span>
+          <span class="desc">protección de la sesión</span>
+        </button>
+        <button class="etapa" type="button" data-etapa="colaboracion">
+          <span class="paso">6</span><span class="ic">🤝</span><span class="nom">Colaboración y netiqueta</span>
+          <span class="desc">pantalla, chat, documentos</span>
+        </button>
+      </div>
+
+      <div class="detalle-vc" id="detalleVC" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- COMENTARIO DOCENTE: checklist de habilidades colaborativas con barra de progreso. Editar ítems según el proyecto anual. -->
+  <div class="card">
+    <h3>4. Habilidades para el trabajo colaborativo en entornos virtuales</h3>
+    <p>Colaborar a distancia no es “hacer la tarea juntos por Zoom”: es coordinar tareas, sostener acuerdos y producir algo común con herramientas mediáticas. Marcá las habilidades que ya manejás y las que querés entrenar.</p>
+
+    <div class="barra"><div class="barra-fill" id="barraFill"></div></div>
+    <div class="progreso-txt" id="progresoTxt">0 de 10 habilidades marcadas (0%)</div>
+
+    <div class="check-lista" id="checkHabilidades">
+      <label class="check-item"><input type="checkbox"><span><b>Planificación compartida:</b> definir objetivo, roles y plazos antes de empezar.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Comunicación clara:</b> mensajes breves, concretos y sin ambigüedades.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Escucha activa:</b> no interrumpir, resumir lo del otro, preguntar.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Uso de herramientas:</b> documentos compartidos, pizarras, tableros de tareas.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Coedición:</b> trabajar sobre el mismo archivo con control de versiones.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Gestión del tiempo:</b> agenda, puntualidad, reuniones cortas con conclusión.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Resolución de conflictos:</b> discutir ideas, no personas; buscar acuerdos.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Alfabetización informacional:</b> verificar fuentes antes de incluir datos.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Accesibilidad:</b> subtítulos, contraste, archivos livianos, lenguaje inclusivo.</span></label>
+      <label class="check-item"><input type="checkbox"><span><b>Ciudadanía digital:</b> cuidar datos propios y ajenos, citar autorías.</span></label>
+    </div>
+
+    <h4 style="margin-top:1.2rem;">Netiqueta colaborativa (las reglas no escritas)</h4>
+    <div class="netiqueta">
+      <div class="net-item"><span class="ic">🎙️</span><h5>Micrófono en mute</h5><p>Si no estás hablando, silenciá. Evitá ruidos de fondo y avisá si estás en un espacio compartido.</p></div>
+      <div class="net-item"><span class="ic">✋</span><h5>Pedir la palabra</h5><p>Usá “levantar la mano” o el chat para no pisar a quien habla. Respetá los turnos.</p></div>
+      <div class="net-item"><span class="ic">🕐</span><h5>Puntualidad</h5><p>Conectate 2 minutos antes, probá audio y video. Si vas a llegar tarde, avisá por el chat del grupo.</p></div>
+      <div class="net-item"><span class="ic">🎥</span><h5>Cámara con criterio</h5><p>Encenderla mejora el vínculo; entender las razones de quien no puede (conectividad, privacidad, cuidado de hermanos).</p></div>
+      <div class="net-item"><span class="ic">💬</span><h5>Chat productivo</h5><p>Para preguntas, enlaces y acuerdos. Nada de spam, cadenas ni burlas mientras alguien expone.</p></div>
+      <div class="net-item"><span class="ic">🖥️</span><h5>Pantalla compartida segura</h5><p>Cerrá pestañas personales y desactivá notificaciones antes de compartir.</p></div>
+      <div class="net-item"><span class="ic">🔒</span><h5>Privacidad del grupo</h5><p>No grabes ni saques capturas sin avisar. No difundas enlaces de la reunión.</p></div>
+      <div class="net-item"><span class="ic">🙌</span><h5>Inclusión</h5><p>Sumá a quienes participan menos, repartí la palabra y valorá los aportes del equipo.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>5. Expresar mensajes propios con herramientas mediáticas</h3>
+    <p>Producir en equipo dentro del E3 implica decisiones de <strong>lenguaje</strong>: qué formato, qué tono, qué estética, para qué audiencia. Algunas combinaciones posibles:</p>
+    <ul>
+      <li><strong>Videoconferencia grabada + edición:</strong> podcast o videominuto con guion y créditos.</li>
+      <li><strong>Documento colaborativo + pizarra digital:</strong> investigación con hipótesis, fuentes y mapa conceptual.</li>
+      <li><strong>Stream en vivo + chat moderado:</strong> radio escolar o debate con participación de la audiencia.</li>
+      <li><strong>Infografía + publicación en redes:</strong> campaña de concientización con datos verificados.</li>
+    </ul>
+    <div class="cita">Producir un mensaje propio es ejercer la ciudadanía digital: pasás de ser objeto de la comunicación a ser <strong>sujeto con voz</strong>, con responsabilidad sobre lo que afirmás.</div>
+  </div>
+
+  <div class="consigna">
+    <h3>📝 Consigna: reunión colaborativa y pieza grupal</h3>
+    <div class="meta"><span>⏱ 3 clases</span><span>👥 Equipos de 4-5</span><span>🎧 Producto: reunión + pieza mediática</span></div>
+    <ol>
+      <li>Organicen una <strong>reunión por videoconferencia de 20 minutos</strong> con roles definidos: moderador/a, cronometrista, secretario/a de actas, responsable técnico.</li>
+      <li>Elaboren una <strong>agenda previa</strong> (temas, tiempos, decisiones esperadas) y compártanla por documento colaborativo.</li>
+      <li>Durante la reunión apliquen netiqueta: micrófonos en mute, mano levantada, chat para enlaces, síntesis final de acuerdos.</li>
+      <li>Realicen una <strong>auditoría técnica</strong>: midan su ancho de banda, registren latencia, cortes y soluciones aplicadas.</li>
+      <li>Produzcan una pieza mediática grupal (podcast, video, infografía o campaña) sobre un tema del curso de NTiCx.</li>
+      <li>Cierren con una <strong>retrospectiva</strong>: ¿qué funcionó?, ¿qué mejoramos?, ¿cómo se repartió realmente el trabajo?</li>
+    </ol>
+    <div class="hoja">
+      <div class="rotulo">Acta de la reunión (acuerdos, responsables y fechas)</div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div>
+    </div>
+    <div class="hoja">
+      <div class="rotulo">Auditoría técnica y retrospective del equipo</div>
+      <div class="linea"></div><div class="linea"></div><div class="linea"></div>
+      <div class="linea"></div><div class="linea"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="print-hidden">
+  <p><b>NTiCx · 4.º año</b> — Material didáctico interactivo. Para imprimir: <b>Ctrl + P</b> (o el botón de arriba): las 4 pestañas se ordenan en secuencia, una hoja A4 por eje, con espacios para resolver.</p>
+  <p>Los contenidos pueden editarse en el archivo HTML buscando los comentarios <code>&lt;!-- COMENTARIO DOCENTE --&gt;</code>.</p>
+</footer>
+
+<!-- ============================ MODAL GLOSARIO ============================ -->
+<div class="modal" id="modalGlosario" role="dialog" aria-modal="true" aria-labelledby="tituloGlosario">
+  <div class="modal-caja">
+    <button class="modal-cerrar" id="cerrarGlosario" type="button" aria-label="Cerrar glosario">✕</button>
+    <h3 id="tituloGlosario">📖 Glosario clave de NTiCx</h3>
+    <p style="font-size:.9rem;color:var(--pizarra);">Conceptos que aparecen en los cuatro ejes. Útil para el repaso y para la carpeta.</p>
+    <dl>
+      <dt>Tercer Entorno (E3)</dt><dd>Espacio social telemático definido por Javier Echeverría: desterritorializado, asincrónico, interactivo y en red.</dd>
+      <dt>Desterritorialización</dt><dd>La comunicación deja de depender de un lugar físico: los vínculos se sostienen a distancia.</dd>
+      <dt>Feedback</dt><dd>Respuesta del receptor al emisor. En la red es inmediato, público y medible.</dd>
+      <dt>Brecha digital</dt><dd>Desigualdad en el acceso, la calidad de conexión y las habilidades para usar las tecnologías.</dd>
+      <dt>Mass media</dt><dd>Medios técnicos de difusión masiva: prensa, radio, cine, televisión.</dd>
+      <dt>Broadcasting</dt><dd>Modelo de emisión unidireccional, de uno a muchos.</dd>
+      <dt>Prosumidor</dt><dd>Usuario que consume y produce contenidos (Toffler).</dd>
+      <dt>Agenda setting</dt><dd>Capacidad de los medios de definir sobre qué temas conversa la sociedad.</dd>
+      <dt>Encuadre (framing)</dt><dd>Ángulo desde el cual se presenta un hecho: selección, énfasis y omisiones.</dd>
+      <dt>Lenguaje explícito / implícito</dt><dd>Lo que se dice literalmente frente a lo que se sugiere o presupone.</dd>
+      <dt>Hipertexto</dt><dd>Texto no lineal organizado por enlaces que el lector recorre a elección.</dd>
+      <dt>Clickbait</dt><dd>Titular diseñado para provocar el clic, generalmente exagerado o engañoso.</dd>
+      <dt>Burbuja de filtro</dt><dd>Personalización algorítmica que muestra sobre todo contenidos afines a nuestras ideas previas.</dd>
+      <dt>Ancho de banda</dt><dd>Cantidad de datos que puede transmitirse por unidad de tiempo (Mbps).</dd>
+      <dt>Latencia</dt><dd>Retardo entre el envío y la recepción de los datos.</dd>
+      <dt>Codec</dt><dd>Algoritmo que comprime y descomprime audio o video para transmitirlo.</dd>
+      <dt>WebRTC</dt><dd>Tecnología que permite comunicación en tiempo real directamente entre navegadores.</dd>
+      <dt>Cifrado de extremo a extremo</dt><dd>Protección por la cual sólo emisor y receptor pueden leer el contenido.</dd>
+      <dt>Netiqueta</dt><dd>Conjunto de normas de comportamiento y cortesía en entornos digitales.</dd>
+    </dl>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   JAVASCRIPT NATIVO — navegación por pestañas, interacciones y utilidades
+   ========================================================================== */
+(function(){
+  'use strict';
+
+  /* ---------- 1. NAVEGACIÓN POR PESTAÑAS (sin recargar la página) ---------- */
+  var botonesPestana = document.querySelectorAll('.tab-btn');
+  var panelesPestana = document.querySelectorAll('.tab-panel');
+
+  function activarPestana(indice){
+    var i;
+    for(i = 0; i < botonesPestana.length; i++){
+      var botonActual = botonesPestana[i];
+      var panelActual = panelesPestana[i];
+      if(i === indice){
+        botonActual.classList.add('active');
+        botonActual.setAttribute('aria-selected','true');
+        panelActual.classList.add('active');
+      }else{
+        botonActual.classList.remove('active');
+        botonActual.setAttribute('aria-selected','false');
+        panelActual.classList.remove('active');
+      }
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  botonesPestana.forEach(function(boton, indice){
+    boton.addEventListener('click', function(){ activarPestana(indice); });
+    boton.addEventListener('keydown', function(evento){
+      var tecla = evento.key;
+      if(tecla === 'ArrowRight'){ evento.preventDefault(); activarPestana((indice + 1) % botonesPestana.length); botonesPestana[(indice + 1) % botonesPestana.length].focus(); }
+      if(tecla === 'ArrowLeft'){ evento.preventDefault(); var previo = (indice - 1 + botonesPestana.length) % botonesPestana.length; activarPestana(previo); botonesPestana[previo].focus(); }
+    });
+  });
+
+  /* ---------- 2. PESTAÑA 1 · Esquema del proceso comunicativo ---------- */
+  var datosComunicacion = {
+    emisor:{
+      titulo:'Emisor → cualquiera puede emitir (y a gran escala)',
+      texto:'En el modelo clásico el emisor era una institución (un diario, un canal). En el Tercer Entorno cualquier usuario con conexión produce mensajes potencialmente globales. Aparecen nuevas figuras: influencers, comunidades, bots y cuentas anónimas. La pregunta crítica ya no es sólo <b>“qué dice”</b>, sino <b>“quién es, quién lo financia y qué intereses tiene”</b>.'
+    },
+    receptor:{
+      titulo:'Receptor → usuario activo y medido',
+      texto:'Deja de ser una audiencia pasiva y homogénea: se vuelve <b>prosumidor</b> (consume, comenta, comparte, remixa) y, a la vez, un conjunto de <b>datos</b> que las plataformas miden y venden. La recepción es individualizada por el algoritmo: dos personas no ven el mismo feed aunque estén en la misma red.'
+    },
+    mensaje:{
+      titulo:'Mensaje → multimedia, hipertextual y remixable',
+      texto:'El mensaje combina texto, imagen, audio y video en una misma pieza; se enlaza con otros contenidos (hipertexto) y puede ser recortado, memeado o reeditado por cualquiera. Consecuencia: pierde su contexto original y puede significar otra cosa muy distinta a la intención del emisor.'
+    },
+    canal:{
+      titulo:'Canal → la red como infraestructura universal',
+      texto:'El canal ya no es un medio aislado sino una <b>infraestructura convergente</b>: fibra óptica, satélites, antenas 4G/5G, wifi, servidores y plataformas. Todos los medios anteriores (radio, TV, prensa) circulan hoy por el mismo canal. Su condición material importa: sin ancho de banda suficiente, el canal se degrada y aparece la brecha digital.'
+    },
+    codigo:{
+      titulo:'Código → lenguajes híbridos y cultura de plataforma',
+      texto:'Al idioma se suman códigos propios del E3: emojis, stickers, memes, hashtags, GIFs, formatos verticales, duraciones breves, <i>inside jokes</i> de cada comunidad. Quien no domina el código queda afuera de la conversación; y cada plataforma tiene sus reglas formales (duración, proporción de la imagen, moderación automática).'
+    },
+    contexto:{
+      titulo:'Contexto → desterritorializado y permanente',
+      texto:'El contexto deja de ser el lugar físico compartido: es la plataforma, sus condiciones de uso, el momento del día, el estado de la conexión y el clima de conversación (tendencias, polémicas). Al no haber un contexto común, crecen los malentendidos: falta el tono de voz, el gesto y la situación compartida.'
+    },
+    feedback:{
+      titulo:'Feedback → inmediato, público y cuantificado',
+      texto:'La respuesta llega en segundos y es visible para todos: likes, reproducciones, comentarios, compartidos, respuestas por historia. El emisor puede ajustar su mensaje al instante (lo que refuerza el contenido que más emociona). Riesgo: la validación numérica se vuelve un criterio de valor y de autoestima.'
+    },
+    ruido:{
+      titulo:'Ruidos típicos del Tercer Entorno',
+      texto:'<b>Brecha digital</b> (sin datos o sin dispositivo no hay participación), <b>algoritmo</b> (filtra y ordena sin que lo veamos), <b>desinformación y deepfakes</b>, <b>saturación informativa</b>, <b>malentendidos por falta de contexto</b> y <b>moderación automática</b> que borra o limita contenidos sin explicación clara.'
+    }
+  };
+
+  var panelInfo = document.getElementById('panelInfo');
+  var nodosDiagrama = document.querySelectorAll('.nodo[data-clave]');
+
+  function mostrarInfo(clave){
+    var dato = datosComunicacion[clave];
+    if(!dato || !panelInfo){ return; }
+    panelInfo.innerHTML = '<span class="titulo-info">' + dato.titulo + '</span>' + dato.texto;
+  }
+
+  nodosDiagrama.forEach(function(nodo){
+    var claveNodo = nodo.getAttribute('data-clave');
+    nodo.addEventListener('mouseenter', function(){ mostrarInfo(claveNodo); });
+    nodo.addEventListener('focus', function(){ mostrarInfo(claveNodo); });
+    nodo.addEventListener('click', function(){
+      var estabaFijado = nodo.classList.contains('pinned');
+      nodosDiagrama.forEach(function(otro){ otro.classList.remove('pinned'); });
+      if(!estabaFijado){ nodo.classList.add('pinned'); }
+      mostrarInfo(claveNodo);
+    });
+  });
+
+  /* Tabla equivalente para la versión impresa */
+  var filasPrint = [
+    ['Emisor','Institución mediática con capital y licencia','Cualquier usuario conectado; también bots y cuentas anónimas'],
+    ['Receptor','Audiencia pasiva, masiva y heterogénea','Usuario activo (prosumidor), medido y segmentado por algoritmos'],
+    ['Mensaje','Cerrado, unidireccional, en un formato','Multimedia, hipertextual, editable y remixable'],
+    ['Canal','Un medio específico (papel, antena, frecuencia)','Red convergente: internet, datos móviles, wifi, plataformas'],
+    ['Código','Idioma y lenguaje del medio','Idioma + emojis, memes, hashtags y formatos de plataforma'],
+    ['Contexto','Lugar y momento compartidos','Desterritorializado, asincrónico y permanente (24/7)'],
+    ['Feedback','Débil y diferido (cartas, rating)','Inmediato, público y cuantificado (likes, shares, métricas)'],
+    ['Ruido','Interferencias técnicas y semánticas','Brecha digital, algoritmo, desinformación, saturación']
+  ];
+  var tablaPrint = document.getElementById('tablaPrint');
+  if(tablaPrint){
+    var htmlTabla = '';
+    filasPrint.forEach(function(fila){
+      htmlTabla += '<tr><td><strong>' + fila[0] + '</strong></td><td>' + fila[1] + '</td><td>' + fila[2] + '</td></tr>';
+    });
+    tablaPrint.innerHTML = htmlTabla;
+  }
+
+  /* ---------- 3. PESTAÑA 1 · Tarjetas que giran (entornos) ---------- */
+  document.querySelectorAll('.flip').forEach(function(tarjeta){
+    function girar(){
+      var yaGirada = tarjeta.classList.toggle('flipped');
+      tarjeta.setAttribute('aria-pressed', yaGirada ? 'true' : 'false');
+    }
+    tarjeta.addEventListener('click', girar);
+    tarjeta.addEventListener('keydown', function(evento){
+      if(evento.key === 'Enter' || evento.key === ' '){ evento.preventDefault(); girar(); }
+    });
+  });
+
+  /* ---------- 4. PESTAÑA 2 · Simulador de desconstrucción ---------- */
+  document.querySelectorAll('.zona .zona-btn').forEach(function(botonZona){
+    botonZona.addEventListener('click', function(){
+      var contenedorZona = botonZona.closest('.zona');
+      var abierta = contenedorZona.classList.toggle('abierta');
+      botonZona.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+    });
+  });
+
+  /* ---------- 5. PESTAÑA 3 · Comparador dinámico ---------- */
+  var botonesModo = document.querySelectorAll('.modo-btn');
+  botonesModo.forEach(function(boton){
+    boton.addEventListener('click', function(){
+      var modoElegido = boton.getAttribute('data-modo');
+      botonesModo.forEach(function(otro){ otro.classList.remove('activo'); });
+      boton.classList.add('activo');
+      document.body.classList.remove('modo-clasico','modo-red');
+      if(modoElegido === 'clasico'){ document.body.classList.add('modo-clasico'); }
+      if(modoElegido === 'red'){ document.body.classList.add('modo-red'); }
+    });
+  });
+
+  var interruptores = document.querySelectorAll('#filasComparador .switch');
+  interruptores.forEach(function(interruptor){
+    interruptor.addEventListener('click', function(){
+      var fila = interruptor.closest('.comp-fila');
+      var activado = interruptor.getAttribute('aria-checked') === 'true';
+      interruptor.setAttribute('aria-checked', activado ? 'false' : 'true');
+      fila.classList.toggle('encendida', !activado);
+    });
+  });
+
+  /* ---------- 6. PESTAÑA 4 · Infografía técnica por etapas ---------- */
+  var etapasVC = {
+    captura:{
+      titulo:'📹 Etapa 1 · Captura: cámara y micrófono',
+      como:'La cámara convierte la imagen en señales digitales y el micrófono convierte la voz en ondas que la placa de sonido transforma en datos. Se capturan por cuadro (30 fps típico) y por muestra de audio (48 kHz).',
+      practicas:['Iluminación frontal: nunca con una ventana detrás (contraluz).','Encuadre a la altura de los ojos, cabeza y hombros visibles.','Auriculares con micrófono: mejor calidad y sin eco.','Fondo ordenado o fondo virtual; revisar qué se ve detrás.','Probar cámara y micrófono antes de la reunión importante.']
+    },
+    codificacion:{
+      titulo:'🗜️ Etapa 2 · Codificación: codecs y compresión',
+      como:'Enviar video sin comprimir exigiría un ancho de banda imposible. Los codecs (Opus para audio; H.264, VP8/VP9 o AV1 para video) comprimen los datos eliminando información redundante y los vuelven a expandir del otro lado.',
+      practicas:['Si la imagen se pixela, no es la cámara: es la compresión por falta de banda.','Bajar la resolución propia (de 1080p a 720p/360p) estabiliza la llamada.','Cerrar programas que consuman CPU libera capacidad de codificación.','La voz es prioritaria: ante dudas, apagar video y sostener el audio.']
+    },
+    router:{
+      titulo:'📡 Etapa 3 · Red local: router y conexión',
+      como:'El router recibe los paquetes y los envía a Internet. Aquí importan el ancho de banda disponible, la latencia (retardo), el jitter (variación del retardo) y la pérdida de paquetes. El cable supera al wifi en estabilidad.',
+      practicas:['Cable Ethernet cuando sea posible; si no, ubicarse cerca del router.','Alejarse de microondas y paredes gruesas que interfieren la señal.','Cerrar descargas, streaming y juegos durante la videollamada.','Plan B: ingresar por audio telefónico o por el celular con datos.','Medir la conexión (test de velocidad) y anotar los valores.']
+    },
+    nube:{
+      titulo:'☁️ Etapa 4 · Servidores en la nube',
+      como:'Las plataformas usan centros de datos distribuidos que administran las salas, mezclan los flujos de audio y video, graban, transcriben y guardan archivos. Parte del procesamiento ocurre en el servidor y parte en tu dispositivo.',
+      practicas:['Verificar dónde se almacenan las grabaciones y quién puede acceder.','En reuniones institucionales, usar cuentas escolares (no personales).','Revisar condiciones del servicio: retención de datos y usos permitidos.','Preferir software libre cuando la privacidad sea prioritaria (p. ej. Jitsi).']
+    },
+    cifrado:{
+      titulo:'🔐 Etapa 5 · Cifrado, seguridad y privacidad',
+      como:'Los datos viajan cifrados (TLS y SRTP). En el cifrado de extremo a extremo sólo emisor y receptor poseen las claves; en el cifrado “en tránsito”, el servidor también puede leer el contenido para grabar o transcribir.',
+      practicas:['Proteger la sala: contraseña, sala de espera y admisión manual.','No difundir el enlace de la reunión en redes abiertas.','Avisar siempre antes de grabar o tomar capturas.','No mostrar documentos con datos personales al compartir pantalla.','Contraseñas únicas y verificación en dos pasos en las cuentas.']
+    },
+    colaboracion:{
+      titulo:'🤝 Etapa 6 · Colaboración: pantalla, chat y documentos',
+      como:'Sobre el canal de video se suman capas colaborativas: pantalla compartida, pizarra, chat, subtítulos automáticos, salas simultáneas y documentos coeditados en tiempo real. Cada capa tiene su propio lenguaje y sus normas.',
+      practicas:['Agenda previa compartida y roles definidos (modera, cronometra, actúa de secretario/a).','Micrófono en mute al no hablar; mano levantada para pedir la palabra.','Chat para enlaces, preguntas y acuerdos; no para interrumpir.','Cerrar la reunión con síntesis de acuerdos, responsables y fechas.','Acta breve en documento colaborativo para quienes no pudieron entrar.']
+    }
+  };
+
+  var botonesEtapa = document.querySelectorAll('#flujoVC .etapa');
+  var detalleVC = document.getElementById('detalleVC');
+
+  function pintarEtapa(claveEtapa){
+    var info = etapasVC[claveEtapa];
+    if(!info || !detalleVC){ return; }
+    var listaPracticas = '';
+    info.practicas.forEach(function(practica){ listaPracticas += '<li>' + practica + '</li>'; });
+    detalleVC.innerHTML =
+      '<h5>' + info.titulo + '</h5>' +
+      '<div class="bloque"><b>Cómo funciona</b><p style="font-size:.9rem;color:var(--pizarra);margin:.2rem 0 0;">' + info.como + '</p></div>' +
+      '<div class="bloque"><b>Buenas prácticas técnicas y de netiqueta</b><ul>' + listaPracticas + '</ul></div>';
+  }
+
+  botonesEtapa.forEach(function(boton){
+    boton.addEventListener('click', function(){
+      botonesEtapa.forEach(function(otro){ otro.classList.remove('activa'); });
+      boton.classList.add('activa');
+      pintarEtapa(boton.getAttribute('data-etapa'));
+    });
+  });
+  pintarEtapa('captura');
+
+  /* ---------- 7. PESTAÑA 4 · Checklist con barra de progreso ---------- */
+  var casillas = document.querySelectorAll('#checkHabilidades input[type="checkbox"]');
+  var barraFill = document.getElementById('barraFill');
+  var progresoTxt = document.getElementById('progresoTxt');
+
+  function actualizarProgreso(){
+    var marcadas = 0;
+    casillas.forEach(function(casilla){ if(casilla.checked){ marcadas++; } });
+    var total = casillas.length;
+    var porcentaje = total ? Math.round((marcadas / total) * 100) : 0;
+    if(barraFill){ barraFill.style.width = porcentaje + '%'; }
+    if(progresoTxt){ progresoTxt.textContent = marcadas + ' de ' + total + ' habilidades marcadas (' + porcentaje + '%)'; }
+  }
+  casillas.forEach(function(casilla){ casilla.addEventListener('change', actualizarProgreso); });
+  actualizarProgreso();
+
+  /* ---------- 8. MODAL GLOSARIO ---------- */
+  var modalGlosario = document.getElementById('modalGlosario');
+  var abrirGlosario = document.getElementById('btnGlosario');
+  var cerrarGlosario = document.getElementById('cerrarGlosario');
+
+  function abrirModal(){ if(modalGlosario){ modalGlosario.classList.add('visible'); } }
+  function cerrarModal(){ if(modalGlosario){ modalGlosario.classList.remove('visible'); } }
+
+  if(abrirGlosario){ abrirGlosario.addEventListener('click', abrirModal); }
+  if(cerrarGlosario){ cerrarGlosario.addEventListener('click', cerrarModal); }
+  if(modalGlosario){
+    modalGlosario.addEventListener('click', function(evento){ if(evento.target === modalGlosario){ cerrarModal(); } });
+  }
+  document.addEventListener('keydown', function(evento){ if(evento.key === 'Escape'){ cerrarModal(); } });
+
+  /* ---------- 9. Botón “Ver todo” (muestra respuestas en pantalla) ---------- */
+  var botonReveal = document.getElementById('btnReveal');
+  if(botonReveal){
+    botonReveal.addEventListener('click', function(){
+      var activo = document.body.classList.toggle('reveal-all');
+      botonReveal.textContent = activo ? '🙈 Ocultar respuestas' : '👁 Ver todo';
+      /* sincroniza el estado visual de zonas y switches */
+      document.querySelectorAll('.zona').forEach(function(zona){
+        var botonZona = zona.querySelector('.zona-btn');
+        if(zona.classList.contains('abierta') && botonZona){ botonZona.setAttribute('aria-expanded','true'); }
+      });
+    });
+  }
+
+  /* ---------- 10. Impresión ---------- */
+  var botonImprimir = document.getElementById('btnImprimir');
+  if(botonImprimir){
+    botonImprimir.addEventListener('click', function(){
+      /* Antes de imprimir se abren todas las respuestas para que la hoja sea autocontenida */
+      document.body.classList.add('reveal-all');
+      document.querySelectorAll('.zona').forEach(function(zona){
+        zona.classList.add('abierta');
+        var botonZona = zona.querySelector('.zona-btn');
+        if(botonZona){ botonZona.setAttribute('aria-expanded','true'); }
+      });
+      document.querySelectorAll('.flip').forEach(function(tarjeta){ tarjeta.classList.add('flipped'); });
+      window.setTimeout(function(){ window.print(); }, 220);
+    });
+  }
+
+  /* Atajo de teclado: Ctrl+P deja el documento listo para imprimir */
+  window.addEventListener('beforeprint', function(){
+    document.body.classList.add('reveal-all');
+    document.querySelectorAll('.zona').forEach(function(zona){ zona.classList.add('abierta'); });
+    document.querySelectorAll('.flip').forEach(function(tarjeta){ tarjeta.classList.add('flipped'); });
+  });
+
+})();
+</script>
+</body>
+</html>
+
