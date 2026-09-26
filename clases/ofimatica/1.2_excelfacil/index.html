@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExcelMisión NTICX · Aprendé planillas de cálculo jugando</title>
+
+<!-- Fuente opcional por CDN (la app funciona igual sin conexión gracias a los fallbacks del sistema) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/latin-700.css">
+
+<style>
+/* ============================================================================
+   PALETA TIPO EXCEL + VARIABLES GLOBALES
+   ============================================================================ */
+:root{
+  --verde:#217346;
+  --verde-osc:#185c37;
+  --verde-claro:#e8f4ee;
+  --verde-suave:rgba(33,115,70,.10);
+  --gris-fondo:#f3f2f1;
+  --gris-borde:#d6d3d1;
+  --gris-linea:#dcdcdc;
+  --texto:#1f2328;
+  --texto-suave:#5c6670;
+  --blanco:#ffffff;
+  --amarillo:#fff4ce;
+  --rojo:#c42b1c;
+  --azul:#0f6cbd;
+  --sombra:0 2px 10px rgba(0,0,0,.10);
+  --radio:8px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+  background:var(--gris-fondo);
+  color:var(--texto);
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button{font-family:inherit}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#f1f1f1}
+::-webkit-scrollbar-thumb{background:#c2c2c2;border-radius:8px;border:3px solid #f1f1f1}
+::-webkit-scrollbar-thumb:hover{background:#a3a3a3}
+
+/* ============================================================================
+   ESTRUCTURA GENERAL
+   ============================================================================ */
+.app-shell{display:flex;flex-direction:column;height:100dvh;min-height:0}
+
+/* ---------- Barra superior ---------- */
+.topbar{
+  display:flex;align-items:center;gap:16px;
+  background:linear-gradient(180deg,#2a8155 0%,var(--verde) 60%,#1d6840 100%);
+  color:#fff;padding:8px 14px;box-shadow:0 1px 4px rgba(0,0,0,.25);z-index:30;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{width:34px;height:34px;flex:0 0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.brand-txt h1{margin:0;font-size:15px;font-weight:700;letter-spacing:.2px;line-height:1.15}
+.brand-txt p{margin:0;font-size:11px;opacity:.85;line-height:1.2}
+
+.progreso-wrap{flex:1 1 220px;min-width:170px;max-width:420px}
+.progreso-txt{font-size:11.5px;opacity:.95;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px}
+.pbar{height:9px;background:rgba(255,255,255,.28);border-radius:99px;overflow:hidden}
+.pfill{height:100%;width:0%;background:linear-gradient(90deg,#ffe08a,#ffc93c);border-radius:99px;transition:width .55s cubic-bezier(.2,.9,.3,1.2)}
+
+.topbar-acciones{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.btn-top{
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.34);color:#fff;
+  padding:7px 12px;border-radius:6px;font-size:12.5px;font-weight:600;cursor:pointer;
+  transition:background .15s,transform .1s;display:flex;align-items:center;gap:6px;
+}
+.btn-top:hover{background:rgba(255,255,255,.28)}
+.btn-top:active{transform:translateY(1px)}
+
+/* ---------- Cinta de opciones / barra de fórmulas ---------- */
+.ribbon{
+  display:flex;align-items:center;gap:10px;background:#fbfbfa;
+  border-bottom:1px solid var(--gris-borde);padding:6px 10px;flex-wrap:wrap;z-index:20;
+}
+.namebox{
+  min-width:78px;text-align:center;border:1px solid var(--gris-borde);background:#fff;
+  border-radius:4px;padding:6px 10px;font-size:12.5px;font-weight:700;color:var(--verde-osc);
+  letter-spacing:.5px;
+}
+.fxbox{display:flex;align-items:center;gap:7px;flex:1 1 260px;min-width:200px}
+.fx{font-style:italic;font-family:Georgia,'Times New Roman',serif;color:#8a8a8a;font-size:15px;font-weight:700}
+#formulaInput{
+  flex:1;border:1px solid var(--gris-borde);border-radius:4px;padding:6px 9px;
+  font-family:'Cascadia Mono',Consolas,'Segoe UI',Calibri,sans-serif;font-size:13px;background:#fff;color:#111;
+}
+#formulaInput:focus{outline:none;border-color:var(--verde);box-shadow:0 0 0 2px var(--verde-suave)}
+#formulaInput.error{border-color:var(--rojo);background:#fff5f5;color:var(--rojo)}
+
+.tools{display:flex;align-items:center;gap:5px}
+.tool{
+  width:34px;height:32px;border:1px solid transparent;background:transparent;border-radius:5px;
+  cursor:pointer;font-size:14px;display:grid;place-items:center;color:#333;transition:.13s;position:relative;
+}
+.tool:hover:not(:disabled){background:#e9f5ee;border-color:#bcdcc8}
+.tool:disabled{opacity:.32;cursor:not-allowed}
+.tool.on{background:var(--verde-claro);border-color:#9ccfb2;color:var(--verde-osc)}
+.tool b{font-weight:800;font-size:15px}
+.tool i{font-style:italic;font-family:Georgia,serif;font-weight:700;font-size:15px}
+.tool-sep{width:1px;height:22px;background:var(--gris-borde);margin:0 3px}
+#toolNote{font-size:11px;color:var(--texto-suave);max-width:230px;line-height:1.25}
+.tool svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round}
+
+/* ---------- Área de trabajo ---------- */
+.workspace{flex:1;display:grid;grid-template-columns:352px 1fr;min-height:0;overflow:hidden}
+
+/* ---------- Panel de misión ---------- */
+.mission-panel{
+  background:var(--blanco);border-right:1px solid var(--gris-borde);
+  overflow-y:auto;padding:16px 16px 22px;display:flex;flex-direction:column;gap:13px;
+}
+.block-chip{
+  display:inline-block;background:var(--verde-claro);color:var(--verde-osc);
+  font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
+  padding:4px 9px;border-radius:99px;align-self:flex-start;
+}
+.mission-panel h2{margin:6px 0 0;font-size:18px;line-height:1.25;color:#15301f}
+.mission-text{margin:0;font-size:13.5px;line-height:1.6;color:#2f3a34}
+.mission-text strong{color:var(--verde-osc)}
+.mission-text code{
+  background:#f0f6f2;border:1px solid #cfe4d6;border-radius:4px;padding:1px 6px;
+  font-family:Consolas,'Cascadia Mono',monospace;font-size:12.5px;color:#14532d;font-weight:600;white-space:nowrap;
+}
+.objetivo{
+  background:#f8faf9;border-left:3px solid var(--verde);padding:9px 11px;border-radius:0 6px 6px 0;
+  font-size:12px;color:var(--texto-suave);line-height:1.45;
+}
+.objetivo b{color:var(--verde-osc)}
+.target-chip{
+  background:var(--amarillo);border:1px solid #f0dc9a;border-radius:6px;padding:8px 11px;
+  font-size:12px;color:#6b5300;line-height:1.45;
+}
+.mission-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:none;border-radius:7px;padding:10px 15px;font-size:13px;font-weight:700;cursor:pointer;
+  transition:transform .1s,box-shadow .15s,background .15s;display:inline-flex;align-items:center;gap:7px;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--verde);color:#fff;box-shadow:0 2px 6px rgba(33,115,70,.35)}
+.btn-primary:hover{background:var(--verde-osc)}
+.btn-ghost{background:#fff;color:#3d4a43;border:1px solid var(--gris-borde)}
+.btn-ghost:hover{background:#f4f6f5}
+.btn-next{background:#ffc93c;color:#4a3500;box-shadow:0 2px 8px rgba(255,180,0,.4)}
+.btn-next:hover{background:#ffbe0b}
+
+.feedback{border-radius:8px;padding:11px 13px;font-size:13px;line-height:1.5;display:none;animation:pop .28s ease}
+.feedback.show{display:block}
+.feedback.ok{background:#e7f6ec;border:1px solid #9ad8b3;color:#14532d}
+.feedback.bad{background:#fdecea;border:1px solid #f3b7b0;color:#8c2318}
+.feedback b{display:block;margin-bottom:3px;font-size:13.5px}
+.feedback code{background:#fff;border:1px solid #cfe4d6;border-radius:4px;padding:0 5px;font-family:Consolas,monospace;font-size:12px}
+@keyframes pop{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+
+.pista{background:#f2f7ff;border:1px dashed #a9c9ee;color:#123f6d;border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.5;display:none}
+.pista.show{display:block}
+
+.mini-leyenda{margin-top:auto;border-top:1px dashed var(--gris-borde);padding-top:11px;font-size:11.5px;color:var(--texto-suave);line-height:1.55}
+.mini-leyenda kbd{
+  background:#fff;border:1px solid #ccc;border-bottom-width:2px;border-radius:4px;
+  padding:0 5px;font-size:10.5px;font-family:inherit;color:#333;
+}
+
+/* ---------- Grilla ---------- */
+.grid-wrap{overflow:auto;background:#fff;position:relative;min-width:0}
+#grid{border-collapse:separate;border-spacing:0;table-layout:fixed;font-family:'Segoe UI',Calibri,'Helvetica Neue',Arial,sans-serif}
+#grid th{
+  background:#f5f6f7;color:#4a545c;font-size:11px;font-weight:600;text-align:center;
+  border-right:1px solid var(--gris-linea);border-bottom:1px solid var(--gris-linea);
+  padding:2px 4px;user-select:none;position:sticky;z-index:2;height:22px;
+}
+#grid thead th{top:0;z-index:3;height:23px}
+#grid tbody th{left:0;width:44px;min-width:44px;z-index:2}
+#grid thead th.corner{left:0;z-index:5;width:44px;min-width:44px;background:#eef0f1}
+#grid th.col-hl,#grid th.row-hl{background:var(--verde-claro);color:var(--verde-osc)}
+#grid td{
+  width:92px;min-width:92px;height:24px;background:#fff;border-right:1px solid var(--gris-linea);
+  border-bottom:1px solid var(--gris-linea);padding:0 5px;font-size:12.5px;cursor:cell;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;color:#111;
+  user-select:none;vertical-align:middle;
+}
+#grid td.colA{width:186px;min-width:186px}
+#grid td.in-range{background:var(--verde-suave)}
+#grid td.active{outline:2px solid var(--verde);outline-offset:-2px;z-index:1;background:#fff}
+#grid td.in-range.active{background:#fff}
+#grid td.border-on{box-shadow:inset 0 0 0 1.2px #33383d}
+#grid td.err{color:var(--rojo);font-weight:600}
+#grid td.editable-hint::after{
+  content:'';position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;
+  background:#ffc93c;box-shadow:0 0 0 1px rgba(0,0,0,.12);
+}
+.cell-editor{
+  position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);border:2px solid var(--verde);
+  padding:0 4px;font-size:12.5px;font-family:inherit;outline:none;background:#fff;z-index:8;border-radius:0;
+}
+
+/* ---------- Pestañas de niveles ---------- */
+.sheet-tabs{
+  display:flex;align-items:stretch;gap:2px;background:#ececec;border-top:1px solid var(--gris-borde);
+  padding:0 8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;flex:0 0 auto;
+}
+.tab{
+  border:1px solid transparent;border-bottom:none;background:transparent;cursor:pointer;
+  padding:8px 13px 9px;font-size:12px;font-weight:600;color:#5d6b62;white-space:nowrap;
+  border-radius:7px 7px 0 0;display:flex;align-items:center;gap:6px;transition:.14s;margin-top:3px;
+}
+.tab:hover:not(:disabled){background:#dfe9e2;color:var(--verde-osc)}
+.tab:disabled{color:#9aa5a0;cursor:not-allowed;opacity:.75}
+.tab.active{background:#fff;color:var(--verde-osc);border-color:var(--gris-borde);font-weight:700;box-shadow:0 -2px 0 var(--verde) inset}
+.tab.done{color:var(--verde-osc)}
+.tab .ico{font-size:12px}
+.tab .tnum{font-weight:800}
+.tab.sandbox{margin-left:auto;background:#f7f2e6;color:#7a6218}
+.tab.sandbox.active{background:#fffdf6;border-color:#e5d9b6}
+
+/* ---------- Barra de estado ---------- */
+.statusbar{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:var(--verde);color:#fff;padding:5px 12px;font-size:11.5px;flex:0 0 auto;
+}
+.statusbar .right{opacity:.92;font-variant-numeric:tabular-nums}
+
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,25,20,.55);display:none;
+  align-items:center;justify-content:center;z-index:200;padding:18px;backdrop-filter:blur(2px);
+}
+.overlay.show{display:flex;animation:fade .22s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal-card{
+  background:#fff;border-radius:14px;max-width:780px;width:100%;max-height:90dvh;overflow-y:auto;
+  box-shadow:0 22px 60px rgba(0,0,0,.4);animation:rise .3s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes rise{from{transform:translateY(24px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal-head{
+  background:linear-gradient(135deg,var(--verde) 0%,#2f9260 100%);color:#fff;
+  padding:20px 24px;border-radius:14px 14px 0 0;position:relative;
+}
+.modal-head h2{margin:0;font-size:21px}
+.modal-head p{margin:5px 0 0;font-size:13px;opacity:.92;line-height:1.5}
+.modal-close{
+  position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1;
+}
+.modal-close:hover{background:rgba(255,255,255,.34)}
+.modal-body{padding:20px 24px 24px}
+.modal-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;justify-content:flex-end}
+
+.campo{margin-bottom:13px}
+.campo label{display:block;font-size:11.5px;font-weight:700;color:var(--verde-osc);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.campo input{
+  width:100%;padding:10px 12px;border:1px solid var(--gris-borde);border-radius:7px;font-size:14px;font-family:inherit;
+}
+.campo input:focus{outline:none;border-color:var(--verde);box-shadow:0 0 0 3px var(--verde-suave)}
+.fila-campos{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+
+.tabla-resumen{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px}
+.tabla-resumen th{
+  background:var(--verde-claro);color:var(--verde-osc);text-align:left;padding:8px 10px;
+  border:1px solid #c3ddcd;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;
+}
+.tabla-resumen td{padding:8px 10px;border:1px solid #e2e6e4}
+.tabla-resumen tr:nth-child(even) td{background:#fafbfa}
+.estado{font-weight:700;font-size:12px;padding:3px 9px;border-radius:99px;display:inline-block}
+.estado.aprobado{background:#dff5e6;color:#14532d}
+.estado.pendiente{background:#fdecea;color:#8c2318}
+.nota-docente{
+  background:#f8faf9;border-left:3px solid var(--verde);padding:11px 13px;border-radius:0 7px 7px 0;
+  font-size:12px;color:var(--texto-suave);line-height:1.55;margin-top:16px;
+}
+.aviso-anexo{
+  background:#fff8e6;border:1px dashed #e6c96a;border-radius:7px;padding:9px 12px;margin-top:12px;
+  font-size:12px;color:#6b5300;line-height:1.5;
+}
+.ayuda-seccion h3{margin:18px 0 7px;font-size:14px;color:var(--verde-osc)}
+.ayuda-seccion ul{margin:0;padding-left:19px;font-size:13px;line-height:1.75;color:#39423c}
+.ayuda-seccion p{font-size:13px;line-height:1.65;color:#39423c}
+.ayuda-seccion code{background:#f0f6f2;border:1px solid #cfe4d6;border-radius:4px;padding:0 5px;font-family:Consolas,monospace;font-size:12px;color:#14532d}
+.ayuda-seccion kbd{background:#fff;border:1px solid #ccc;border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;bottom:70px;left:50%;transform:translate(-50%,20px);background:#26332c;color:#fff;
+  padding:11px 19px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;
+  transition:.28s;z-index:400;box-shadow:var(--sombra);max-width:88vw;text-align:center;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- Confetti ---------- */
+.confetti{position:fixed;top:-16px;width:9px;height:15px;z-index:500;pointer-events:none;animation:caer linear forwards}
+@keyframes caer{to{transform:translateY(106vh) rotate(760deg);opacity:.9}}
+
+/* ============================================================================
+   ÁREA DE IMPRESIÓN (oculta en pantalla)
+   ============================================================================ */
+#printArea{display:none}
+
+@page{size:A4 portrait;margin:1.6cm}
+
+@media print{
+  html,body{height:auto;overflow:visible;background:#fff}
+  body.printing .app-shell,
+  body.printing .overlay,
+  body.printing #toast{display:none !important}
+  body.printing #printArea{display:block !important}
+  #printArea{font-family:'Segoe UI',Calibri,Arial,sans-serif;color:#000;font-size:10.5pt}
+
+  .p-head{border-bottom:2.5pt solid var(--verde);padding-bottom:6pt;margin-bottom:11pt;display:flex;justify-content:space-between;align-items:flex-end;gap:14pt}
+  .p-head h1{margin:0;font-size:16pt;color:var(--verde-osc)}
+  .p-head .sub{font-size:9pt;color:#444;margin-top:2pt}
+  .p-meta{font-size:9pt;text-align:right;line-height:1.5;color:#333}
+
+  .p-box{border:.7pt solid #bbb;padding:7pt 9pt;margin-bottom:10pt;font-size:9.5pt;line-height:1.6;background:#f7faf8}
+  .p-box b{color:var(--verde-osc)}
+
+  table.p-grid{border-collapse:collapse;width:100%;font-size:9pt}
+  table.p-grid th{background:#eceff0;border:.5pt solid #999;padding:2.5pt 4pt;font-size:8pt;font-weight:700;text-align:center;color:#333}
+  table.p-grid td{border:.5pt solid #cfcfcf;padding:2.5pt 5pt;height:15pt;white-space:nowrap;overflow:hidden}
+  table.p-grid td.sin-borde{border-color:#e4e4e4}
+
+  .p-foot{margin-top:14pt;font-size:8.5pt;color:#555;border-top:.7pt solid #ccc;padding-top:6pt;line-height:1.5}
+  .p-firma{margin-top:32pt;display:flex;justify-content:space-between;gap:30pt;font-size:9pt}
+  .p-firma div{flex:1;text-align:center;border-top:.7pt solid #333;padding-top:4pt}
+
+  table.p-resumen{border-collapse:collapse;width:100%;font-size:9.5pt;margin-top:3pt}
+  table.p-resumen th{background:var(--verde);color:#fff;border:.5pt solid var(--verde-osc);padding:5pt 6pt;text-align:left;font-size:9pt}
+  table.p-resumen td{border:.5pt solid #bbb;padding:4.5pt 6pt}
+  .p-est-ok{font-weight:700;color:#14532d}
+  .p-est-no{font-weight:700;color:#8c2318}
+  .p-titulo-nivel{font-size:12pt;color:var(--verde-osc);margin:0 0 6pt;font-weight:700}
+
+  /* --- Segunda página: anexo --- */
+  .p-salto{page-break-before:always;break-before:page}
+  .p-head2{border-bottom:1.4pt solid var(--verde);padding-bottom:4pt;margin-bottom:10pt;display:flex;justify-content:space-between;align-items:flex-end;gap:12pt}
+  .p-head2 b{font-size:12.5pt;color:var(--verde-osc)}
+  .p-head2 span{font-size:8.5pt;color:#444;text-align:right;line-height:1.45}
+  .p-sub{font-size:10.5pt;font-weight:700;color:#15301f;margin:11pt 0 3pt;padding-left:6pt;border-left:3pt solid var(--verde)}
+  table.p-resumen.compacta{font-size:8.4pt}
+  table.p-resumen.compacta th{padding:3pt 4pt;font-size:7.8pt}
+  table.p-resumen.compacta td{padding:2.4pt 4pt}
+  .p-mono{font-family:Consolas,'Courier New',monospace;font-size:8.2pt;color:#14532d}
+  .p-nota{font-size:8.5pt;color:#333;background:#f7faf8;border-left:2pt solid var(--verde);padding:5pt 8pt;margin-top:8pt;line-height:1.5}
+  .p-dos-col{display:flex;gap:12pt}
+  .p-dos-col>div{flex:1}
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+@media (max-width:1000px){
+  .workspace{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow:auto}
+  .mission-panel{border-right:none;border-bottom:1px solid var(--gris-borde);max-height:44dvh}
+  .grid-wrap{min-height:46dvh}
+  #toolNote{display:none}
+}
+@media (max-width:640px){
+  .brand-txt p{display:none}
+  .topbar{gap:9px;padding:7px 10px}
+  .progreso-wrap{order:3;flex-basis:100%;max-width:none}
+  .topbar-acciones{margin-left:0}
+  .btn-top span.lbl{display:none}
+  .fila-campos{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     ESTRUCTURA DE LA APLICACIÓN
+     ========================================================================== -->
+<div class="app-shell">
+
+  <!-- ---------- BARRA SUPERIOR ---------- -->
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="0" y="0" width="32" height="32" rx="7" fill="#ffffff" opacity=".16"/>
+        <rect x="1.2" y="1.2" width="29.6" height="29.6" rx="6.5" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.4"/>
+        <g stroke="#ffffff" stroke-opacity=".45" stroke-width="1">
+          <line x1="6" y1="11" x2="26" y2="11"/><line x1="6" y1="16.5" x2="26" y2="16.5"/><line x1="6" y1="22" x2="26" y2="22"/>
+          <line x1="13" y1="6" x2="13" y2="26"/><line x1="20" y1="6" x2="20" y2="26"/>
+        </g>
+        <path d="M9 8 L23 24 M23 8 L9 24" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-txt">
+        <h1>ExcelMisión NTICX</h1>
+        <p>Planillas de cálculo · 4.º año · DGCyE — Pcia. de Buenos Aires</p>
+      </div>
+    </div>
+
+    <div class="progreso-wrap">
+      <div class="progreso-txt">
+        <span id="progNivel">Nivel 1 de 10</span>
+        <span id="progCuenta">0 completados</span>
+      </div>
+      <div class="pbar"><div class="pfill" id="progFill"></div></div>
+    </div>
+
+    <div class="topbar-acciones">
+      <button class="btn-top" id="btnConstancia" title="Constancia de trabajo práctico">📋 <span class="lbl">Constancia</span></button>
+      <button class="btn-top" id="btnImprimir" title="Imprimir el nivel actual o guardarlo como PDF">🖨 <span class="lbl">Imprimir / PDF</span></button>
+      <button class="btn-top" id="btnAyuda" title="Ayuda y atajos">❓ <span class="lbl">Ayuda</span></button>
+    </div>
+  </header>
+
+  <!-- ---------- CINTA: CUADRO DE NOMBRES + BARRA DE FÓRMULAS + HERRAMIENTAS ---------- -->
+  <div class="ribbon">
+    <div class="namebox" id="activeRefBox">A1</div>
+    <div class="fxbox">
+      <span class="fx">fx</span>
+      <input id="formulaInput" type="text" spellcheck="false" autocomplete="off"
+             placeholder="Contenido de la celda seleccionada" aria-label="Barra de fórmulas">
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tools">
+      <button class="tool" id="toolBold" data-tool="bold" title="Negrita (Ctrl+N / Ctrl+B)"><b>N</b></button>
+      <button class="tool" id="toolItalic" data-tool="italic" title="Cursiva (Ctrl+K / Ctrl+I)"><i>K</i></button>
+      <div class="tool-sep"></div>
+      <button class="tool" id="toolCenter" data-tool="center" title="Alinear al centro">
+        <svg viewBox="0 0 20 20"><line x1="2" y1="4" x2="18" y2="4"/><line x1="5" y1="8.5" x2="15" y2="8.5"/><line x1="2" y1="13" x2="18" y2="13"/><line x1="5" y1="17.5" x2="15" y2="17.5"/></svg>
+      </button>
+      <button class="tool" id="toolBorder" data-tool="border" title="Bordes de la tabla">
+        <svg viewBox="0 0 20 20"><rect x="2.5" y="2.5" width="15" height="15" rx="1"/><line x1="2.5" y1="8" x2="17.5" y2="8"/><line x1="2.5" y1="13" x2="17.5" y2="13"/><line x1="8" y1="2.5" x2="8" y2="17.5"/><line x1="13" y1="2.5" x2="13" y2="17.5"/></svg>
+      </button>
+      <div class="tool-sep"></div>
+      <span id="toolNote">Las herramientas se habilitan según la misión.</span>
+    </div>
+  </div>
+
+  <!-- ---------- ÁREA DE TRABAJO ---------- -->
+  <main class="workspace">
+    <aside class="mission-panel" id="missionPanel"><!-- se completa por JS --></aside>
+    <section class="grid-wrap" id="gridScroll">
+      <table id="grid" cellspacing="0">
+        <colgroup id="gridCols"></colgroup>
+        <thead id="gridHead"></thead>
+        <tbody id="gridBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- ---------- PESTAÑAS DE NIVELES ---------- -->
+  <nav class="sheet-tabs" id="tabs" aria-label="Niveles"></nav>
+
+  <!-- ---------- BARRA DE ESTADO ---------- -->
+  <div class="statusbar">
+    <span id="statusLeft">Listo</span>
+    <span class="right" id="statusRight"></span>
+  </div>
+</div>
+
+<!-- ÁREA DE IMPRESIÓN -->
+<div id="printArea"></div>
+
+<!-- MODAL GENÉRICO -->
+<div class="overlay" id="overlay">
+  <div class="modal-card" id="modalCard" role="dialog" aria-modal="true"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================================
+   EXCELMISIÓN NTICX — Motor de hoja de cálculo + 10 misiones gamificadas
+   ----------------------------------------------------------------------------
+   Estructura del script:
+     1.  Constantes y utilidades
+     2.  Estado global (en memoria, sin localStorage)
+     3.  Motor de fórmulas (tokenizador + parser recursivo)
+     4.  Definición de los 10 niveles (+ práctica libre)
+     5.  Renderizado de la grilla
+     6.  Selección, teclado y edición
+     7.  Herramientas de formato
+     8.  Validadores por nivel
+     9.  Navegación, progreso y pestañas
+     10. Impresión / exportación a PDF (pág. 1: constancia · pág. 2: anexo)
+     11. Pantalla final (constancia) y ayuda
+     12. Inicialización
+   ============================================================================ */
+
+/* ============================================================================
+   1. CONSTANTES Y UTILIDADES
+   ============================================================================ */
+const COLS = ['A','B','C','D','E','F','G','H','I','J'];   // 10 columnas
+const FILAS = 25;                                          // 25 filas
+
+/** Convierte "B4" en {c:2, f:4} (columna y fila, base 1). */
+function refToRC(ref){
+  const m = /^([A-J])(\d{1,3})$/.exec(String(ref).toUpperCase());
+  if(!m) return null;
+  return { c: COLS.indexOf(m[1]) + 1, f: parseInt(m[2], 10) };
+}
+/** Convierte columna/fila en referencia: (2,4) -> "B4" */
+function rcToRef(c, f){ return COLS[c-1] + f; }
+/** Lista de referencias de un rango rectangular (incluye ambos extremos). */
+function rangoRefs(ini, fin){
+  const a = refToRC(ini), b = refToRC(fin);
+  if(!a || !b) return [];
+  const c1 = Math.min(a.c,b.c), c2 = Math.max(a.c,b.c);
+  const f1 = Math.min(a.f,b.f), f2 = Math.max(a.f,b.f);
+  const out = [];
+  for(let f=f1; f<=f2; f++) for(let c=c1; c<=c2; c++) out.push(rcToRef(c,f));
+  return out;
+}
+/** Normaliza texto para comparar sin mayúsculas ni acentos. */
+function norm(s){
+  return String(s == null ? '' : s).trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+/** Formatea un número al estilo argentino (1.234,56). */
+function fmtNum(n){
+  if(typeof n !== 'number' || !isFinite(n)) return String(n);
+  return n.toLocaleString('es-AR', { maximumFractionDigits: 2 });
+}
+/** Escapa texto para insertarlo en HTML (impresión). */
+function escapeHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+/** ¿El valor es un código de error tipo Excel? */
+function esError(v){ return typeof v === 'string' && v.charAt(0) === '#' && v.length > 1; }
+/** Crea un error "de planilla" con su código visible. */
+function XlError(codigo){ const e = new Error(codigo); e.xl = codigo; return e; }
+/** Fecha de hoy en formato argentino. */
+function hoy(){
+  const d = new Date();
+  return d.toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+/** Todas las referencias posibles (para pintado rápido de la selección). */
+const TODAS_LAS_REFS = (()=>{ const a=[]; for(let f=1;f<=FILAS;f++) for(let c=1;c<=COLS.length;c++) a.push(rcToRef(c,f)); return a; })();
+
+/* ============================================================================
+   2. ESTADO GLOBAL  (variables en memoria — apto para iframes restringidos)
+   ============================================================================ */
+const state = {
+  nivelActual: 1,
+  desbloqueado: 1,
+  completados: {},
+  intentos: {},
+  hojas: {},                                    // { nroNivel: { cells: {...} } }
+  activeRef: 'A1',
+  anchor: 'A1',
+  focusRef: 'A1',
+  editando: null,
+  arrastrando: false,
+  estudiante: { nombre:'', escuela:'', curso:'', fecha: hoy() },
+  timerAvance: null
+};
+
+function nivelActual(){ return LEVELS.find(n => n.n === state.nivelActual) || LEVELS[0]; }
+
+/** Hoja activa del nivel actual (se crea la primera vez que se visita). */
+function hoja(){
+  const n = state.nivelActual;
+  if(!state.hojas[n]) state.hojas[n] = clonarPreload(nivelActual().preload);
+  return state.hojas[n];
+}
+function peekCell(ref){ const h = hoja(); return h.cells[ref] || null; }
+function getCell(ref){ const h = hoja(); if(!h.cells[ref]) h.cells[ref] = { raw:'', bold:false, italic:false, align:null, border:false }; return h.cells[ref]; }
+function rawDe(ref){ const c = peekCell(ref); return (c && c.raw != null) ? String(c.raw) : ''; }
+function fmtDe(ref){ const c = peekCell(ref); return c || { bold:false, italic:false, align:null, border:false }; }
+function esEditable(ref){ return nivelActual().editableSet.has(ref); }
+
+/** Construye una hoja nueva a partir del preload declarado por el nivel. */
+function clonarPreload(pre){
+  const cells = {};
+  for(const ref in pre){
+    const item = pre[ref];
+    if(item && typeof item === 'object' && !Array.isArray(item)){
+      cells[ref] = {
+        raw:   item.v != null ? String(item.v) : '',
+        bold:  !!item.bold, italic: !!item.italic,
+        align: item.align || null, border: !!item.border
+      };
+    } else {
+      cells[ref] = { raw: String(item), bold:false, italic:false, align:null, border:false };
+    }
+  }
+  return { cells };
+}
+
+/* ============================================================================
+   3. MOTOR DE FÓRMULAS
+   ----------------------------------------------------------------------------
+   texto -> preproceso (coma decimal) -> tokens -> parser recursivo -> valor
+   Soporta: referencias (A1), rangos (A1:B9), operadores + - * / ^ y
+   comparaciones, y las funciones SUMA, PROMEDIO, MAX, MIN, CONTAR, CONTARA,
+   ABS, REDONDEAR, ENTERO, RAIZ, POTENCIA y SI.
+   ============================================================================ */
+
+/** Acepta decimales con coma (0,21) o punto (0.21), como en Excel en español. */
+function preProcesar(txt){ return String(txt).replace(/(\d),(\d)/g, '$1.$2'); }
+
+/** Tokenizador. */
+function tokenize(src){
+  const toks = []; let i = 0; const n = src.length;
+  const esDig = c => c >= '0' && c <= '9';
+  const esLet = c => /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ_]/.test(c);
+  while(i < n){
+    const c = src[i];
+    if(c === ' ' || c === '\t' || c === '\n'){ i++; continue; }
+    if(esDig(c) || (c === '.' && esDig(src[i+1] || ''))){
+      let j = i; while(j < n && (esDig(src[j]) || src[j] === '.')) j++;
+      const num = parseFloat(src.slice(i, j));
+      if(isNaN(num)) throw XlError('#¡NUM!');
+      toks.push({ t:'num', v:num }); i = j; continue;
+    }
+    if(esLet(c)){
+      let j = i; while(j < n && (esLet(src[j]) || esDig(src[j]))) j++;
+      toks.push({ t:'name', v: src.slice(i, j) }); i = j; continue;
+    }
+    if(c === '"'){
+      let j = i + 1, s = '';
+      while(j < n && src[j] !== '"'){ s += src[j]; j++; }
+      if(j >= n) throw XlError('#¡VALOR!');
+      toks.push({ t:'str', v:s }); i = j + 1; continue;
+    }
+    if(c === ',' || c === ';'){ toks.push({ t:',' }); i++; continue; }
+    if('+-*/^():'.includes(c)){ toks.push({ t:c }); i++; continue; }
+    if(c === '$'){ i++; continue; }
+    if(c === '=' || c === '<' || c === '>'){
+      let op = c;
+      if((c === '<' || c === '>') && src[i+1] === '='){ op += '='; i++; }
+      else if(c === '<' && src[i+1] === '>'){ op = '<>'; i++; }
+      toks.push({ t:'cmp', v:op }); i++; continue;
+    }
+    throw XlError('#¡NOMBRE?');
+  }
+  return toks;
+}
+
+const RE_REF = /^([A-J])(\d{1,3})$/;
+
+/** Evalúa el cuerpo de una fórmula (sin el "=") usando la función leerCelda. */
+function evaluarFormula(texto, leerCelda){
+  const toks = tokenize(preProcesar(texto));
+  let p = 0;
+  const mirar = () => toks[p];
+  const tomar = () => toks[p++];
+  const exigir = t => { if(!toks[p] || toks[p].t !== t) throw XlError('#¡NOMBRE?'); return toks[p++]; };
+
+  function esRango(v){ return v && typeof v === 'object' && v.isRange; }
+  function aNumero(v){
+    if(esError(v)) throw XlError(v);
+    if(typeof v === 'number') return v;
+    if(typeof v === 'string'){
+      const s = v.trim().replace(/\s/g,'');
+      if(s === '') throw XlError('#¡VALOR!');
+      const n = Number(s);
+      if(isNaN(n)) throw XlError('#¡VALOR!');
+      return n;
+    }
+    if(esRango(v)) throw XlError('#¡VALOR!');
+    throw XlError('#¡VALOR!');
+  }
+  function planos(args){
+    const out = [];
+    for(const a of args){ if(esRango(a)) out.push(...a.valores); else out.push(a); }
+    return out;
+  }
+  function numeros(args){
+    const vs = planos(args);
+    for(const v of vs) if(esError(v)) throw XlError(v);
+    return vs.filter(v => typeof v === 'number' && isFinite(v));
+  }
+  function unico(args){
+    const vs = planos(args);
+    if(vs.length !== 1) throw XlError('#¡VALOR!');
+    return vs[0];
+  }
+  function expandir(a, b){
+    const ra = refToRC(a), rb = refToRC(b);
+    if(!ra || !rb) throw XlError('#¡REF!');
+    const c1 = Math.min(ra.c, rb.c), c2 = Math.max(ra.c, rb.c);
+    const f1 = Math.min(ra.f, rb.f), f2 = Math.max(ra.f, rb.f);
+    const refs = [], valores = [];
+    for(let f = f1; f <= f2; f++) for(let c = c1; c <= c2; c++){
+      if(c > COLS.length || f > FILAS) throw XlError('#¡REF!');
+      const r = rcToRef(c, f); refs.push(r); valores.push(leerCelda(r));
+    }
+    return { isRange:true, refs, valores };
+  }
+  function comparar(op, l, r){
+    if(esError(l)) throw XlError(l); if(esError(r)) throw XlError(r);
+    if(typeof l === 'number' && typeof r === 'number'){
+      switch(op){ case '=': return l===r?1:0; case '<>': return l!==r?1:0;
+        case '<': return l<r?1:0; case '>': return l>r?1:0;
+        case '<=': return l<=r?1:0; case '>=': return l>=r?1:0; }
+    }
+    const a = String(l), b = String(r);
+    switch(op){ case '=': return a===b?1:0; case '<>': return a!==b?1:0;
+      case '<': return a<b?1:0; case '>': return a>b?1:0;
+      case '<=': return a<=b?1:0; case '>=': return a>=b?1:0; }
+    throw XlError('#¡VALOR!');
+  }
+  function aplicar(op, l, r){
+    if(op.t === 'cmp') return comparar(op.v, l, r);
+    if(esError(l)) throw XlError(l);
+    if(esError(r)) throw XlError(r);
+    if(esRango(l) || esRango(r)) throw XlError('#¡VALOR!');
+    if('+-*/^'.includes(op.t)){
+      const a = aNumero(l), b = aNumero(r);
+      if(op.t === '+') return a + b;
+      if(op.t === '-') return a - b;
+      if(op.t === '*') return a * b;
+      if(op.t === '/'){ if(b === 0) throw XlError('#¡DIV/0!'); return a / b; }
+      return Math.pow(a, b);
+    }
+    throw XlError('#¡NOMBRE?');
+  }
+
+  const FUNCIONES = {
+    'SUMA':      a => numeros(a).reduce((x,y) => x + y, 0),
+    'PROMEDIO':  a => { const ns = numeros(a); if(!ns.length) throw XlError('#¡DIV/0!');
+                        return ns.reduce((x,y)=>x+y,0) / ns.length; },
+    'MAX':       a => { const ns = numeros(a); return ns.length ? Math.max(...ns) : 0; },
+    'MIN':       a => { const ns = numeros(a); return ns.length ? Math.min(...ns) : 0; },
+    'CONTAR':    a => numeros(a).length,
+    'CONTARA':   a => planos(a).filter(v => v !== '' && v != null).length,
+    'ABS':       a => Math.abs(aNumero(unico(a))),
+    'ENTERO':    a => Math.floor(aNumero(unico(a))),
+    'REDONDEAR': a => { const vs = planos(a); const x = aNumero(vs[0]);
+                        const d = vs[1] != null ? aNumero(vs[1]) : 0;
+                        const p = Math.pow(10, d); return Math.round(x * p) / p; },
+    'RAIZ':      a => { const x = aNumero(unico(a)); if(x < 0) throw XlError('#¡NUM!'); return Math.sqrt(x); },
+    'POTENCIA':  a => { const vs = planos(a); return Math.pow(aNumero(vs[0]), aNumero(vs[1])); },
+    // Nota didáctica: los argumentos se evalúan antes de llamar a la función.
+    'SI':        a => { const vs = planos(a); const cond = vs[0];
+                        const verdad = (typeof cond === 'number') ? cond !== 0 : !!cond;
+                        return verdad ? (vs[1] !== undefined ? vs[1] : 1) : (vs[2] !== undefined ? vs[2] : 0); }
+  };
+
+  function parseExpr(){
+    let izq = parseTerm();
+    while(mirar() && (mirar().t === '+' || mirar().t === '-' || mirar().t === 'cmp')){
+      const op = tomar(); izq = aplicar(op, izq, parseTerm());
+    }
+    return izq;
+  }
+  function parseTerm(){
+    let izq = parseUnario();
+    while(mirar() && (mirar().t === '*' || mirar().t === '/')){
+      const op = tomar(); izq = aplicar(op, izq, parseUnario());
+    }
+    return izq;
+  }
+  function parseUnario(){
+    if(mirar() && (mirar().t === '-' || mirar().t === '+')){
+      const op = tomar(); const v = parseUnario();
+      return op.t === '-' ? -aNumero(v) : v;
+    }
+    return parsePotencia();
+  }
+  function parsePotencia(){
+    const base = parseAtom();
+    if(mirar() && mirar().t === '^'){ tomar(); return aplicar({t:'^'}, base, parseUnario()); }
+    return base;
+  }
+  function parseAtom(){
+    const tk = mirar();
+    if(!tk) throw XlError('#¡NOMBRE?');
+    if(tk.t === 'num'){ tomar(); return tk.v; }
+    if(tk.t === 'str'){ tomar(); return tk.v; }
+    if(tk.t === '('){ tomar(); const v = parseExpr(); exigir(')'); return v; }
+    if(tk.t === 'name'){
+      tomar();
+      const nombre = tk.v.toUpperCase();
+      if(mirar() && mirar().t === '('){
+        tomar();
+        const args = [];
+        if(!(mirar() && mirar().t === ')')){
+          args.push(parseExpr());
+          while(mirar() && mirar().t === ','){ tomar(); args.push(parseExpr()); }
+        }
+        exigir(')');
+        const fn = FUNCIONES[nombre];
+        if(!fn) throw XlError('#¡NOMBRE?');
+        return fn(args);
+      }
+      if(RE_REF.test(nombre)){
+        if(mirar() && mirar().t === ':'){
+          tomar(); const t2 = tomar();
+          if(!t2 || t2.t !== 'name' || !RE_REF.test(t2.v.toUpperCase())) throw XlError('#¡REF!');
+          return expandir(nombre, t2.v.toUpperCase());
+        }
+        const rc = refToRC(nombre);
+        if(rc.c > COLS.length || rc.f > FILAS) throw XlError('#¡REF!');
+        return leerCelda(nombre);
+      }
+      throw XlError('#¡NOMBRE?');
+    }
+    throw XlError('#¡NOMBRE?');
+  }
+
+  const resultado = parseExpr();
+  if(p < toks.length) throw XlError('#¡NOMBRE?');
+  if(esRango(resultado)) throw XlError('#¡VALOR!');
+  return resultado;
+}
+
+/** Convierte el texto escrito en número o lo deja como texto. */
+function literal(txt){
+  const s = String(txt).trim();
+  if(s === '') return '';
+  const limpio = s.replace(/\s/g,'').replace(',','.');
+  if(/^-?\d*\.?\d+$/.test(limpio)){
+    const n = Number(limpio);
+    if(!isNaN(n)) return n;
+  }
+  return s;
+}
+
+/* --- Caché de cálculo de la hoja ACTIVA (detecta referencias circulares) --- */
+let cacheCalculo = null;
+function recalcular(){ cacheCalculo = new Map(); }
+
+function valorCelda(ref){
+  if(!cacheCalculo) recalcular();
+  if(cacheCalculo.has(ref)) return cacheCalculo.get(ref);
+  cacheCalculo.set(ref, '#CIRC!');
+  const c = peekCell(ref);
+  let v;
+  if(!c || c.raw == null || String(c.raw).trim() === '') v = '';
+  else if(String(c.raw).charAt(0) === '='){
+    try { v = evaluarFormula(String(c.raw).slice(1), valorCelda); }
+    catch(err){ v = (err && err.xl) ? err.xl : '#ERROR'; }
+  } else v = literal(String(c.raw));
+  cacheCalculo.set(ref, v);
+  return v;
+}
+
+/**
+ * Evaluador INDEPENDIENTE de una hoja cualquiera (se usa para el informe
+ * impreso, donde hay que resolver hojas de otros niveles sin modificarlas).
+ * Devuelve la función lectora: leer(ref) -> valor calculado.
+ */
+function evaluarHoja(cells){
+  const cache = new Map();
+  function leer(ref){
+    if(cache.has(ref)) return cache.get(ref);
+    cache.set(ref, '#CIRC!');
+    const c = cells[ref];
+    let v;
+    if(!c || c.raw == null || String(c.raw).trim() === '') v = '';
+    else if(String(c.raw).charAt(0) === '='){
+      try { v = evaluarFormula(String(c.raw).slice(1), leer); }
+      catch(err){ v = (err && err.xl) ? err.xl : '#ERROR'; }
+    } else v = literal(String(c.raw));
+    cache.set(ref, v);
+    return v;
+  }
+  return leer;
+}
+
+function numDe(ref){ const v = valorCelda(ref); return (typeof v === 'number' && isFinite(v)) ? v : NaN; }
+function mostrar(v){
+  if(v === '' || v == null) return '';
+  if(typeof v === 'number') return fmtNum(v);
+  return String(v);
+}
+
+/* ============================================================================
+   4. DEFINICIÓN DE LOS 10 NIVELES (+ PRÁCTICA LIBRE)
+   ============================================================================ */
+
+const VENTAS_DIA = [
+  ['Alfajor de chocolate', 850], ['Gaseosa 500 ml', 1200], ['Pizzeta', 800], ['Turrón', 500],
+  ['Chupetín', 300], ['Tostado de jamón y queso', 1500], ['Agua mineral', 600], ['Alfajor de maní', 700],
+  ['Gaseosa 500 ml', 1200], ['Pizzeta', 800], ['Alfajor de chocolate', 850], ['Chupetín', 300],
+  ['Turrón', 500], ['Tostado de jamón y queso', 1500], ['Agua mineral', 600], ['Pizzeta', 800],
+  ['Alfajor de maní', 700], ['Gaseosa 500 ml', 1200], ['Chupetín', 300], ['Alfajor de chocolate', 850]
+];
+const TOTAL_DIA = VENTAS_DIA.reduce((s, v) => s + v[1], 0);
+
+const GASTOS_EGRESADOS = [
+  ['Micro de ida y vuelta', 285000], ['Alojamiento 3 noches', 420000], ['Comidas', 195000],
+  ['Entradas a los parques', 150000], ['Seguro del pasajero', 68000], ['Remeras del curso', 84000],
+  ['Fotógrafo', 55000], ['DJ y sonido', 72000], ['Decoración del acto', 26000],
+  ['Regalo a la escuela', 45000], ['Libretas y diplomas', 32000], ['Seña / reserva', 100000]
+];
+const MONTO_MAX = Math.max(...GASTOS_EGRESADOS.map(g => g[1]));
+const MONTO_MIN = Math.min(...GASTOS_EGRESADOS.map(g => g[1]));
+
+const LIBRETA = [
+  ['Lengua y Literatura', 8, 7, 9],
+  ['Matemática',          6, 8, 7],
+  ['NTICX',               9, 10, 8],
+  ['Historia',            7, 7, 8],
+  ['Educación Física',    10, 9, 10]
+];
+
+/* ---------- Preloads ---------- */
+const pre1 = {
+  A1:{ v:'Kiosco de la escuela — Lista de precios', bold:true },
+  A3:{ v:'Producto', bold:true }, B3:{ v:'Precio ($)', bold:true }, C3:{ v:'Stock', bold:true },
+  A4:'Alfajor de chocolate', B4:850,  C4:24,
+  A5:'Gaseosa 500 ml',       B5:1200, C5:18,
+  A6:'Pizzeta',              B6:800,  C6:12,
+  A7:'Turrón',               B7:500,  C7:30,
+  A8:'Chupetín',             B8:300,  C8:60,
+  A10:{ v:'👉 Misión: hacé clic sobre la celda B4', italic:true }
+};
+const pre2 = {
+  A1:{ v:'Ventas del kiosco escolar — Turno mañana', bold:true },
+  A3:'Producto', B3:'Cliente', C3:'Cantidad',
+  A4:'Alfajor de chocolate', B4:'Juana López',  C4:2,
+  A5:'Gaseosa 500 ml',       B5:'Jaun Pérez',   C5:1,
+  A6:'Pizzeta',              B6:'Sofía Gómez',  C6:'',
+  A7:'Turrón',               B7:'Mateo Ruiz',   C7:3,
+  A8:'Chupetín',             B8:'Emma Torres',  C8:4,
+  A10:{ v:'Revisá B5 (nombre mal tipeado) y completá C6.', italic:true }
+};
+const pre3 = {
+  A1:{ v:'Stock de la cooperadora escolar', bold:true },
+  A3:'Producto', B3:'Cantidad', C3:'Precio unitario ($)',
+  A4:'Alfajor de maní',       B4:40, C4:700,
+  A5:'Gaseosa 500 ml',        B5:25, C5:1200,
+  A6:'Pizzeta',               B6:30, C6:800,
+  A7:'Alfajor sabor descontinuado', B7:12, C7:650,
+  A8:'Turrón',                B8:18, C8:500,
+  A9:'Chupetín',              B9:60, C9:300,
+  A10:'Alfajor de maní',      B10:40, C10:700,
+  A12:{ v:'⚠ La fila 7 es un producto descontinuado y la fila 10 está duplicada.', italic:true }
+};
+const pre4 = {
+  A1:{ v:'Cantina del Club — Ventas del sábado', bold:true },
+  A3:'Producto', B3:'Precio unitario', C3:'Cantidad vendida', D3:'Recaudación',
+  A4:'Pizzeta',                  B4:800,  C4:35, D4:'=B4*C4',
+  A5:'Gaseosa 500 ml',           B5:1200, C5:40, D5:'=B5*C5',
+  A6:'Alfajor de chocolate',     B6:850,  C6:28, D6:'=B6*C6',
+  A7:'Tostado de jamón y queso', B7:1500, C7:22, D7:'=B7*C7',
+  A8:'Agua mineral',             B8:600,  C8:45, D8:'=B8*C8',
+  A9:{ v:'TOTAL DEL DÍA', bold:true }, D9:'=SUMA(D4:D8)'
+};
+const pre5 = {
+  A1:'Inventario Cooperadora 4to Año',
+  A3:'Material', B3:'Cantidad', C3:'Estado',
+  A4:'Resmas de papel',      B4:12, C4:'Nuevo',
+  A5:'Marcadores de pizarra',B5:24, C5:'Nuevo',
+  A6:'Biblioratos',          B6:8,  C6:'Usado',
+  A7:'Tizas',                B7:6,  C7:'Nuevo',
+  A8:'Kit de geometría',     B8:15, C8:'Nuevo',
+  A9:'Mapas',                B9:4,  C9:'Usado'
+};
+const pre6 = {
+  A1:'Alfajor de chocolate ($)', B1:'Gaseosa 500 ml ($)', C1:'Total de la compra ($)',
+  A2:850, B2:600, C2:'',
+  A4:{ v:'El total tiene que calcularse con una fórmula, no escribiendo el número.', italic:true }
+};
+const pre7 = {
+  A1:'Producto', B1:'Precio sin IVA ($)', C1:'IVA 21% ($)',
+  A2:'Alfajor triple', B2:850, C2:'',
+  A4:{ v:'Salida educativa al Museo de Ciencias Naturales', bold:true },
+  A5:'Costo total del viaje', B5:45000,
+  A6:'Cantidad de estudiantes', B6:30,
+  A7:'Costo por estudiante', B7:''
+};
+const pre8 = { A1:'Venta N°', B1:'Producto', C1:'Importe ($)' };
+VENTAS_DIA.forEach((v, i) => {
+  pre8['A' + (i + 2)] = i + 1;
+  pre8['B' + (i + 2)] = v[0];
+  pre8['C' + (i + 2)] = v[1];
+});
+pre8['A23'] = { v:'RECAUDACIÓN TOTAL DEL DÍA', bold:true };
+pre8['C23'] = '';
+
+const pre9 = { A1:{ v:'Libreta de calificaciones — 4.º año', bold:true },
+  A3:'Materia', B3:'1er trimestre', C3:'2do trimestre', D3:'3er trimestre', E3:'Promedio' };
+LIBRETA.forEach((m, i) => {
+  const f = i + 4;
+  pre9['A' + f] = m[0]; pre9['B' + f] = m[1]; pre9['C' + f] = m[2]; pre9['D' + f] = m[3]; pre9['E' + f] = '';
+});
+pre9['A10'] = { v:'Completá la columna Promedio con la función PROMEDIO.', italic:true };
+
+const pre10 = { A1:{ v:'Reporte de gastos — Viaje de egresados 4.º año', bold:true },
+  A3:'Ítem', B3:'Monto ($)' };
+GASTOS_EGRESADOS.forEach((g, i) => { pre10['A' + (i + 4)] = g[0]; pre10['B' + (i + 4)] = g[1]; });
+pre10['A17'] = { v:'Gasto más alto', bold:true }; pre10['B17'] = '';
+pre10['A18'] = { v:'Gasto más bajo', bold:true }; pre10['B18'] = '';
+
+/* ---------- Helpers de validación ---------- */
+
+/** Comprueba fórmula con operador (+, -, *, /) y referencias requeridas. */
+function checkOperador(ref, operador, refsRequeridas, esperado){
+  const r = rawDe(ref);
+  if(!r.startsWith('=')) return `En ${ref} falta la fórmula: tiene que empezar con el signo <code>=</code>.`;
+  const cuerpo = r.slice(1).toUpperCase().replace(/\s+/g,'');
+  if(/[A-ZÑ]+\(/.test(cuerpo)) return `En ${ref} hay que usar los operadores <code>${operador}</code>, no una función.`;
+  if(!cuerpo.includes(operador)) return `La fórmula de ${ref} no usa el operador <code>${operador}</code>.`;
+  for(const rr of refsRequeridas){
+    if(!new RegExp('(^|[^A-Z0-9])' + rr + '([^0-9]|$)').test(cuerpo))
+      return `La fórmula de ${ref} debe hacer referencia a la celda <code>${rr}</code>.`;
+  }
+  const v = numDe(ref);
+  if(isNaN(v) || Math.abs(v - esperado) > 0.01)
+    return `<code>${ref}</code> debería dar ${fmtNum(esperado)} y da ${isNaN(v) ? 'un error' : fmtNum(v)}. Revisá la fórmula.`;
+  return null;
+}
+
+/** Comprueba el uso exacto de una función sobre un rango: =FUNCION(ini:fin). */
+function checkFuncion(ref, fn, ini, fin, esperado){
+  const r = rawDe(ref);
+  if(!r.startsWith('=')) return `En ${ref} falta la función: escribí <code>=${fn}(${ini}:${fin})</code>.`;
+  const cuerpo = r.slice(1).toUpperCase().replace(/\s+/g,'').replace(/\$/g,'');
+  const m = cuerpo.match(new RegExp('^' + fn + '\\(([A-J]\\d{1,3}):([A-J]\\d{1,3})\\)$'));
+  if(!m) return `En ${ref} tenés que escribir exactamente <code>=${fn}(${ini}:${fin})</code> (función + rango entre paréntesis).`;
+  const obtenidas = rangoRefs(m[1], m[2]).slice().sort().join(',');
+  const esperadas = rangoRefs(ini, fin).slice().sort().join(',');
+  if(obtenidas !== esperadas) return `El rango de ${ref} no es el correcto: debe abarcar <code>${ini}:${fin}</code>.`;
+  const v = numDe(ref);
+  if(isNaN(v) || Math.abs(v - esperado) > 0.01)
+    return `El resultado de ${ref} no coincide con lo esperado (${fmtNum(esperado)}).`;
+  return null;
+}
+
+/** Verifica que la tabla precargada no haya sido alterada. */
+function tablaIntacta(nivel, excluir){
+  const ex = new Set(excluir || []);
+  for(const ref in nivel.preload){
+    if(ex.has(ref)) continue;
+    const original = nivel.preload[ref];
+    const esperado = (original && typeof original === 'object') ? String(original.v == null ? '' : original.v) : String(original);
+    if(rawDe(ref) !== esperado) return false;
+  }
+  return true;
+}
+
+const ok  = msg => ({ ok:true,  msg });
+const mal = msg => ({ ok:false, msg });
+
+/* ---------- Los niveles ---------- */
+const LEVELS = [
+  /* ------------------------------------------------------------------ NIVEL 1 */
+  {
+    n:1, nombre:'Seleccionar celdas', bloque:'Bloque 1 · Familiarización con la grilla',
+    titulo:'Nivel 1 — Selección de celdas',
+    objetivo:'Reconocer la estructura de la hoja: columnas con letras, filas con números y celdas con coordenadas.',
+    formulaClave:'—',
+    mision:`<p>Todo arranque es igual: aprender a moverse por la hoja.</p>
+            <p><strong>Hacé clic en la celda <code>B4</code></strong>, donde está el precio del alfajor. Cuando quede rodeada de verde, tocá <strong>Verificar misión</strong>.</p>`,
+    diana:'🎯 Celda objetivo: <strong>B4</strong>',
+    tools:[], editable:[], preload:pre1,
+    hint:'Las columnas se nombran con letras (A, B, C…) y las filas con números (1, 2, 3…). La celda B4 está en la columna B, fila 4.',
+    validate(){
+      return state.activeRef === 'B4'
+        ? ok('¡Perfecto! Seleccionaste B4. Cada celda de la hoja tiene su propia coordenada.')
+        : mal(`La celda activa ahora es <strong>${state.activeRef}</strong>. Tenés que seleccionar <strong>B4</strong>.`);
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 2 */
+  {
+    n:2, nombre:'Cargar y editar datos', bloque:'Bloque 1 · Familiarización con la grilla',
+    titulo:'Nivel 2 — Carga y edición de datos',
+    objetivo:'Escribir y corregir datos dentro de una celda.',
+    formulaClave:'—',
+    mision:`<p>La tabla de ventas del kiosco tiene dos problemas:</p>
+            <p>1️⃣ En <code>B5</code> el nombre está mal tipeado: dice <em>“Jaun Pérez”</em>. Corregilo para que quede <strong>Juan Pérez</strong>.<br>
+               2️⃣ En <code>C6</code> falta la cantidad: escribí <strong>5</strong>.</p>`,
+    diana:'🎯 Celdas a modificar: <strong>B5</strong> y <strong>C6</strong>',
+    tools:[], editable:['B5','C6'], preload:pre2,
+    hint:'Hacé doble clic sobre la celda (o simplemente empezá a escribir) y confirmá con Enter.',
+    validate(){
+      const errs = [];
+      if(norm(rawDe('B5')) !== 'juan perez') errs.push('En <code>B5</code> tiene que decir exactamente <strong>Juan Pérez</strong>.');
+      if(numDe('C6') !== 5) errs.push('En <code>C6</code> tenés que escribir el número <strong>5</strong>.');
+      return errs.length ? mal(errs.join('<br>'))
+        : ok('¡Bárbaro! Corregiste el dato mal tipeado y completaste el que faltaba.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 3 */
+  {
+    n:3, nombre:'Eliminar contenido', bloque:'Bloque 1 · Familiarización con la grilla',
+    titulo:'Nivel 3 — Eliminar contenido',
+    objetivo:'Borrar el contenido de celdas y rangos sin alterar el resto de la información.',
+    formulaClave:'Supr (Delete) sobre la selección',
+    mision:`<p>En el stock de la cooperadora hay dos filas que no van más:</p>
+            <p>• La <strong>fila 7</strong>: un producto descontinuado.<br>
+               • La <strong>fila 10</strong>: está duplicada (es igual a la fila 4).</p>
+            <p>Seleccioná esas celdas y borrá su contenido con la tecla <strong>Supr</strong> (Delete). ¡Ojo! El resto de la tabla no se toca.</p>`,
+    diana:'🎯 Borrar: <strong>A7:C7</strong> y <strong>A10:C10</strong>',
+    tools:[], editable:['A7','B7','C7','A10','B10','C10'], preload:pre3,
+    hint:'Hacé clic en A7 y arrastrá hasta C7 para seleccionar el rango. Después apretá Supr. Repetí con la fila 10.',
+    validate(){
+      const borrar = ['A7','B7','C7','A10','B10','C10'];
+      const quedan = borrar.filter(r => rawDe(r).trim() !== '');
+      if(quedan.length) return mal(`Todavía queda contenido en: <strong>${quedan.join(', ')}</strong>. Seleccioná esas celdas y apretá <strong>Supr</strong>.`);
+      if(!tablaIntacta(nivelActual(), borrar))
+        return mal('¡Cuidado! Se modificaron celdas que no correspondían. Tocá <strong>Reiniciar nivel</strong> y borrá únicamente las filas 7 y 10.');
+      return ok('¡Impecable! Eliminaste el producto descontinuado y la fila duplicada sin romper la tabla.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 4 */
+  {
+    n:4, nombre:'Negrita en encabezados', bloque:'Bloque 2 · Estética y orden visual',
+    titulo:'Nivel 4 — Negrita en los títulos',
+    objetivo:'Aplicar formato de fuente (negrita) a un rango de celdas.',
+    formulaClave:'Formato · Negrita (Ctrl+N)',
+    mision:`<p>Los títulos de la tabla de la cantina del club quedaron planos, sin destaque.</p>
+            <p>Seleccioná las cuatro celdas de encabezados (<code>A3:D3</code>) y aplicales <strong>Negrita</strong> con el botón <strong>N</strong> de la barra de herramientas.</p>`,
+    diana:'🎯 Aplicar negrita en: <strong>A3:D3</strong>',
+    tools:['bold'], editable:[], preload:pre4,
+    hint:'Hacé clic en A3 y, sin soltar el mouse, arrastrá hasta D3. Después tocá el botón N.',
+    validate(){
+      const cab = ['A3','B3','C3','D3'];
+      const faltan = cab.filter(r => !fmtDe(r).bold);
+      if(faltan.length) return mal(`Todavía falta la negrita en: <strong>${faltan.join(', ')}</strong>.`);
+      return ok('¡Muy bien! Los encabezados en negrita hacen que la tabla se lea mucho mejor.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 5 */
+  {
+    n:5, nombre:'Alineación y bordes', bloque:'Bloque 2 · Estética y orden visual',
+    titulo:'Nivel 5 — Alineación y bordes',
+    objetivo:'Centrar un título y aplicar bordes para presentar un reporte prolijo.',
+    formulaClave:'Formato · Centrar + Bordes',
+    mision:`<p>Dejá el inventario de la cooperadora como un reporte profesional:</p>
+            <p>1️⃣ <strong>Centrá</strong> el título que está en <code>A1</code>.<br>
+               2️⃣ Aplicá <strong>bordes</strong> a toda la tabla: desde <code>A3</code> hasta <code>C9</code>.</p>`,
+    diana:'🎯 Centrar <strong>A1</strong> · Bordes en <strong>A3:C9</strong>',
+    tools:['center','border'], editable:[], preload:pre5,
+    hint:'Primero seleccioná A1 y tocá centrar. Después seleccioná A3:C9 (clic en A3 y arrastrá hasta C9) y tocá el botón de bordes.',
+    validate(){
+      if(fmtDe('A1').align !== 'center') return mal('El título de <code>A1</code> todavía no está centrado.');
+      const sinBorde = rangoRefs('A3','C9').filter(r => !fmtDe(r).border);
+      if(sinBorde.length) return mal(`Faltan bordes en ${sinBorde.length} celda(s) del rango <code>A3:C9</code>.`);
+      return ok('¡Excelente! Título centrado y tabla con bordes: un reporte listo para imprimir.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 6 */
+  {
+    n:6, nombre:'Suma con fórmulas', bloque:'Bloque 3 · Operaciones matemáticas',
+    titulo:'Nivel 6 — Suma con el operador +',
+    objetivo:'Construir la primera fórmula con referencias a otras celdas.',
+    formulaClave:'=A2+B2',
+    mision:`<p>Un cliente lleva un alfajor de <strong>$850</strong> (A2) y una gaseosa de <strong>$600</strong> (B2).</p>
+            <p>En <code>C2</code> calculá el total de la compra escribiendo la fórmula <code>=A2+B2</code> y apretá Enter.</p>
+            <p>⚠️ Tiene que ser una <strong>fórmula</strong>, no el número ya escrito: si cambian los precios, el total se tiene que actualizar solo.</p>`,
+    diana:'🎯 Escribir una fórmula en: <strong>C2</strong>',
+    tools:[], editable:['C2'], preload:pre6,
+    hint:'Toda fórmula empieza con el signo igual (=). Escribí =A2+B2 y apretá Enter.',
+    validate(){
+      const err = checkOperador('C2', '+', ['A2','B2'], 1450);
+      return err ? mal(err) : ok('¡Genial! C2 tiene una fórmula de verdad: si el precio cambia, el total cambia solo.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 7 */
+  {
+    n:7, nombre:'Multiplicación y división', bloque:'Bloque 3 · Operaciones matemáticas',
+    titulo:'Nivel 7 — Multiplicar y dividir',
+    objetivo:'Usar los operadores * y / para calcular IVA y costos unitarios.',
+    formulaClave:'=B2*0.21  ·  =B5/B6',
+    mision:`<p>Dos cálculos del mundo real:</p>
+            <p><strong>A)</strong> En <code>C2</code> calculá el <strong>IVA (21%)</strong> del producto: <code>=B2*0.21</code><br>
+               <span style="color:#5c6670;font-size:12.5px">(también funciona escribir =B2*0,21)</span></p>
+            <p><strong>B)</strong> En <code>B7</code> calculá cuánto paga cada estudiante de la salida educativa dividiendo el costo total por la cantidad de alumnos: <code>=B5/B6</code></p>`,
+    diana:'🎯 Fórmulas en: <strong>C2</strong> y <strong>B7</strong>',
+    tools:[], editable:['C2','B7'], preload:pre7,
+    hint:'El asterisco (*) multiplica y la barra (/) divide. IVA: =B2*0.21 · Costo por estudiante: =B5/B6.',
+    validate(){
+      const e1 = checkOperador('C2', '*', ['B2'], 178.5);
+      if(e1) return mal(e1);
+      const e2 = checkOperador('B7', '/', ['B5','B6'], 1500);
+      if(e2) return mal(e2);
+      return ok('¡Dos de dos! El IVA da $178,50 y cada estudiante paga $1.500.');
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 8 */
+  {
+    n:8, nombre:'Función SUMA()', bloque:'Bloque 4 · Funciones integradas',
+    titulo:'Nivel 8 — La función =SUMA()',
+    objetivo:'Sumar un rango completo de celdas con una función integrada.',
+    formulaClave:'=SUMA(C2:C21)',
+    mision:`<p>La cantina registró <strong>20 ventas</strong> durante la jornada (columna C, filas 2 a 21).</p>
+            <p>En <code>C23</code> obtené la recaudación total del día escribiendo:</p>
+            <p style="text-align:center"><code style="font-size:14px">=SUMA(C2:C21)</code></p>
+            <p>⚠️ No vale sumar celda por celda (=C2+C3+C4…): la idea es usar la <strong>función</strong>.</p>`,
+    diana:'🎯 Función en: <strong>C23</strong>',
+    tools:[], editable:['C23'], preload:pre8,
+    hint:'Escribí =SUMA(C2:C21) y apretá Enter. El dos puntos (:) significa “desde C2 hasta C21”.',
+    validate(){
+      const err = checkFuncion('C23', 'SUMA', 'C2', 'C21', TOTAL_DIA);
+      if(err) return mal(err);
+      return ok(`¡Recaudación calculada! El total del día es <strong>$${fmtNum(TOTAL_DIA)}</strong>.`);
+    }
+  },
+  /* ------------------------------------------------------------------ NIVEL 9 */
+  {
+    n:9, nombre:'Función PROMEDIO()', bloque:'Bloque 4 · Funciones integradas',
+    titulo:'Nivel 9 — La función =PROMEDIO()',
+    objetivo:'Calcular promedios por fila usando un rango bidimensional.',
+    formulaClave:'=PROMEDIO(B4:D4)',
+    mision:`<p>Completá la columna <strong>Promedio</strong> de la libreta de calificaciones.</p>
+            <p>En <code>E4</code> escribí <code>=PROMEDIO(B4:D4)</code> y después hacé lo mismo en <strong>E5, E6, E7 y E8</strong>, cambiando el número de fila.</p>
+            <p style="color:#5c6670;font-size:12.5px">💡 El rango B4:D4 abarca las tres notas del trimestre de esa materia.</p>`,
+    diana:'🎯 Función PROMEDIO en: <strong>E4, E5, E6, E7 y E8</strong>',
+    tools:[], editable:['E4','E5','E6','E7','E8'], preload:pre9,
+    hint:'Arrancá en E4 con =PROMEDIO(B4:D4). Después, en E5 poné =PROMEDIO(B5:D5), y así siguiendo.',
+    validate(){
+      for(let f = 4; f <= 8; f++){
+        const notas = LIBRETA[f - 4];
+        const esperado = (notas[1] + notas[2] + notas[3]) / 3;
+        const err = checkFuncion('E' + f, 'PROMEDIO', 'B' + f, 'D' + f, esperado);
+        if(err) return mal(err);
+      }
+      return ok('¡Libreta completa! Los promedios se calculan solos: si cambia una nota, el promedio se actualiza.');
+    }
+  },
+  /* ----------------------------------------------------------------- NIVEL 10 */
+  {
+    n:10, nombre:'Funciones MAX() y MIN()', bloque:'Bloque 4 · Funciones integradas',
+    titulo:'Nivel 10 — =MAX() y =MIN()',
+    objetivo:'Encontrar automáticamente el valor más alto y el más bajo de un rango.',
+    formulaClave:'=MAX(B4:B15)  ·  =MIN(B4:B15)',
+    mision:`<p>Última misión: el reporte de gastos del viaje de egresados (columna B, filas 4 a 15).</p>
+            <p>🔺 En <code>B17</code> encontrá el <strong>gasto más alto</strong> con <code>=MAX(B4:B15)</code><br>
+               🔻 En <code>B18</code> encontrá el <strong>gasto más bajo</strong> con <code>=MIN(B4:B15)</code></p>`,
+    diana:'🎯 Funciones en: <strong>B17</strong> (MAX) y <strong>B18</strong> (MIN)',
+    tools:[], editable:['B17','B18'], preload:pre10,
+    hint:'MAX devuelve el mayor valor del rango y MIN el menor.',
+    validate(){
+      const e1 = checkFuncion('B17', 'MAX', 'B4', 'B15', MONTO_MAX);
+      if(e1) return mal(e1);
+      const e2 = checkFuncion('B18', 'MIN', 'B4', 'B15', MONTO_MIN);
+      if(e2) return mal(e2);
+      return ok(`¡Misión final superada! Gasto más alto: <strong>$${fmtNum(MONTO_MAX)}</strong> · más bajo: <strong>$${fmtNum(MONTO_MIN)}</strong>.`);
+    }
+  },
+  /* ------------------------------------------------------- PRÁCTICA LIBRE (11) */
+  {
+    n:11, sandbox:true, nombre:'Práctica libre', bloque:'Zona de pruebas',
+    titulo:'🧪 Práctica libre',
+    objetivo:'Experimentar sin restricciones: todas las celdas y herramientas habilitadas.',
+    formulaClave:'Todas',
+    mision:`<p>Este es tu espacio para probar lo que aprendiste, sin reglas ni validación.</p>
+            <p>Todas las celdas son editables y todas las herramientas están habilitadas. Escribí fórmulas como <code>=SUMA(A1:A10)</code>, <code>=PROMEDIO(B1:B5)</code>, <code>=A1*2</code>…</p>`,
+    diana:'🧪 Modo libre: hacé lo que quieras.',
+    tools:['bold','italic','center','border'], editable:TODAS_LAS_REFS.slice(),
+    preload:{ A1:{ v:'Hoja de práctica libre', bold:true },
+              A3:{ v:'Concepto', bold:true }, B3:{ v:'Monto ($)', bold:true },
+              A4:'Fotocopias', B4:4500, A5:'Mapas', B5:3200, A6:'Resmas', B6:8900,
+              A7:{ v:'Total', bold:true }, B7:'=SUMA(B4:B6)' },
+    hint:'Probá fórmulas con +, -, *, / y con las funciones SUMA, PROMEDIO, MAX y MIN.',
+    validate(){ return ok('Modo libre: no hay nada que verificar. ¡Seguí experimentando!'); }
+  }
+];
+
+LEVELS.forEach(nv => { nv.editableSet = new Set(nv.editable || []); nv.toolsSet = new Set(nv.tools || []); });
+
+/* ============================================================================
+   5. RENDERIZADO DE LA GRILLA
+   ============================================================================ */
+const gridHead = document.getElementById('gridHead');
+const gridBody = document.getElementById('gridBody');
+const gridCols = document.getElementById('gridCols');
+const cellEls  = {};
+const rowEls   = {};
+const colEls   = {};
+
+function construirGrilla(){
+  let cg = '<col style="width:44px">';
+  COLS.forEach(c => { cg += `<col style="width:${c === 'A' ? 186 : 92}px">`; });
+  gridCols.innerHTML = cg;
+
+  let h = '<tr><th class="corner"></th>';
+  COLS.forEach(c => { h += `<th data-col="${c}">${c}</th>`; });
+  gridHead.innerHTML = h + '</tr>';
+  gridHead.querySelectorAll('th[data-col]').forEach(th => { if(th.dataset.col) colEls[th.dataset.col] = th; });
+
+  let b = '';
+  for(let f = 1; f <= FILAS; f++){
+    b += `<tr><th data-row="${f}">${f}</th>`;
+    COLS.forEach(c => { b += `<td data-ref="${c+f}" class="${c === 'A' ? 'colA' : ''}"></td>`; });
+    b += '</tr>';
+  }
+  gridBody.innerHTML = b;
+  gridBody.querySelectorAll('td[data-ref]').forEach(td => { cellEls[td.dataset.ref] = td; });
+  gridBody.querySelectorAll('th[data-row]').forEach(th => { rowEls[th.dataset.row] = th; });
+}
+
+/** Pinta contenido + formato de todas las celdas del nivel actual. */
+function pintarCeldas(){
+  recalcular();
+  const nv = nivelActual();
+  const cells = hoja().cells;
+  for(const ref of TODAS_LAS_REFS){
+    const td = cellEls[ref]; if(!td) continue;
+    const c = cells[ref];
+    const v = valorCelda(ref);
+    const texto = mostrar(v);
+    if(td._txt !== texto){
+      if(state.editando !== ref) td.textContent = texto;
+      td._txt = texto;
+    }
+    const alineacion = (c && c.align) ? c.align : (typeof v === 'number' ? 'right' : 'left');
+    const firma = `${c&&c.bold?1:0}${c&&c.italic?1:0}${alineacion}${c&&c.border?1:0}${esError(v)?1:0}${nv.editableSet.has(ref)&&!nv.sandbox?1:0}`;
+    if(td._sig !== firma){
+      td.style.fontWeight = (c && c.bold) ? '700' : '';
+      td.style.fontStyle  = (c && c.italic) ? 'italic' : '';
+      td.style.textAlign  = alineacion;
+      td.classList.toggle('border-on', !!(c && c.border));
+      td.classList.toggle('err', esError(v));
+      td.classList.toggle('editable-hint', nv.editableSet.has(ref) && !texto && !nv.sandbox);
+      td._sig = firma;
+    }
+  }
+}
+
+/** Marca la selección y resalta encabezados de fila/columna. */
+function pintarSeleccion(){
+  const refs = new Set(refsSeleccion());
+  for(const ref of TODAS_LAS_REFS){
+    const td = cellEls[ref]; if(!td) continue;
+    const dentro = refs.has(ref);
+    if(td._in !== dentro){ td.classList.toggle('in-range', dentro); td._in = dentro; }
+    const activa = ref === state.activeRef;
+    if(td._ac !== activa){ td.classList.toggle('active', activa); td._ac = activa; }
+  }
+  const rcA = refToRC(state.anchor);
+  for(const col in colEls) colEls[col].classList.toggle('col-hl', col === COLS[rcA.c - 1]);
+  for(const fila in rowEls) rowEls[fila].classList.toggle('row-hl', Number(fila) === rcA.f);
+}
+
+function refrescar(){ pintarCeldas(); pintarSeleccion(); actualizarBarraFormulas(); actualizarHerramientas(); actualizarEstado(); }
+
+/* ============================================================================
+   6. SELECCIÓN, TECLADO Y EDICIÓN
+   ============================================================================ */
+function refsSeleccion(){
+  const a = refToRC(state.anchor), b = refToRC(state.focusRef);
+  if(!a || !b) return [state.anchor];
+  const c1 = Math.min(a.c,b.c), c2 = Math.max(a.c,b.c);
+  const f1 = Math.min(a.f,b.f), f2 = Math.max(a.f,b.f);
+  const out = [];
+  for(let f = f1; f <= f2; f++) for(let c = c1; c <= c2; c++) out.push(rcToRef(c,f));
+  return out;
+}
+
+function seleccionar(ref, extender){
+  if(!refToRC(ref)) return;
+  cerrarEditor(true);
+  if(extender){ state.focusRef = ref; }
+  else { state.anchor = ref; state.focusRef = ref; }
+  state.activeRef = state.anchor;
+  pintarSeleccion(); actualizarBarraFormulas(); actualizarHerramientas(); actualizarEstado();
+}
+
+function mover(dc, df, extender){
+  const a = refToRC(extender ? state.focusRef : state.activeRef);
+  const c = Math.min(COLS.length, Math.max(1, a.c + dc));
+  const f = Math.min(FILAS, Math.max(1, a.f + df));
+  seleccionar(rcToRef(c, f), extender);
+  hacerVisible(state.focusRef);
+}
+
+function hacerVisible(ref){
+  const td = cellEls[ref]; if(!td) return;
+  const cont = document.getElementById('gridScroll');
+  const r = td.getBoundingClientRect(), cr = cont.getBoundingClientRect();
+  if(r.top < cr.top + 24) cont.scrollTop -= (cr.top + 24 - r.top);
+  else if(r.bottom > cr.bottom) cont.scrollTop += (r.bottom - cr.bottom);
+  if(r.left < cr.left + 45) cont.scrollLeft -= (cr.left + 45 - r.left);
+  else if(r.right > cr.right) cont.scrollLeft += (r.right - cr.right);
+}
+
+document.getElementById('grid').addEventListener('mousedown', e => {
+  const td = e.target.closest('td[data-ref]');
+  if(!td) return;
+  e.preventDefault();
+  cerrarEditor(true);
+  const ref = td.dataset.ref;
+  if(e.shiftKey){ state.focusRef = ref; }
+  else { state.anchor = ref; state.focusRef = ref; }
+  state.activeRef = state.anchor;
+  state.arrastrando = true;
+  pintarSeleccion(); actualizarBarraFormulas(); actualizarHerramientas(); actualizarEstado();
+});
+document.getElementById('grid').addEventListener('mouseover', e => {
+  if(!state.arrastrando) return;
+  const td = e.target.closest('td[data-ref]');
+  if(!td) return;
+  state.focusRef = td.dataset.ref;
+  pintarSeleccion(); actualizarEstado();
+});
+window.addEventListener('mouseup', () => { if(state.arrastrando){ state.arrastrando = false; actualizarBarraFormulas(); } });
+document.getElementById('grid').addEventListener('dblclick', e => {
+  const td = e.target.closest('td[data-ref]');
+  if(td) abrirEditor(td.dataset.ref);
+});
+
+function abrirEditor(ref, caracterInicial){
+  if(state.editando === ref) return;
+  cerrarEditor(true);
+  if(!esEditable(ref)){
+    toast('🔒 Esa celda está protegida en esta misión. Mirá el recuadro “Celdas a modificar”.');
+    return;
+  }
+  const td = cellEls[ref]; if(!td) return;
+  seleccionar(ref);
+  state.editando = ref;
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.className = 'cell-editor'; inp.spellcheck = false;
+  inp.value = caracterInicial != null ? caracterInicial : rawDe(ref);
+  td.textContent = ''; td.appendChild(inp);
+  inp.focus();
+  if(caracterInicial != null) inp.setSelectionRange(inp.value.length, inp.value.length);
+  else inp.select();
+
+  inp.addEventListener('input', () => { setRaw(ref, inp.value, true); });
+  inp.addEventListener('keydown', ev => {
+    ev.stopPropagation();
+    if(ev.key === 'Enter'){ ev.preventDefault(); cerrarEditor(true); mover(0, 1); }
+    else if(ev.key === 'Tab'){ ev.preventDefault(); cerrarEditor(true); mover(1, 0); }
+    else if(ev.key === 'Escape'){ ev.preventDefault(); cerrarEditor(false); }
+  });
+  inp.addEventListener('blur', () => { if(state.editando === ref) cerrarEditor(true); });
+  actualizarBarraFormulas();
+}
+
+function cerrarEditor(guardar){
+  if(!state.editando) return;
+  const ref = state.editando, td = cellEls[ref];
+  const inp = td && td.querySelector('input');
+  state.editando = null;
+  if(inp){
+    if(guardar) setRaw(ref, inp.value, true);
+    inp.remove();
+  }
+  if(td){ td._txt = null; td._sig = null; }
+  refrescar();
+}
+
+function setRaw(ref, valor, silencioso){
+  if(!esEditable(ref)){
+    if(!silencioso) toast('🔒 Esa celda está protegida en esta misión.');
+    return false;
+  }
+  getCell(ref).raw = String(valor);
+  recalcular();
+  pintarCeldas(); actualizarBarraFormulas(); actualizarEstado();
+  return true;
+}
+
+function borrarSeleccion(){
+  const refs = refsSeleccion();
+  let alguna = false;
+  refs.forEach(r => { if(esEditable(r)){ getCell(r).raw = ''; alguna = true; } });
+  if(!alguna){ toast('🔒 No podés borrar esas celdas en esta misión.'); return; }
+  refrescar();
+}
+
+/* ---------- Barra de fórmulas ---------- */
+const formulaInput = document.getElementById('formulaInput');
+const activeRefBox = document.getElementById('activeRefBox');
+
+function actualizarBarraFormulas(){
+  activeRefBox.textContent = (state.anchor === state.focusRef) ? state.anchor : `${state.anchor}:${state.focusRef}`;
+  if(document.activeElement !== formulaInput){
+    formulaInput.value = state.editando ? formulaInput.value : rawDe(state.activeRef);
+  }
+  const v = valorCelda(state.activeRef);
+  formulaInput.classList.toggle('error', esError(v));
+  formulaInput.readOnly = !esEditable(state.activeRef);
+  formulaInput.placeholder = esEditable(state.activeRef)
+      ? 'Escribí un valor o una fórmula (ej: =SUMA(A1:A5))'
+      : 'Celda protegida en esta misión';
+}
+formulaInput.addEventListener('input', () => {
+  if(!state.editando && esEditable(state.activeRef)) setRaw(state.activeRef, formulaInput.value, true);
+});
+formulaInput.addEventListener('keydown', e => {
+  e.stopPropagation();
+  if(e.key === 'Enter'){ e.preventDefault(); formulaInput.blur(); mover(0, 1); }
+  if(e.key === 'Escape'){ e.preventDefault(); formulaInput.value = rawDe(state.activeRef); formulaInput.blur(); }
+});
+formulaInput.addEventListener('focus', () => { cerrarEditor(true); formulaInput.select(); });
+
+/* ---------- Teclado global ---------- */
+document.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  const escribiendo = tag === 'input' || tag === 'textarea';
+  if(document.getElementById('overlay').classList.contains('show') && e.key === 'Escape'){ cerrarModal(); return; }
+  if(escribiendo && e.target !== formulaInput) return;
+  if(state.editando) return;
+  if(e.target === formulaInput) return;
+
+  const ctrl = e.ctrlKey || e.metaKey;
+  if(ctrl && (e.key === 'b' || e.key === 'B')){ e.preventDefault(); usarHerramienta('bold'); return; }
+  if(ctrl && (e.key === 'i' || e.key === 'I' || e.key === 'k' || e.key === 'K')){ e.preventDefault(); usarHerramienta('italic'); return; }
+
+  switch(e.key){
+    case 'ArrowUp':    e.preventDefault(); mover(0,-1,e.shiftKey); break;
+    case 'ArrowDown':  e.preventDefault(); mover(0, 1,e.shiftKey); break;
+    case 'ArrowLeft':  e.preventDefault(); mover(-1,0,e.shiftKey); break;
+    case 'ArrowRight': e.preventDefault(); mover(1, 0,e.shiftKey); break;
+    case 'Enter':      e.preventDefault(); mover(0,1); break;
+    case 'Tab':        e.preventDefault(); mover(e.shiftKey ? -1 : 1, 0); break;
+    case 'Delete': case 'Backspace': e.preventDefault(); borrarSeleccion(); break;
+    case 'F2':         e.preventDefault(); abrirEditor(state.activeRef); break;
+    case 'Escape':     state.focusRef = state.anchor; pintarSeleccion(); actualizarEstado(); break;
+    case 'Home':       e.preventDefault(); seleccionar('A' + refToRC(state.activeRef).f); break;
+    default:
+      if(e.key.length === 1 && !ctrl && !e.altKey){ e.preventDefault(); abrirEditor(state.activeRef, e.key); }
+  }
+});
+
+/* ============================================================================
+   7. HERRAMIENTAS DE FORMATO
+   ============================================================================ */
+const TOOL_INFO = {
+  bold:   { nombre:'Negrita',           nivelMin:4 },
+  italic: { nombre:'Cursiva',           nivelMin:4 },
+  center: { nombre:'Alinear al centro', nivelMin:5 },
+  border: { nombre:'Bordes',            nivelMin:5 }
+};
+
+function actualizarHerramientas(){
+  const nv = nivelActual();
+  document.querySelectorAll('.tool[data-tool]').forEach(btn => {
+    const t = btn.dataset.tool;
+    const habilitada = nv.toolsSet.has(t);
+    btn.disabled = !habilitada;
+    btn.title = habilitada ? TOOL_INFO[t].nombre
+      : `${TOOL_INFO[t].nombre} — se habilita en el Nivel ${TOOL_INFO[t].nivelMin}`;
+    const f = fmtDe(state.activeRef);
+    btn.classList.toggle('on', t === 'bold' ? !!f.bold : t === 'italic' ? !!f.italic
+        : t === 'center' ? f.align === 'center' : t === 'border' ? !!f.border : false);
+  });
+  document.getElementById('toolNote').textContent = nv.toolsSet.size
+    ? 'Herramientas disponibles: ' + [...nv.toolsSet].map(t => TOOL_INFO[t].nombre).join(', ') + '.'
+    : 'En este nivel no se usan herramientas de formato.';
+}
+
+function usarHerramienta(tool){
+  const nv = nivelActual();
+  if(!nv.toolsSet.has(tool)){
+    toast(`🔒 La herramienta "${TOOL_INFO[tool].nombre}" se habilita en el Nivel ${TOOL_INFO[tool].nivelMin}.`);
+    return;
+  }
+  const refs = refsSeleccion();
+  if(tool === 'center'){
+    const todos = refs.every(r => fmtDe(r).align === 'center');
+    refs.forEach(r => { getCell(r).align = todos ? null : 'center'; });
+  } else if(tool === 'border'){
+    const todos = refs.every(r => !!fmtDe(r).border);
+    refs.forEach(r => { getCell(r).border = !todos; });
+  } else {
+    const todos = refs.every(r => !!fmtDe(r)[tool]);
+    refs.forEach(r => { getCell(r)[tool] = !todos; });
+  }
+  refrescar();
+}
+document.querySelectorAll('.tool[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => { usarHerramienta(btn.dataset.tool); btn.blur(); });
+});
+
+/* ============================================================================
+   8. VALIDACIÓN DE MISIONES
+   ============================================================================ */
+function verificarMision(){
+  const nv = nivelActual();
+  recalcular();
+  const res = nv.validate();
+  const fb = document.getElementById('feedback');
+  state.intentos[nv.n] = (state.intentos[nv.n] || 0) + 1;
+
+  fb.className = 'feedback show ' + (res.ok ? 'ok' : 'bad');
+  if(res.ok){
+    fb.innerHTML = `<b>✅ ${nv.sandbox ? 'Modo libre' : '¡Misión cumplida!'}</b>${res.msg}`;
+    document.getElementById('statusLeft').textContent = '✔ ' + nv.nombre + ' completado';
+    if(!nv.sandbox){
+      state.completados[nv.n] = true;
+      if(nv.n + 1 <= 10) state.desbloqueado = Math.max(state.desbloqueado, nv.n + 1);
+      confetti();
+      const siguiente = nv.n + 1;
+      if(nv.n === 10){
+        fb.innerHTML += `<div style="margin-top:11px"><button class="btn btn-next" id="btnFinal">🏆 Ver mi constancia final</button></div>`;
+        document.getElementById('btnFinal').onclick = () => mostrarConstancia(true);
+        setTimeout(() => { if(!overlay.classList.contains('show')) mostrarConstancia(true); }, 1500);
+      } else {
+        fb.innerHTML += `<div style="margin-top:11px"><button class="btn btn-next" id="btnSiguiente">Siguiente: Nivel ${siguiente} →</button></div>`;
+        document.getElementById('btnSiguiente').onclick = () => irANivel(siguiente);
+        clearTimeout(state.timerAvance);
+        state.timerAvance = setTimeout(() => { if(state.nivelActual === nv.n && state.completados[nv.n]) irANivel(siguiente); }, 3800);
+      }
+    }
+    pintarTabs(); actualizarProgreso();
+  } else {
+    fb.innerHTML = `<b>❌ Todavía no…</b>${res.msg}<br>
+      <span style="display:inline-block;margin-top:8px;font-size:12px;opacity:.85">Intento n.º ${state.intentos[nv.n]}. Podés pedir una pista con el botón 💡.</span>`;
+    document.getElementById('statusLeft').textContent = 'Revisá la misión e intentá de nuevo';
+  }
+}
+
+/* ============================================================================
+   9. NAVEGACIÓN, PROGRESO Y PESTAÑAS
+   ============================================================================ */
+function pintarTabs(){
+  const cont = document.getElementById('tabs');
+  cont.innerHTML = '';
+  LEVELS.forEach(nv => {
+    const b = document.createElement('button');
+    const bloqueado = !nv.sandbox && nv.n > state.desbloqueado;
+    const hecho = !!state.completados[nv.n];
+    b.className = 'tab' + (state.nivelActual === nv.n ? ' active' : '') + (hecho ? ' done' : '') + (nv.sandbox ? ' sandbox' : '');
+    b.disabled = bloqueado;
+    const ico = nv.sandbox ? '🧪' : bloqueado ? '🔒' : hecho ? '✅' : '▫';
+    b.innerHTML = `<span class="ico">${ico}</span><span class="tnum">${nv.sandbox ? '' : 'Nivel ' + nv.n}</span> ${nv.nombre}`;
+    b.title = bloqueado ? 'Completá el nivel anterior para desbloquearlo' : nv.titulo;
+    b.addEventListener('click', () => { if(!bloqueado) irANivel(nv.n); });
+    cont.appendChild(b);
+  });
+}
+
+function actualizarProgreso(){
+  const hechos = LEVELS.filter(n => !n.sandbox && state.completados[n]).length;
+  document.getElementById('progFill').style.width = (hechos / 10 * 100) + '%';
+  document.getElementById('progCuenta').textContent = hechos + ' de 10 completados';
+  const nv = nivelActual();
+  document.getElementById('progNivel').textContent = nv.sandbox ? 'Práctica libre' : `Nivel ${nv.n} de 10`;
+}
+
+function irANivel(n){
+  const nv = LEVELS.find(x => x.n === n);
+  if(!nv) return;
+  if(!nv.sandbox && n > state.desbloqueado){ toast('🔒 Primero tenés que completar el nivel anterior.'); return; }
+  clearTimeout(state.timerAvance);
+  cerrarEditor(true);
+  state.nivelActual = n;
+  state.anchor = state.focusRef = state.activeRef = 'A1';
+  TODAS_LAS_REFS.forEach(r => { const td = cellEls[r]; if(td){ td._txt=null; td._sig=null; td._in=null; td._ac=null; } });
+  pintarPanel(); pintarTabs(); actualizarProgreso(); refrescar();
+  document.getElementById('gridScroll').scrollTop = 0;
+  document.getElementById('gridScroll').scrollLeft = 0;
+  document.getElementById('statusLeft').textContent = nv.sandbox ? 'Modo práctica libre' : 'Listo — ' + nv.nombre;
+  const tabActiva = document.querySelector('.tab.active');
+  if(tabActiva) tabActiva.scrollIntoView({ inline:'nearest', block:'nearest' });
+}
+
+function pintarPanel(){
+  const nv = nivelActual();
+  const panel = document.getElementById('missionPanel');
+  const hecho = !!state.completados[nv.n];
+  panel.innerHTML = `
+    <div>
+      <span class="block-chip">${nv.bloque}</span>
+      <h2>${nv.titulo} ${hecho ? '✅' : ''}</h2>
+    </div>
+    <div class="mission-text">${nv.mision}</div>
+    <div class="objetivo"><b>📚 Contenido:</b> ${nv.objetivo}</div>
+    <div class="target-chip">${nv.diana}</div>
+    <div class="mission-actions">
+      ${nv.sandbox ? '' : '<button class="btn btn-primary" id="btnVerificar">✔ Verificar misión</button>'}
+      <button class="btn btn-ghost" id="btnReiniciar">↺ Reiniciar nivel</button>
+      <button class="btn btn-ghost" id="btnPista">💡 Pista</button>
+      <button class="btn btn-ghost" id="btnImprimirNivel" title="Imprimir la grilla de este nivel">🖨</button>
+    </div>
+    <div class="feedback ${hecho ? 'show ok' : ''}" id="feedback">${hecho ? '<b>✅ ¡Misión cumplida!</b>Este nivel ya está aprobado. Podés seguir practicando o pasar al siguiente.' : ''}</div>
+    <div class="pista" id="pista"><b>💡 Pista:</b> ${nv.hint}</div>
+    <div class="mini-leyenda">
+      <strong>Atajos útiles:</strong><br>
+      <kbd>Flechas</kbd> moverse · <kbd>Enter</kbd> abajo · <kbd>Tab</kbd> a la derecha<br>
+      <kbd>Supr</kbd> borrar contenido · <kbd>F2</kbd> o doble clic para editar<br>
+      <kbd>Ctrl</kbd>+<kbd>N</kbd> negrita · <kbd>Ctrl</kbd>+<kbd>K</kbd> cursiva<br>
+      <em>Los decimales pueden escribirse con punto o coma (=B2*0.21 o =B2*0,21).</em>
+    </div>`;
+  const bv = document.getElementById('btnVerificar'); if(bv) bv.onclick = verificarMision;
+  document.getElementById('btnReiniciar').onclick = reiniciarNivel;
+  document.getElementById('btnPista').onclick = () => document.getElementById('pista').classList.toggle('show');
+  document.getElementById('btnImprimirNivel').onclick = () => imprimir('nivel');
+}
+
+function reiniciarNivel(){
+  const nv = nivelActual();
+  cerrarEditor(false);
+  state.hojas[nv.n] = clonarPreload(nv.preload);
+  state.anchor = state.focusRef = state.activeRef = 'A1';
+  TODAS_LAS_REFS.forEach(r => { const td = cellEls[r]; if(td){ td._txt=null; td._sig=null; td._in=null; td._ac=null; } });
+  refrescar();
+  const fb = document.getElementById('feedback'); if(fb){ fb.className = 'feedback'; fb.innerHTML = ''; }
+  toast('↺ Nivel reiniciado con los datos originales.');
+}
+
+function actualizarEstado(){
+  const refs = refsSeleccion();
+  const derecha = document.getElementById('statusRight');
+  const etiqueta = refs.length === 1 ? refs[0] : `${state.anchor}:${state.focusRef} (${refs.length} celdas)`;
+  const nums = refs.map(valorCelda).filter(v => typeof v === 'number' && isFinite(v));
+  let extra = '';
+  if(nums.length > 1){
+    const suma = nums.reduce((a,b) => a+b, 0);
+    extra = ` · Recuento: ${nums.length} · Suma: ${fmtNum(suma)} · Promedio: ${fmtNum(suma/nums.length)}`;
+  } else if(nums.length === 1){
+    extra = ` · Valor: ${fmtNum(nums[0])}`;
+  }
+  derecha.textContent = etiqueta + extra;
+}
+
+let toastTimer = null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function confetti(){
+  const colores = ['#217346','#ffc93c','#0f6cbd','#e74c3c','#2ecc71','#f39c12','#9b59b6'];
+  for(let i = 0; i < 70; i++){
+    const s = document.createElement('span');
+    s.className = 'confetti';
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.background = colores[Math.floor(Math.random() * colores.length)];
+    s.style.animationDuration = (2 + Math.random() * 2.2) + 's';
+    s.style.animationDelay = (Math.random() * .5) + 's';
+    s.style.transform = `rotate(${Math.random()*360}deg)`;
+    s.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 4600);
+  }
+}
+
+/* ============================================================================
+   10. IMPRESIÓN / EXPORTACIÓN A PDF
+   ----------------------------------------------------------------------------
+   Página 1: constancia del trabajo práctico (datos del alumno/a + niveles).
+   Página 2: anexo con las fórmulas utilizadas y los atajos útiles.
+   ============================================================================ */
+const printArea = document.getElementById('printArea');
+
+/** Rango realmente usado de una hoja (para no imprimir celdas vacías). */
+function rangoUsado(cells){
+  let maxF = 1, maxC = 1;
+  for(const ref in cells){
+    const c = cells[ref];
+    const tieneContenido = c.raw != null && String(c.raw).trim() !== '';
+    const tieneFormato = c.bold || c.italic || c.border || c.align;
+    if(tieneContenido || tieneFormato){
+      const rc = refToRC(ref);
+      if(rc){ maxF = Math.max(maxF, rc.f); maxC = Math.max(maxC, rc.c); }
+    }
+  }
+  return { maxF: Math.max(maxF, 1), maxC: Math.max(maxC, 1) };
+}
+
+/** HTML de la grilla en modo lectura (página del nivel). */
+function htmlGrillaImpresion(){
+  const cells = hoja().cells;
+  const { maxF, maxC } = rangoUsado(cells);
+  let cg = '<colgroup>';
+  for(let c = 1; c <= maxC; c++) cg += `<col style="width:${c === 1 ? '26%' : Math.round(74/maxC) + '%'}">`;
+  cg += '</colgroup>';
+  let h = `<table class="p-grid">${cg}<thead><tr><th style="width:26px"></th>`;
+  for(let c = 1; c <= maxC; c++) h += `<th>${COLS[c-1]}</th>`;
+  h += '</tr></thead><tbody>';
+  for(let f = 1; f <= maxF; f++){
+    h += `<tr><th>${f}</th>`;
+    for(let c = 1; c <= maxC; c++){
+      const ref = rcToRef(c, f);
+      const cell = cells[ref] || {};
+      const v = valorCelda(ref);
+      const align = cell.align || (typeof v === 'number' ? 'right' : 'left');
+      const st = [];
+      if(cell.bold) st.push('font-weight:700');
+      if(cell.italic) st.push('font-style:italic');
+      st.push('text-align:' + align);
+      h += `<td class="${cell.border ? '' : 'sin-borde'}" style="${st.join(';')}">${escapeHtml(mostrar(v))}</td>`;
+    }
+    h += '</tr>';
+  }
+  return h + '</tbody></table>';
+}
+
+function cabeceraImpresion(titulo, subtitulo){
+  return `<div class="p-head">
+      <div>
+        <h1>ExcelMisión NTICX</h1>
+        <div class="sub">Planillas de cálculo · 4.º año · Nivel Secundario — DGCyE, Pcia. de Buenos Aires</div>
+      </div>
+      <div class="p-meta">
+        <div><b>${escapeHtml(titulo)}</b></div>
+        <div>${escapeHtml(subtitulo)}</div>
+        <div>Fecha: ${escapeHtml(state.estudiante.fecha || hoy())}</div>
+      </div>
+    </div>`;
+}
+
+/* --------------------------------------------------------------------------
+   ANEXO (página 2): fórmulas utilizadas + fichas de funciones + atajos útiles
+   -------------------------------------------------------------------------- */
+
+/** Tabla con TODAS las fórmulas presentes en las hojas recorridas por el alumno. */
+function htmlFormulasUtilizadas(){
+  let filas = '';
+  LEVELS.forEach(nv => {
+    const h = state.hojas[nv.n];
+    if(!h) return;                                  // el nivel nunca se visitó
+    const cells = h.cells;
+    const leer = evaluarHoja(cells);                // evaluador independiente
+    const refs = Object.keys(cells).filter(r => String(cells[r].raw || '').startsWith('='));
+    refs.sort((a,b) => { const ra = refToRC(a), rb = refToRC(b); return ra.f - rb.f || ra.c - rb.c; });
+    refs.forEach(ref => {
+      const escrita = nv.editableSet.has(ref);
+      const val = leer(ref);
+      filas += `<tr>
+        <td>${escapeHtml(nv.sandbox ? 'Práctica libre' : 'Nivel ' + nv.n)}</td>
+        <td style="text-align:center;font-weight:700;width:34pt">${ref}</td>
+        <td class="p-mono">${escapeHtml(String(cells[ref].raw))}</td>
+        <td style="text-align:right;width:58pt">${escapeHtml(mostrar(val))}</td>
+        <td style="text-align:center;width:64pt;font-size:7.6pt">${escrita ? '✍️ del alumno/a' : 'precargada'}</td>
+      </tr>`;
+    });
+  });
+  if(!filas) filas = '<tr><td colspan="5"><em>Todavía no hay fórmulas registradas en las hojas visitadas.</em></td></tr>';
+
+  return `<div class="p-sub">1. Fórmulas utilizadas en las hojas de trabajo</div>
+    <table class="p-resumen compacta">
+      <thead><tr><th style="width:48pt">Nivel</th><th>Celda</th><th>Fórmula escrita</th><th>Resultado</th><th>Origen</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table>`;
+}
+
+/** Ficha de referencia de funciones y operadores (contenido curricular). */
+function htmlFichaFunciones(){
+  const fns = [
+    ['SUMA(rango)',      '=SUMA(C2:C21)',   'Suma todos los valores numéricos del rango.'],
+    ['PROMEDIO(rango)',  '=PROMEDIO(B4:D4)','Calcula la media aritmética del rango.'],
+    ['MAX(rango)',       '=MAX(B4:B15)',    'Devuelve el valor más alto del rango.'],
+    ['MIN(rango)',       '=MIN(B4:B15)',    'Devuelve el valor más bajo del rango.'],
+    ['CONTAR(rango)',    '=CONTAR(B2:B21)', 'Cuenta cuántas celdas del rango tienen números.'],
+    ['CONTARA(rango)',   '=CONTARA(A2:A21)','Cuenta cuántas celdas del rango no están vacías.'],
+    ['ABS(número)',      '=ABS(B2-B5)',     'Devuelve el valor absoluto (sin signo).'],
+    ['REDONDEAR(n;dec)','=REDONDEAR(B7;2)','Redondea a la cantidad de decimales indicada.'],
+    ['SI(cond;si;no)',   '=SI(E4>=7;"Aprobado";"Previo")', 'Devuelve un valor u otro según la condición.']
+  ];
+  const ops = [
+    ['+', 'Suma', '=A2+B2'], ['-', 'Resta', '=A2-B2'], ['*', 'Multiplicación', '=B2*0.21'],
+    ['/', 'División', '=B5/B6'], ['^', 'Potencia', '=B2^2'], [':', 'Rango (desde:hasta)', 'C2:C21'],
+    [', o ;', 'Separador de argumentos', '=SI(A1>5;1;0)'],
+    ['= &lt; &gt; &lt;&gt;', 'Comparaciones', '=SI(B4>=7;...)']
+  ];
+  return `<div class="p-sub">2. Funciones y operadores que trabajaste</div>
+    <div class="p-dos-col">
+      <div>
+        <table class="p-resumen compacta">
+          <thead><tr><th>Función</th><th>Ejemplo</th><th>¿Para qué sirve?</th></tr></thead>
+          <tbody>${fns.map(f => `<tr><td class="p-mono" style="white-space:nowrap">${escapeHtml(f[0])}</td>
+            <td class="p-mono" style="white-space:nowrap">${escapeHtml(f[1])}</td><td>${escapeHtml(f[2])}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div>
+        <table class="p-resumen compacta">
+          <thead><tr><th>Símbolo</th><th>Significado</th><th>Ejemplo</th></tr></thead>
+          <tbody>${ops.map(o => `<tr><td class="p-mono" style="text-align:center">${o[0]}</td>
+            <td>${escapeHtml(o[1])}</td><td class="p-mono">${o[2]}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="p-nota"><b>Regla de oro:</b> toda fórmula empieza con el signo <b>=</b>. Los decimales pueden
+    escribirse con punto o con coma (<span class="p-mono">=B2*0.21</span> o <span class="p-mono">=B2*0,21</span>).
+    Si la fórmula está mal escrita, la celda muestra un código de error como en Excel:
+    <span class="p-mono">#ERROR</span>, <span class="p-mono">#¡DIV/0!</span>, <span class="p-mono">#¡NOMBRE?</span>, <span class="p-mono">#¡REF!</span>.</div>`;
+}
+
+/** Tabla de atajos útiles (teclado y mouse). */
+function htmlAtajosUtiles(){
+  const atajos = [
+    ['Seleccionar una celda', 'Clic sobre la celda'],
+    ['Seleccionar un rango', 'Clic y arrastrar, o clic + Shift + clic en la última'],
+    ['Editar el contenido', 'Doble clic, tecla F2 o empezar a escribir'],
+    ['Confirmar y bajar', 'Enter'],
+    ['Confirmar y mover a la derecha', 'Tab'],
+    ['Cancelar la edición', 'Esc'],
+    ['Borrar el contenido de la selección', 'Supr (Delete)'],
+    ['Moverse por la hoja', 'Flechas ← ↑ → ↓'],
+    ['Ampliar la selección', 'Shift + flechas'],
+    ['Ir al principio de la fila', 'Home'],
+    ['Aplicar negrita', 'Ctrl + N'],
+    ['Aplicar cursiva', 'Ctrl + K'],
+    ['Ver/editar la fórmula desde la barra', 'Barra de fórmulas (fx)'],
+    ['Imprimir o guardar como PDF', 'Ctrl + P'],
+    ['Reiniciar el nivel actual', 'Botón ↺ Reiniciar nivel']
+  ];
+  return `<div class="p-sub">3. Atajos útiles</div>
+    <table class="p-resumen compacta">
+      <thead><tr><th style="width:52%">Acción</th><th>Cómo se hace</th></tr></thead>
+      <tbody>${atajos.map(a => `<tr><td>${escapeHtml(a[0])}</td><td>${escapeHtml(a[1])}</td></tr>`).join('')}</tbody>
+    </table>`;
+}
+
+/** Página 2 completa del informe. */
+function htmlAnexo(){
+  const e = state.estudiante;
+  return `<div class="p-salto"></div>
+    <div class="p-head2">
+      <div><b>Anexo — Fórmulas utilizadas y atajos útiles</b>
+        <div style="font-size:8.5pt;color:#444">ExcelMisión NTICX · Material de repaso del trabajo práctico</div>
+      </div>
+      <span>Alumno/a: ${escapeHtml(e.nombre || '………………………')}<br>
+            Escuela: ${escapeHtml(e.escuela || '………………………')}<br>
+            Curso: ${escapeHtml(e.curso || '…………')} · Fecha: ${escapeHtml(e.fecha || hoy())}</span>
+    </div>
+    ${htmlFormulasUtilizadas()}
+    ${htmlFichaFunciones()}
+    ${htmlAtajosUtiles()}
+    <div class="p-foot">Anexo generado automáticamente por <b>ExcelMisión NTICX</b> el ${hoy()} a las
+    ${new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}. Página 2 de 2.</div>`;
+}
+
+/** Constancia completa: página 1 (informe) + página 2 (anexo). */
+function htmlConstancia(){
+  const e = state.estudiante;
+  const aprobados = LEVELS.filter(n => !n.sandbox && state.completados[n.n]).length;
+  const pagina1 = cabeceraImpresion('Constancia de trabajo práctico', 'Niveles 1 a 10') +
+    `<div class="p-box">
+       <b>Alumno/a:</b> ${escapeHtml(e.nombre || '……………………………………')}<br>
+       <b>Escuela:</b> ${escapeHtml(e.escuela || '……………………………………')}<br>
+       <b>Curso y división:</b> ${escapeHtml(e.curso || '………………')} &nbsp;·&nbsp;
+       <b>Fecha:</b> ${escapeHtml(e.fecha || hoy())}<br>
+       <b>Materia:</b> NTICX (Nuevas Tecnologías de la Información, la Conectividad y la eXpresión)<br>
+       <b>Niveles aprobados:</b> ${aprobados} de 10
+     </div>
+     <div class="p-titulo-nivel">Detalle de misiones</div>
+     <table class="p-resumen">
+       <thead><tr><th>N.º</th><th>Misión</th><th>Contenido trabajado</th><th>Fórmula clave</th><th>Estado</th></tr></thead>
+       <tbody>${LEVELS.filter(n=>!n.sandbox).map(n => {
+          const ap = !!state.completados[n.n];
+          return `<tr><td style="text-align:center;width:24pt">${n.n}</td>
+            <td>${escapeHtml(n.nombre)}</td>
+            <td style="font-size:8.6pt">${escapeHtml(n.objetivo)}</td>
+            <td class="p-mono" style="white-space:nowrap">${escapeHtml(n.formulaClave)}</td>
+            <td class="${ap?'p-est-ok':'p-est-no'}" style="text-align:center;width:66pt">${ap?'APROBADO':'NO APROBADO'}</td></tr>`;
+        }).join('')}</tbody>
+     </table>
+     <div class="p-firma"><div>Firma del alumno/a</div><div>Firma del docente</div></div>
+     <div class="p-foot">Constancia generada por <b>ExcelMisión NTICX</b>, recurso educativo digital para la materia
+     NTICX, 4.º año del Nivel Secundario — Dirección General de Cultura y Educación, Provincia de Buenos Aires.
+     Uso sugerido como trabajo práctico evaluable o instrumento de evaluación formativa.
+     <b>Continúa en la página 2:</b> fórmulas utilizadas y atajos útiles.</div>`;
+  return pagina1 + htmlAnexo();
+}
+
+/** Dispara la impresión (o el "Guardar como PDF" del navegador). */
+function imprimir(modo){
+  cerrarEditor(true);
+  recalcular();
+  if(modo === 'constancia') printArea.innerHTML = htmlConstancia();
+  else {
+    const nv = nivelActual();
+    printArea.innerHTML = cabeceraImpresion(
+        nv.sandbox ? 'Práctica libre' : nv.titulo, 'Hoja de trabajo del alumno/a') +
+      `<div class="p-box"><b>Alumno/a:</b> ${escapeHtml(state.estudiante.nombre || '…………………………')} &nbsp;·&nbsp;
+        <b>Escuela:</b> ${escapeHtml(state.estudiante.escuela || '…………………………')} &nbsp;·&nbsp;
+        <b>Curso:</b> ${escapeHtml(state.estudiante.curso || '…………')}<br>
+        <b>Consigna:</b> ${nv.mision.replace(/<\/?p>/g,' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim()}<br>
+        <b>Objetivo:</b> ${escapeHtml(nv.objetivo)}<br>
+        <b>Estado:</b> ${nv.sandbox ? 'Práctica libre' : (state.completados[nv.n] ? '✅ Nivel aprobado' : '⬜ Pendiente de verificación')}</div>
+      ${htmlGrillaImpresion()}
+      <div class="p-firma"><div>Firma del alumno/a</div><div>Firma del docente</div></div>
+      <div class="p-foot">Recurso educativo digital · NTICX · Generado el ${hoy()} a las ${new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}.</div>`;
+  }
+  const anterior = document.title;
+  document.title = modo === 'constancia'
+      ? 'Constancia NTICX - ' + (state.estudiante.nombre || 'Alumno')
+      : 'ExcelMision NTICX - ' + nivelActual().nombre;
+  document.body.classList.add('printing');
+  setTimeout(() => { window.print(); }, 60);
+  setTimeout(() => { document.body.classList.remove('printing'); document.title = anterior; }, 900);
+}
+window.addEventListener('afterprint', () => { document.body.classList.remove('printing'); });
+
+/* ============================================================================
+   11. PANTALLA FINAL (CONSTANCIA) Y AYUDA
+   ============================================================================ */
+const overlay = document.getElementById('overlay');
+const modalCard = document.getElementById('modalCard');
+
+function abrirModal(html){ modalCard.innerHTML = html; overlay.classList.add('show'); }
+function cerrarModal(){ overlay.classList.remove('show'); }
+overlay.addEventListener('click', e => { if(e.target === overlay) cerrarModal(); });
+
+function filasResumen(){
+  return LEVELS.filter(n => !n.sandbox).map(n => {
+    const ap = !!state.completados[n.n];
+    return `<tr><td style="width:46px;text-align:center;font-weight:700">${n.n}</td>
+      <td>${n.nombre}</td>
+      <td style="font-size:12px;color:#5c6670">${n.objetivo}</td>
+      <td style="text-align:center;font-family:Consolas,monospace;font-size:11.5px;color:#14532d;white-space:nowrap">${n.formulaClave}</td>
+      <td style="width:112px;text-align:center"><span class="estado ${ap?'aprobado':'pendiente'}">${ap?'Aprobado':'No aprobado'}</span></td></tr>`;
+  }).join('');
+}
+
+function mostrarConstancia(esFinal){
+  const aprobados = LEVELS.filter(n => !n.sandbox && state.completados[n.n]).length;
+  const completo = aprobados === 10;
+  const e = state.estudiante;
+  abrirModal(`
+    <div class="modal-head">
+      <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">✕</button>
+      <h2>${completo ? '🏆 ¡Misiones completadas!' : '📋 Constancia de trabajo práctico'}</h2>
+      <p>${completo
+          ? 'Resolviste los 10 niveles de ExcelMisión: sabés moverte por una hoja de cálculo, darle formato a la información y usar fórmulas y funciones. ¡Buenísimo trabajo!'
+          : `Llevás <strong>${aprobados} de 10</strong> niveles aprobados. Completá tus datos para imprimir la constancia (o guardar el avance parcial como evidencia de proceso).`}</p>
+    </div>
+    <div class="modal-body">
+      <div class="fila-campos">
+        <div class="campo"><label for="inpNombre">Nombre y apellido</label>
+          <input id="inpNombre" type="text" placeholder="Ej.: Juan Pérez" value="${escapeHtml(e.nombre)}"></div>
+        <div class="campo"><label for="inpEscuela">Escuela</label>
+          <input id="inpEscuela" type="text" placeholder="Ej.: E.E.S. N.º 12 «Manuel Belgrano»" value="${escapeHtml(e.escuela)}"></div>
+      </div>
+      <div class="fila-campos">
+        <div class="campo"><label for="inpCurso">Curso y división</label>
+          <input id="inpCurso" type="text" placeholder="Ej.: 4.º 2.ª" value="${escapeHtml(e.curso)}"></div>
+        <div class="campo"><label for="inpFecha">Fecha</label>
+          <input id="inpFecha" type="text" placeholder="dd/mm/aaaa" value="${escapeHtml(e.fecha || hoy())}"></div>
+      </div>
+
+      <table class="tabla-resumen">
+        <thead><tr><th>N.º</th><th>Misión</th><th>Contenido trabajado</th><th>Fórmula clave</th><th style="text-align:center">Estado</th></tr></thead>
+        <tbody>${filasResumen()}</tbody>
+      </table>
+
+      <div class="aviso-anexo">📄 <b>El informe se imprime en 2 páginas A4:</b> la página 1 tiene tus datos y el detalle de los 10 niveles; la <b>página 2</b> es un anexo con las <b>fórmulas que usaste</b> (con su resultado) y los <b>atajos útiles</b> de repaso.</div>
+
+      <div class="nota-docente">
+        <b>Para el/la docente:</b> esta pantalla puede usarse como constancia de trabajo práctico o instrumento de
+        evaluación formativa. Con <em>Imprimir / Guardar PDF</em> se abre el diálogo nativo del navegador en tamaño A4
+        vertical: sirve tanto para imprimir en papel como para elegir “Guardar como PDF”. El progreso se guarda en la
+        memoria de la sesión (no usa almacenamiento del navegador), así que funciona en netbooks del aula y dentro de
+        iframes restringidos.
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="cerrarModal()">Seguir practicando</button>
+        <button class="btn btn-primary" id="btnPrintReport">🖨 Imprimir / Guardar PDF (2 páginas)</button>
+      </div>
+    </div>`);
+
+  const bindear = (id, campo) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { state.estudiante[campo] = el.value; });
+  };
+  bindear('inpNombre','nombre'); bindear('inpEscuela','escuela');
+  bindear('inpCurso','curso');   bindear('inpFecha','fecha');
+  document.getElementById('btnPrintReport').onclick = () => imprimir('constancia');
+  if(esFinal) confetti();
+}
+
+function mostrarAyuda(){
+  abrirModal(`
+    <div class="modal-head">
+      <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">✕</button>
+      <h2>❓ Ayuda rápida</h2>
+      <p>Todo lo que necesitás para resolver las misiones.</p>
+    </div>
+    <div class="modal-body ayuda-seccion">
+      <h3>🖱️ Moverse y editar</h3>
+      <ul>
+        <li><b>Clic</b> en una celda para seleccionarla · <b>clic y arrastrar</b> para seleccionar un rango.</li>
+        <li><b>Doble clic</b> (o empezar a escribir, o <kbd>F2</kbd>) para editar la celda.</li>
+        <li><kbd>Enter</kbd> confirma y baja · <kbd>Tab</kbd> confirma y va a la derecha · <kbd>Esc</kbd> cancela.</li>
+        <li><kbd>Supr</kbd> borra el contenido de la selección.</li>
+        <li>La <b>barra fx</b> muestra (y permite editar) el contenido real de la celda activa.</li>
+      </ul>
+      <h3>🧮 Fórmulas</h3>
+      <ul>
+        <li>Toda fórmula empieza con <code>=</code>. Ejemplos: <code>=A2+B2</code>, <code>=B2*0.21</code>, <code>=B5/B6</code>.</li>
+        <li>Funciones disponibles: <code>=SUMA(rango)</code>, <code>=PROMEDIO(rango)</code>, <code>=MAX(rango)</code>, <code>=MIN(rango)</code>, <code>=CONTAR()</code>, <code>=ABS()</code>, <code>=REDONDEAR()</code>, <code>=SI()</code>.</li>
+        <li>Un rango se escribe con dos puntos: <code>C2:C21</code> son todas las celdas desde C2 hasta C21.</li>
+        <li>Los decimales se pueden escribir con punto o con coma: <code>=B2*0.21</code> o <code>=B2*0,21</code>.</li>
+        <li>Si la fórmula está mal escrita, la celda muestra un error como en Excel: <code>#ERROR</code>, <code>#¡DIV/0!</code>, <code>#¡NOMBRE?</code>…</li>
+      </ul>
+      <h3>🎨 Formato</h3>
+      <ul>
+        <li><b>N</b> negrita · <b>K</b> cursiva · <b>centrar</b> · <b>bordes</b>. Cada herramienta se habilita en el nivel donde se usa.</li>
+        <li>Seleccioná primero el rango y después tocá la herramienta.</li>
+      </ul>
+      <h3>💾 Progreso e impresión</h3>
+      <ul>
+        <li>El avance se guarda <b>durante la sesión</b>: si recargás la página, volvés al Nivel 1.</li>
+        <li><b>🖨 Imprimir / PDF</b> imprime la grilla del nivel actual (1 página).</li>
+        <li><b>📋 Constancia</b> genera el informe A4 de <b>2 páginas</b>: datos del alumno/a (nombre, <b>escuela</b>, curso y fecha), detalle de los 10 niveles y, en la página 2, el anexo con las <b>fórmulas utilizadas</b> y los <b>atajos útiles</b>.</li>
+        <li>La app funciona <b>sin conexión</b> una vez cargada: es un único archivo HTML.</li>
+      </ul>
+      <div class="modal-actions"><button class="btn btn-primary" onclick="cerrarModal()">¡A jugar!</button></div>
+    </div>`);
+}
+
+/* ============================================================================
+   12. INICIALIZACIÓN
+   ============================================================================ */
+document.getElementById('btnImprimir').addEventListener('click', () => imprimir('nivel'));
+document.getElementById('btnConstancia').addEventListener('click', () => mostrarConstancia(false));
+document.getElementById('btnAyuda').addEventListener('click', mostrarAyuda);
+
+construirGrilla();
+irANivel(1);
+pintarTabs();
+actualizarProgreso();
+
+setTimeout(() => toast('👋 ¡Bienvenido/a! Empezá por el Nivel 1: hacé clic en la celda B4.'), 700);
+</script>
+</body>
+</html>
+
