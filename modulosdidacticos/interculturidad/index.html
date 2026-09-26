@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  NTICx · 4.º AÑO · BAHÍA BLANCA — LA INTERCULTURALIDAD EN LOS ENTORNOS DIGITALES
+  Sitio autocontenido de la Planificación Anual Hiperdetallada
+  Docente: Martín Espinosa · Documento base: DGCyE / Continuemos Estudiando
+
+  INSTRUCCIONES PARA ABRIRLO:
+  1) Guardá este archivo como "nticx-interculturalidad.html".
+  2) Doble clic → se abre en cualquier navegador (Chrome, Firefox, Edge, Safari).
+     Funciona también desde el celular: pasalo por WhatsApp/correo y abrilo.
+  3) No necesita servidor ni instalación. Solo requiere internet para cargar
+     las tipografías (si no hay conexión, el sitio igual funciona con fuentes
+     de respaldo).
+  4) Botón "Imprimir / Carpeta": despliega todo el contenido y genera una
+     versión apta para papel.
+  ═══════════════════════════════════════════════════════════════════
+-->
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTICx 4.º · La interculturalidad en los entornos digitales · Bahía Blanca</title>
+<meta name="description" content="Planificación anual hiperdetallada de NTICx · 4.º año · Bahía Blanca. Basada estrictamente en el documento DGCyE 'La interculturalidad en los entornos digitales'.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/unbounded@latest/latin-500-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/unbounded@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/unbounded@latest/latin-800-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/atkinson-hyperlegible@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/atkinson-hyperlegible@latest/latin-700-normal.css">
+<style>
+:root{
+  --bg:#0a0e1a; --bg2:#0e1424; --card:#121a2e; --card2:#17213a;
+  --ink:#eef2ff; --mut:#9aa8cc; --line:#26314f;
+  --a1:#8b5cf6; --a2:#22d3ee; --a3:#fbbf24; --a4:#f472b6; --a5:#34d399; --a6:#fb923c; --a7:#60a5fa;
+  --grad:linear-gradient(100deg,var(--a1),var(--a4) 45%,var(--a3));
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --r:16px; --font-d:'Unbounded',system-ui,sans-serif; --font-b:'Atkinson Hyperlegible',system-ui,sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f6f5f1; --bg2:#efece5; --card:#ffffff; --card2:#f3f1ea;
+  --ink:#151a2b; --mut:#57627e; --line:#dcd8cc; --shadow:0 10px 24px rgba(30,30,60,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:var(--font-b);background:var(--bg);color:var(--ink);line-height:1.65;font-size:16.5px;transition:background .3s,color .3s}
+img{max-width:100%}
+a{color:var(--a2)}
+::selection{background:var(--a1);color:#fff}
+:focus-visible{outline:3px solid var(--a2);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--a1);color:#fff;padding:10px 16px;border-radius:8px;z-index:200}
+.skip:focus{left:8px}
+
+/* ── barra de progreso + header ── */
+#prog{position:fixed;top:0;left:0;height:4px;width:0;background:var(--grad);z-index:120;transition:width .1s}
+header{position:fixed;top:0;left:0;right:0;z-index:110;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:14px;padding:12px 20px;max-width:1200px;margin:0 auto}
+.brand{font-family:var(--font-d);font-weight:800;font-size:.95rem;letter-spacing:.4px;white-space:nowrap;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.navlinks{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlinks a{color:var(--mut);text-decoration:none;font-size:.86rem;font-weight:700;padding:8px 12px;border-radius:999px;white-space:nowrap;transition:.2s}
+.navlinks a:hover{color:var(--ink);background:var(--card2)}
+.navlinks a.act{color:#fff;background:var(--a1)}
+[data-theme="light"] .navlinks a.act{color:#fff}
+#themeBtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 13px;cursor:pointer;font-size:1rem;transition:.2s}
+#themeBtn:hover{transform:rotate(15deg) scale(1.08)}
+
+/* ── hero ── */
+.hero{position:relative;overflow:hidden;padding:150px 0 90px;background:radial-gradient(1000px 500px at 80% -10%,color-mix(in srgb,var(--a1) 22%,transparent),transparent),radial-gradient(800px 420px at 8% 110%,color-mix(in srgb,var(--a2) 16%,transparent),transparent),var(--bg)}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.25;mask-image:radial-gradient(closest-side at 50% 40%,#000,transparent)}
+.hero .wrap{position:relative}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.badge{font-family:var(--font-d);font-size:.68rem;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mut)}
+.badge.hot{background:var(--grad);color:#fff;border:none}
+h1{font-family:var(--font-d);font-weight:800;font-size:clamp(1.9rem,5.6vw,3.9rem);line-height:1.12;max-width:900px}
+h1 .gx{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{margin-top:22px;max-width:680px;font-size:clamp(1rem,2.4vw,1.2rem);color:var(--mut)}
+.hero .sub b{color:var(--ink)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{font-family:var(--font-d);font-weight:700;font-size:.82rem;letter-spacing:.6px;text-transform:uppercase;text-decoration:none;padding:15px 24px;border-radius:14px;transition:.25s;border:1px solid transparent;cursor:pointer}
+.btn.pri{background:var(--grad);color:#fff;box-shadow:0 8px 24px color-mix(in srgb,var(--a1) 40%,transparent)}
+.btn.pri:hover{transform:translateY(-3px)}
+.btn.sec{border-color:var(--line);color:var(--ink);background:var(--card)}
+.btn.sec:hover{border-color:var(--a2);transform:translateY(-3px)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:52px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;text-align:center}
+.stat b{font-family:var(--font-d);font-size:1.7rem;display:block;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{font-size:.8rem;color:var(--mut)}
+.qcard{margin-top:40px;border-left:4px solid var(--a3);background:var(--card);border-radius:0 var(--r) var(--r) 0;padding:18px 22px;max-width:640px;font-size:1.02rem}
+.qcard small{display:block;margin-top:8px;color:var(--mut)}
+
+/* ── secciones ── */
+section{padding:86px 0}
+section:nth-of-type(even){background:var(--bg2)}
+.eyebrow{font-family:var(--font-d);font-size:.7rem;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;color:var(--a2);margin-bottom:12px;display:block}
+h2{font-family:var(--font-d);font-weight:800;font-size:clamp(1.5rem,4vw,2.4rem);line-height:1.2;margin-bottom:14px}
+.lead{color:var(--mut);max-width:760px;margin-bottom:36px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── tabs genéricas ── */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.tabs button{font-family:var(--font-d);font-weight:700;font-size:.74rem;letter-spacing:.6px;text-transform:uppercase;padding:11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--mut);cursor:pointer;transition:.2s}
+.tabs button:hover{color:var(--ink);transform:translateY(-2px)}
+.tabs button.on{background:var(--grad);color:#fff;border-color:transparent}
+.tpanel{display:none;animation:fade .35s ease}
+.tpanel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── tarjetas ── */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;transition:.25s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card h3{font-family:var(--font-d);font-size:.98rem;font-weight:700;margin-bottom:10px}
+.card h4{font-size:.95rem;margin:16px 0 6px}
+.card p,.card li{font-size:.93rem;color:var(--mut)}
+.card b,.card strong{color:var(--ink)}
+.card ul,.card ol{padding-left:20px;margin:8px 0}
+.card li{margin-bottom:6px}
+.pill{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 11px;border-radius:999px;margin-bottom:12px;color:#fff}
+.lack{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.6px;background:color-mix(in srgb,var(--a3) 22%,transparent);color:var(--a3);border:1px dashed var(--a3);padding:3px 9px;border-radius:8px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0}
+th,td{text-align:left;padding:10px 12px;border:1px solid var(--line);vertical-align:top}
+th{background:var(--card2);font-family:var(--font-d);font-size:.7rem;letter-spacing:.8px;text-transform:uppercase}
+
+/* ── cronograma ── */
+.tl{display:grid;gap:14px}
+.tl-item{display:grid;grid-template-columns:96px 1fr;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;transition:.25s}
+.tl-item:hover{transform:translateX(6px)}
+.tl-item .mod{font-family:var(--font-d);font-weight:800;font-size:1.6rem;align-self:center;text-align:center}
+.tl-item h3{font-family:var(--font-d);font-size:.95rem;margin-bottom:6px}
+.tl-item .meta{font-size:.78rem;color:var(--mut);margin-bottom:8px;font-weight:700;letter-spacing:.4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:.74rem;padding:5px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--mut)}
+.hitos{margin-top:26px}
+
+/* ── módulos ── */
+.searchrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:24px}
+.searchrow input{flex:1;min-width:220px;background:var(--card);border:1px solid var(--line);color:var(--ink);padding:14px 18px;border-radius:12px;font-family:var(--font-b);font-size:.95rem}
+.searchrow input::placeholder{color:var(--mut)}
+#count{font-size:.82rem;color:var(--mut)}
+.modblock{margin-bottom:26px;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card)}
+.modhead{display:flex;align-items:center;gap:16px;padding:22px;border-top:6px solid var(--mc)}
+.modhead .num{font-family:var(--font-d);font-weight:800;font-size:1.4rem;color:var(--mc);min-width:52px}
+.modhead h3{font-family:var(--font-d);font-size:1.02rem;font-weight:700}
+.modhead .meta{font-size:.78rem;color:var(--mut);margin-top:4px}
+.cont{border-top:1px solid var(--line)}
+.cont>button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;background:none;border:none;color:var(--ink);font-family:var(--font-b);font-size:.95rem;font-weight:700;text-align:left;cursor:pointer;transition:.2s}
+.cont>button:hover{background:var(--card2)}
+.cont>button .arr{transition:.3s;color:var(--mut);flex-shrink:0}
+.cont.open>button .arr{transform:rotate(180deg);color:var(--mc)}
+.contbody{display:none;padding:0 22px 22px;border-left:3px solid var(--mc);margin-left:22px}
+.cont.open .contbody{display:block;animation:fade .3s}
+.cite{font-size:.84rem;color:var(--mut);font-style:italic;border-left:3px solid var(--line);padding-left:12px;margin:6px 0 16px}
+.stabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;scrollbar-width:thin}
+.stabs button{font-size:.72rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--mut);cursor:pointer;white-space:nowrap;transition:.2s}
+.stabs button.on{background:var(--mc);border-color:var(--mc);color:#fff}
+.spanel{display:none}
+.spanel.on{display:block;animation:fade .3s}
+.spanel h5{font-family:var(--font-d);font-size:.72rem;letter-spacing:1.4px;text-transform:uppercase;color:var(--mc);margin-bottom:10px}
+.spanel p,.spanel li{font-size:.9rem;color:var(--mut)}
+.spanel b{color:var(--ink)}
+.glos{display:grid;gap:8px}
+.glos div{background:var(--card2);border-radius:10px;padding:10px 14px;font-size:.86rem}
+.glos b{display:inline-block;margin-right:6px}
+
+/* ── ABP ── */
+.abp{position:relative;overflow:hidden}
+.abp::after{content:"";position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:color-mix(in srgb,var(--ac) 18%,transparent)}
+.abp .tag{font-family:var(--font-d);font-size:.66rem;font-weight:700;letter-spacing:1.4px;color:var(--ac);text-transform:uppercase;display:block;margin-bottom:10px}
+
+/* ── glosario general ── */
+#glosGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:20px}
+.term{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;transition:.2s}
+.term:hover{transform:translateY(-3px);border-color:var(--a2)}
+.term b{font-family:var(--font-d);font-size:.82rem;display:block;margin-bottom:6px}
+.term p{font-size:.84rem;color:var(--mut)}
+.term span{display:inline-block;margin-top:8px;font-size:.64rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--a2)}
+
+/* ── footer ── */
+footer{background:#070a13;color:#cdd6ef;padding:60px 0 40px;border-top:4px solid;border-image:var(--grad) 1}
+footer h3{font-family:var(--font-d);font-size:.95rem;margin-bottom:12px;color:#fff}
+footer .g2{gap:30px}
+footer p,footer li{font-size:.86rem;color:#93a0c4}
+footer ul{list-style:none}
+footer li{margin-bottom:6px;padding-left:16px;position:relative}
+footer li::before{content:"◆";position:absolute;left:0;color:var(--a2);font-size:.6rem;top:4px}
+.footend{margin-top:40px;padding-top:20px;border-top:1px solid #1c2540;font-size:.78rem;color:#6e7ba0;text-align:center}
+
+/* ── impresión / versión carpeta ── */
+#printFab{position:fixed;right:18px;bottom:18px;z-index:115;background:var(--grad);color:#fff;border:none;border-radius:999px;padding:14px 20px;font-family:var(--font-d);font-weight:700;font-size:.72rem;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 30px color-mix(in srgb,var(--a1) 45%,transparent);transition:.25s}
+#printFab:hover{transform:translateY(-3px) scale(1.03)}
+@media print{
+  header,#prog,#printFab,.cta,.searchrow,.tabs,.stabs,.navlinks,#themeBtn{display:none!important}
+  body{background:#fff;color:#000;font-size:11px}
+  section{padding:20px 0}
+  .hero{padding:20px 0;background:#fff}
+  .hero::before{display:none}
+  .reveal{opacity:1;transform:none}
+  .tpanel,.spanel{display:block!important}
+  .contbody{display:block!important;margin-left:6px}
+  .cont>button .arr{display:none}
+  .card,.modblock,.tl-item{box-shadow:none;break-inside:avoid;border-color:#ccc}
+  footer{background:#fff;color:#000;border-top:2px solid #000}
+  footer p,footer li{color:#222}
+}
+@media (max-width:640px){
+  .tl-item{grid-template-columns:1fr}
+  .tl-item .mod{text-align:left}
+  .nav{gap:8px}
+  .brand{font-size:.78rem}
+  section{padding:60px 0}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido principal</a>
+<div id="prog" aria-hidden="true"></div>
+
+<header>
+  <nav class="nav" aria-label="Navegación principal">
+    <span class="brand">NTICx·4º·BB</span>
+    <div class="navlinks" id="navlinks">
+      <a href="#inicio">Inicio</a>
+      <a href="#planificacion">Planificación</a>
+      <a href="#cronograma">Cronograma</a>
+      <a href="#modulos">Módulos</a>
+      <a href="#abp">Desafíos ABP</a>
+      <a href="#glosario">Glosario</a>
+      <a href="#escuela">Escuela</a>
+    </div>
+    <button id="themeBtn" aria-label="Cambiar modo claro u oscuro" title="Modo claro/oscuro">☀️</button>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="inicio" style="padding-top:130px">
+  <div class="wrap">
+    <div class="badges reveal in">
+      <span class="badge hot">NTICx · 4.º año</span>
+      <span class="badge">Bahía Blanca · Prov. de Buenos Aires</span>
+      <span class="badge">Docente: Martín Espinosa</span>
+      <span class="badge">Material base: DGCyE · Continuemos Estudiando</span>
+    </div>
+    <h1 class="reveal in">La <span class="gx">interculturalidad</span> en los entornos digitales</h1>
+    <p class="sub reveal in">Planificación anual hiperdetallada construida <b>estrictamente sobre el documento oficial</b> de la Dirección de Tecnología Educativa (DGCyE): <i>«¿Qué voces son visibles en la web?»</i>. Todo lo que no surge del PDF está marcado <b>[FALTA EN EL PDF]</b>.</p>
+    <div class="cta reveal in">
+      <a class="btn pri" href="#cronograma">Ver el cronograma</a>
+      <a class="btn sec" href="#modulos">Explorar los 7 módulos</a>
+    </div>
+    <div class="stats reveal in">
+      <div class="stat"><b>7</b><span>módulos secuenciados</span></div>
+      <div class="stat"><b>46</b><span>contenidos, uno por uno</span></div>
+      <div class="stat"><b>9</b><span>estrategias del PDF como competencias</span></div>
+      <div class="stat"><b>3</b><span>actividades oficiales (glosario · debate · producción)</span></div>
+    </div>
+    <div class="qcard reveal in">
+      «¿Cómo se refleja la diversidad cultural en los entornos digitales? ¿Qué voces tienen presencia, visibilidad y capacidad de producción en la web y en las redes sociales?»
+      <small>— Preguntas rectoras del documento oficial</small>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PLANIFICACIÓN ═══════════ -->
+<section id="planificacion">
+  <div class="wrap">
+    <span class="eyebrow reveal">Fase 1 · La planificación</span>
+    <h2 class="reveal">Planificación anual hiperdetallada</h2>
+    <p class="lead reveal">Los cuatro apartados de la Fase 1. Donde el documento oficial no define expectativas ni módulos (no es un diseño curricular), la reconstrucción está fundada en el contenido real del PDF y en normativa vigente citada por nombre y número.</p>
+    <div class="tabs reveal" role="tablist" aria-label="Apartados de la planificación">
+      <button class="on" data-t="p" data-i="0" role="tab" aria-selected="true">1 · Expectativas</button>
+      <button data-t="p" data-i="1" role="tab" aria-selected="false">2 · Distribución temporal</button>
+      <button data-t="p" data-i="2" role="tab" aria-selected="false">3 · Metodología</button>
+      <button data-t="p" data-i="3" role="tab" aria-selected="false">4 · Evaluación</button>
+    </div>
+
+    <div class="tpanel on" data-p="p" data-i="0">
+      <p class="lead" style="margin-bottom:18px"><span class="lack">FALTA EN EL PDF</span> El documento no trae expectativas de logro formales: se construyeron desde sus objetivos explícitos y sus actividades, sobre la Ley 13.688 art. 16.</p>
+      <div class="grid g2" id="expGrid"></div>
+    </div>
+
+    <div class="tpanel" data-p="p" data-i="1">
+      <div class="card reveal in">
+        <span class="lack">FALTA EN EL PDF</span>
+        <p>El documento no define módulos ni carga horaria. Los <b>7 módulos</b> son una reorganización pedagógica fiel del contenido del PDF. La organización oficial del año sigue la <b>Resolución DGCyE 1236/23</b>: materias anuales en <b>dos cuatrimestres</b>, con valoración cualitativa <b>TEA / TEP / TED</b>, valoraciones preliminares en <b>mayo y octubre</b> y <b>RITE</b> al cierre de cada cuatrimestre. Los tres momentos pedagógicos se mapean sobre esa estructura.</p>
+      </div>
+      <div class="grid g3" style="margin-top:16px" id="momGrid"></div>
+    </div>
+
+    <div class="tpanel" data-p="p" data-i="2">
+      <div class="grid g3" id="metGrid"></div>
+    </div>
+
+    <div class="tpanel" data-p="p" data-i="3">
+      <div class="card reveal in">
+        <h3>Marco normativo de la evaluación</h3>
+        <p><b>Resolución DGCyE 1236/23</b> (cuatrimestres, TEA/TEP/TED, valoraciones preliminares, RITE) · <b>Resoluciones 587/11 y 1480/11</b> (Régimen Académico vigente) · <b>Resolución CFE 84/09</b> (Lineamientos de la Secundaria Obligatoria) · <b>Resolución CFE 93/09</b> (Organización pedagógica e institucional) · <b>Resolución CFE 368/20</b> (Criterios de evaluación, acreditación y promoción) · <b>Ley 13.688 art. 16</b> (citada en el PDF) · <b>Ley 26.206</b>.</p>
+      </div>
+      <div class="grid g2" style="margin-top:16px" id="evGrid"></div>
+      <div class="card reveal in" style="margin-top:16px">
+        <h3>Rúbrica de la producción final · 6 dimensiones</h3>
+        <table>
+          <tr><th>Dimensión</th><th>Qué se mira (nivel distinguido)</th></tr>
+          <tr><td><b>Rigor conceptual</b></td><td>Usa con precisión el vocabulario clave: interculturalidad, sesgo, burbuja, brecha, algoritmo, ciudadanía digital.</td></tr>
+          <tr><td><b>Mirada crítica sobre lo digital</b></td><td>Cuestiona la neutralidad tecnológica y muestra mecanismos concretos: personalización, filtrado, silenciamiento.</td></tr>
+          <tr><td><b>Enfoque intercultural</b></td><td>Visibiliza identidades diversas sin estereotiparlas ni jerarquizarlas.</td></tr>
+          <tr><td><b>Comunicación y creatividad</b></td><td>El formato (reel, carrusel, pódcast…) está plenamente adecuado a la audiencia adolescente.</td></tr>
+          <tr><td><b>Fuentes y honestidad intelectual</b></td><td>Cita todas las fuentes y distingue producción propia de ajena.</td></tr>
+          <tr><td><b>Ciudadanía digital</b></td><td>Cumple la lista de publicación responsable y fundamenta sus decisiones.</td></tr>
+        </table>
+        <h4>Ponderación orientativa de cátedra <span class="lack">FALTA EN EL PDF</span></h4>
+        <p>Proceso <b>40 %</b> · Producción final <b>30 %</b> · Trabajo colaborativo <b>15 %</b> · Responsabilidad digital <b>15 %</b>. La acreditación oficial es cualitativa (TEA/TEP/TED) según la Res. 1236/23.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CRONOGRAMA ═══════════ -->
+<section id="cronograma">
+  <div class="wrap">
+    <span class="eyebrow reveal">Fase 1 · El año en mapa</span>
+    <h2 class="reveal">Cronograma interactivo · 7 módulos</h2>
+    <p class="lead reveal">Dos cuatrimestres oficiales (Res. 1236/23), tres momentos pedagógicos. Carga estimada: 2 módulos semanales ≈ 60 módulos áulicos efectivos.</p>
+    <div class="tabs reveal" role="tablist" aria-label="Cuatrimestres">
+      <button class="on" data-t="c" data-i="0">1.er cuatrimestre · marzo–junio</button>
+      <button data-t="c" data-i="1">2.º cuatrimestre · julio–noviembre</button>
+      <button data-t="c" data-i="2">Hitos institucionales</button>
+    </div>
+    <div class="tpanel on" data-p="c" data-i="0"><div class="tl" id="sem1"></div></div>
+    <div class="tpanel" data-p="c" data-i="1"><div class="tl" id="sem2"></div></div>
+    <div class="tpanel" data-p="c" data-i="2"><div class="grid g2 hitos" id="hitosGrid"></div></div>
+  </div>
+</section>
+
+<!-- ═══════════ MÓDULOS / CONTENIDOS ═══════════ -->
+<section id="modulos">
+  <div class="wrap">
+    <span class="eyebrow reveal">Fase 2 · Marco de contenidos exhaustivo</span>
+    <h2 class="reveal">Los 7 módulos, contenido por contenido</h2>
+    <p class="lead reveal">46 contenidos desarrollados uno por uno, con sus 7 subapartados: pregunta problematizadora, respuesta teórica, contexto argentino, bajada local a Bahía Blanca, microglosario, guía práctica y desafío ABP. Buscá por palabra o filtrá por módulo.</p>
+    <div class="searchrow reveal">
+      <label for="q" class="skip">Buscar contenidos</label>
+      <input id="q" type="search" placeholder="Buscar contenido: por ejemplo «algoritmo», «lengua», «brecha», «estereotipo»…" autocomplete="off">
+      <span id="count" aria-live="polite"></span>
+    </div>
+    <div class="tabs reveal" id="modChips" role="tablist" aria-label="Filtro por módulo"></div>
+    <div id="modsWrap"></div>
+    <p id="noRes" style="display:none;color:var(--mut)">No hay contenidos que coincidan con esa búsqueda. Probá con otra palabra.</p>
+  </div>
+</section>
+
+<!-- ═══════════ ABP ═══════════ -->
+<section id="abp">
+  <div class="wrap">
+    <span class="eyebrow reveal">Aprendizaje basado en problemas</span>
+    <h2 class="reveal">Desafíos ABP de impacto local</h2>
+    <p class="lead reveal">Cada contenido del año tiene su desafío grupal; estos siete son los <b>desafíos de cierre de módulo</b>, todos con anclaje en Bahía Blanca o Argentina. Los datos locales que faltan están marcados para confirmar con el docente.</p>
+    <div class="grid g2" id="abpGrid"></div>
+  </div>
+</section>
+
+<!-- ═══════════ GLOSARIO ═══════════ -->
+<section id="glosario">
+  <div class="wrap">
+    <span class="eyebrow reveal">Vocabulario del año</span>
+    <h2 class="reveal">Glosario técnico general</h2>
+    <p class="lead reveal">El glosario colaborativo (Actividad 1 del PDF) consolidado: los términos clave de ciudadanía digital e interculturalidad, explicados con analogías de la vida cotidiana. Usá el buscador para filtrar.</p>
+    <div class="searchrow">
+      <label for="qg" class="skip">Buscar término</label>
+      <input id="qg" type="search" placeholder="Buscar término: «sesgo», «burbuja», «agencia»…" autocomplete="off">
+    </div>
+    <div id="glosGrid"></div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer id="escuela">
+  <div class="wrap">
+    <div class="grid g2">
+      <div>
+        <h3>La materia</h3>
+        <p><b style="color:#fff">NTICx · Nuevas Tecnologías de la Información y la Conectividad</b><br>4.º año · Escuela Secundaria · Bahía Blanca, Provincia de Buenos Aires<br>Docente a cargo: <b style="color:#fff">Martín Espinosa</b><br><span class="lack">FALTA EN EL PDF</span> Nombre de la escuela y ciclo lectivo: pendientes de confirmación.</p>
+      </div>
+      <div>
+        <h3>Documento base</h3>
+        <ul>
+          <li>«La interculturalidad en los entornos digitales · ¿Qué voces son visibles en la web?»</li>
+          <li>Dirección de Tecnología Educativa · Subsecretaría de Educación · DGCyE</li>
+          <li>Plataforma <b>Continuemos Estudiando</b> · Creado 03/11/2025 · Actualizado 09/12/2025</li>
+          <li>#EntornosDigitales · #Interculturalidad · Efeméride de Noviembre</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Normativa citada</h3>
+        <ul>
+          <li>Ley Provincial de Educación 13.688 · art. 16 (en el PDF)</li>
+          <li>Constitución de la Provincia de Buenos Aires (en el PDF)</li>
+          <li>Resoluciones DGCyE 1236/23 · 587/11 · 1480/11 · 3828/09</li>
+          <li>Resoluciones CFE 84/09 · 93/09 · 368/20 · Ley 26.206</li>
+          <li>Leyes 25.326 · 23.592 · 23.302 · 26.061 · 26.904 · 26.966 · 27.078</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Regla de oro</h3>
+        <p>Todo el desarrollo se basa <b style="color:#fff">estrictamente en el documento oficial</b>. Lo que no surge del PDF está marcado <b>[FALTA EN EL PDF]</b>: en especial, los datos locales de Bahía Blanca (cooperativas de fibra óptica, infraestructura del puerto y el Polo Petroquímico, barrios, ecosistema de software), pendientes de confirmación del docente.</p>
+      </div>
+    </div>
+    <div class="footend">Planificación anual hiperdetallada · NTICx 4.º · Bahía Blanca — «La escuela como espacio de encuentro, diálogo y construcción colectiva del conocimiento» (cierre del documento oficial).</div>
+  </div>
+</footer>
+
+<button id="printFab" title="Versión carpeta para imprimir">🖨️ Imprimir / Carpeta</button>
+
+<script>
+/* ════════════════════ DATOS ════════════════════ */
+const LACK='<span class="lack">FALTA EN EL PDF</span>';
+
+const EXP=[
+["E1 · Territorio no neutro","Reconocer que los entornos digitales no son ámbitos neutros sino territorios atravesados por relaciones de poder donde se reproducen desigualdades y exclusiones.",["Identifica quién produce, representa y omite un contenido","Formula la pregunta «¿quién falta acá?» ante un feed o búsqueda","Abandona la idea de internet como espejo fiel de la realidad"]],
+["E2 · Mecanismos algorítmicos","Identificar cómo la personalización, el filtrado y las burbujas refuerzan sesgos, silencian identidades subrepresentadas y reproducen estereotipos.",["Explica cómo un algoritmo decide qué mostrar","Demuestra que dos perfiles obtienen resultados distintos ante la misma búsqueda","Reconoce y fundamenta un estereotipo reproducido"]],
+["E3 · Voces invisibilizadas","Valorar la diversidad cultural, reconocer las voces subrepresentadas y rechazar toda jerarquización entre culturas.",["Nombra y describe perfiles y producciones del archivo del PDF","Explica por qué un grupo está en desventaja con categorías del documento","Cuestiona discursos homogeneizantes cotidianos"]],
+["E4 · Ciudadanía digital situada","Ejercer una ciudadanía digital capaz de interpretar, analizar y cuestionar cómo circula la información, quiénes la producen y qué representaciones habilita o bloquea.",["Aplica criterios para evaluar fuentes","Diversifica deliberadamente sus consumos","Autorreflexiona por escrito sobre sus hábitos digitales"]],
+["E5 · Producción que visibiliza","Producir contenidos digitales respetuosos y creativos que visibilicen la diversidad cultural (reel, carrusel, pódcast, video, póster digital, presentación interactiva).",["Planifica y ejecuta una producción con perspectiva intercultural","Fundamenta decisiones de formato y mensaje","Evalúa si su producto representa sin estereotipar"]],
+["E6 · Vocabulario colectivo","Construir colaborativamente el glosario de términos clave de ciudadanía digital e interculturalidad (Actividad 1 del PDF).",["Define con sus palabras y ejemplos los términos del glosario","Usa el vocabulario técnico en debates y producciones","Completa y mejora definiciones ajenas de forma constructiva"]]
+];
+
+const MOM=[
+["Momento 1 · Fundamentos","M1 + M2 + M3 · 1.er cuatrimestre (marzo–junio)","Del concepto a la política: qué es la interculturalidad, qué brechas hay y qué manda la escuela. Cierra con evaluación parcial integradora y RITE."],
+["Momento 2 · Crítica algorítmica","M4 + M5 · inicio del 2.º cuatrimestre (julio–septiembre)","El mecanismo concreto: personalización, burbujas y sesgos, más la formación crítica. Cierra con el gran debate (Actividad 2)."],
+["Momento 3 · Producción","M6 + M7 · cierre del 2.º cuatrimestre (octubre–noviembre)","El arsenal operativo y la enunciación propia: la producción final pegada al 12/10 y a la Efeméride de Noviembre."]
+];
+
+const MET=[
+["🛠️ Trabajo por proyectos","Basado en la estrategia 5 del PDF («generar proyectos de investigación») y en las tres actividades oficiales.",["<b>6 fases:</b> Problematización → Planificación → Indagación → Producción → Socialización → Reflexión","<b>Roles rotativos:</b> coordinador/a, curador/a de fuentes, registrador/a digital, editor/a de formato, verificador/a de sesgos, comunicador/a","<b>Tres escalas:</b> macroproyecto anual (producción final), mesoproyectos (glosario y debate) y microproyectos por módulo","<b>Productos del PDF:</b> glosario en documento compartido, presentación o mural; registros de debate; reel, carrusel, cápsula de pódcast, video breve, póster digital o presentación interactiva"]],
+["🧩 Aprendizaje basado en problemas","Los problemas no se inventan: el PDF ya trae un banco auténtico.",["<b>Selección:</b> las 5 preguntas «Para reflexionar», los materiales curados y la vida digital de la propia escuela; 5 criterios (autenticidad, cercanía, complejidad, viabilidad, anclaje curricular)","<b>Guía de la indagación:</b> modelado → andamiaje → trabajo autónomo → triangulación de al menos 3 fuentes diversas","<b>Cierre:</b> institucionalización (el concepto llega después del descubrimiento), metacognición y transferencia al glosario y a la producción"]],
+["🌐 Entornos virtuales","Con la conectividad real de las escuelas bonaerenses en mente.",["<b>Continuemos Estudiando (DGCyE):</b> la plataforma de donde proviene el propio material base","<b>Aula virtual / documento compartido</b> para el glosario y las entregas","<b>Plan A / B / C:</b> laboratorio con conectividad → pocos dispositivos con materiales descargados → versión analógica (el PDF ya la habilita: glosario «digital o analógico»)","<b>Regla de oro:</b> todo lo que se manda fuera del aula tiene versión para resolver dentro — coherente con enseñar sobre brechas"]]
+];
+
+const EV=[
+["🔎 El proceso (no solo el producto)","Evaluación continua, formativa y coherente con lo enseñado (principio del Régimen Académico bonaerense).",["Registro de observación por clase (4 indicadores)","Carpeta como evidencia acumulada para el RITE","Glosario colaborativo como portafolio conceptual (1 entrada propia por módulo)","Devolución formativa con reentrega","Valoraciones preliminares oficiales de mayo y octubre (Res. 1236/23)","Autoevaluación al cierre de cada módulo"]],
+["🎯 La producción final","La Actividad 3 del PDF evaluada con rúbrica de 6 dimensiones (ver tabla) + defensa oral.",["La rúbrica se comparte ANTES de producir","La defensa es individual dentro del grupo: cada integrante responde por una dimensión","Publicar es optativo y no puntúa: puntúa la calidad y el proceso","Ante TEP/TED: intensificación con actividades variadas (Circular Técnica Conjunta 1/2020), no repetición de lo mismo"]],
+["🤝 El trabajo colaborativo","El grupo es la condición; la acreditación es individual.",["Roles rotativos con entregables verificables por rol","Entradas individuales identificables en el glosario","Reflexión final individual","Coevaluación entre pares y autoevaluación con formato propio"]],
+["🛡️ La responsabilidad digital","La publicación convierte la ciudadanía digital en algo evaluable y concreto.",["Acuerdo de convivencia digital construido en marzo (no impuesto)","Lista de publicación responsable obligatoria antes de publicar: fuentes citadas, consentimientos, sin datos personales, lenguaje respetuoso, sin estereotipos, conciencia de huella digital","Indicadores observables: cuida cuentas, no difunde sin verificar, pide permiso, corrige estereotipos"]]
+];
+
+const SEM1=[
+{m:"M1",c:"#8b5cf6",t:"Interculturalidad: concepto y enfoque de derechos",w:"6 módulos · 3 semanas",k:["Definición, categorías, enfoque de derechos, los 6 objetivos del PDF","Arranca la Actividad 1: glosario colaborativo"]},
+{m:"M2",c:"#22d3ee",t:"Digitalización: promesas y brechas",w:"8 módulos · 4 semanas",k:["TIC, promesa vs. brechas de acceso/conectividad/alfabetización","BID, CEPAL y BM · grupos en desventaja · derecho a narrarse","1.ª instancia de proceso"]},
+{m:"M3",c:"#fbbf24",t:"La escuela y la interculturalidad como política",w:"6 módulos · 3 semanas",k:["Escuela como lugar estratégico · Constitución de PBA · Ley 13.688 art. 16","Política social, educativa y también digital","Evaluación parcial integradora (M1–M3) · valoración preliminar de mayo · RITE"]}
+];
+const SEM2=[
+{m:"M4",c:"#f472b6",t:"Algoritmos y burbujas de información",w:"10 módulos · 5 semanas",k:["Personalización, filtrado, burbujas, sesgos, silenciamiento, estereotipos","Experimento de laboratorio: búsquedas comparadas entre perfiles"]},
+{m:"M5",c:"#34d399",t:"Alfabetización digital crítica y neutralidad tecnológica",w:"10 módulos · 5 semanas",k:["Las cuatro preguntas · neutralidad en cuestión · ciudadanía ampliada","Debate integrador (Actividad 2) + evaluación parcial M4–M5"]},
+{m:"M6",c:"#fb923c",t:"Kit de navegación crítica: estrategias y búsqueda avanzada",w:"8 módulos · 4 semanas",k:["Las 9 estrategias del PDF convertidas en competencias","Práctica intensiva de búsqueda avanzada y diversificación de fuentes"]},
+{m:"M7",c:"#60a5fa",t:"Voces diversas y producción digital final",w:"12 módulos · 6 semanas",k:["Materiales del PDF: 3 lecturas, 5 perfiles, 3 asociaciones, 4 videos","Actividades 1, 2 y 3 en su cierre","Muestra final pegada al 12/10 y a la Efeméride de Noviembre · valoración preliminar de octubre · RITE de cierre · intensificación dic./feb.–marzo"]}
+];
+
+const HITOS=[
+["Marzo","Inicio del ciclo · acuerdo de convivencia digital del aula construido con los chicos."],
+["24 de marzo · 2 de abril","Día de la Memoria · Malvinas: margen previsto en el cronograma del 1.er cuatrimestre."],
+["Mayo","Valoración preliminar oficial (Res. 1236/23): detección temprana de trayectorias TEP/TED."],
+["Julio","Receso invernal: ya descontado del cómputo de módulos efectivos."],
+["17 de agosto · 11 de septiembre","Actos de San Martín y Día del Maestro: márgenes previstos."],
+["12 de octubre","Día del Respeto a la Diversidad Cultural: hito articulador directo de la producción final."],
+["Noviembre","Efeméride de Noviembre (tag del propio PDF) + 20/11: ventana de publicación y muestra."],
+["Diciembre · Febrero–Marzo","Períodos de intensificación de la enseñanza para trayectorias TEP/TED."]];
+
+const MODS=[
+{n:1,c:"#8b5cf6",t:"Interculturalidad: concepto y enfoque de derechos",w:"6 módulos · 3 semanas",s:"1.er cuatrimestre",f:"Sección «¿Qué es la interculturalidad?» + marco introductorio y normativo del PDF",cons:[
+{t:"La interculturalidad como perspectiva: respeto, valoración y diálogo",
+cite:"«La interculturalidad, entendida como una perspectiva que promueve el respeto, la valoración y el diálogo entre culturas, identidades y lenguas diversas, constituye el eje central de esta propuesta.»",
+pre:"Si la interculturalidad propone respetar todas las culturas, ¿qué pasa cuando una práctica entra en conflicto con los derechos de otra persona? ¿Respetarla es aceptarla, o respetar puede obligarnos a cuestionarla?",
+teo:"La interculturalidad no es la mera constatación de que conviven culturas (eso sería multiculturalidad como dato) sino una <b>perspectiva política y pedagógica</b>: organizar la convivencia para que la coexistencia se transforme en relación, intercambio y reconocimiento recíproco. El PDF la define por tres operaciones: <b>respetar</b> (no reducir al otro a estereotipo), <b>valorar</b> (atribuir valor positivo a la diferencia, no solo tolerarla) y <b>dialogar</b> (intercambio donde ninguna voz parte como superior), en tres planos: culturas, identidades y lenguas.",
+ctx:LACK+" Argentina se reconoce constitucionalmente pluricultural: Constitución Nacional (art. 75 inc. 17), Ley 23.302, Ley 23.592 antidiscriminación y Ley 26.206; en PBA, la Ley 13.688 art. 16 citada en el PDF. El desafío territorial no es conocer culturas lejanas: es reconocer la diversidad que ya está acá.",
+loc:LACK+" Ángulo de indagación: ¿qué culturas, lenguas e identidades conviven en nuestra escuela y barrio, y cuáles tienen presencia en la web bahiense? Datos locales pendientes de confirmación del docente.",
+glo:[["Perspectiva","Un par de anteojos: no cambia lo que hay, cambia cómo lo mirás."],["Cultura","La caja de herramientas invisible de un grupo: lengua, crianza, fiestas, modos de nombrar el mundo. Está viva y cambia."],["Identidad","El combo propio de pertenencias: nadie es una sola cosa."],["Lengua","El sistema operativo de una cultura: cuando muere una lengua se pierde una manera completa de entender el mundo."],["Respeto / Valoración","El respeto es el piso (no dañar); la valoración es el techo (alegrarse de que la diferencia exista)."]],
+pra:{steps:["En una tabla de 3 columnas (culturas/identidades · lenguas · dónde las veo), registrá durante el día al menos <b>8 casos reales y concretos</b> (escuela, casa, club, redes).","Scrolleá 10 minutos sin buscar nada y contá cuántos contenidos muestran diversidad cultural visible.","Escribí un párrafo: <i>mi entorno, ¿es más diverso de lo que muestran mis redes, menos, o igual?</i>","Variante sin conectividad: registro íntegro en papel + visionado offline de un video del PDF."],cri:"Registro real y específico (no genérico) · uso de los términos cultura, identidad y lengua · sinceridad del conteo (no se evalúa que sea alto o bajo)."},
+abp:{o:"«¿Quién cuenta a Bahía Blanca en internet?» Relevamiento del relato digital de la ciudad y sus ausencias.",e:"Mapa de voces digitales locales (mural o mapa digital) + 3 conclusiones + 1 recomendación.",p:"Exposición de 5 minutos ante el curso; los mejores mapas van a cartelera o redes escolares."}},
+{t:"Interculturalidad como lineamiento transversal de la DGCyE y sus categorías",
+cite:"«La perspectiva intercultural es uno de los lineamientos transversales promovidos por la Dirección General de Cultura y Educación… atravesado por categorías como identidad, diversidad cultural, multiculturalismo, pluralismo, discriminación, racismo y sesgos, y que dialoga de manera directa con el campo de la ciudadanía digital.»",
+pre:"Si la interculturalidad es transversal a todas las materias, ¿por qué casi nunca la vemos explícitamente y termina recayendo sobre una sola efeméride? ¿La transversalidad es estar en todos lados o una forma elegante de no estar en ninguno?",
+teo:"El PDF presenta la interculturalidad como <b>lineamiento transversal</b> atravesado por siete categorías: identidad, diversidad cultural, multiculturalismo, pluralismo, discriminación, racismo y sesgos. La operación didáctica central es la <b>discriminación conceptual</b>: mostrar los bordes entre categorías pegoteadas. Multiculturalismo = coexistencia; pluralismo = diversidad que participa; discriminación = trato desigual; racismo = jerarquización por origen; sesgo = atajo que mide torcido (y que en digital se vuelve algorítmico).",
+ctx:LACK+" En Argentina, la Ley 23.592 define el marco legal contra la discriminación y la Constitución (art. 75 inc. 17) reconoce la preexistencia de los pueblos indígenas. La discriminación cotidiana opera por marcadores invisibilizados: acento, color de piel, barrio, apellido — los materiales <i>Identidad Marrón</i> y <i>Argentina No Es Blanca</i> del PDF los ponen en discusión.",
+loc:LACK+" Ángulo: ¿dónde se ven (y dónde no) estas categorías en la vida bahiense concreta? Organizaciones y experiencias locales pendientes de confirmación.",
+glo:[["Multiculturalismo","Un edificio con muchos departamentos donde cada uno vive su vida: coexisten, no necesariamente se cruzan."],["Pluralismo","Cuando además todos tienen voz en el consorcio: la diversidad participa."],["Discriminación","Tratar peor a alguien por su grupo: un portazo en la cara, o una rampa que nadie construyó."],["Racismo","Discriminación montada sobre la idea falsa de grupos superiores e inferiores."],["Sesgo","Una balanza descalibrada: no miente, mide torcido."]],
+pra:{steps:["Copiá una tabla de 7 filas (una por categoría del PDF): para cada una escribí <b>una definición tuya</b> (máx. 2 renglones) y <b>un ejemplo real</b>.","Elegí 2 casos y clasificalos: ¿discriminación, racismo o sesgo? Justificá por qué descartás las otras.","Armá un mapa conceptual con las 7 categorías conectadas (a mano, en LibreOffice Draw o diagrams.net)."],cri:"Precisión conceptual (no confundir discriminación con racismo) · ejemplos reales y no copiados · coherencia del mapa. La tabla es la primera tanda de entradas del glosario colaborativo."},
+abp:{o:"«Radiografía de la discriminación invisible»: analizar 10 contenidos digitales que el grupo consume realmente y clasificarlos con las categorías del módulo.",e:"Informe breve (1 página o carrusel de 5 láminas) con 3 hallazgos y 3 recomendaciones de consumo crítico.",p:"Puesta en común tipo ateneo; los hallazgos alimentan los debates de la Actividad 2."}},
+{t:"El enfoque de derechos: valorar las diferencias, rechazar toda jerarquización",
+cite:"«Desde un enfoque de derechos, la interculturalidad no solo valora las diferencias culturales, sino que también rechaza toda forma de jerarquización entre ellas.»",
+pre:"¿Se puede valorar la diferencia y al mismo tiempo decir que ninguna cultura vale más que otra sin caer en el «todo da lo mismo»? ¿Quién fija el piso de derechos que ninguna cultura puede atravesar?",
+teo:"El PDF ancla la interculturalidad en un <b>enfoque de derechos</b>: las diferencias se valoran dentro de un marco de derechos humanos que funciona como límite y garantía. La fórmula operativa: <b>la diferencia se protege, la jerarquía se desarma, la dignidad no se negocia</b>. Sin rechazo de la jerarquización, «valorar la diversidad» puede convivir con racismos funcionales: celebrar el folclore de un pueblo mientras se discrimina a sus miembros vivos.",
+ctx:LACK+" Pirámide argentina del enfoque de derechos: Constitución Nacional (art. 75 inc. 22, jerarquía de tratados), Convención sobre los Derechos del Niño, Ley 26.061, Ley 23.592, Ley 26.206 y Ley 13.688 art. 16 (PDF). La tensión actual es la brecha entre derecho declarado y derecho efectivo: los grupos en desventaja que lista el PDF lo demuestran.",
+loc:LACK+" Ángulo: ¿quiénes son los sujetos de derecho del enfoque intercultural en nuestra escuela y nuestra zona? Regla ética: nunca se trabaja sobre personas reales sin su consentimiento.",
+glo:[["Enfoque de derechos","Las reglas del juego que nadie puede discutir: un piso de dignidad antes de cualquier debate."],["Jerarquización","Armar un ranking de culturas como tabla de posiciones. La interculturalidad rompe el ranking."],["Sujeto de derecho","Alguien a quien le corresponden derechos por existir: no es un favor, es una titularidad."],["Relativismo","«Todo da lo mismo»: suena tolerante pero paraliza — si todo vale, también vale la injusticia."]],
+pra:{steps:["Registrá durante un día <b>6 frases o situaciones</b> que ordenen culturas, acentos o modos de hablar en un ranking.","Para cada una: ¿quién la dijo?, ¿sobre qué grupo?, ¿qué lugar del ranking le asigna?","Escribí una respuesta posible <b>desde el enfoque de derechos</b> para cada caso (desarmar sin agredir).","Cierre: explicá por qué valorar la diversidad y jerarquizarla son incompatibles."],cri:"Detección de jerarquías sutiles (no solo insultos) · calidad de las respuestas · solidez del cierre."},
+abp:{o:"«El piso de derechos en la web que usamos»: evaluar si dos plataformas de uso masivo respetan el enfoque de derechos (lenguas, normas antidiscriminación, mecanismos de denuncia).",e:"Cuadro comparativo + decálogo de 10 derechos digitales mínimos redactado por el grupo.",p:"Lectura del decálogo ante el curso y votación para elevarlo al centro de estudiantes o publicarlo en redes escolares."}},
+{t:"La interculturalidad en el ámbito educativo: saberes, lenguas y universos culturales",
+cite:"«En el ámbito educativo, esta perspectiva impulsa la interacción entre saberes, lenguas y prácticas diversas; promueve el debate sobre los discursos homogeneizantes presentes en las instituciones escolares; y fomenta la creación de espacios que reconozcan y fortalezcan los universos culturales que conviven en el aula.»",
+pre:"Si la escuela existe en parte para enseñar una cultura común, ¿puede ser al mismo tiempo intercultural sin contradecirse? ¿Qué parte de lo que la escuela llama «enseñar lo común» funciona como topadora de los universos culturales que los chicos traen a clase?",
+teo:"El PDF le asigna a la escuela un triple movimiento: <b>interacción</b> entre saberes, lenguas y prácticas (no coexistencia muda), <b>debate</b> sobre los discursos homogeneizantes y <b>creación de espacios</b> que reconozcan los universos culturales del aula. Los discursos homogeneizantes no son una materia ni un docente: son mensajes institucionales que asumen un único modo válido de ser estudiante, de hablar, de familia, de historia.",
+ctx:LACK+" La escuela argentina nació con mandato homogeneizador (Ley 1420, normalismo); el giro intercultural llega con la reforma constitucional de 1994, la modalidad de Educación Intercultural Bilingüe de la Ley 26.206 y la Ley 13.688 bonaerense. La tensión homogeneización/diversidad es constitutiva del sistema, no un defecto de alguna escuela.",
+loc:LACK+" Ángulo: auditar la propia escuela — ¿qué lenguas se escuchan en los pasillos?, ¿qué culturas aparecen en actos y carteleras? Composición del curso pendiente de confirmación.",
+glo:[["Discurso homogeneizante","Cualquier mensaje que da a entender que hay una sola forma correcta de ser alumno: el molde de una fábrica."],["Saberes","Todo lo que una persona o comunidad sabe: la receta de la abuela y la historia oral del barrio también son saberes."],["Universo cultural","El mundo entero de sentidos de una persona o grupo: no es una característica, es un mundo."],["Naturalizar","Creer que algo construido «siempre fue así»."]],
+pra:{steps:["Armá una tabla de 5 filas: actos escolares · carteleras y pasillos · lenguas que se escuchan · contenidos digitales de la escuela · formas de nombrar a las familias.","Registrá una observación por fila durante la semana y marcá: <b>[VISIBLE] / [INVISIBLE] / [NATURALIZADO]</b>.","Escribí <b>2 propuestas concretas y realizables</b> para que la escuela visibilice más diversidad (una puede ser digital)."],cri:"Observaciones concretas (no impresiones vagas) · uso de las tres categorías · viabilidad de las propuestas."},
+abp:{o:"«¿Qué escuela tenemos y qué escuela intercultural podríamos tener?» Informe de intervención con el diagnóstico de las auditorías de todo el curso.",e:"Informe con diagnóstico + 3 propuestas concretas + 1 pieza digital de campaña.",p:"Audiencia con un miembro del equipo directivo; las propuestas votadas se intentan implementar durante el año."}},
+{t:"Agencia y transformación de las desigualdades: la finalidad",
+cite:"«Su finalidad es transformar las desigualdades que limitan la capacidad de agencia de todas las personas.»",
+pre:"¿Alcanza con «reconocer» la diversidad para que algo cambie, o el reconocimiento sin transformación es apenas una forma educada de dejar todo como está? ¿Quién se beneficia con una interculturalidad que se queda en el festejo?",
+teo:"El PDF introduce un término poco habitual en documentos escolares: <b>agencia</b>, la capacidad efectiva de actuar, decidir e incidir sobre la propia vida y el mundo. La interculturalidad no busca «que todos nos llevemos bien» sino transformar las desigualdades que limitan esa capacidad. En lo digital, la agencia tiene traducción directa: no es lo mismo <i>consumir</i> contenidos que <i>producirlos</i> — el derecho a narrarse.",
+ctx:LACK+" Los perfiles y asociaciones del PDF (Adol Kogui, Bartolina XIXA, Misibamba, Identidad Marrón…) son ejemplos reales de agencia: grupos que decidieron narrarse a sí mismos en vez de esperar a ser narrados. La brecha de producción —no solo de acceso— es la frontera actual de la desigualdad digital argentina.",
+loc:LACK+" Ángulo: ¿dónde hay agencia intercultural en la zona y dónde hace falta? ¿Qué necesitarían los pibes del curso para narrar su barrio en condiciones de igualdad?",
+glo:[["Agencia","Tu capacidad real de actuar e incidir: la diferencia entre ir en el asiento de atrás y manejar."],["Derecho a narrarse","Contar tu propia historia con tu propia voz. En la web: existir en primera persona."],["Esfera pública","La conversación grande de la sociedad: lo que no entra ahí, para el mundo casi no existe."],["Reconocer para transformar","El método del PDF: primero se ve la desigualdad, después se la interviene."]],
+pra:{steps:["Releé un perfil de militancia indígena o una asociación del PDF.","Respondé: ¿qué problema identificó?, ¿qué decidió hacer en vez de quedarse mirando?, ¿qué herramientas digitales usó?","Redactá tu <b>operación mínima de agencia</b>: una acción concreta, realista y verificable para este mes.","Pegala en el mural de agencia del aula; al cierre del módulo se verifica colectivamente."],cri:"Comprensión de agencia como acción (no contemplación) · especificidad verificable de la operación · coherencia con el módulo."},
+abp:{o:"«Una campaña de agencia para nuestra escuela»: microcampaña digital que invite a la comunidad a pasar del reconocimiento a la acción sobre un problema identificado por el curso.",e:"Carpeta de campaña: concepto + 3 piezas del mismo concepto en formatos distintos + indicadores de impacto.",p:"Pitch de 5 minutos ante el curso, como una agencia; la campaña ganadora puede ser el primer borrador de la producción final de M7."}},
+{t:"La interculturalidad en el entorno digital: cuestionar los mecanismos de exclusión",
+cite:"«Si se la traslada al entorno digital, la perspectiva intercultural invita a identificar y cuestionar los mecanismos que reproducen exclusión y desigualdad en internet y las plataformas digitales.»",
+pre:"Si internet nació prometiendo que «todos íbamos a estar conectados», ¿cómo se explica que algunas voces aparezcan todo el tiempo y otras nunca? ¿La exclusión digital es un accidente que se arregla con más antenas, o un resultado que el propio diseño produce?",
+teo:"El PDF produce un desplazamiento fundamental: la interculturalidad se vuelve <b>herramienta de análisis de plataformas</b>. Mecanismo de exclusión = cualquier procedimiento (técnico, económico, simbólico) que reduce sistemáticamente la presencia o la capacidad de producción de ciertos grupos en lo digital. Tres generaciones de brecha: acceso, uso, y producción/representación — el PDF trabaja en la tercera cuando habla del derecho a narrarse.",
+ctx:LACK+" La exclusión digital argentina no es solo «no tener internet»: incluye no producir contenidos en las propias lenguas y no estar representado. El castellano rioplatense domina la producción nacional, y dentro de él las voces céntricas dominan sobre las del resto del país: también eso es exclusión.",
+loc:LACK+" Ángulo: ¿cómo se vive la exclusión digital en la propia escuela y la propia zona? Estado de conectividad escolar pendiente de confirmación.",
+glo:[["Mecanismo de exclusión","Una regla del juego que deja siempre afuera a los mismos: una cancha con escalera en la entrada."],["Brecha de acceso / conectividad / alfabetización","Tener el aparato · que la conexión llegue y sea pagable · saber usarla para algo valioso. Tres barreras apiladas."],["Desnaturalizar","Sacarle el «siempre fue así» a algo para preguntarse quién lo hizo así y a quién beneficia."]],
+pra:{steps:["Abrí tu app más usada y scrolleá 2 minutos sin buscar nada.","Registrá las primeras 10 publicaciones: ¿qué es?, ¿quién lo publicó?, ¿a quién representa?, ¿quién está ausente?","Marcá con ★ lo que parece elegido por tu historial y con ○ lo que no entendés por qué aparece.","Escribí tu hipótesis a la pregunta clave: <i>¿quién eligió que yo vea esto y con qué criterio?</i>"],cri:"Distinción entre contenido empujado por historial y contenido no explicado · calidad de la hipótesis (no se pide la respuesta correcta)."},
+abp:{o:"«Tres brechas, un mapa»: miniencuesta anónima de 5 preguntas para relevar acceso, uso y producción en la escuela, clasificadas en las tres brechas.",e:"Infografía «Las 3 brechas en nuestra escuela» + 2 conclusiones + 1 pregunta abierta para el debate.",p:"Exposición en el curso; los datos anonimizados alimentan la producción final de M7."}},
+{t:"Los seis objetivos de la perspectiva intercultural en entornos digitales",
+cite:"«Algunos de sus objetivos son: disminuir el efecto jerarquizador de la diversidad cultural, reconocer sesgos y prejuicios, ampliar las oportunidades educativas, contribuir a reducir los efectos del racismo, valorar la diversidad cultural y garantizar una ciudadanía digital situada y pertinente.»",
+pre:"De los seis objetivos del documento, ¿cuál es el más difícil de lograr desde una escuela? ¿Puede una materia de 2 módulos semanales «garantizar una ciudadanía digital situada y pertinente», o ese objetivo desborda a la escuela?",
+teo:"Los seis objetivos del PDF forman una secuencia lógica que se enseña como tal: desarmar rankings (1), autoobservación y análisis de sesgos (2), inclusión (3), nombrar el racismo por su nombre (4), construir aprecio activo (5) y el objetivo-síntesis: ciudadanía digital <b>situada</b> (en contexto real) y <b>pertinente</b> (adecuada a quienes la ejercen). Operativamente, son los <b>criterios de logro del año</b>: cada módulo debería mover al menos uno.",
+ctx:LACK+" Los seis objetivos se apoyan en compromisos que Argentina ya asumió: lucha contra la discriminación (Ley 23.592), identidad cultural de pueblos indígenas y migrantes (art. 75 inc. 17 CN, Ley 13.688 art. 16), igualdad de oportunidades educativas (Ley 26.206). El objetivo 6 conecta con el debate argentino sobre soberanía digital.",
+loc:LACK+" Ejercicio situado: reformular los seis objetivos en versión curso («en 4.º vamos a…»). La reformulación colectiva entra al glosario colaborativo.",
+glo:[["Objetivo (de política educativa)","El lugar al que se quiere llegar: una dirección que organiza todo lo demás."],["Efecto jerarquizador","Cuando la diversidad se usa para armar rankings entre culturas."],["Ciudadanía digital situada y pertinente","Ciudadanía con los pies en tu territorio y con que ver con quienes somos: de acá, no copiada."]],
+pra:{steps:["Copiá los seis objetivos del PDF, uno por renglón.","Debajo de cada uno escribí <b>una acción concreta que vos puedas hacer este trimestre</b> + <b>una evidencia</b> verificable.","Elegí el objetivo más difícil y el más urgente para tu escuela: 3 renglones de por qué para cada uno.","Entre todos, armen la versión colectiva de los seis objetivos del año."],cri:"Acciones verificables (no genéricas) · pertinencia de las evidencias · calidad de la argumentación."},
+abp:{o:"«¿Cómo se mide que una escuela se está volviendo más intercultural en lo digital?» Diseño de un índice con los seis objetivos como dimensiones.",e:"Índice de 6 dimensiones con preguntas observables y escala 0–3 + informe piloto del curso + 2 metas de mejora.",p:"Cierre del módulo: el curso unifica un índice único que se REAPLICA al final del año para medir el impacto del recorrido completo."}}
+]},
+{n:2,c:"#22d3ee",t:"Digitalización: promesas y brechas",w:"8 módulos · 4 semanas",s:"1.er cuatrimestre",f:"Secciones introductorias sobre TIC, brechas y representación + cierre del PDF",cons:[
+{t:"Las TIC y la transformación de la comunicación, el conocimiento y la ciudadanía",
+cite:"«Las Tecnologías de la Información y la Comunicación (TIC) han transformado la manera en que las personas se comunican, acceden al conocimiento y ejercen su ciudadanía.»",
+pre:"Si las TIC transformaron la manera de ejercer la ciudadanía, ¿una persona sin conexión es hoy una ciudadana de segunda? ¿Internet es un servicio más o se volvió una condición para ejercer derechos básicos?",
+teo:"El PDF abre el diagnóstico con una afirmación en tres dimensiones: comunicación, acceso al conocimiento y ciudadanía. La palabra clave es <b>«transformado»</b>, que no dice «mejorado»: la transformación tiene ganadores y perdedores. La tríada para analizarla: quién diseña, quién regula y quién accede.",
+ctx:LACK+" Argentina intervino activamente en infraestructura digital: ARSAT (Ley 26.966) con sus satélites y la Red Federal de Fibra Óptica; Ley 27.078 «Argentina Digital» que declara las TIC servicio público esencial y estratégico; políticas de equipamiento como Conectar Igualdad (con su sistema operativo libre Huayra). Las brechas no son naturales: se corrigen —o no— con decisiones políticas.",
+loc:LACK+" Ángulo: ¿cómo entraron las TIC a la vida bahiense y quiénes quedaron afuera? Historia local de la conectividad y rol de cooperativas regionales pendientes de confirmación.",
+glo:[["TIC","El kit completo con que producís, guardás y compartís información: no es una cosa, es un ecosistema."],["Digitalización","Lo que antes se hacía a mano pasando a hacerse con tecnología digital: el trámite, la foto, la charla, la tarea."],["Ciudadanía digital","Ejercer tus derechos también en línea: si el Estado tramita online y no tenés conexión, tu ciudadanía está en pausa."],["Determinismo tecnológico","La idea falsa de que la tecnología decide sola: la diseñan personas, la regulan Estados, la usan sociedades."]],
+pra:{steps:["Durante un día, registrá <b>10 actividades</b> hechas con TIC: comunicar, conocer, participar.","Al lado de cada una: ¿qué pasaría si esta tecnología no existiera? (¿cómo se haría?, ¿se podría?, ¿cuánto tardaría?).","Clasificá tus registros en las tres dimensiones del PDF.","Párrafo de cierre: ¿cuál de las tres transformaciones te parece la más profunda y por qué?"],cri:"Autenticidad del registro · calidad de la hipótesis «sin TIC» · precisión en la clasificación."},
+abp:{o:"«¿Cómo se comunica Bahía Blanca y quiénes quedan afuera?» Relevamiento del ecosistema de comunicación digital de la zona.",e:"Mapa de 15+ canales locales + tabla de ausencias + 3 conclusiones.",p:"Puesta en común; los mapas se comparan entre grupos y se unifica un diagnóstico del curso para M7."}},
+{t:"La promesa democratizadora y las tres brechas",
+cite:"«Sin embargo, la promesa de una digitalización democratizadora convive con profundas brechas de acceso, conectividad y alfabetización digital.»",
+pre:"Si cada año hay más personas conectadas, ¿por qué las brechas no se cierran solas? ¿Estar conectado y estar incluido digitalmente son dos cosas distintas que nos acostumbramos a confundir?",
+teo:"El PDF estructura el diagnóstico como tensión <b>promesa vs. realidad</b>, con tres capas apiladas: <b>acceso</b> (dispositivo), <b>conectividad</b> (calidad, estabilidad, costo) y <b>alfabetización digital</b> (uso valioso). Alguien puede tener dispositivo con mala conexión y sin formación productiva: capas 2 y 3 abiertas. La promesa solo se cumple si las tres están cerradas.",
+ctx:LACK+" El mapa argentino: Conectar Igualdad para la capa de acceso (con continuidad oscilante), ARSAT y planes federales para conectividad de zonas no rentables, CABASE impulsando puntos de intercambio de tráfico, y el sistema educativo como principal instrumento de cierre de la capa de alfabetización — exactamente la razón por la que NTICx existe.",
+loc:LACK+" Ángulo: auditar las tres brechas en la propia escuela y el propio barrio con datos reales del curso. Estado del wifi, laboratorio y características de los barrios pendientes de confirmación.",
+glo:[["Promesa democratizadora","La idea de que internet iba a igualar las chances: como prometer entrada gratis al estadio cuando algunos no tienen cómo llegar."],["Brecha de acceso","Tener o no el aparato: la diferencia entre tener bicicleta y no tenerla."],["Brecha de conectividad","Que la conexión llegue, sea estable y la puedas pagar: tener bici con ruta rota o peaje carísimo."],["Brecha de alfabetización digital","Saber usar la tecnología para cosas valiosas: tener bici y ruta, pero que nadie te haya enseñado a andar."],["Servicio público esencial","Algo tan importante que el Estado se compromete a que nadie quede afuera."]],
+pra:{steps:["Completá una ficha personal honesta (privada): dispositivo propio/compartido, tipo de conexión, datos que se agotan, usos.","Clasificá tu situación en las tres brechas del PDF.","Puesta en común anonimizada: papelitos + gráfico de barras del curso.","Conclusión de 4 renglones: ¿la promesa democratizadora se cumple en este curso?, ¿en qué brecha está el mayor problema?"],cri:"Distinción correcta de las tres brechas · honestidad analítica (la conclusión puede ser positiva si los datos lo muestran)."},
+abp:{o:"«Informe de conectividad: nuestra escuela, nuestro barrio» — diagnóstico documentado de las tres brechas para la comunidad educativa.",e:"Informe de 2 páginas con encuesta anónima, 3 gráficos, 3 hallazgos y 2 recomendaciones realistas.",p:"Exposición ante el curso y, si la escuela lo autoriza, ante un directivo. Insumo directo de la producción final de M7."}},
+{t:"La evidencia: los informes del BID, la CEPAL y el Banco Mundial",
+cite:"«Diversos estudios de organismos como el Banco Interamericano de Desarrollo (BID), la Comisión Económica para América Latina y el Caribe (CEPAL) y el Banco Mundial (BM) advierten que mujeres, personas mayores, personas con discapacidad, comunidades indígenas, migrantes y habitantes de zonas rurales suelen estar en desventaja frente al uso y la producción de contenidos digitales.»",
+pre:"¿Quién cuenta a los desconectados? ¿Qué pasa con quienes ni siquiera entran en las estadísticas? ¿No hay algo paradójico en usar datos de internet para medir quién no tiene internet?",
+teo:"El PDF apoya el diagnóstico en evidencia de tres organismos: el <b>BID</b> (desarrollo de América Latina), la <b>CEPAL</b> (análisis estructural regional de Naciones Unidas) y el <b>Banco Mundial</b> (datos comparados globales). Doble aprendizaje: la desigualdad está <b>documentada</b>, y las afirmaciones fuertes se sostienen con fuentes identificables. El sesgo de cobertura: los más excluidos suelen ser los menos medidos — la misma lógica de invisibilización que el módulo denuncia.",
+ctx:LACK+" Argentina produce su propia evidencia: ENACOM publica indicadores de acceso; el INDEC releva acceso a tecnologías en hogares. El patrón confirma el PDF: menor conectividad de calidad en el norte del país y zonas rurales, y brechas por edad y nivel educativo.",
+loc:LACK+" Ángulo: aterrizar los datos de los organismos en el territorio inmediato: ¿qué dicen los números sobre la zona? Datos distritales pendientes de confirmación.",
+glo:[["Organismo internacional","Un consorcio de países que estudia y mide temas comunes: cada uno aporta y todos usan la información."],["Evidencia","Datos verificables que sostienen una afirmación: no es «me parece», es «los datos muestran»."],["Desagregación","Separar un promedio para ver qué esconde: el «80% conectados» puede ocultar que en un barrio están todos y en otro casi nadie."],["Sesgo de cobertura","Medir dejando afuera justo a los que más necesitaría contar: una encuesta online sobre quién no tiene internet."]],
+pra:{steps:["Elegí una afirmación del módulo (ej.: «los adultos mayores están en desventaja digital»).","Buscá al menos <b>dos fuentes distintas</b> (sitios oficiales, notas, Continuemos Estudiando).","Ficha de verificación por fuente: ¿quién publica?, ¿cuándo?, ¿qué dato concreto da?, ¿cómo lo midió?","Compará: ¿coinciden?, ¿se contradicen?, ¿cuál es más confiable?","Reflexión final: ¿qué aprendiste del tema y qué sobre cómo se produce la información?"],cri:"Identificación de autor y fecha · calidad de la comparación · distinción entre qué se sabe y cómo se sabe."},
+abp:{o:"«Una estadística que cuente a todos»: diseñar un instrumento de medición inclusivo de la brecha digital, atacando el sesgo de cobertura (¿cómo se encuesta a quien no está en internet?).",e:"Instrumento en tres versiones (digital + papel + entrevista oral) + informe de la prueba piloto con 3 perfiles distintos.",p:"Demostración ante el curso de los tres formatos; puede ser el instrumento del relevamiento escolar."}},
+{t:"Los seis grupos en desventaja digital",
+cite:"«…mujeres, personas mayores, personas con discapacidad, comunidades indígenas, migrantes y habitantes de zonas rurales suelen estar en desventaja frente al uso y la producción de contenidos digitales.»",
+pre:"¿Es casualidad que la lista de grupos en desventaja digital sea casi idéntica a la lista de grupos históricamente excluidos de otras esferas? ¿La tecnología reproduce las desigualdades que ya existían, o agrega desigualdades nuevas por su cuenta?",
+teo:"Cada grupo del PDF tiene barreras propias que hay que enseñar separadas: <b>mujeres</b> (menos participación en producción tecnológica, más violencia digital); <b>personas mayores</b> (interfaces no pensadas para ellas); <b>personas con discapacidad</b> (accesibilidad); <b>comunidades indígenas</b> (conectividad + ausencia de contenidos en lenguas originarias); <b>migrantes</b> (idioma, trámites, estereotipos); <b>rurales</b> (infraestructura). La desventaja no es la misma para todos: tratarla como uniforme es otra forma de invisibilizar. Interseccionalidad: las desventajas se apilan.",
+ctx:LACK+" Marcos argentinos por grupo: Ley 26.378 (Convención sobre discapacidad), art. 75 inc. 17 y Ley 23.302 (pueblos indígenas), Ley 25.871 (migraciones), ARSAT para zonas rurales. Hilo común: la respuesta no fue solo «dar acceso» sino reconocer derechos — la misma lógica del enfoque de derechos del PDF.",
+loc:LACK+" Ángulo: identificar con evidencia y sin estereotipar cómo viven las brechas los seis grupos en la zona. Presencias locales pendientes de confirmación.",
+glo:[["Grupo en desventaja","Un grupo que encuentra más barreras para lo mismo: la desventaja no está en el grupo, está en cómo está armado el mundo."],["Barrera de accesibilidad","Un obstáculo de diseño: una web sin subtítulos para quien no escucha."],["Interfaz","La cara visible de una app: botones, letras, menús. Toda interfaz fue decidida por alguien."],["Interseccionalidad","Las desventajas se suman: una mujer mayor migrante rural no carga una mochila, carga cuatro."]],
+pra:{steps:["Elegí <b>uno</b> de los seis grupos del PDF.","Reconstruí su <b>perfil de la brecha</b>: ¿qué barrera específica tiene?, ¿desde cuándo?, ¿quién podría resolverla?","Diseñá <b>una mejora concreta</b> que la achique (función de app, política pública, campaña escolar).","Inventá una analogía cotidiana que explique la barrera.","Publicá la ficha en el glosario colaborativo."],cri:"Especificidad (no generalidades) · fuente citada · mejora concreta y no un deseo."},
+abp:{o:"«Seis grupos, una campaña»: cada grupo adopta uno de los seis grupos del PDF y produce una pieza que visibilice su brecha específica en la zona, con propuesta de solución.",e:"Pieza de campaña + ficha técnica con fuentes y decisiones de diseño.",p:"Muestra de las seis campañas en el aula; las piezas candidatas a publicarse pasan por la lista de publicación responsable."}},
+{t:"De la limitación de acceso a la reducción de la representación: el derecho a narrarse",
+cite:"«Esta desigualdad no solo limita su acceso, sino que reduce su representación en los entornos digitales, afectando el derecho a narrarse, expresarse y ser reconocidos en la esfera pública.»",
+pre:"¿Es lo mismo poder ver contenido que poder producirlo? Si un grupo puede mirar todo lo que se publica sobre él pero no puede publicar nada sobre sí mismo, ¿eso es inclusión digital o una forma nueva —más elegante— de censura?",
+teo:"El PDF da un salto de calidad: la desigualdad <b>limita el acceso</b> y, más profundo, <b>reduce la representación</b>: aunque entre, no aparezco; y cuando aparezco, otros me narran. Cadena causal: menos acceso → menos producción propia → menos representación → otros definen quién sos → tu voz no cuenta en la conversación pública. Los perfiles y asociaciones del PDF son ejemplos de grupos que decidieron narrarse a sí mismos.",
+ctx:LACK+" Argentina tiene antecedentes de representación no mercantil: la legislación audiovisual reconoció tres sectores (público, privado y sin fines de lucro, incluidos medios de pueblos originarios); universidades públicas y medios públicos producen contenidos que no dependen del mercado.",
+loc:LACK+" Ángulo: ¿quién narra a Bahía Blanca y su región, y quién no tiene voz en ese relato? Medios y creadores locales pendientes de confirmación.",
+glo:[["Representación","Quién aparece en el relato público y cómo: no es solo estar, es cómo te cuentan."],["Esfera pública","La gran conversación de una sociedad: medios, redes, plaza, escuela."],["Autodeterminación narrativa","Cuando un grupo se cuenta a sí mismo en vez de esperar a ser contado."],["Publicar vs. ser visto","Publicar es subir algo; ser visto es que llegue. Gritar en una habitación vacía no es hablar."]],
+pra:{steps:["Hacé tres búsquedas: el nombre de tu ciudad, el de tu barrio y «historia de [tu zona]».","Tabla por página de resultados: ¿quién publicó?, ¿qué cuenta?, ¿quiénes aparecen?, ¿quiénes faltan?","Identificá al menos <b>dos ausencias</b>: grupos que viven en la zona pero no aparecen.","Diseñá en 5 renglones el primer borrador de una publicación propia que cuente algo que hoy no aparece."],cri:"Distinción entre quién publica · calidad de las ausencias detectadas · coherencia del borrador con lo ausente."},
+abp:{o:"«Narrar lo que falta»: producir una pieza (posteo, reel, carrusel o cápsula de pódcast) que narre con fuentes verificadas y trato respetuoso un aspecto de la zona ausente de la web local.",e:"Pieza final + bitácora de decisiones (tema, fuentes, cuidados).",p:"Muestra interna; las piezas seleccionadas pasan a redes escolares con acompañamiento docente y pueden ser semilla de la producción de M7."}},
+{t:"Digitalización y desigualdad estructural: relaciones de poder en las tecnologías",
+cite:"«Las tecnologías digitales, lejos de ser espacios neutrales, están atravesadas por relaciones de poder, desigualdades estructurales y lógicas de representación que pueden invisibilizar o subalternizar a determinadas culturas, lenguas e identidades.»",
+pre:"Si las tecnologías están atravesadas por relaciones de poder, ¿quién diseñó las herramientas que usamos todos los días, desde qué país, con qué intereses? ¿Qué le pasa a Argentina cuando toda su conversación pública ocurre en plataformas diseñadas por otros?",
+teo:"El cierre del PDF consolida la tesis del año en tres dimensiones: <b>relaciones de poder</b> (dueños, reglas y diseños que favorecen a algunos), <b>desigualdades estructurales</b> (las brechas previas que la tecnología recibe y amplifica) y <b>lógicas de representación</b> (criterios que invisibilizan o subalternizan). Subalternizar es más fuerte que ignorar: es mostrar en posición de inferioridad.",
+ctx:LACK+" Versiones argentinas del debate: ARSAT como decisión de no depender de satélites extranjeros (Ley 26.966); Ley 27.078 con las TIC como servicio público esencial; la discusión software libre/privativo en el Estado (Huayra); las universidades públicas como usinas de formación tecnológica.",
+loc:LACK+" Ángulo: ¿dónde se ve el poder tecnológico en la zona y quién lo ejerce? Panorama de proveedores, infraestructura del puerto y el Polo Petroquímico y ecosistema de software pendientes de confirmación.",
+glo:[["Relaciones de poder","Quién decide, quién gana y quién obedece: en lo digital, quién es dueño, quién fija reglas, quién puede apelar."],["Desigualdad estructural","Desigualdad que viene de la estructura, no del azar: una escalera sin rampa."],["Subalternizar","Mostrar a un grupo en posición de menos, incluso cuando lo mostrás."],["Soberanía tecnológica","La capacidad de un país de decidir sobre sus propias tecnologías: infraestructura, datos, reglas."],["Software libre","Una receta pública: cualquiera puede usarla, estudiarla, mejorarla y pasarla."]],
+pra:{steps:["Listá las <b>5 apps o plataformas</b> que más usás en una semana.","Para cada una: ¿qué empresa la posee?, ¿de qué país?, ¿cómo gana plata?","Tabla: ¿cuántas pertenecen a empresas del mismo país?, ¿cuántas son públicas, cooperativas o libres?","Párrafo: ¿qué significa que tu conversación cotidiana ocurra en herramientas de tan pocas empresas?","Buscá <b>una alternativa</b> (app libre, cooperativa, medio comunitario) y describila."],cri:"Precisión de la investigación con fuente · profundidad del análisis · pertinencia de la alternativa."},
+abp:{o:"«¿Qué tecnología es nuestra?» Mapa colectivo de la autonomía tecnológica en tres capas: global (plataformas extranjeras), nacional (ARSAT, universidades, Estado) y local (proveedores y emprendimientos de la zona).",e:"Mapa de tres capas con fuentes verificables (lo no verificable se marca «dato a confirmar») + 3 conclusiones + 1 acción escolar de soberanía tecnológica.",p:"Cierre del Módulo 2: cada grupo presenta su capa; la acción propuesta se vota y se intenta implementar durante el año."}}
+]},
+{n:3,c:"#fbbf24",t:"La escuela y la interculturalidad como política",w:"6 módulos · 3 semanas",s:"Cierre del 1.er cuatrimestre",f:"Sección introductoria sobre la escuela estratégica + párrafo normativo + frase sobre política social/educativa/digital + cierre del PDF",cons:[
+{t:"La escuela como lugar estratégico: lenguas, tradiciones y formas de habitar el mundo",
+cite:"«En este contexto, la escuela se vuelve un lugar estratégico para abordar la interculturalidad también en clave digital. Allí convergen múltiples lenguas, tradiciones y formas de habitar el mundo que muchas veces son invisibilizadas o naturalizadas.»",
+pre:"Si la escuela es el lugar donde convergen múltiples culturas, ¿por qué es al mismo tiempo una de las instituciones que más trabajó históricamente por homogeneizarlas? ¿La escuela es el lugar donde la diversidad se encuentra, o donde aprende a esconderse?",
+teo:"La escuela es <b>lugar estratégico</b> porque lo que pasa ahí se multiplica: reúne durante años a personas de orígenes distintos, y es el único espacio donde esa convergencia es obligatoria y prolongada. Tres planos de diversidad: <b>lenguas</b>, <b>tradiciones</b> y <b>formas de habitar el mundo</b>. Dos operaciones que hay que distinguir: lo <b>invisibilizado</b> ni siquiera entra al aula; lo <b>naturalizado</b> entra pero despojado de su valor cultural.",
+ctx:LACK+" La escuela argentina nació con mandato homogeneizador (ley 1420, normalismo) sobre una población diversa; el giro llega con la reforma constitucional de 1994, la modalidad EIB de la Ley 26.206 y la Ley 13.688 bonaerense. En las aulas bonaerenses conviven familias de origen boliviano, paraguayo, peruano, venezolano y de provincias del norte, con lenguas como quechua, aymara y guaraní vivas en muchos hogares.",
+loc:LACK+" Ángulo: auditar la propia escuela como lugar de convergencia. Composición cultural y lingüística pendiente de confirmación (siempre de manera voluntaria y anonimizada).",
+glo:[["Lugar estratégico","Un punto donde lo que hacés se multiplica."],["Convergencia","Caminos distintos que llegan al mismo punto: culturas que afuera tal vez nunca se cruzarían."],["Formas de habitar el mundo","La manera completa en que una comunidad vive: no es un dato, es un mundo entero."],["«Tratamos a todos igual»","Frase que suena justa y hay que interrogar: ¿dar lo mismo a todos o a cada uno lo que necesita?"]],
+pra:{steps:["Cada estudiante completa una <b>tarjeta anónima</b> con hasta 4 datos que quiera compartir (procedencia familiar, lenguas de casa, tradiciones, festejos). Lo que no quiera compartir, no se comparte.","El docente recoge y mezcla; se leen sin atribución y se arma el <b>inventario colectivo</b>: ¿cuántas procedencias, lenguas, tradiciones?","Párrafo aplicando las dos categorías del PDF: ¿qué suele invisibilizarse?, ¿qué se naturaliza?"],cri:"Participación respetuosa (anonimato, sin burlas) · párrafo con las dos categorías bien aplicadas. Se evalúa comprensión, no cantidad de datos aportados."},
+abp:{o:"«¿Qué diversidad hay en esta escuela que la escuela todavía no sabe que tiene?» Mapa cultural anonimizado de la escuela con protocolo ético.",e:"Mapa cultural + protocolo ético escrito + 3 conclusiones y 2 recomendaciones.",p:"Exposición al curso y entrega al equipo directivo si la escuela lo autoriza. Insumo institucional y evidencia del módulo."}},
+{t:"Promover educación intercultural: reconocer, valorar y problematizar",
+cite:"«Promover una educación intercultural implica, entre otras cosas, habilitar espacios para reconocer, valorar y problematizar estas presencias desde una mirada crítica sobre lo digital.»",
+pre:"¿Cómo se problematiza una cultura sin faltarle el respeto, y cómo se respeta una práctica sin renunciar a preguntarse por sus efectos? ¿Quién traza la línea entre problematizar y atacar?",
+teo:"Tres operaciones simultáneas: <b>reconocer</b> (ver y nombrar), <b>valorar</b> (atribuir valor positivo) y <b>problematizar</b> (someter a pregunta crítica), desde una mirada crítica sobre lo digital. La clave es <b>habilitar espacios</b>: condiciones de tiempo, palabra y confianza. Tres reglas de aula: se problematizan ideas y prácticas, nunca personas; toda problematización se hace con fuentes; quien trae su experiencia decide hasta dónde contarla.",
+ctx:LACK+" La Ley 26.206 (modalidad EIB), la Ley 13.688 art. 16 y la Ley 23.592 fijan el marco: la crítica tiene un límite legal, la discriminación. En los canales digitales de la escuela, qué diversidad se muestra es una decisión pedagógica, no un detalle técnico.",
+loc:LACK+" Ángulo: ¿qué espacios interculturales tiene ya la escuela y cuáles habría que habilitar? Efemérides y proyectos existentes pendientes de confirmación.",
+glo:[["Reconocer","Ver y nombrar: que lo que existe cuente como existente."],["Problematizar","Hacer preguntas sobre algo que parecía cerrado: no es atacar, es preguntar cómo funciona."],["Habilitar espacios","Crear las condiciones para que algo pueda pasar: nadie está obligado, pero hay lugar."],["Reglas de palabra","Se critican ideas, no personas; se escucha para entender; cada cual decide hasta dónde contar."]],
+pra:{steps:["Elegí <b>tres contenidos digitales</b> que muestren diversidad cultural (del archivo del PDF o propuestos).","Para cada uno aplicá los tres verbos: ¿qué presencia muestra? (reconocer), ¿qué rescato? (valorar), ¿qué pregunta le hago? (problematizar).","Redactá tu <b>regla de oro de la problematización</b>: ¿cómo se problematiza sin faltar el respeto?"],cri:"Las tres operaciones diferenciadas · problematización como pregunta genuina y no descalificación · calidad de la regla de oro."},
+abp:{o:"«Protocolo de aula intercultural»: redactar las reglas de conversación del curso para hablar de diversidad sin daño y sin silencio.",e:"Protocolo de 8–10 reglas + prueba contra 3 situaciones hipotéticas + fundamentación.",p:"Asamblea de aprobación; queda afichado en el aula y rige los debates de M4 y M7."}},
+{t:"El marco normativo: Constitución provincial y Ley 13.688",
+cite:"«La provincia de Buenos Aires, a través de su Constitución y de la Ley Provincial de Educación 13688, reconoce el valor de la diversidad cultural como un principio educativo fundamental.»",
+pre:"¿Alcanza con que una ley diga que la diversidad cultural es un «principio educativo fundamental» para que las aulas cambien? ¿La ley es una herramienta de transformación o una forma elegante de declarar que el problema ya está resuelto?",
+teo:"Dos normas bonaerenses: la <b>Constitución provincial</b> (norma fundacional que organiza poderes y reconoce derechos) y la <b>Ley 13.688</b> (ordena el sistema educativo: niveles, fines, principios). El PDF toma de esta última su <b>artículo 16</b>. Doble operación didáctica: enseñar qué lugar ocupa cada norma en la jerarquía normativa (Constitución → ley → resoluciones → prácticas) y enseñar a leer una ley: qué manda, a quién manda, con qué palabras. Leer la ley que funda la propia escolaridad es un ejercicio de ciudadanía.",
+ctx:LACK+" La Ley 13.688 (2006) se sancionó en sintonía con la Ley 26.206 del mismo año. El apilamiento completo: Constitución Nacional (art. 75 inc. 17) → leyes nacionales (26.206, 23.302, 23.592, 25.871) → Constitución y Ley 13.688 → resoluciones DGCyE (como la 1236/23). El derecho a la educación intercultural no depende de la buena voluntad de nadie.",
+loc:LACK+" Ángulo: ¿cómo llega la ley a esta escuela concreta? ¿El acuerdo institucional de convivencia menciona la diversidad cultural?",
+glo:[["Constitución","La ley madre: organiza el Estado y reconoce derechos básicos."],["Fin educativo","Un objetivo oficial que la escuela no puede no perseguir: la interculturalidad no es un adorno."],["Jerarquía normativa","Las normas tienen rango, como una escalera: cada escalón se apoya en el de arriba."],["Exigibilidad","La posibilidad real de reclamar un derecho: sin reclamo posible es promesa, con él es herramienta."]],
+pra:{steps:["Leé el texto del <b>art. 16 de la Ley 13.688</b> tal como lo cita el PDF (y el art. 75 inc. 17 de la Constitución Nacional si hay material).","Subrayá: qué manda · a quiénes protege · qué garantiza.","Tabla comparativa Constitución Nacional / Ley 13.688: ¿qué reconoce cada una?, ¿qué palabras se repiten?","Traducí el artículo 16 en <b>un solo tuit</b> (máx. 280 caracteres) sin perder lo esencial.","Cierre: ¿qué parte del artículo te parece más difícil de cumplir en una escuela real y por qué?"],cri:"Precisión de lectura · fidelidad de la traducción (el tuit no puede decir algo que la ley no dice) · sinceridad del cierre."},
+abp:{o:"«La ley en criollo»: campaña que explique el marco normativo en lenguaje accesible para estudiantes, familias y docentes.",e:"3 piezas (redes escolares, cartelera, lectura en acto o reunión) + ficha de exactitud jurídica.",p:"Lanzamiento ante el curso y difusión real por canales escolares si se autoriza."}},
+{t:"El artículo 16: lengua e identidad de Pueblos Originarios y comunidades migrantes",
+cite:"«Esta última, en su artículo 16, establece como uno de los fines de la educación la promoción de la interculturalidad “para garantizar a los Pueblos Originarios y las comunidades migrantes el respeto a su lengua y a su identidad cultural”.»",
+pre:"¿Por qué el artículo nombra específicamente a Pueblos Originarios y comunidades migrantes en vez de decir «todas las personas»? ¿Nombrar es proteger o encerrar? Y al revés: si una escuela los trata exactamente igual que a todos los demás, ¿cumple la ley o la incumple?",
+teo:"El artículo hace tres cosas: convierte la interculturalidad en <b>fin educativo</b> (no proyecto optativo), la define por su <b>finalidad de garantía</b> (no diálogo abstracto) y <b>nombra a los sujetos y los bienes</b>: Pueblos Originarios y comunidades migrantes; su lengua y su identidad cultural. Nombrar no es encerrar: es reparar. Y el bien protegido —lengua e identidad— es el mismo que la web puede dañar (M2 y M4) y que la producción de M7 va a defender.",
+ctx:LACK+" El artículo se inscribe en una historia larga: la escuela argentina fue máquina de castellanización; el reconocimiento del derecho a la lengua llega con la reforma de 1994, el Convenio 169 de la OIT (Ley 24.071) y las leyes de 2006. En el país se hablan entre 15 y 20 lenguas originarias, varias en situación crítica; una lengua que no existe en internet está un poco más cerca de desaparecer.",
+loc:LACK+" Ángulo: ¿cómo se garantiza (o no) el respeto a la lengua y la identidad cultural en la zona? Presencia de hablantes y experiencias de enseñanza de lenguas pendientes de confirmación.",
+glo:[["Garantizar","Hacerse cargo de que algo ocurra: prometer es decir, garantizar es asegurar y responder si no se cumple."],["Pueblos Originarios","Los pueblos que habitaban el territorio antes del Estado argentino y conservan sus instituciones culturales: no son pasado, son presente."],["Lengua como derecho","Hablar la propia lengua no es un gusto privado: es un derecho que el sistema educativo tiene que sostener."]],
+pra:{steps:["Analizá <b>tres situaciones</b>: (a) escuela que prohíbe otra lengua en el recreo; (b) escuela que no registra ninguna fecha de las comunidades del aula; (c) escuela que invita a una familia migrante y publica su historia con consentimiento.","Para cada una: ¿cumple o incumple el art. 16?, ¿qué parte toca?","Inventá <b>una cuarta situación</b> donde el artículo se cumpla de una manera que todavía no exista en tu escuela."],cri:"Precisión normativa (distinguir lengua de identidad) · fundamentación de cumplimiento/incumplimiento · creatividad realista."},
+abp:{o:"«Plan lengua e identidad»: medidas concretas, realistas y fundamentadas en el artículo para garantizar el respeto a la lengua y la identidad cultural en la escuela.",e:"Plan escrito: diagnóstico (con el inventario de 3.1) + 3–5 medidas con fundamentación normativa + cronograma.",p:"Presentación al equipo directivo; las medidas votadas se intentan implementar durante el año."}},
+{t:"La interculturalidad como política social, educativa y también digital",
+cite:"«A continuación, se presentan algunas orientaciones para abordar la diversidad cultural en el espacio escolar, considerando la interculturalidad como una política social, educativa y también digital.»",
+pre:"¿Qué significa exactamente que la interculturalidad sea «también digital»? ¿Puede el Estado hacer política intercultural en plataformas que pertenecen a empresas privadas de otros países?",
+teo:"Tres dimensiones diferenciadas y conectadas: <b>política social</b> (convivencia, migraciones, reconocimiento de comunidades), <b>política educativa</b> (el art. 16 y la práctica de aula) y <b>política digital</b> (decisiones públicas sobre conectividad, plataformas, contenidos y ciudadanía digital). El «también» es el dato político: si el Estado no interviene en lo digital, la interculturalidad queda a mitad de camino.",
+ctx:LACK+" Ejemplos argentinos por dimensión: social (art. 75 inc. 17, Ley 23.302, Ley 25.871); educativa (Ley 26.206, Ley 13.688, Conectar Igualdad); digital (Ley 27.078, ARSAT, ENACOM, plataformas estatales como Continuemos Estudiando). Ejercicio del curso: evaluar cada política con la vara de los seis objetivos del Contenido 1.7.",
+loc:LACK+" Ángulo: ¿qué políticas de las tres dimensiones llegan efectivamente a la zona? Programas vigentes en el distrito pendientes de confirmación.",
+glo:[["Política pública","Un plan del Estado para resolver un problema de todos: objetivos, recursos y responsables."],["Política digital","Políticas sobre conectividad, plataformas, datos, contenidos públicos y ciudadanía digital."],["Plataforma estatal","Un espacio digital público donde las reglas las pone el Estado, no una empresa."]],
+pra:{steps:["Completá una tabla de 3 filas (social, educativa, digital) con <b>una política argentina real por fila</b>.","Para cada una: ¿qué problema resuelve?, ¿a quiénes alcanza?, ¿tiene que ver con la interculturalidad y cómo?","Evaluala con los seis objetivos del PDF: ¿contribuye a alguno?, ¿a cuál?","Balance: ¿la Argentina tiene políticas interculturales digitales suficientes, escasas o desconocidas para vos?"],cri:"Clasificación correcta · uso efectivo de los seis objetivos como vara · honestidad del balance."},
+abp:{o:"«Una política intercultural digital para nuestra escuela»: redactar un proyecto con diagnóstico, medidas y fundamentación en el material del PDF.",e:"Proyecto de 2 páginas: diagnóstico + 3 medidas (una por dimensión) + fundamentación citando el PDF + indicadores de éxito.",p:"Presentación ante el curso; el mejor se eleva formalmente (centro de estudiantes, directivos)."},},
+{t:"El rol clave de la escuela: encuentro, diálogo y construcción colectiva",
+cite:"«Frente a ello, la escuela tiene un rol clave: favorecer la reflexión crítica, la inclusión y el reconocimiento de la diversidad cultural en todos sus formatos y manifestaciones.»",
+pre:"¿Qué pasa cuando la escuela que tiene que favorecer la inclusión es ella misma un lugar de exclusión? ¿La escuela puede enseñar reconocimiento mientras produce sus propias formas de desconocimiento?",
+teo:"El cierre del PDF asigna tres tareas: <b>reflexión crítica</b>, <b>inclusión</b> y <b>reconocimiento</b> «en todos sus formatos y manifestaciones», y agrega que trabajar estos temas <b>fortalece a la propia escuela</b> como espacio de encuentro, diálogo y construcción colectiva del conocimiento: la interculturalidad no es un gasto del currículum, es una mejora institucional.",
+ctx:LACK+" La secundaria argentina pasó de institución selectiva a institución de derecho (obligatoriedad de la Ley 26.206); los instrumentos bonaerenses de acompañamiento de trayectorias (RITE, intensificación, Res. 587/11, 1480/11 y 1236/23) son la traducción administrativa de ese mandato. La inclusión digital de los estudiantes es condición de su inclusión escolar plena.",
+loc:LACK+" Ángulo: autoevaluación honesta de la propia escuela como espacio de encuentro. Espacios de escucha existentes pendientes de confirmación.",
+glo:[["Inclusión","Que nadie quede afuera: no es solo entrar, es pertenecer."],["Espacio de encuentro","Un lugar donde gente distinta puede estar junta sin tener que volverse igual."],["Construcción colectiva del conocimiento","Aprender entre todos: el glosario colaborativo del año es exactamente eso."],["Trayectoria educativa","El recorrido real de cada estudiante: el sistema la acompaña con TEA/TEP/TED en vez de solo aprobar/reprobar."]],
+pra:{steps:["Tabla de 3 columnas (reflexión crítica / inclusión / reconocimiento): para cada una, <b>una situación donde se cumple</b> y <b>una donde falta</b> en tu escuela (sin nombres).","Puesta en común anonimizada: <b>semáforo institucional</b> verde/amarillo/rojo por columna.","Una propuesta concreta por cada amarillo o rojo: ¿qué habría que hacer para subir un color?"],cri:"Honestidad del diagnóstico · situaciones descriptivas · viabilidad de las propuestas. El semáforo se guarda y se retoma en noviembre para comparar."},
+abp:{o:"«Manifiesto: la escuela que queremos ser» — documento colectivo del curso con diagnóstico honesto (el semáforo), horizonte y compromisos verificables.",e:"Manifiesto escrito + pieza digital + agenda de verificación de compromisos.",p:"Lectura pública en el cierre del módulo y del 1.er cuatrimestre; el manifiesto es el texto de referencia de la evaluación parcial integradora."}}
+]},
+{n:4,c:"#f472b6",t:"Algoritmos y burbujas de información",w:"10 módulos · 5 semanas",s:"Inicio del 2.º cuatrimestre",f:"Sección «El rol de la escuela frente a los algoritmos y las burbujas de información»",cons:[
+{t:"El mito de la búsqueda universal",
+cite:"«Cuando se realiza una búsqueda en Google u otros motores, se suele asumir que los resultados son iguales para todas las personas.»",
+pre:"Si dos personas escriben exactamente la misma palabra en el mismo buscador y obtienen resultados distintos, ¿existió alguna vez «la» respuesta? ¿Qué pasa con la posibilidad de discutir sobre un mundo común si cada uno vive en su propia versión de la realidad?",
+teo:"El PDF identifica un supuesto del sentido común —el buscador como ventana objetiva igual para todos— y lo desmonta con una palabra: <b>personalización</b>. El buscador no devuelve «los resultados»: devuelve resultados <i>para alguien</i>, calculados con señales que cada usuario no controla. La operación didáctica es hacer visible el supuesto: nadie puede cuestionar lo que no sabe que asume. Por eso el módulo arranca con el experimento comparativo.",
+ctx:LACK+" En Argentina el ecosistema de búsquedas está fuertemente concentrado en un único motor dominante: las reglas de personalización de una sola empresa afectan la dieta informativa de casi todo el país. El marco de protección: Ley 25.326 de Protección de los Datos Personales y habeas data del art. 43 constitucional.",
+loc:LACK+" El experimento puede incluir una búsqueda local («noticias de Bahía Blanca»): ¿el resultado cambia según el barrio (señal de ubicación)?",
+glo:[["Motor de búsqueda","El bibliotecario de internet: pero a diferencia de un bibliotecario humano, decide qué traerte mirando quién sos."],["Resultado de búsqueda","Cada entrada que el buscador muestra: el orden no es la verdad, es un ranking calculado."],["Personalización","El sistema adapta lo que te muestra según lo que sabe de vos: un kiosquero que ya te conoce."],["Dieta informativa","El conjunto de información que consumís: si es siempre la misma, te nutrís poco."]],
+pra:{steps:["Definan <b>tres búsquedas iguales</b>: una temática, una de actualidad y una local.","Realícenlas desde dos condiciones: cuenta personal logueada vs. ventana privada/otro dispositivo.","Tabla comparativa: primeros 3 resultados por condición, diferencias, y qué señal (historial, ubicación, intereses, comportamiento) explica cada una.","Cierren con dos párrafos + declaren los <b>límites del experimento</b> (la ventana privada reduce pero no elimina la personalización)."],cri:"Rigor del registro · atribución de diferencias a señales específicas · honestidad metodológica."},
+abp:{o:"«¿Qué web vemos en esta escuela?» Experimento ampliado con 10+ participantes (consentimiento) y reporte escolar.",e:"Reporte de 2 páginas + tabla maestra + recomendaciones de uso consciente.",p:"Exposición ante otros cursos si se autoriza; primer insumo del informe de auditoría del cierre del módulo."}},
+{t:"Las cuatro señales de la personalización",
+cite:"«…los algoritmos personalizan estos resultados según el historial de navegación, la ubicación, los intereses y los patrones de comportamiento de cada usuaria o usuario.»",
+pre:"Si la personalización usa tu historial, tu ubicación, tus intereses y tus patrones de comportamiento, ¿eso es un servicio o una vigilancia amable? ¿Dónde está la línea entre que una plataforma te conozca para ayudarte y que decida por vos?",
+teo:"Cuatro señales distintas: <b>historial</b> (qué visitaste), <b>ubicación</b> (dónde estás), <b>intereses</b> (etiquetas asignadas) y <b>patrones de comportamiento</b> (cómo usás: horarios, clics, tiempos). Se combinan en un <b>perfil</b>: una representación computable que el algoritmo usa para predecir qué mostrarte. Ninguna señal es mala en sí; el problema aparece cuando el perfil decide el horizonte de lo visible sin que el usuario lo sepa ni pueda intervenir.",
+ctx:LACK+" Marco argentino: Ley 25.326 (derechos de acceso, rectificación y supresión de datos) y art. 43 CN. Las plataformas ofrecen paneles de configuración («mi actividad», «anuncios personalizados»): saber que existen y cómo usarlos es contenido directo de este módulo.",
+loc:LACK+" La señal de ubicación como caso local: ¿qué cambia cuando la búsqueda se hace desde Bahía Blanca? ¿Un comercio aparece igual desde el centro que desde un barrio alejado?",
+glo:[["Historial de navegación","Tu diario personal de lugares visitados: el sistema lo lee para inferir intereses."],["Patrón de comportamiento","Tu forma de usar medida: horarios, tiempos, clics. Como tu manera de caminar, pero registrada."],["Perfil algorítmico","El retrato robot que el sistema arma de vos: hecho para vender y retener, no para entenderte."],["Habeas data","Tu derecho constitucional a saber qué datos tienen sobre vos, y a corregirlos o borrarlos."]],
+pra:{steps:["Ubicá el <b>panel de actividad o de anuncios</b> de la cuenta que más uses (guía paso a paso del docente; si no se permiten cuentas personales, cuenta genérica preparada).","Tabla con las <b>cuatro señales del PDF</b>: ¿qué hay en tu historial?, ¿qué ubicación registra?, ¿qué intereses te asigna?, ¿qué patrones se ven?","Para cada señal: ¿es correcta?, ¿te sorprende?, ¿borrarías algo?","Realizá <b>una acción de control</b> (borrar historial, desactivar un interés, ajustar anuncios) y documentala.","Cierre: ¿el perfil del sistema te representa?, ¿qué le falta y qué le sobra?"],cri:"Identificación correcta de las señales · acción de control documentada · cierre que conecta perfil con identidad (derecho a narrarse)."},
+abp:{o:"«¿Quién me conoce más: mis amigos o el algoritmo?» Comparación documentada entre lo que el perfil registra y lo que el círculo cercano sabe (caso voluntario con consentimiento o caso ficticio).",e:"Tabla comparativa + conclusión de media página + entrada nueva para el glosario.",p:"Puesta en común de 5 minutos; regla ética absoluta: ningún dato personal se publica sin consentimiento."}},
+{t:"El filtrado en redes sociales: más de lo mismo",
+cite:"«Algo similar ocurre en las redes sociales, en las cuales los contenidos visibles son filtrados en función de las interacciones previas: se ve más contenido que coincide con las preferencias de la persona usuaria, y menos información de aquello que se aleja de sus intereses.»",
+pre:"Si la red te muestra más de lo que ya te gusta, ¿te está sirviendo o te está cerrando? ¿Tu feed es una ventana al mundo o un espejo que te devuelve mejorado?",
+teo:"El mecanismo: cada like, permanencia o ignorar es una señal; el resultado es un <b>círculo de retroalimentación</b> (veo más X porque miré X). A diferencia del buscador, en la red el usuario no pide nada: el sistema decide de antemano todo lo que ve. La asimetría es el punto: no aparece «lo distinto y lo igual» sino <b>cada vez más de lo igual y cada vez menos de lo distinto</b>. El orden cronológico existió y fue reemplazado por decisión de diseño.",
+ctx:LACK+" En Argentina las redes son la principal puerta de entrada a la información para los adolescentes. La respuesta pedagógica la da el propio PDF en su estrategia de diversidad de fuentes: «medios alternativos y publicaciones de diferentes ideologías» para «ampliar su visión del mundo».",
+loc:LACK+" Pregunta local: ¿cuántos contenidos de creadores, medios o instituciones de Bahía Blanca aparecen en los feeds del curso sin buscarlos?",
+glo:[["Feed","La fila de contenidos que vas bajando: parece todo lo que pasa, es una selección ordenada por algoritmo."],["Interacción","Cada gesto tuyo en la red: like, comentario, compartir, mirar hasta el final o pasar de largo. Todo cuenta."],["Círculo de retroalimentación","Una rueda que gira cada vez más rápido: veo más de lo que miro porque miro más de lo que veo."],["Atención (como recurso)","Lo que las plataformas compiten por capturar: tu atención vale plata."]],
+pra:{steps:["<b>Protocolo primero:</b> el registro es personal; solo se comparten números agregados.","Durante 10 minutos de scroll normal, registrá las primeras <b>15 publicaciones</b>: tema, ¿coincide con tu consumo?, ¿se aleja?","Contá el porcentaje coincidente.","Buscá activamente un tema que NO consumís nunca, mirá dos publicaciones y verificá al día siguiente si apareció algo de eso.","Párrafo de cierre con la fórmula del PDF."],cri:"Rigor del registro · aplicación correcta de la fórmula · sinceridad (un feed 90% coincidente no es mala nota: es un hallazgo)."},
+abp:{o:"«Radiografía anónima de los feeds del curso»: estudio agregado para responder si el grupo comparte mundo informativo o vive en burbujas paralelas.",e:"Infografía «Nuestros feeds por dentro» + 3 conclusiones + 2 recomendaciones de diversificación.",p:"Exposición ante el curso; solo datos agregados, ningún feed individual se expone."}},
+{t:"Burbujas informativas: «lo más relevante» no es lo más diverso",
+cite:"«Este mecanismo de personalización, lejos de ser neutral, construye burbujas informativas que limitan el acceso a otras miradas, saberes y voces. Lo que se presenta como “lo más relevante” no es necesariamente lo más diverso, plural o representativo.»",
+pre:"Si la burbuja te protege de la información que te incomoda, ¿por qué alguien querría salir de ella? ¿Existe el derecho a vivir en la propia burbuja, o las burbujas de cada uno terminan rompiendo algo que es de todos?",
+teo:"El concepto central del módulo: la <b>burbuja informativa</b>, el entorno personalizado que se forma cuando personalización y filtrado se acumulan en el tiempo. Tres propiedades según el PDF: <b>limita el acceso</b> a otras miradas, saberes y voces; se disfraza de <b>relevancia</b> cuando es coincidencia con el perfil; y <b>no es diversa, plural ni representativa</b> aunque lo parezca. La distinción relevante/personalizado es el corazón didáctico. La burbuja es invisible para quien la habita: por eso la escuela tiene que hacerla visible.",
+ctx:LACK+" La discusión sobre burbujas tiene traducción argentina: concentración del ecosistema de medios y plataformas, y una tradición de medios comunitarios, universitarios y de pueblos originarios que constituyen fuentes diversas reales para trabajar en clase.",
+loc:LACK+" Ángulo: ¿qué tan local es la burbuja del curso? Si un pibe solo consumiera lo que su feed le ofrece sin buscar, ¿qué sabría de su propia ciudad?",
+glo:[["Burbuja informativa","Tu mundo de información armado a tu medida: una pecera con vista al océano que te hacen creer que es el océano."],["Cámara de eco","Un cañón donde solo escuchás tu propia voz, más fuerte."],["Relevancia vs. coincidencia","Relevante: lo que sirve para lo que buscás. Coincidente: lo que se parece a lo que ya sos. El mecanismo te vende lo segundo disfrazado de lo primero."],["Perforar la burbuja","Meter adentro de tu consumo algo que no te llegaría solo."]],
+pra:{steps:["Elegí <b>una fuente que se aleje de tu consumo habitual</b> (el archivo del PDF da opciones: perfiles, asociaciones, videos).","Consumila al menos <b>3 veces en una semana</b>; registrá: ¿qué tema trajo?, ¿qué te sorprendió?, ¿contradijo algo que dabas por sentado?","Anotá si apareció después en tu feed sin buscarla.","Cierre: ¿qué aprendiste que tu burbuja no te mostraba?, ¿qué tan difícil fue sostenerla?"],cri:"Fuente efectivamente diversa · registro con sorpresas concretas · honestidad sobre la dificultad."},
+abp:{o:"«Protocolo anti-burbuja para adolescentes»: diseñar y PROBAR durante una semana 5 acciones de diversificación de fuentes.",e:"Protocolo de una página + registro de la prueba + resultados.",p:"El curso vota su adopción como acuerdo; versión final publicable; insumo directo de M6."}},
+{t:"Los tres efectos del algoritmo: sesgo, silenciamiento y estereotipo",
+cite:"«Así, los algoritmos tienden a reforzar sesgos existentes, a silenciar identidades culturales subrepresentadas y a reproducir estereotipos que afectan especialmente a grupos históricamente marginados.»",
+pre:"Si el algoritmo aprende de lo que la sociedad ya hizo, y lo que la sociedad ya hizo incluye racismo y exclusión, ¿puede existir un algoritmo inocente? ¿El algoritmo conserva la cultura o la congela?",
+teo:"Tres operaciones distintas que hay que enseñar separadas: <b>reforzar sesgos</b> (los datos históricos con prejuicios se amplifican por escala), <b>silenciar identidades subrepresentadas</b> (la ausencia previa fabrica ausencia futura: la versión automática de la invisibilización) y <b>reproducir estereotipos</b> (cuando una identidad aparece, lo hace en versión cliché). El remate político del PDF: estos efectos afectan <b>especialmente a grupos históricamente marginados</b> — el algoritmo no falla parejo: falla hacia el mismo lado que la historia. Las tres lecturas del PDF (ONU 2024, BBC 2018, Derechos Digitales 2024) son la bibliografía de este contenido.",
+ctx:LACK+" El debate sobre sesgos algorítmicos creció desde los 2010 (reconocimiento facial, traductores, buscadores de imágenes). El mecanismo común: los sistemas aprenden de datos históricos que no son neutrales. En Argentina, el mito de la «Argentina blanca» funciona como sesgo de representación que los materiales Argentina No Es Blanca e Identidad Marrón del PDF cuestionan.",
+loc:LACK+" Ángulo: ¿qué estereotipos sobre la región y sus grupos circulan en los resultados digitales? Con cuidado y sin reproducirlos.",
+glo:[["Sesgo algorítmico","Cuando un sistema trata distinto y peor a ciertos grupos: no es maldad, es herencia."],["Datos de entrenamiento","Los ejemplos con los que un sistema aprende: si tienen prejuicios, los aprende como reglas."],["Silenciar","Que algo no aparezca: en la web, lo que no aparece casi no existe."],["Racismo algorítmico","Cuando el efecto discriminatorio del sistema recae sobre grupos racializados."]],
+pra:{steps:["Definan <b>4 búsquedas de imágenes</b> (el docente aprueba las palabras antes).","Para cada una, tabla de los primeros 20 resultados: ¿quiénes aparecen?, ¿quiénes NO aparecen?","¿El resultado parece la realidad o una versión recortada?, ¿qué sesgo histórico podría estar heredando?","Repitan una búsqueda en <b>un segundo buscador</b> y comparen: ¿el estereotipo es igual en todos?","Conclusión con la fórmula del PDF: refuerzo, silenciamiento o estereotipo, con ejemplo concreto de cada uno."],cri:"Rigor del conteo · distinción de los tres efectos · prudencia en el manejo de los resultados (se analizan, no se difunden como burla)."},
+abp:{o:"«Contraestereotipo»: producir una pieza que contradiga deliberadamente un estereotipo detectado, con contraejemplos reales y diversos.",e:"Pieza contraestereotipo + ficha técnica (estereotipo, evidencia, contraejemplos, fuentes).",p:"Galería de contraestereotipos del curso; las mejores piezas candidatas a la producción final de M7."}},
+{t:"La escuela frente a los algoritmos: presente, ausente y por qué",
+cite:"«Estas dinámicas interpelan a la escuela como espacio privilegiado para el análisis crítico de la cultura digital. Es necesario revisar y problematizar los supuestos de neutralidad tecnológica, ampliar la comprensión de la ciudadanía digital e incorporar una mirada intercultural que permita identificar qué voces están presentes, cuáles están ausentes y por qué.»",
+pre:"Si la escuela tiene que enseñar a analizar críticamente la cultura digital pero para hacerlo usa plataformas privadas que la analizan a ella, ¿se puede enseñar a mirar la pecera desde adentro de la pecera?",
+teo:"Tres tareas para la escuela: <b>revisar la neutralidad tecnológica</b> (un supuesto, no una propiedad: toda herramienta fue diseñada con criterios), <b>ampliar la ciudadanía digital</b> (no solo seguridad y modales: comprender los mecanismos) y la <b>mirada intercultural</b> como método portátil de tres preguntas: <b>qué voces están presentes, cuáles ausentes y por qué</b>. Esa tríada se puede aplicar a cualquier pantalla, en cualquier materia, a cualquier edad.",
+ctx:LACK+" El material del PDF es un ejemplo institucional: proviene de una plataforma pública educativa (Continuemos Estudiando, DGCyE), donde las reglas las fija el Estado y no el mercado. La conciencia de la paradoja (enseñar crítica de plataformas dentro de plataformas) es en sí misma una clase.",
+loc:LACK+" Ángulo: aplicar la tríada presente/ausente/por qué a las pantallas propias de la escuela (redes escolares, aula virtual, cartelera digital).",
+glo:[["Neutralidad tecnológica (supuesto)","La creencia de que las herramientas no toman partido: todo diseño toma partido por alguien o algo."],["Voces presentes / ausentes","Quién aparece y quién no en cualquier pantalla: la mitad del pensamiento crítico está en notar la mitad que falta."],["El «por qué»","La pregunta que completa el método: la ausencia casi nunca es casual."],["Interpelar","Cuando algo te llama a responder: los algoritmos interpelan a la escuela, no se pueden ignorar."]],
+pra:{steps:["Elegí <b>tres espacios digitales</b>: uno informativo, uno social y uno institucional (redes de la escuela o sitio oficial).","Tabla 3×3 con la tríada: ¿qué voces presentes?, ¿cuáles ausentes?, ¿por qué? (hipótesis fundada).","Identificá las <b>ausencias que se repiten</b> en los tres espacios: ese es el hallazgo más importante.","Párrafo final: ¿alguna de las tres pantallas es neutral?, ¿qué evidencia tenés?"],cri:"Aplicación rigurosa de la tríada · hipótesis fundadas · solidez del párrafo sobre neutralidad."},
+abp:{o:"«Informe de auditoría algorítmica del curso»: integrar las evidencias del módulo (experimento de búsquedas, autopsias de perfil, auditorías de feed, perforación, caza de estereotipos) en un informe colectivo con plan de acción.",e:"Informe de 3 páginas + plan de acción con 3 decisiones del curso firmado.",p:"Debate de cierre del módulo con las preguntas «Para reflexionar» del PDF y votación del plan de acción."}}
+]},
+{n:5,c:"#34d399",t:"Alfabetización digital crítica y neutralidad tecnológica",w:"10 módulos · 5 semanas",s:"2.º cuatrimestre",f:"Párrafo sobre alfabetización digital crítica + mandato de problematizar la neutralidad + cierre del PDF",cons:[
+{t:"Más allá del uso técnico: interpretar, analizar y cuestionar",
+cite:"«La alfabetización digital crítica no puede limitarse al uso técnico de herramientas. Implica también formar en la capacidad de interpretar, analizar y cuestionar…»",
+pre:"Si una persona maneja todas las aplicaciones a la perfección pero no se pregunta nunca quién produce lo que consume ni qué le están mostrando, ¿está alfabetizada digitalmente o es apenas una operadora hábil?",
+teo:"El PDF define por contraste: qué NO es (solo uso técnico) y qué SÍ es: formar en <b>interpretar</b> (comprender qué dice y cómo), <b>analizar</b> (desarmar: de dónde viene, cómo circula) y <b>cuestionar</b> (duda fundada). Tres escalones. La destreza técnica es condición necesaria pero no suficiente: un estudiante puede editar un video perfectamente y usar esa destreza para viralizar un estereotipo. La alfabetización crítica decide <b>para qué</b> se usa la técnica.",
+ctx:LACK+" La alfabetización digital crítica es la tercera brecha de M2: la de uso y comprensión, que persiste incluso con acceso y conectividad. La circulación masiva de desinformación la volvió necesidad de salud cívica, no lujo curricular.",
+loc:LACK+" Ángulo: ¿cuál es el estado real de la alfabetización crítica en el curso — qué saben usar y qué saben comprender?",
+glo:[["Alfabetización digital crítica","Saber usar la tecnología Y saber pensarla: manejar y además conocer las reglas de tránsito y quién hizo la ruta."],["Interpretar / Analizar / Cuestionar","Entender qué dice · desarmarlo de dónde viene · preguntar por qué y a quién sirve."],["Punto ciego","Lo que no vemos de nuestro propio consumo digital: todos tenemos."]],
+pra:{steps:["Tabla de dos columnas: <b>sé hacer</b> (8 operaciones digitales que dominás) vs. <b>sé comprender</b> (qué sabés de su lado crítico).","Marcá cada fila: domino las dos / solo técnica / solo crítica.","Elegí tu mayor punto ciego y escribile <b>3 preguntas</b>.","Redactá tu meta del módulo: una oración concreta y verificable."],cri:"Honestidad del autodiagnóstico · preguntas no retóricas · meta verificable."},
+abp:{o:"«Enseñar para aprender»: cada grupo diseña y DICTA un mini-taller activo de alfabetización crítica a una audiencia real (curso menor o adultos).",e:"Plan del taller + materiales + informe post-taller.",p:"En la fecha que la escuela autorice; nadie comprende algo tan bien como cuando logra enseñarlo."}},
+{t:"El método de las cuatro preguntas",
+cite:"«…cómo circula la información, quiénes la producen, cómo se filtra y qué representaciones del mundo habilita o bloquea.»",
+pre:"Si toda información tiene quién la produce, cómo circula y quién la filtra, ¿existe alguna información desinteresada? ¿Y dónde queda el punto exacto entre la ingenuidad (creer todo) y la paranoia (no creer nada)?",
+teo:"El PDF entrega el método completo en una oración: <b>¿cómo circula?</b> (canales, velocidad, formatos), <b>¿quiénes la producen?</b> (autoría, intereses, financiamiento), <b>¿cómo se filtra?</b> (algoritmos, editores: conexión con M4), <b>¿qué habilita o bloquea?</b> (la pregunta intercultural). Cadena: circulación → producción → filtrado → representación. El verbo final es doble: no solo qué muestra un contenido sino qué <b>impide ver</b>. La ausencia también es mensaje. El método no concluye «nada es confiable»: concluye <b>grados de confiabilidad fundados</b>.",
+ctx:LACK+" Argentina tiene experiencias profesionales de verificación que aplican estas preguntas. La autoaplicación del método a las propias fuentes de confianza —incluso al material del curso— enseña que el pensamiento crítico incluye autocrítica.",
+loc:LACK+" Ángulo: aplicar las cuatro preguntas a un contenido de la zona (noticia local, campaña municipal, viral de la región).",
+glo:[["Circulación","El recorrido de una información: dónde nació, por dónde pasó, quién la llevó."],["Habilitar / bloquear","Los dos efectos de toda representación: lo que te deja ver y lo que te tapa. Se juzgan juntos."],["Verificación (fact-checking)","Comprobar con evidencia si una información es cierta, falsa o engañosa: el método en modo profesional."]],
+pra:{steps:["Elijan <b>un contenido real</b> en circulación (aprobado por el docente; puede ser del archivo del PDF).","Tabla de las cuatro preguntas <b>con evidencia</b>: canales, autoría, cómo les llegó, qué mundo muestra y qué tapa.","Comparen con otra pareja que trabajó otro contenido.","Escriban el <b>grado de confiabilidad fundado</b>: alto / medio / bajo / no verificable."],cri:"Evidencia en cada respuesta · habilitaciones Y bloqueos identificados · confiabilidad fundada en la tabla."},
+abp:{o:"«Kit anti-desinformación para nuestra escuela»: protocolo de verificación de 5 pasos basado en las cuatro preguntas.",e:"Protocolo + prueba con 3 casos reales + kit en dos formatos (afiche y tarjeta de bolsillo).",p:"Demostración ante el curso con uno de los casos; el kit queda colgado en el aula y se propone para redes escolares."}},
+{t:"La neutralidad tecnológica en cuestión",
+cite:"«Es necesario revisar y problematizar los supuestos de neutralidad tecnológica…»",
+pre:"Si las tecnologías están atravesadas por relaciones de poder, ¿quién debería decidir cómo se diseñan: las empresas que las fabrican, los Estados que las regulan o las personas que las usan? ¿La «democracia tecnológica» es posible o es pura retórica?",
+teo:"El cierre del PDF formula la tesis con máxima precisión: las tecnologías digitales están atravesadas por <b>relaciones de poder</b> (dueños, reglas, modelos de negocio), <b>desigualdades estructurales</b> (las brechas y sesgos previos que la tecnología procesa) y <b>lógicas de representación</b> (que pueden invisibilizar o subalternizar). <b>Problematicar</b> es convertir el supuesto de neutralidad —que funciona por defecto— en objeto explícito de pregunta. Cada tecnología masiva atravesó este debate: imprenta, radio, televisión, internet. La neutralidad nunca fue la norma: fue siempre una disputa.",
+ctx:LACK+" Traducciones argentinas: ARSAT como definición de no depender de satélites extranjeros (Ley 26.966); Ley 27.078 con intervención estatal habilitada; la disputa software libre/privativo (Huayra); medios públicos, universitarios y comunitarios como contrapeso.",
+loc:LACK+" Ángulo: inventario de decisiones de diseño aplicado a las tecnologías que usa la escuela y la zona.",
+glo:[["Relaciones de poder","Quién decide, quién gana y quién obedece: quién es dueño de la plataforma, quién pone las reglas, quién se queda con los datos."],["Lógica de representación","El criterio con que un sistema muestra el mundo: qué entra, qué queda afuera, en qué posición."],["Gobernanza de internet","Las reglas, actores y disputas que deciden cómo funciona la red: no la decide una sola persona."],["Alternativa tecnológica","Una herramienta distinta para el mismo fin: la prueba de que «así es» suele ser mentira."]],
+pra:{steps:["Elijan <b>tres tecnologías cotidianas</b> del curso.","Inventario por cada una: ¿quién la posee? + <b>3 decisiones de diseño visibles</b> (cómo ordena, qué permite, qué registra).","Para cada decisión: ¿a quién beneficia?, ¿a quién perjudica o deja afuera?","Elijan una regla de uso: ¿es justa?, ¿se puede apelar?, ¿quién la cambiaría?","Cierre: la tesis del PDF con sus palabras y un ejemplo de cada tecnología."],cri:"Decisiones de diseño concretas · análisis de beneficiarios/perjudicados · conexión explícita con la tesis."},
+abp:{o:"«Juicio a la neutralidad»: audiencia pública simulada contra la afirmación «la tecnología es neutral», con fiscales, defensores, peritos y jurado.",e:"Acta de la audiencia + veredicto fundado + reflexión individual.",p:"Audiencia abierta a otro curso o docentes invitados; el veredicto va al glosario colaborativo."}},
+{t:"Ciudadanía digital ampliada: de usuarios a ciudadanos",
+cite:"«…ampliar la comprensión de la ciudadanía digital…» · «La escuela tiene un rol fundamental en el ejercicio de una ciudadanía digital situada y respetuosa.»",
+pre:"¿Se es ciudadano de la misma manera en la calle que en una red social? En la calle hay constitución, leyes y reclamos posibles; en la red, términos y condiciones escritos por una empresa. ¿Qué clase de ciudadanía es esa?",
+teo:"<b>Ampliar</b> supone una comprensión estrecha previa (seguridad + etiqueta). La ciudadanía digital ampliada agrega: <b>comprensión de los mecanismos</b> (M4), <b>titularidad de derechos</b> (datos, expresión, acceso) y <b>capacidad de intervención</b> (producir, diversificar, reclamar). Los apellidos del PDF no son decorativos: <b>situada</b> (territorio, historia, comunidad reales) y <b>respetuosa</b> (reglas de trato intercultural). Los adolescentes no son futuros ciudadanos digitales: ya lo son, con derechos vigentes que en general desconocen.",
+ctx:LACK+" Anclas legales argentinas: Ley 25.326 y art. 43 CN (habeas data), Ley 26.061 (protección de la niñez), Ley 26.904 (grooming como delito), Ley 23.592 (antidiscriminación también en línea). Gran parte de la relación con el Estado está digitalizada: la conectividad es condición de acceso a derechos.",
+loc:LACK+" Ángulo: ¿qué derechos digitales conocen y ejercen los estudiantes del curso? Protocolos escolares de convivencia digital pendientes de confirmación.",
+glo:[["Ciudadanía digital","Ser ciudadano también en internet: con derechos, responsabilidades y capacidad de participar."],["Habeas data","Tu derecho a preguntar «¿qué saben de mí?» y a corregir o borrar lo que está mal."],["Grooming","El delito de adultos que contactan a chicos por medios digitales para vulnerar su integridad: tiene nombre, tiene ley y se denuncia."],["Titular de derechos","El dueño de un derecho: vos. No te lo regalan, te corresponde."]],
+pra:{steps:["Tabla de <b>5 derechos</b>: protección de datos, expresión, información, participación, protección (grooming). ¿Los conocés?, ¿los ejercés?","Contá cuántos conocés y cuántos ejercés.","Escribí tu <b>carta de ciudadanía digital personal</b>: 5 compromisos concretos para el año.","Pegala en el mural del aula (firmada o anónima, a elección)."],cri:"Honestidad del relevamiento · compromisos concretos y verificables · comprensión de los términos legales en lenguaje propio."},
+abp:{o:"«Carta de ciudadanía digital de nuestra escuela»: 10 artículos (derechos + responsabilidades) con fundamentación legal argentina.",e:"Carta + fundamentación + registro de la ronda de consulta.",p:"Elevación a directivos y centro de estudiantes; pieza hermana del protocolo anti-burbuja y del manifiesto de M3."}},
+{t:"La diversidad como valor que se defiende en entornos algorítmicos",
+cite:"«En este sentido, la interculturalidad ofrece claves para reconocer la diversidad como un valor que enriquece la experiencia digital y que es necesario defender también en los entornos mediados por algoritmos.»",
+pre:"¿Se puede defender la diversidad en un entorno cuyo mecanismo está diseñado para filtrarla? ¿Es tarea del Estado y las plataformas, o empieza en el dedo de cada uno — en qué sigue, qué busca, qué comparte, qué produce?",
+teo:"Este contenido es el puente entre la crítica y la acción: la diversidad es un <b>valor que enriquece</b> (no un costo) y hay que <b>defenderlo</b> — la diversidad no se sostiene sola en un feed. Tres niveles de defensa: <b>consumo</b> (diversificar fuentes), <b>producción</b> (crear contenidos diversos) e <b>incidencia</b> (proponer reglas y políticas). Los materiales del PDF son el ejemplo encarnado: perfiles, asociaciones y videos son actos de defensa de la diversidad que se pueden analizar como casos.",
+ctx:LACK+" Casos argentinos del propio PDF: Misibamba, Diafar e Identidad Marrón producen contenidos y campañas sobre identidades que el relato dominante invisibiliza; Abuela Grillo circula en Retina Latina, plataforma pública latinoamericana. La defensa no es utopía: existe, produce y gana visibilidad.",
+loc:LACK+" Ángulo: ¿quién defiende la diversidad cultural en la zona y qué necesita para hacerlo también en lo digital? Colectivos y artistas locales pendientes de confirmación.",
+glo:[["Diversidad como valor","Un feed diverso enriquece; uno uniforme empobrece, aunque sea cómodo."],["Incidencia","La acción de influir en las reglas del juego: proponer, reclamar, organizar."],["Exotización / tokenismo","Formas falsas de valorar: mostrar la diversidad como rareza o como adorno."],["Archivo de defensa","El conjunto de producciones que sostienen la diversidad: el PDF ya armó uno para el curso."]],
+pra:{steps:["Elijan <b>dos materiales del PDF</b> de tipos distintos: uno de «Para explorar» y uno de «Para ver».","Ficha de defensa por material: ¿quién lo produce?, ¿qué diversidad visibiliza?, ¿qué estereotipo o ausencia enfrenta?, ¿en qué nivel opera (consumo, producción, incidencia)?","Compárenlos: ¿qué estrategias distintas usa cada uno para ganar visibilidad?","Cierre: ¿cómo se defiende la diversidad en entornos mediados por algoritmos?"],cri:"Precisión en qué defiende cada material · reconocimiento del nivel de defensa · calidad del cierre."},
+abp:{o:"«Debate integrador del 2.º cuatrimestre»: la Actividad 2 del PDF a gran escala, con las preguntas «Para reflexionar» y todo el acervo de M4+M5.",e:"Acta del debate + conclusiones del curso (3 afirmaciones fundadas + 2 preguntas abiertas) + plan de acción preliminar para M7.",p:"Es la instancia de evaluación parcial integradora; las conclusiones van a la cartelera y las preguntas abiertas quedan colgadas en el aula."}}
+]},
+{n:6,c:"#fb923c",t:"Kit de navegación crítica: estrategias y búsqueda avanzada",w:"8 módulos · 4 semanas",s:"Cierre del 2.º cuatrimestre",f:"Sección «Estrategias para abordar la interculturalidad en el aula» — las 9 estrategias del PDF convertidas en competencias del estudiante",cons:[
+{t:"Fomentar el pensamiento crítico: cuestionar lo que se consume",
+cite:"«Fomentar el pensamiento crítico: enseñar a cuestionar y analizar la información que consumen.»",
+pre:"¿Se puede enseñar a pensar críticamente, o se contagia o no se contagia? ¿Y qué pasa cuando un estudiante aplica el pensamiento crítico a los contenidos de la propia escuela y llega a conclusiones que incomodan?",
+teo:"Como competencia: someter voluntariamente a pregunta <b>el consumo espontáneo</b> (lo que llega sin buscarlo) usando el método de las cuatro preguntas. Cuestionar sin analizar es sospecha vacía; analizar sin cuestionar es descripción inofensiva. El salto de M5 a M6: de aplicarlo sobre contenidos elegidos, a aplicarlo sobre el propio feed. <b>Test de honestidad:</b> la crítica empieza por las fuentes afines.",
+ctx:LACK+" El pensamiento crítico aplicado a la información es el antídoto cotidiano contra la desinformación; no compite con otras materias: las potencia.",
+loc:LACK+" Ángulo: el gimnasio crítico aplicado a contenidos de la zona (noticias locales, campañas de la región).",
+glo:[["Pensamiento crítico","El músculo de preguntar antes de creer: no es llevar la contra, es pedir evidencia."],["Consumo espontáneo","Lo que te llega sin buscarlo: el feed, los reenviados, lo viral. Ahí más falta hace."],["Test de honestidad","Aplicar la crítica primero a las fuentes que te caen bien: si solo cuestionás a las otras, no es crítica, es tribuna."]],
+pra:{steps:["Cada semana, elegí <b>un contenido que consumiste sin buscarlo</b>.","Aplicale las cuatro preguntas en una ficha breve.","Veredicto fundado: confiable / parcial / no confiable / no verificable.","Al cierre del módulo: juntá las 4 fichas y escribí el balance. Al menos una ficha debe aplicar el test de honestidad."],cri:"Constancia (4 semanas) · uso efectivo del método · honestidad del test."},
+abp:{o:"«Rutina crítica para el curso»: diseñar e implementar durante dos semanas un formato breve y sostenible de análisis semanal.",e:"Formato documentado + registro de las dos semanas + informe de sostenibilidad.",p:"Si funciona, queda instalada como acuerdo del curso para M7."}},
+{t:"Incentivar la diversidad de fuentes",
+cite:"«Incentivar la diversidad de fuentes: motivar a explorar variedad de fuentes de información, incluyendo medios alternativos y publicaciones de diferentes ideologías.»",
+pre:"Leer fuentes de distintas ideologías, ¿te vuelve más libre o simplemente más confundido? ¿Hay un mundo debajo de las versiones o solo hay versiones?",
+teo:"Tres piezas: explorar <b>variedad</b> (no una fuente ni un tipo), incluir <b>medios alternativos y publicaciones de diferentes ideologías</b> (la diversidad también es política), y la finalidad declarada: <b>ampliar la visión del mundo</b>. Es el antídoto estructural contra la burbuja: el algoritmo filtra, el lector diversifica. Ojo con el <b>falso equilibrio</b>: comparar fuentes no obliga a tratarlas como igualmente válidas — hay afirmaciones que no resisten la verificación.",
+ctx:LACK+" El ecosistema argentino ofrece materia prima real: medios comerciales de distinto signo, medios públicos, universitarios, comunitarios y portales de organismos públicos. El propio PDF es un ejemplo curado: organismos internacionales, prensa, colectivos argentinos y producciones latinoamericanas juntos.",
+loc:LACK+" Capa local del mapa de fuentes: ¿qué fuentes de la zona conoce el curso y cuáles no? Panorama de medios locales pendiente de confirmación.",
+glo:[["Mapa de fuentes","Tu lista deliberada y variada de lugares donde informarte: si vas siempre a la misma verdulería, comés lo que esa tiene."],["Medio alternativo","Comunitario, cooperativo, universitario, barrial: chicos en escala, distintos en mirada."],["Falso equilibrio","Creer que todas las versiones valen igual solo por existir: comparar no es empatar, es evaluar."]],
+pra:{steps:["Listá tus <b>5 fuentes actuales</b>.","Sumá <b>5 nuevas</b> con la regla: una alternativa/comunitaria, una de otra orientación, una institucional, una no textual, una con diversidad cultural.","Durante una semana consultá al menos 3 nuevas y registrá qué encontraste que las viejas no te daban.","Cierre: ¿qué fuente nueva se queda y cuál descartás, y por qué?"],cri:"Diversidad real de las fuentes nuevas · registro de hallazgos concretos · honestidad del descarte."},
+abp:{o:"«Un mismo hecho, tres versiones»: muestra comparativa de cómo un hecho de actualidad apropiado es contado por al menos 3 fuentes de distinto tipo.",e:"Muestra + tabla comparativa + síntesis.",p:"Exposición en el aula y posible cartelera escolar; se analizan tratamientos, no se descalifican medios."}},
+{t:"Herramientas que reduzcan el filtrado y el rastreo",
+cite:"«Promover el uso de herramientas digitales: sugerir el uso de buscadores y extensiones que reduzcan el filtrado algorítmico y el rastreo para acceder a información más diversa.»",
+pre:"¿Alcanza con cambiar de herramienta para cambiar de resultado, o el perfil nos sigue a todas partes? Si las herramientas anti-rastreo las usan solo los que saben que existen, ¿la privacidad se vuelve otro privilegio más?",
+teo:"La estrategia más técnica de las nueve: usar <b>buscadores y extensiones</b> para reducir dos cosas distintas —el filtrado algorítmico y el rastreo— con finalidad declarada: información más diversa. La regla de oro: <b>la herramienta se entiende antes de usarse</b>; instalar una extensión sin comprender qué bloquea es magia, no ciudadanía digital. Y conocer sus límites: reducen personalización y rastreo, pero no vuelven anónimo a nadie.",
+ctx:LACK+" La razón jurídica es argentina: Ley 25.326 y habeas data — limitar el rastreo es ejercer un derecho. La tradición de software libre en políticas públicas (Huayra) legitima herramientas libres en la escuela.",
+loc:LACK+" El laboratorio de la escuela como espacio de prueba controlada; qué puede instalarse según las políticas institucionales (pendiente de confirmación).",
+glo:[["Rastreo (tracking)","Cuando sitios y plataformas siguen tu recorrido para armar tu perfil: un delivery que anota todo lo que pedís y después decide el menú por vos."],["Extensión","Un agregado del navegador que le suma una función: como accesorios de una mochila."],["Navegación privada","No guarda tu historial en TU dispositivo: te protege del que usa tu compu, no del mundo entero."]],
+pra:{steps:["Definan <b>dos búsquedas de prueba</b> (una temática, una local).","Realícenlas desde el buscador habitual (sesión personal) y desde la alternativa disponible (buscador sin perfil, ventana privada o navegador con protección).","Tabla comparativa: ¿cambiaron los resultados?, ¿cuánto?, ¿qué señal sigue actuando igual?","Escriban el <b>límite de la herramienta</b>: qué resuelve y qué no (obligatorio nombrar la ubicación)."],cri:"Rigor de la comparación · identificación de qué cambió y qué no · límite declarado (una herramienta sin límite declarado es publicidad, no análisis)."},
+abp:{o:"«Guía honesta de herramientas anti-filtrado para estudiantes»: qué sirve, qué no, y cómo se usa — probada por los propios grupos.",e:"Guía con herramientas probadas, instrucciones paso a paso y sección «qué NO resuelve», en afiche y tarjeta.",p:"Publicación en canales escolares si se autoriza. Pieza técnica hermana del kit anti-desinformación."}},
+{t:"Fomentar debates: argumentar con fuentes, escuchar, abrirse",
+cite:"«Fomentar debates y discusiones: organizar debates sobre temas controvertidos donde puedan expresar diferentes puntos de vista, utilizar fuentes para argumentar su posición y promover un entorno de respeto, escucha y apertura.»",
+pre:"¿Se puede debatir con alguien que parte de hechos distintos a los tuyos? En redes, la mayoría de las discusiones son entre burbujas que ni comparten los hechos: ¿la escuela puede enseñar a debatir entre burbujas?",
+teo:"Cuatro condiciones simultáneas: <b>temas controvertidos</b> (sin respuesta única cerrada), <b>diferentes puntos de vista</b> legítimos, <b>fuentes para argumentar</b> y <b>entorno de respeto, escucha y apertura</b>. Debatir deja de ser «ganar»: es sostener una posición fundada, escuchar para comprender y aceptar que la apertura puede cambiar la propia posición. Regla de oro del curso: <b>toda afirmación fuerte exige fuente citada</b>.",
+ctx:LACK+" La escuela argentina tiene tradición de debate y espacios de palabra estudiantil; el debate CON fuentes sobre temas digitales es la novedad que este módulo instala. Los debates públicos sobre regulación de plataformas y datos son terreno donde los estudiantes tienen algo fundado para decir.",
+loc:LACK+" Temas locales apropiados pendientes de selección docente cuidadosa; articulación con centro de estudiantes o tradición de debates de la escuela (pendiente de confirmación).",
+glo:[["Debate con fuentes","Sin fuente es opinión; con fuente, argumento."],["Escucha activa","Escuchar para entender: podés repetir lo que dijo el otro antes de contestar."],["Apertura","La disposición real a cambiar de posición si la evidencia lo pide: sin apertura el debate es teatro."],["Doble monólogo","Dos hablan pero nadie escucha: cada uno espera su turno para repetir lo suyo."]],
+pra:{steps:["Dos temas del recorrido con posiciones posibles; cada equipo recibe una posición (puede no coincidir con la propia).","20 minutos para armar <b>3 argumentos con fuente citada</b> (materiales del PDF, registros de M4, normas trabajadas).","Ronda con protocolo: tiempos fijos, réplica, afirmación fuerte exige fuente.","Cierre individual: ¿qué argumento del otro lado te hizo dudar?, ¿cambiaste algo de posición?"],cri:"Calidad de las fuentes · respeto del protocolo · sinceridad del cierre (nombrar la duda propia es el mejor indicador de apertura)."},
+abp:{o:"«Ciclo de debates de 4.º»: organizar dos debates abiertos a la escuela sobre temas digitales del recorrido anual.",e:"Actas + sistematización (acuerdos, disensos, fuentes más citadas).",p:"En el espacio que la escuela autorice; la máxima acreditación de esta competencia."}},
+{t:"Generar proyectos de investigación",
+cite:"«Generar proyectos de investigación: organizar grupos de trabajo para investigar un tema desde diferentes perspectivas y presentar sus hallazgos…»",
+pre:"¿Investigar es juntar información o es dejarse cambiar por lo que se encuentra? ¿Y qué pasa cuando la investigación encuentra algo que contradice lo que el grupo quería demostrar — se publica igual?",
+teo:"Cinco rasgos: <b>grupos</b>, <b>un tema</b> acotado, <b>diferentes perspectivas</b>, <b>hallazgos públicos</b> y la finalidad: búsqueda, selección y comprensión <b>en mayor profundidad</b>. El eslabón que más se saltea es la <b>selección</b>: copiar-pegar todo es no investigar. El más difícil: aceptar hallazgos que contradicen la hipótesis inicial — ahí se mide la honestidad investigativa. Reglas: preguntas chicas y verificables, y <b>abogado del diablo documentado</b> (búsqueda deliberada de la perspectiva contraria).",
+ctx:LACK+" Argentina produce y publica datos oficiales (estadística, normas, portales públicos) y sostiene investigación en sus universidades públicas: fuentes al alcance del aula que suben la calidad de cualquier investigación escolar.",
+loc:LACK+" Investigaciones sobre la zona que alimenten la producción de M7; temas locales investigables y contactos pendientes de confirmación.",
+glo:[["Pregunta de investigación","Una pregunta chica, clara y verificable: sin pregunta no hay investigación, hay paseo."],["Selección","Decidir qué entra y qué queda afuera con criterios: el copy-paste no selecciona, acumula."],["Bitácora de decisiones","El diario del proceso: qué buscamos, qué descartamos, por qué."],["Abogado del diablo","La búsqueda deliberada de la posición contraria: vacuna contra la investigación de confirmación."]],
+pra:{steps:["Elijan una <b>pregunta chica y verificable</b> del recorrido; el docente la valida.","Plan: qué buscar, dónde, con qué criterios de selección, y cuál será la búsqueda del abogado del diablo.","Ejecución con <b>bitácora</b>: qué encontraron, qué descartaron, por qué.","Sinteticen <b>3 hallazgos numerados</b>, cada uno con su fuente.","Si algún hallazgo contradice lo esperado, declárenlo explícitamente."],cri:"Tamaño apropiado de la pregunta · criterios de selección explícitos · abogado del diablo realizado · honestidad con hallazgos incómodos."},
+abp:{o:"«La investigación que M7 necesita»: cada grupo define el tema de su futura producción final y realiza ahora la investigación completa que la fundamenta.",e:"Informe-insumo: pregunta, fuentes con criterio de selección, hallazgos, hueco identificado, propuesta de ángulo.",p:"Ronda interna de validación: sin investigación acreditada no hay producción en M7."}},
+{t:"Concientizar sobre los algoritmos",
+cite:"«Concientizar sobre los algoritmos: educar sobre cómo funcionan los algoritmos de las redes sociales y buscadores, y cómo estos limitan la exposición a información diversa.»",
+pre:"¿Quién debería explicar los algoritmos: la escuela, las propias plataformas que los diseñan, o el Estado? ¿Podemos confiarle la explicación del mecanismo a quien se beneficia de que no lo entiendas?",
+teo:"M4 enseñó cómo funcionan; M6 convierte ese saber en <b>competencia de transmisión</b>: explicar exige organizar, simplificar sin mentir y elegir ejemplos — operaciones más exigentes que comprender para uno mismo. La escuela puede decir lo que la plataforma no dirá: que el diseño responde a intereses comerciales y que hay alternativas. Las explicaciones de las propias plataformas se leen como fuente secundaria, con las cuatro preguntas.",
+ctx:LACK+" La comprensión ciudadana del mecanismo sigue siendo baja: explicar algoritmos en la familia, el club o la escuela es alfabetización cívica real. Los materiales de lectura del PDF son modelos de divulgación seria: con casos, nombres propios y sin tecnicismo innecesario.",
+loc:LACK+" Ángulo: ¿a quién de la comunidad le sirve esta explicación y en qué formato? Espacios comunitarios de la zona pendientes de confirmación.",
+glo:[["Concientizar","Hacer visible lo que funciona en silencio: explicarle el mecanismo es sacarle la capa de invisibilidad."],["Divulgación","Explicar algo complejo para que cualquiera lo entienda, sin mentir en la simplificación."],["Explicación interesada","La que da el propio beneficiado del mecanismo: puede ser útil, nunca neutral."]],
+pra:{steps:["Elijan <b>un mecanismo de M4</b> (personalización, filtrado, burbuja, sesgo, silenciamiento, estereotipo).","Explíquenlo en <b>tres formatos</b>: explicación completa de 6 renglones con ejemplo real + analogía de 2 renglones + título de campaña de 8 palabras.","Prueben con un lector externo: ¿entendió sin ayuda? Registren qué no se entendió y corrijan.","Cierre: ¿qué fue lo más difícil de simplificar sin mentir?"],cri:"Exactitud conceptual (la simplificación no puede mentir) · calidad de la analogía · corrección post-prueba documentada."},
+abp:{o:"«Campaña de concientización algorítmica para la escuela»: cómo nos venden relevancia y nos dan coincidencia.",e:"Carpeta de campaña + 3 piezas + registro de la semana real + medición de impacto (miniencuesta).",p:"En los espacios autorizados; puede repetirse en la Efeméride de Noviembre."}},
+{t:"Desarrollar habilidades de búsqueda avanzada",
+cite:"«Desarrollar habilidades de búsqueda avanzada: enseñar técnicas avanzadas de búsqueda en línea para encontrar información más allá de las primeras páginas de resultados de los motores de búsqueda y compararlas con otros resultados, con otros perfiles, etcétera.»",
+pre:"Si la primera página de resultados decide lo que casi todo el mundo sabe, ¿lo que está en la página 20 existe o es como si no existiera? ¿Buscar mejor es encontrar más rápido lo mismo, o encontrar lo que la primera página te esconde?",
+teo:"Tres operaciones: <b>técnicas avanzadas</b> (operadores que dirigen la consulta: comillas para frase exacta, signo menos para excluir, site: para un sitio, filetype: para formatos), <b>ir más allá de las primeras páginas</b> (donde el ranking pesa más) y <b>comparar</b> resultados entre condiciones y perfiles. El PDF fija el estándar («más allá de las primeras páginas y compararlas»); los operadores son desarrollo docente. Bonus cívico: con operadores se encuentran normas, resoluciones y datos oficiales que de otro modo no aparecen.",
+ctx:LACK+" La Ley 27.275 de Acceso a la Información Pública establece que la información pública es de acceso libre: buscarla bien también es ejercer ese derecho.",
+loc:LACK+" Búsquedas avanzadas sobre la zona: información local que no aparece en superficie; sitios locales útiles pendientes de confirmación.",
+glo:[["Operador de búsqueda","Un comando que afina la búsqueda: filtros de una linterna que ilumina justo donde querés."],["Frase exacta (comillas)","Pedir las palabras tal cual, juntas."],["Excluir (signo menos)","Pedir una pizza sin cebolla: sigue siendo pizza, pero a tu manera."],["site: / filetype:","Buscar solo adentro de un sitio · pedir solo un formato de archivo."],["Página profunda","Los resultados más allá de la primera página: ahí vive lo que el ranking no privilegia — a veces, lo más valioso."]],
+pra:{steps:["Definan un tema del recorrido.","Búsqueda simple: anoten los 3 primeros resultados (la superficie).","Repitan con <b>al menos 4 operadores</b> y registren qué cambió en cada caso.","Pasen a la <b>página 2 o 3</b> y rescaten un resultado que la página 1 no mostraba: ¿qué es?, ¿por qué creen que estaba tan abajo?","Comparen una búsqueda entre dos condiciones (personal vs. privada)."],cri:"Uso correcto de 4+ operadores · hallazgo profundo genuinamente nuevo · comprensión del porqué del ranking."},
+abp:{o:"«Manual de búsqueda avanzada para investigar diversidad»: qué buscar, cómo buscarlo, dónde está lo que no aparece.",e:"Manual con 6+ operadores y ejemplos probados + sitios recomendados + trucos de comparación.",p:"Queda en la carpeta compartida como herramienta oficial de M7."}},
+{t:"Reflexionar sobre los consumos digitales",
+cite:"«Reflexionar sobre los consumos digitales: promover la autorreflexión sobre los hábitos digitales y cómo influyen en opiniones y creencias.»",
+pre:"¿Hasta qué punto lo que pensás es tuyo, si lo que ves todos los días está seleccionado por mecanismos que no elegiste? Si descubrieras que una opinión muy tuya viene de lo que tu feed te repite hace meses, ¿la cambiarías o la defenderías igual?",
+teo:"La estrategia más introspectiva: <b>autorreflexión</b> (sobre uno mismo) sobre <b>hábitos digitales</b> (rutinas, no usos puntuales) y su <b>influencia en opiniones y creencias</b>. El camino inverso del módulo: no qué le hace el algoritmo a la información, sino qué le hace la información algorítmica a uno. Operaciones: registrar, correlacionar y detectar ideas que llegaron por repetición de feed y no por análisis propio. El objetivo no es la culpa: es la <b>agencia</b>.",
+ctx:LACK+" El enfoque del PDF agrega lo que falta en la mayoría de las conversaciones sobre pantallas: no solo bienestar individual sino formación de creencias en contexto de filtrado — un asunto cívico.",
+loc:LACK+" Los hábitos del curso en su contexto real (conectividad, dispositivos, horarios). Articulación con proyectos de bienestar digital o ESI pendiente de confirmación.",
+glo:[["Hábito digital","La rutina de tu consumo: se hace sola, hasta que la mirás."],["Autorreflexión","Mirarte usar: no para retarte, para saber qué te está pasando mientras usás."],["Influencia en creencias","Las ideas también se contagian por repetición."],["Agencia","La capacidad de decidir sobre tu propio consumo: la reflexión es el camino de vuelta."]],
+pra:{steps:["Durante <b>tres días</b>, registrá: franja, qué usaste, tiempo aproximado y categoría (información / entretenimiento / social / repetición de lo mismo).","Calculá totales por categoría y mirá la tabla: ¿qué temas dominan tu consumo?, ¿dominan también tus conversaciones y opiniones?","Elegí <b>una opinión o gusto tuyo</b>: ¿llegó por análisis propio o por repetición de feed? (No hay respuesta incorrecta.)","Balance de 6 renglones + una decisión concreta de cambio si querés tomarla."],cri:"Honestidad y detalle del registro · conexión consumo→creencias · calidad de la decisión. Nunca se evalúa el contenido del consumo en sí; el registro detallado es personal."},
+abp:{o:"«Encuesta anónima de hábitos y creencias del curso»: ¿qué nos está haciendo el consumo digital?",e:"Encuesta de 6–8 preguntas + informe solo con datos agregados + recomendaciones del curso.",p:"Asamblea de devolución; anonimato total inquebrantable, cero exposición de casos."}},
+{t:"Visibilizar voces diversas: dialogar y enriquecer",
+cite:"«Visibilizar voces diversas: explorar contenidos que exponen la diversidad cultural como un elemento que dialoga y enriquece el universo cultural cotidiano.»",
+pre:"¿Visibilizar es mostrar, o es mostrar bien? ¿Cómo se sabe si un contenido realmente dialoga y enriquece, o solo decora? ¿Quién tiene derecho a decir que una voz fue bien visibilizada: el que la muestra o el dueño de la voz?",
+teo:"La última estrategia es la bisagra con M7: visibilizar no es ver contenidos diversos sino <b>exploración orientada</b> con tres criterios: la diversidad como elemento que <b>dialoga</b> (interlocutor, no objeto exótico), que <b>enriquece</b> (aporta valor, no cuota de color) y que se integra al <b>universo cultural cotidiano</b> (no a un museo aparte). Los riesgos que hay que enseñar junto: exotización, apropiación y tokenismo. La vacuna: la prueba de los tres criterios.",
+ctx:LACK+" El archivo del PDF es muestra de la producción argentina y latinoamericana: Identidad Marrón, Misibamba, Diafar, los cinco perfiles sudamericanos, Abuela Grillo en Retina Latina. Encontrar esa producción requiere la búsqueda avanzada de la competencia anterior y la diversificación de fuentes.",
+loc:LACK+" Ángulo: ¿qué voces diversas de la zona merecen visibilidad y hoy no la tienen? Personas y colectivos locales pendientes de confirmación.",
+glo:[["Visibilizar","Hacer que lo que existe sea visto — y visto bien: la segunda mitad es la difícil."],["Diálogo cultural","Dos culturas que se tratan como interlocutores: se escuchan, se preguntan, se transforman un poco."],["Visibilización respetuosa","La que pasa la prueba: dialoga, enriquece y no rebaja. Si el dueño de la voz se reconocería en ella, vas bien."]],
+pra:{steps:["Elijan <b>dos materiales del PDF</b> aún no trabajados + <b>un hallazgo propio</b> (con técnicas de búsqueda avanzada).","A los tres, aplíquenles la prueba: ¿dialoga?, ¿enriquece?, ¿se integra al universo cotidiano?","Conclusión: ¿qué diferencia hay entre un contenido que pasa la prueba y uno que no?, ¿qué señales concretas lo delatan?","Sumen los tres materiales al catálogo del curso en el glosario colaborativo."],cri:"Aplicación rigurosa de los tres criterios · calidad del hallazgo propio · precisión de las señales."},
+abp:{o:"«Curaduría del curso»: una selección oficial de mínimo 10 contenidos diversos con fichas de criterios, lista para M7 y para futuros cursos.",e:"Catálogo curado con fichas completas (qué es, qué visibiliza, por qué pasa la prueba, cómo usarlo).",p:"Se propone a la biblioteca/aula virtual de la escuela como recurso institucional. Insumo directo de M7."}}
+]},
+{n:7,c:"#60a5fa",t:"Voces diversas y producción digital final",w:"12 módulos · 6 semanas",s:"Cierre del año · octubre–noviembre",f:"Sección «Actividades» completa del PDF: materiales para leer, explorar y ver + Actividades 1, 2 y 3",cons:[
+{t:"Para leer: racismo e inteligencia artificial (tres lecturas)",
+cite:"«Racismo e IA: “Los sesgos del pasado abren la puerta a los sesgos del futuro” (Naciones Unidas, 2024)… Por qué la inteligencia artificial puede ser racista y machista y cómo puede evitarse (BBC, 2018)… Cuando algoritmo rima con racismo (Derechos Digitales, 2024), de Luis Fernando Arias.»",
+pre:"Si la inteligencia artificial aprende del pasado y el pasado fue racista y machista, ¿puede existir alguna IA que no herede nada? ¿Quién tiene derecho a cerrar la puerta de los sesgos del futuro: los ingenieros, los Estados, los organismos de derechos humanos, o también los usuarios?",
+teo:"El PDF curó tres lecturas que no son redundantes: <b>Naciones Unidas (2024)</b>, la voz institucional de los derechos humanos, con la tesis del mecanismo de herencia; <b>BBC (2018)</b>, divulgación de una investigación sobre ética de la IA que el documento destaca por estar <i>llevada adelante por un investigador latinoamericano</i> — la región produce conocimiento, no solo lo padece; y <b>Derechos Digitales (2024)</b>, de Luis Fernando Arias, el racismo algorítmico como desafío desde la sociedad civil. Tres perspectivas —organismo, prensa especializada, activismo regional— sobre el mismo problema: compararlas es tan formativo como su contenido.",
+ctx:LACK+" El marco argentino para evaluar cualquier sistema automatizado: Ley 23.592 antidiscriminación y el enfoque de la Ley 13.688 art. 16. Contra el supuesto de que estos debates son importados, una de las tres lecturas presenta investigación latinoamericana.",
+loc:LACK+" Ángulo: ¿dónde aparece la automatización en la vida cotidiana de la zona y del curso (recomendaciones, filtros, correctores, traductores)?",
+glo:[["Inteligencia artificial","Sistemas que aprenden de ejemplos: aprenden del pasado, y el pasado no siempre fue justo."],["Sesgo heredado","El prejuicio que la máquina no inventó: lo copió de los datos con que la entrenaron."],["Ética de la IA","Qué debería y qué no debería hacer un sistema automatizado, y quién responde por lo que hace."]],
+pra:{steps:["Lectura grupal distribuida: cada subgrupo lee <b>una</b> lectura a fondo.","Ficha: ¿quién publica?, ¿tesis central?, ¿caso o ejemplo?, ¿qué solución propone?","Cada subgrupo <b>enseña</b> su lectura al resto en 5 minutos (sin leer textual, con ejemplo propio).","Cierre comparativo: tabla de 3 filas — ¿qué aporta cada perspectiva que las otras no aportan?","Cada estudiante suma un término nuevo al glosario colaborativo."],cri:"Comprensión de la tesis propia · calidad de la enseñanza al resto · solidez de la comparación."},
+abp:{o:"«Círculo de lectura abierto»: el curso presenta las tres lecturas a la comunidad escolar en formato accesible.",e:"Ficha resumen «Racismo e IA en 3 claves» + registro del encuentro + lista de preguntas abiertas.",p:"En un recreo largo, turno contrario o jornada, según autorice la escuela; las preguntas abiertas alimentan el debate de cierre."}},
+{t:"Para explorar: cinco perfiles de militancias indígenas",
+cite:"«Perfiles individuales de militancias indígenas de distintos contextos de América del Sur: Adol Kogui · Alessandra Yupanqui · Bartolina XIXA · David Ángel Gudino · Tatiana Jacanamijoy.»",
+pre:"¿Qué significa que una militancia indígena tenga un perfil digital visible: es una concesión de las plataformas o una conquista? Si durante siglos a estos pueblos les negaron la palabra y hoy se narran a sí mismos en redes, ¿la visibilidad repara algo de esa historia o apenas la maquilla?",
+teo:"Cinco perfiles individuales de militancias indígenas de <b>distintos contextos de América del Sur</b>: la curaduría es deliberadamente diversa en países, pueblos y plataformas. Cada perfil es una persona que decidió narrarse a sí misma — el derecho del Contenido 2.5 hecho práctica. Leer un perfil como acto de enunciación: quién narra, desde qué contexto, qué disputa (contra qué estereotipo o silencio), en qué plataformas. Los cinco juntos demuestran empíricamente la tesis de M2: hay producción indígena de contenidos digitales, diversa y activa.",
+ctx:LACK+" Dialoga con el marco argentino: art. 75 inc. 17 CN, Ley 23.302, modalidad EIB de la Ley 26.206 y Ley 13.688 art. 16 (PDF). La producción digital indígena contemporánea no pide permiso: existe, circula y disputa el relato.",
+loc:LACK+" De los cinco perfiles sudamericanos a la pregunta local: ¿quiénes se narran a sí mismos en la zona? Contacto con personas o comunidades locales solo con acompañamiento docente, consentimiento y finalidad respetuosa.",
+glo:[["Militancia digital","Usar las plataformas para defender una causa: no solo publicar, disputar."],["Autonarración","Contarse a sí mismo con la propia voz: lo contrario de ser contado por otros."],["Mirada turística","Mirar la diversidad como curiosidad sin preguntarle nada: el enemigo de este contenido."]],
+pra:{steps:["El curso se reparte los <b>cinco perfiles</b> para cubrirlos todos.","Ficha de perfil: ¿quién es y desde qué contexto narra?, ¿qué narra?, ¿en qué plataformas?, ¿qué disputa?, ¿qué recurso les pareció más potente?","Prueba de los tres criterios: ¿dialoga, enriquece y se integra, o queda como rareza?","Puesta en común: mapa colectivo de las cinco militancias.","Entrada de glosario por perfil."],cri:"Profundidad de la lectura (qué disputa, no solo qué publica) · trato sin exotización · calidad de la síntesis."},
+abp:{o:"«Perfiles de acá»: identificar voces de la propia comunidad que merezcan un perfil, redactar un protocolo de perfil respetuoso y producir un perfil real (con consentimiento).",e:"Protocolo + perfil producido o diseñado + bitácora de decisiones éticas.",p:"Los perfiles consentidos pueden integrarse a la producción final o publicarse en canales escolares."}},
+{t:"Para explorar: tres asociaciones por la diversidad cultural en Argentina",
+cite:"«Perfiles colectivos de asociaciones por la diversidad cultural en Argentina: Asociación Misibamba · Diafar · Identidad Marrón.»",
+pre:"¿Por qué organizarse colectivamente para narrarse, si hoy cualquiera puede publicar solo? ¿La voz colectiva protege, potencia — o también puede silenciar las diferencias internas?",
+teo:"El salto respecto de los perfiles individuales es de escala de sujeto: de la militancia individual a la <b>organización colectiva</b>, que sostiene la visibilización en el tiempo, produce campañas, construye comunidad y disputa reconocimiento público. Lectura por organización: qué identidad reúne, qué vacío de representación vino a llenar, qué produce, dónde está presente. Conexión interna del PDF que hay que hacer notar: <i>Argentina No Es Blanca</i> es producido junto al <b>Colectivo Identidad Marrón</b> — material y organización se citan entre sí: así se construye un ecosistema de visibilización.",
+ctx:LACK+" Estas organizaciones empujan la distancia entre norma (Ley 13.688 art. 16, Ley 23.592, art. 75 inc. 17 CN) y realidad. En el plano digital confirman la tesis del derecho a narrarse: se ejerce organizándose.",
+loc:LACK+" Ángulo: ¿qué organizaciones de la zona trabajan diversidad cultural, memoria o inclusión, y qué presencia digital tienen? Pendiente de confirmación.",
+glo:[["Agencia colectiva","Lo que una persona sola no logra, una organización lo sostiene."],["Incidencia","Influir en lo público: en las reglas, en las políticas, en el sentido común."],["Vacío de representación","Un lugar del relato público donde un grupo directamente no aparece: las organizaciones nacen para llenarlos."],["Ecosistema de visibilización","Organizaciones, producciones y audiencias que se sostienen entre sí."]],
+pra:{steps:["El curso se reparte las <b>tres asociaciones</b>.","Ficha por organización: ¿qué identidad reúne?, ¿qué vacío llena?, ¿qué produce?, ¿dónde está presente?, ¿qué pieza suya ya conocimos en el PDF?","Comparación con los perfiles individuales: ¿qué logra una organización que no lograría un perfil solo?","Entrada de glosario por organización."],cri:"Comprensión de la organización como sujeto colectivo · identificación del vacío que llena · conexión interna con otros materiales del PDF."},
+abp:{o:"«Mapa de organizaciones de la zona»: quiénes sostienen la diversidad cultural cerca nuestro, con su presencia digital evaluada, y propuesta de vínculo con al menos una.",e:"Mapa + fichas + propuesta de vínculo (charla, entrevista o colaboración en la muestra final).",p:"El mapa queda como recurso; la propuesta de vínculo la gestiona el docente con presentación formal de la escuela."}},
+{t:"Para ver: cuatro audiovisuales, cuatro procedimientos",
+cite:"«Viral Campaña “Racismo en México” (Conapred, 2013)… Argentina No Es Blanca (David Gudiño, 2022)… Wetripantu Pichintún: Lucas, un niño lavkenche (CNTB infantil, 2020)… Abuela Grillo (Retina Latina).»",
+pre:"¿Puede un dibujo animado defender el derecho al agua? ¿Puede un video con chicos diciendo lo que piensan desarmar el racismo mejor que una ley? ¿Qué tiene el lenguaje audiovisual que no tienen los otros — y qué responsabilidad carga quien lo usa para hablar de otros?",
+teo:"Cuatro piezas, cuatro <b>procedimientos de visibilización</b>: (1) <b>«Racismo en México»</b> (Conapred, realizado por 11.11 Cambio Social): investigación con infancias mexicanas — el racismo se aprende temprano; (2) <b>«Argentina No Es Blanca»</b> (David Gudiño, DAGA Contenidos + Colectivo Identidad Marrón): pone en evidencia discursos sobre la presencia de la gente marrón en Argentina; (3) <b>«Wetripantu Pichintún»</b> (CNTB infantil): docuanimación chilena que rescata historias cotidianas de la infancia — la normalización como procedimiento; (4) <b>«Abuela Grillo»</b> (Retina Latina): la mitología del pueblo Ayoreo de Bolivia como alegoría del derecho al agua. Ver los cuatro juntos enseña que visibilizar no tiene una sola forma — exactamente la decisión que el curso tomará en su producción final.",
+ctx:LACK+" Una pieza es directamente argentina y disputa el mito de la Argentina blanca; las otras amplían la escala regional. Juegan además en plataformas latinoamericanas: Abuela Grillo en Retina Latina, plataforma pública de cine de la región.",
+loc:LACK+" Ángulo: ¿qué pieza audiovisual falta en la zona — qué historia local merecería uno de los cuatro procedimientos?",
+glo:[["Procedimiento audiovisual","El cómo de una pieza: entrevistar chicos, evidenciar discursos, animar lo cotidiano, versionar un mito."],["Docuanimación","Documental con animación: lo real contado con dibujo, para mundos que la cámara sola no alcanza."],["Alegoría","Contar una cosa para hablar de otra: la abuela grillo cuenta el agua."]],
+pra:{steps:["El curso ve los <b>cuatro materiales</b> (en línea o descargados).","Ficha por pieza: ¿quién produce?, ¿qué visibiliza?, ¿cuál es su procedimiento?, ¿qué habilita y qué bloquea?","Tabla comparativa de los cuatro procedimientos: ¿para qué tipo de mensaje sirve mejor cada uno?","Cada estudiante elige el procedimiento que más le sirve para su futura producción y justifica en 3 renglones.","Las cuatro piezas entran al catálogo curado del glosario colaborativo."],cri:"Identificación correcta del procedimiento de cada pieza · aplicación rigurosa de las cuatro preguntas · calidad de la justificación."},
+abp:{o:"«Ciclo de cine y debate»: los cuatro audiovisuales para la comunidad escolar, con fichas públicas y preguntas de debate propias.",e:"Fichas públicas + registro del ciclo + sistematización.",p:"En la semana del 12 de octubre o la Efeméride de Noviembre: la antesala directa de la muestra final."}},
+{t:"Actividad 2: debate y reflexión con las preguntas del PDF",
+cite:"«De los términos vistos, ¿cuáles conocían y cuáles no? ¿Cómo se relacionan con sus prácticas cotidianas…? ¿Conocían los perfiles…? ¿Conocen o consumen contenidos digitales en los que esté presente la diversidad cultural…? ¿En la escuela han visto contenidos digitales…? ¿Conocen personas que se identifiquen como pertenecientes a una cultura particular…? ¿Conocen personas que hablan alguna lengua indígena? ¿Han escuchado estas lenguas en el ámbito escolar o en redes sociales?»",
+pre:"¿Qué dice del estado de la diversidad cultural que un documento oficial tenga que preguntar si alguien conoce una lengua indígena — y que la respuesta probable sea que no? Si casi todas las respuestas son «no», ¿ese «no» es un dato sobre los estudiantes o un diagnóstico sobre el sistema que los formó?",
+teo:"Ocho preguntas en secuencia deliberada: vocabulario → prácticas cotidianas → perfiles → consumo → escuela → entorno → lenguas indígenas. El recorrido del año condensado. El PDF ofrece formatos: <b>conversaciones grupales, debates guiados, lluvia de ideas o registros escritos</b>, con finalidad declarada: escucha activa, respeto y reconocimiento de los saberes compartidos. Las preguntas 6, 7 y 8 tocan identidades reales del aula: formatos mixtos y regla de oro — <b>nadie está obligado a exponer su pertenencia cultural</b>; el registro público siempre es agregado.",
+ctx:LACK+" Las preguntas sobre lenguas tocan un dato argentino: entre 15 y 20 lenguas originarias, varias en situación crítica, que la escuela argentina históricamente no dejó entrar. El mandato de revertirlo está en el art. 75 inc. 17 CN y en la Ley 13.688 art. 16. Cuando el curso responde, produce un pequeño censo propio sobre el estado de ese mandato.",
+loc:LACK+" Las ocho preguntas aplicadas al territorio real del curso; hablantes de lenguas originarias o migrantes que pudieran enriquecer el debate, con consentimiento y sin exposición (pendiente de confirmación).",
+glo:[["Pregunta disparadora","Una pregunta que no busca respuesta de manual: abre una conversación."],["Registro agregado","Contar lo que el grupo descubrió sin nombrar a nadie: la forma ética de documentar."],["Voluntariedad","Nadie expone su identidad si no quiere: la regla que hace posible hablar de identidad sin daño."]],
+pra:{steps:["Cada estudiante responde las ocho preguntas <b>por escrito, en privado</b>, marcando las que quiera compartir.","Ronda oral por bloques (vocabulario → consumo → escuela → territorio → lenguas) con el protocolo del curso.","Dos relatores anotan los hallazgos <b>agregados</b>, sin nombres.","Comparación con el acta del debate de M5: ¿qué posiciones cambiaron?","Cierre individual: qué descubrí de mí, del curso o de mi entorno, y cómo podría entrar en la producción final."],cri:"Respuestas trabajadas · escucha (turnos, recuperación de lo dicho por otros) · calidad del registro agregado · conexión con la producción final."},
+abp:{o:"«El diagnóstico del curso»: convertir el registro agregado del debate en un documento público sobre el estado de la diversidad cultural en la escuela y el entorno.",e:"Diagnóstico de 2 páginas + una propuesta por hallazgo + versión legible para cartelera.",p:"Se presenta en la muestra de cierre y se entrega al equipo directivo como insumo institucional del año siguiente."}},
+{t:"Actividad 3: la producción digital final",
+cite:"«Como cierre integrador, se propone la realización de una producción digital en el formato que resulte más familiar y significativo para las y los estudiantes: reel, carrusel de Instagram, cápsula de pódcast, video breve, póster digital, presentación interactiva, entre otros.»",
+pre:"Si el año demostró que quien no produce es narrado por otros, ¿la producción final es un trabajo práctico o es un acto de ciudadanía? ¿Qué vale más: una pieza fallida que intentó visibilizar con respeto, o una brillante que refuerza un estereotipo sin querer?",
+teo:"El PDF define la producción con decisiones precisas: <b>formato</b> «el que resulte más familiar y significativo» (reel, carrusel, cápsula de pódcast, video breve, póster digital, presentación interactiva, entre otros — la lista es abierta y la elección es parte del aprendizaje); <b>base</b>: las reflexiones previas; <b>temas posibles</b>: visibilizar la diversidad cultural, los desafíos de la ciudadanía digital o los aprendizajes del recorrido; <b>publicación</b>: solo «si el grupo lo acuerda, y con acompañamiento docente». Pipeline: investigación validada → tema → formato fundamentado → borrador con revisión entre pares → producción → lista de publicación responsable → rúbrica de 6 dimensiones → defensa oral → decisión de publicar → muestra.",
+ctx:LACK+" Cada pieza del curso suma al circuito real de producción diversa argentino y latinoamericano que el PDF aporta como casos. Publicar ejercita el derecho a narrarse y la ciudadanía digital; el marco: Ley 23.592, cuidado de imágenes de menores y normas de convivencia de la escuela.",
+loc:LACK+" Las producciones con anclaje local: la diversidad, los desafíos digitales y los aprendizajes del curso contados desde la zona. Voces, canales y fecha de la muestra pendientes de confirmación.",
+glo:[["Formato","El tipo de pieza: cada uno tiene su poder y su ética. «Porque queda lindo» no es fundamentación."],["Lista de publicación responsable","El checklist antes de publicar: fuentes, consentimientos, respeto, sin estereotipos, conciencia de huella."],["Defensa oral","La producción no termina cuando se renderiza: termina cuando se explica."],["Muestra de cierre","El momento en que el curso le muestra a la comunidad lo que produjo: la escuela como espacio de encuentro, en acto."]],
+pra:{steps:["Recuperen el <b>informe de investigación</b> del Contenido 6.5: sin investigación validada no hay producción.","Elijan uno de los <b>tres ejes del PDF</b> y definan el recorte específico.","Elijan formato y escriban la <b>fundamentación</b>: por qué ese formato para ese mensaje.","Guion/borrador: otro grupo aplica las cuatro preguntas y la prueba de los tres criterios.","Producción con las herramientas disponibles (prioridad gratuitas y libres).","El/la verificador/a de sesgos completa la <b>lista de publicación responsable</b>; el docente la valida.","Defensa oral de 5 minutos evaluada con la rúbrica de 6 dimensiones.","Decisión de publicación (optativa, no puntúa) + entrega de la <b>carpeta de producción</b>: pieza + bitácora + fuentes + checklist."],cri:"Rúbrica de 6 dimensiones (rigor conceptual, mirada crítica, enfoque intercultural, comunicación/creatividad, fuentes, ciudadanía digital) + defensa oral."},
+abp:{o:"«La muestra: qué voces va a sumar este curso a la web» — organización de la muestra de cierre con las producciones finales, el glosario cerrado, el diagnóstico del curso y el catálogo curado.",e:"La muestra realizada + registro con consentimiento + acta de la ronda final («¿qué voz sumamos?»).",p:"Fechas en torno al 12/10 o la Efeméride de Noviembre. Con la muestra se consolida la valoración del 2.º cuatrimestre (RITE); quienes tengan trayectorias TEP/TED cuentan con la intensificación de diciembre/febrero–marzo: nadie se queda afuera del cierre por un tiempo."}},
+{t:"Actividad 1 al cierre del año: el glosario colaborativo como obra colectiva",
+cite:"«Se propone la construcción colectiva de un glosario –digital o analógico, según las posibilidades del grupo y su docente– que reúna términos claves relacionados con la ciudadanía digital y la interculturalidad…»",
+pre:"¿Puede un glosario ser una obra política? Si todo el año demostró que las palabras importan, ¿qué significa que el último objeto que el curso construye juntos sea un vocabulario compartido? ¿Quién tiene el poder de definir las palabras?",
+teo:"La Actividad 1 abrió el año y lo cierra: es el único producto que creció con todos los módulos. La dinámica del PDF tiene tres operaciones abiertas: <b>sumar</b> definiciones, <b>completar</b> las no resueltas y <b>comentar o ampliar</b> las existentes. Formato según posibilidades: <b>documento compartido, presentación digital o mural</b>. En M7 el glosario entra en fase de obra: auditoría de entradas, edición colectiva, selección de las <b>entradas clave</b> del año, decisión de formato final y presentación pública. Es además evaluación auténtica: muestra el recorrido conceptual completo, entrada por entrada, con autorías visibles.",
+ctx:LACK+" El glosario es también un gesto de producción colectiva de conocimiento, que el PDF conecta con su propio cierre: la escuela fortalecida «como espacio de encuentro, diálogo y construcción colectiva del conocimiento».",
+loc:LACK+" El glosario final con capa local: entradas sobre la zona que el curso investigó. Dónde queda como recurso institucional (biblioteca, aula virtual, cartelera) pendiente de confirmación.",
+glo:[["Glosario colaborativo","Un vocabulario hecho entre todos: no es una lista, es una obra."],["Entrada","Cada término con definición, analogía, ejemplo y fuente: la unidad de la obra."],["Curaduría","Elegir qué va y qué no, y por qué: seleccionar las entradas clave es curar."],["Obra colectiva","Un producto que no es de nadie y es de todos: lleva las marcas del curso entero."]],
+pra:{steps:["<b>Auditoría:</b> en duplas, cuenten y revisen las entradas: ¿cuántas por módulo?, ¿cuántas completas?, ¿cuántas a medio resolver?","<b>Edición:</b> cada dupla adopta 2–3 entradas débiles y las completa según el estándar del año.","<b>Selección colectiva:</b> el curso vota las <b>10 entradas clave</b> y fundamenta cada una.","Decisión de formato final (digital o analógico, según las posibilidades reales de la escuela).","Lectura pública de las 10 entradas; cada estudiante escribe qué palabra lo cambió más este año."],cri:"Calidad de la edición (mejora visible) · criterios de selección fundamentados · cuidado del formato final. Evidencia directa de la expectativa E6."},
+abp:{o:"«El glosario viaja»: convertir el glosario cerrado en un recurso institucional real con guía de uso escrita por el curso.",e:"Glosario final + guía de uso (cómo se consulta, cómo se aportan entradas nuevas) + acta de entrega institucional.",p:"Entrega formal en la muestra de cierre, ante directivos y comunidad. El curso que se va deja una herramienta: con este gesto cierra el Módulo 7, cierra el año y queda cerrado el marco de contenidos completo."}}
+]}
+];
+
+const ABP=[
+["M1","Índice de interculturalidad digital","Diseñar un índice con los seis objetivos del PDF como dimensiones (preguntas observables, escala 0–3), aplicarlo como piloto en el curso y reaplicarlo al final del año para medir el propio impacto del recorrido.","Índice + informe piloto + 2 metas de mejora","Cierre del Módulo 1, ante el curso"],
+["M2","Mapa de autonomía tecnológica local","Investigar y graficar la infraestructura y producción tecnológica en tres capas: global (plataformas), nacional (ARSAT, universidades) y local (proveedores y emprendimientos de la zona), marcando «dato a confirmar» lo no verificable.","Mapa de tres capas + 3 conclusiones + 1 acción escolar","Cierre del Módulo 2; la acción se vota y se implementa"],
+["M3","Manifiesto del curso","Redactar el manifiesto «la escuela que queremos ser»: diagnóstico honesto (semáforo institucional), horizonte y 5 compromisos verificables, con pieza digital de campaña.","Manifiesto + pieza digital + agenda de verificación","Lectura pública en el cierre del 1.er cuatrimestre"],
+["M4","Informe de auditoría algorítmica","Integrar todas las evidencias del módulo (búsquedas comparadas, perfiles, feeds, perforación, estereotipos) en un informe colectivo con plan de acción del curso.","Informe de 3 páginas + plan con 3 decisiones firmadas","Debate de cierre con las preguntas del PDF"],
+["M5","Debate integrador del 2.º cuatrimestre","La Actividad 2 del PDF a gran escala: las preguntas «Para reflexionar» con posiciones fundadas en evidencia y verificador de fuentes en vivo.","Acta + conclusiones (3 afirmaciones + 2 preguntas abiertas)","Es la evaluación parcial integradora de M4+M5"],
+["M6","Curaduría oficial del curso","Catálogo de mínimo 10 contenidos diversos con fichas de criterios (¿dialoga?, ¿enriquece?, ¿se integra?), listo para usar en M7 y por futuros cursos.","Catálogo curado con fichas completas","Se propone como recurso institucional de la escuela"],
+["M7","La muestra: qué voces sumamos","Organizar la muestra de cierre con las producciones finales, el glosario cerrado, el diagnóstico del curso y el catálogo: el paquete completo de lo que el curso le deja a la escuela.","La muestra + registro + acta de la ronda final","En torno al 12/10 y la Efeméride de Noviembre"]]
+;
+
+const GLOS=[
+["Interculturalidad","Perspectiva que promueve el respeto, la valoración y el diálogo entre culturas, identidades y lenguas: no constata la diversidad, la hace relación.","M1"],
+["Perspectiva","Un par de anteojos: no cambia lo que hay, cambia cómo lo mirás.","M1"],
+["Agencia","La capacidad real de actuar, decidir e incidir. Como manejar en vez de ir en el asiento de atrás.","M1"],
+["Jerarquización","Armar un ranking de culturas como tabla de posiciones. La interculturalidad rompe el ranking.","M1"],
+["Multiculturalismo","Un edificio con muchos departamentos que no necesariamente se cruzan.","M1"],
+["Pluralismo","Cuando además todos tienen voz en el consorcio.","M1"],
+["Discriminación","Tratar peor a alguien por su grupo: un portazo, o una rampa que nadie construyó.","M1"],
+["Racismo","Discriminación montada sobre la idea falsa de grupos superiores e inferiores.","M1"],
+["Sesgo","Una balanza descalibrada: no miente, mide torcido.","M1"],
+["Enfoque de derechos","El piso de dignidad que no se negocia antes de cualquier debate.","M1"],
+["Derecho a narrarse","Contar tu propia historia con tu propia voz. En la web: existir en primera persona.","M2"],
+["TIC","El kit con que producís, guardás y compartís información: un ecosistema, no una cosa.","M2"],
+["Conectividad","Que internet llegue a tu casa, a precio pagable y con velocidad suficiente.","M2"],
+["Promesa democratizadora","Entrada gratis al estadio… cuando algunos no tienen cómo llegar.","M2"],
+["Brecha de acceso","La diferencia entre tener bicicleta y no tenerla.","M2"],
+["Brecha de conectividad","Tener bici con ruta rota o peaje carísimo.","M2"],
+["Brecha de alfabetización digital","Tener bici y ruta, pero que nadie te haya enseñado a andar.","M2"],
+["Dieta informativa","El conjunto de información que consumís: si es siempre la misma, te nutrís poco.","M2"],
+["Esfera pública","La gran conversación de la sociedad: lo que no entra ahí casi no existe.","M2"],
+["Subalternizar","Mostrar a un grupo en posición de menos, incluso cuando lo mostrás.","M2"],
+["Discurso homogeneizante","El mensaje que da a entender que hay una sola forma correcta de ser alumno: el molde de la fábrica.","M3"],
+["Universo cultural","El mundo entero de sentidos de una persona o grupo: no es una característica, es un mundo.","M3"],
+["Naturalizar","Creer que algo construido «siempre fue así».","M3"],
+["Invisibilizar","Que algo esté presente pero nadie lo registre: no es que no exista, es que nadie lo mira.","M3"],
+["Fin educativo","Un objetivo oficial que la escuela no puede no perseguir.","M3"],
+["Garantizar","Asegurar y responder si no se cumple: prometer es decir, garantizar es hacerse cargo.","M3"],
+["Política digital","Decisiones públicas sobre conectividad, plataformas, datos y contenidos.","M3"],
+["Algoritmo","Una receta de pasos que el sistema sigue para decidir: aprende de datos, y los datos no son neutrales.","M4"],
+["Personalización","El kiosquero que ya te conoce y te ofrece lo que solés comprar.","M4"],
+["Perfil algorítmico","El retrato robot que el sistema arma de vos: hecho para vender y retener, no para entenderte.","M4"],
+["Feed","Parece todo lo que pasa; es una selección ordenada por algoritmo.","M4"],
+["Burbuja informativa","Una pecera con vista al océano que te hacen creer que es el océano.","M4"],
+["Cámara de eco","Gritar en un cañón: solo escuchás tu voz, más fuerte.","M4"],
+["Relevancia vs. coincidencia","Lo que sirve para tu búsqueda vs. lo que se parece a lo que ya sos.","M4"],
+["Sesgo algorítmico","Cuando el sistema trata peor a ciertos grupos: no es maldad, es herencia.","M4"],
+["Estereotipo","La etiqueta simplificada que reemplaza personas reales. Al algoritmo le encanta: es fácil de repetir.","M4"],
+["Neutralidad tecnológica (supuesto)","La creencia de que las herramientas no toman partido: todo diseño toma partido.","M5"],
+["Alfabetización digital crítica","Saber usar la tecnología Y saber pensarla.","M5"],
+["Interpretar / analizar / cuestionar","Entender qué dice · desarmarlo · preguntar por qué: los tres escalones.","M5"],
+["Habeas data","Tu derecho a preguntar «¿qué saben de mí?» y a corregir o borrar lo que está mal.","M5"],
+["Grooming","Delito de adultos que contactan a chicos por medios digitales: tiene nombre, ley y denuncia.","M5"],
+["Mapa de fuentes","Tu lista deliberada y variada de lugares donde informarte.","M6"],
+["Falso equilibrio","Creer que todas las versiones valen igual solo por existir: comparar no es empatar.","M6"],
+["Operador de búsqueda","Filtros de una linterna que ilumina justo donde querés: comillas, menos, site:, filetype:.","M6"],
+["Página profunda","Más allá de la primera página: ahí vive lo que el ranking no privilegia.","M6"],
+["Consumo espontáneo","Lo que te llega sin buscarlo: el feed, los reenviados, lo viral.","M6"],
+["Exotización","Mostrar una cultura como rareza de zoológico: parece interés, es distancia.","M6"],
+["Tokenismo","Poner una voz diversa de adorno para que nada cambie.","M6"],
+["Visibilización respetuosa","La que dialoga, enriquece y no rebaja: si el dueño de la voz se reconocería en ella, vas bien.","M6"],
+["Militancia digital","Usar las plataformas para defender una causa: no solo publicar, disputar.","M7"],
+["Autodeterminación narrativa","Cuando un grupo se cuenta a sí mismo en vez de esperar a ser contado.","M7"],
+["Procedimiento audiovisual","El cómo de una pieza: entrevistar chicos, evidenciar discursos, animar lo cotidiano, versionar un mito.","M7"],
+["Glosario colaborativo","Un vocabulario hecho entre todos: no es una lista, es una obra.","M7"],
+["Escucha activa","Escuchar para entender: podés repetir lo que dijo el otro antes de contestar.","M7"],
+["Ciudadanía digital situada","Ciudadanía con los pies en tu territorio y con que ver con quienes somos: de acá, no copiada.","M5"]]
+;
+
+/* ════════════════════ RENDER ════════════════════ */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+/* Expectativas */
+$("#expGrid").innerHTML=EXP.map(e=>`<div class="card reveal in"><span class="pill" style="background:var(--grad)">${e[0].slice(0,2)}</span><h3>${e[0].slice(3)}</h3><p><b>${e[1]}</b></p><h4>Desempeños observables</h4><ul>${e[2].map(d=>`<li>${d}</li>`).join("")}</ul></div>`).join("");
+
+/* Momentos */
+$("#momGrid").innerHTML=MOM.map(m=>`<div class="card reveal in"><h3>${m[0]}</h3><p style="font-size:.8rem;color:var(--a2);font-weight:700;margin-bottom:8px">${m[1]}</p><p>${m[2]}</p></div>`).join("");
+
+/* Metodología */
+$("#metGrid").innerHTML=MET.map(m=>`<div class="card reveal in"><h3>${m[0]}</h3><p>${m[1]}</p><ul>${m[2].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+/* Evaluación áreas */
+$("#evGrid").innerHTML=EV.map(m=>`<div class="card reveal in"><h3>${m[0]}</h3><p>${m[1]}</p><ul>${m[2].map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+/* Cronograma */
+function tl(arr,el){$(el).innerHTML=arr.map(x=>`<div class="tl-item reveal in" style="border-left:5px solid ${x.c}"><div class="mod" style="color:${x.c}">${x.m}</div><div><h3>${x.t}</h3><div class="meta">⏱ ${x.w}</div><div class="chips">${x.k.map(c=>`<span class="chip">${c}</span>`).join("")}</div></div></div>`).join("")}
+tl(SEM1,"#sem1");tl(SEM2,"#sem2");
+$("#hitosGrid").innerHTML=HITOS.map(h=>`<div class="card reveal in"><h3>📅 ${h[0]}</h3><p>${h[1]}</p></div>`).join("");
+
+/* Módulos */
+$("#modChips").innerHTML=`<button class="on" data-m="all">Todos</button>`+MODS.map(m=>`<button data-m="${m.n}" style="border-left:4px solid ${m.c}">M${m.n}</button>`).join("");
+$("#modsWrap").innerHTML=MODS.map((m,mi)=>`
+<div class="modblock reveal" data-mod="${m.n}" style="--mc:${m.c}">
+  <div class="modhead"><div class="num">M${m.n}</div><div style="flex:1"><h3>${m.t}</h3><div class="meta">⏱ ${m.w} · ${m.s} · Fuente: ${m.f}</div></div></div>
+  ${m.cons.map((c,ci)=>`
+  <div class="cont" data-search="${(c.t+" "+c.pre+" "+c.teo+" "+c.cite).toLowerCase()}">
+    <button aria-expanded="false"><span>${mi+1}.${ci+1} · ${c.t}</span><span class="arr">▼</span></button>
+    <div class="contbody">
+      <div class="cite">📄 ${c.cite}</div>
+      <div class="stabs" role="tablist">
+        <button class="on">Pregunta</button><button>Teoría</button><button>Contexto AR</button><button>Bahía Blanca</button><button>Microglosario</button><button>Práctica</button><button>ABP</button>
+      </div>
+      <div class="spanel on"><h5>4.1 · Pregunta problematizadora</h5><p>${c.pre}</p></div>
+      <div class="spanel"><h5>4.2 · Respuesta teórica y didáctica</h5><p>${c.teo}</p></div>
+      <div class="spanel"><h5>4.3 · Contextualización argentina</h5><p>${c.ctx}</p></div>
+      <div class="spanel"><h5>4.4 · Bajada local en Bahía Blanca</h5><p>${c.loc}</p></div>
+      <div class="spanel"><h5>4.5 · Glosario técnico micro</h5><div class="glos">${c.glo.map(g=>`<div><b>${g[0]}.</b> ${g[1]}</div>`).join("")}</div></div>
+      <div class="spanel"><h5>4.6 · Guía práctica paso a paso</h5><ol>${c.pra.steps.map(s=>`<li>${s}</li>`).join("")}</ol><p><b>Criterios de entrega:</b> ${c.pra.cri}</p></div>
+      <div class="spanel"><h5>4.7 · Desafío grupal de impacto local (ABP)</h5><p><b>🎯 Objetivo:</b> ${c.abp.o}</p><p style="margin-top:8px"><b>📦 Entregable:</b> ${c.abp.e}</p><p style="margin-top:8px"><b>🎤 Presentación:</b> ${c.abp.p}</p></div>
+    </div>
+  </div>`).join("")}
+</div>`).join("");
+
+/* ABP */
+const ABPC=["#8b5cf6","#22d3ee","#fbbf24","#f472b6","#34d399","#fb923c","#60a5fa"];
+$("#abpGrid").innerHTML=ABP.map((a,i)=>`<div class="card abp reveal in" style="--ac:${ABPC[i]}"><span class="tag">Cierre del Módulo ${a[0].slice(1)}</span><h3>${a[1]}</h3><p>${a[2]}</p><h4>Entregable</h4><p>${a[3]}</p><h4>Instancia de presentación</h4><p>${a[4]}</p></div>`).join("");
+
+/* Glosario */
+function renderGlos(f){const t=(f||"").toLowerCase();$("#glosGrid").innerHTML=GLOS.filter(g=>!t||g[0].toLowerCase().includes(t)||g[1].toLowerCase().includes(t)).map(g=>`<div class="term"><b>${g[0]}</b><p>${g[1]}</p><span>Módulo ${g[2]}</span></div>`).join("")||`<p style="color:var(--mut)">No se encontró ese término. Probá con otro.</p>`}
+renderGlos();
+
+/* ════════════════════ INTERACCIÓN ════════════════════ */
+/* Tabs genéricas (planificación + cronograma) */
+$$('.tabs [data-t]').forEach(b=>b.addEventListener("click",()=>{
+  const g=b.dataset.t,i=b.dataset.i;
+  b.closest(".tabs").querySelectorAll("button").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-selected","false")});
+  b.classList.add("on");b.setAttribute("aria-selected","true");
+  document.querySelectorAll(`[data-p="${g}"]`).forEach(p=>p.classList.toggle("on",p.dataset.i===i));
+}));
+
+/* Chips de filtro por módulo */
+$("#modChips").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  $("#modChips").querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+  const m=b.dataset.m;
+  document.querySelectorAll(".modblock").forEach(mb=>{
+    mb.style.display=(m==="all"||mb.dataset.mod===m)?"":"none";
+  });
+  $("#q").value="";count.textContent="";
+  document.querySelectorAll(".cont").forEach(c=>c.style.display="");
+  $("#noRes").style.display="none";
+});
+
+/* Acordeones de contenido */
+document.addEventListener("click",e=>{
+  const h=e.target.closest(".cont>button");
+  if(h){const c=h.parentElement;const open=c.classList.toggle("open");h.setAttribute("aria-expanded",open);return}
+  const st=e.target.closest(".stabs button");
+  if(st){const i=[...st.parentElement.children].indexOf(st);const body=st.closest(".contbody");
+    body.querySelectorAll(".stabs button").forEach((x,xi)=>x.classList.toggle("on",xi===i));
+    body.querySelectorAll(".spanel").forEach((p,pi)=>p.classList.toggle("on",pi===i));}
+});
+
+/* Buscador de contenidos */
+const q=$("#q"),count=$("#count");
+q.addEventListener("input",()=>{
+  const t=q.value.trim().toLowerCase();let n=0;
+  document.querySelectorAll("#modChips button").forEach(x=>x.classList.toggle("on",x.dataset.m==="all"));
+  document.querySelectorAll(".modblock").forEach(mb=>{
+    let vis=0;
+    mb.querySelectorAll(".cont").forEach(c=>{
+      const ok=!t||c.dataset.search.includes(t);c.style.display=ok?"":"none";if(ok){vis++;n++}
+      if(ok&&t)c.classList.add("open");
+    });
+    mb.style.display=vis?"":"none";
+  });
+  $("#noRes").style.display=(t&&n===0)?"block":"none";
+  count.textContent=t?`${n} contenido${n!==1?"s":""} encontrado${n!==1?"s":""}`:"";
+});
+
+/* Buscador de glosario */
+$("#qg").addEventListener("input",e=>renderGlos(e.target.value));
+
+/* Tema claro/oscuro */
+const tb=$("#themeBtn");
+function setTheme(t){document.documentElement.dataset.theme=t;tb.textContent=t==="dark"?"☀️":"🌙";tb.setAttribute("aria-label",t==="dark"?"Cambiar a modo claro":"Cambiar a modo oscuro")}
+if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches)setTheme("light");else setTheme("dark");
+tb.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+
+/* Barra de progreso */
+addEventListener("scroll",()=>{
+  const h=document.documentElement;
+  $("#prog").style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";
+},{passive:true});
+
+/* Sección activa en la nav */
+const secs=[...document.querySelectorAll("section[id],footer[id]")];
+const navA=$$("#navlinks a");
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){
+    navA.forEach(a=>a.classList.toggle("act",a.getAttribute("href")==="#"+e.target.id));
+  }})
+},{rootMargin:"-35% 0px -55% 0px"});
+secs.forEach(s=>io.observe(s));
+
+/* Scroll reveal */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");ro.unobserve(e.target)}}),{threshold:.06});
+$$(".reveal:not(.in)").forEach(el=>ro.observe(el));
+
+/* Impresión / versión carpeta */
+$("#printFab").addEventListener("click",()=>{
+  document.querySelectorAll(".cont").forEach(c=>{c.classList.add("open");c.querySelector("button").setAttribute("aria-expanded","true")});
+  document.querySelectorAll(".spanel").forEach(p=>p.classList.add("on"));
+  document.querySelectorAll(".tpanel").forEach(p=>p.classList.add("on"));
+  setTimeout(()=>window.print(),250);
+});
+</script>
+</body>
+</html>
+
