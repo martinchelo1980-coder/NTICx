@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrera NTICx · Tablero + Cuestionario (180 preguntas)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/fredoka/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/nunito/400.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/nunito/700.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/nunito/900.css" rel="stylesheet">
+<style>
+:root{--u:10px;--card:rgba(255,255,255,.055);--cardbrd:rgba(255,255,255,.14);--txt:#EEEBFB;--muted:#A9A3C9;--radius:18px}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Nunito',system-ui,sans-serif;color:var(--txt);min-height:100vh;
+ background:radial-gradient(1100px 620px at 8% -12%,#3a2f78 0%,transparent 62%),radial-gradient(900px 520px at 108% 6%,#0c5661 0%,transparent 58%),radial-gradient(700px 700px at 50% 120%,#241c50 0%,transparent 60%),linear-gradient(160deg,#0f0d24 0%,#171439 46%,#0a0918 100%);background-attachment:fixed}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+ background-image:linear-gradient(rgba(160,200,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(160,200,255,.055) 1px,transparent 1px),
+ radial-gradient(circle at 12% 22%,rgba(120,225,255,.30) 1.6px,transparent 2.6px),radial-gradient(circle at 78% 62%,rgba(190,150,255,.28) 1.6px,transparent 2.6px),radial-gradient(circle at 42% 86%,rgba(120,255,215,.22) 1.6px,transparent 2.6px);
+ background-size:52px 52px,52px 52px,208px 208px,286px 286px,340px 340px}
+h1,h2,h3,.fredoka{font-family:'Fredoka Variable','Nunito',sans-serif}
+button{font-family:inherit}
+.btn{border:none;cursor:pointer;border-radius:14px;font-weight:800;padding:11px 18px;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;justify-content:center;
+ transition:transform .14s,box-shadow .18s,filter .18s,background .2s;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none;filter:none}
+.btn svg{width:18px;height:18px;stroke-width:2.1}
+.btn-primary{background:linear-gradient(135deg,#7C5CFF 0%,#4EA8FF 55%,#2BD9C0 120%);box-shadow:0 10px 26px -10px rgba(94,120,255,.95);border-color:transparent}
+.btn-amber{background:linear-gradient(135deg,#FFC63D,#FF8A3D);color:#3a2200;border-color:transparent;box-shadow:0 10px 24px -12px rgba(255,170,60,.9)}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:11px}
+.btn-icon{padding:8px;width:38px;height:38px;border-radius:12px}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;padding:12px 20px;background:rgba(12,10,28,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.10)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand .mark{width:42px;height:42px;border-radius:13px;flex:0 0 42px;display:grid;place-items:center;background:linear-gradient(140deg,#7C5CFF,#2BD9C0);box-shadow:0 8px 20px -8px #6a5cff;color:#fff;font-family:'Fredoka Variable';font-weight:700;font-size:19px}
+.brand h1{margin:0;font-size:20px;line-height:1.05;letter-spacing:.4px}
+.brand h1 b{color:#6FE3D2}
+.brand p{margin:2px 0 0;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.topbar .spacer{flex:1}.topbar .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.screen{position:relative;z-index:1}.hide{display:none !important}
+.setup-wrap{max-width:1120px;margin:0 auto;padding:26px 20px 50px}
+.hero{border-radius:26px;padding:26px 28px;position:relative;overflow:hidden;background:linear-gradient(120deg,rgba(124,92,255,.22),rgba(43,217,192,.14) 60%,rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.16);margin-bottom:20px}
+.hero::after{content:'';position:absolute;right:-70px;top:-70px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(110,227,210,.30),transparent 68%)}
+.hero h2{margin:0 0 6px;font-size:clamp(24px,3.6vw,38px);line-height:1.06}
+.hero h2 span{background:linear-gradient(90deg,#FFD86F,#6FE3D2 55%,#A78BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;max-width:70ch;color:#D9D4F2;font-size:15px;line-height:1.55}
+.setup-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+@media(max-width:900px){.setup-grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--cardbrd);border-radius:var(--radius);padding:20px;box-shadow:0 20px 40px -30px #000;min-width:0}
+.panel h3{margin:0 0 14px;font-size:15px;letter-spacing:1.4px;text-transform:uppercase;color:#9FE9DC}
+.seg{display:flex;gap:8px;background:rgba(0,0,0,.28);padding:6px;border-radius:14px;border:1px solid rgba(255,255,255,.10);flex-wrap:wrap}
+.seg button{flex:1;min-width:70px;border:none;background:transparent;color:#CFC9EC;font-weight:800;padding:11px 6px;border-radius:10px;cursor:pointer;font-size:14px;transition:.18s}
+.seg button.on{background:linear-gradient(135deg,#7C5CFF,#4EA8FF);color:#fff;box-shadow:0 8px 18px -10px #5b6cff}
+.prow{display:flex;align-items:center;gap:11px;margin-top:10px}
+.pdot{width:26px;height:26px;border-radius:50%;flex:0 0 26px;box-shadow:0 0 0 3px rgba(255,255,255,.14),inset 0 -4px 8px rgba(0,0,0,.28)}
+.prow input[type=text]{flex:1;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 13px;color:#fff;font-size:15px;font-weight:700;outline:none;min-width:0}
+.prow input[type=text]:focus{border-color:#7C5CFF;box-shadow:0 0 0 3px rgba(124,92,255,.28)}
+.field{margin-top:16px}
+.field label{display:block;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+select{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 13px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;outline:none;cursor:pointer}
+.rules-mini{margin:0;padding-left:18px;font-size:13.6px;line-height:1.62;color:#DCD7F4}
+.rules-mini li{margin-bottom:7px}.rules-mini b{color:#FFD86F}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:9px;margin-top:4px}
+.lg{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:12px;font-size:12.4px;font-weight:800;line-height:1.15;border:1.5px solid var(--ac)}
+.lg svg{width:22px;height:22px;flex:0 0 22px;stroke-width:2;color:var(--ac)}
+.lg small{display:block;font-weight:700;opacity:.72;font-size:10.6px}
+.stats{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+.stat{flex:1;min-width:110px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:11px 13px}
+.stat b{display:block;font-family:'Fredoka Variable';font-size:26px;line-height:1;color:#6FE3D2}
+.stat span{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:800}
+.game{display:flex;gap:18px;align-items:flex-start;max-width:1500px;margin:0 auto;padding:18px 18px 40px}
+.boardcol{flex:1 1 auto;min-width:0}
+.side{width:336px;flex:0 0 336px;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media(max-width:1120px){.game{flex-direction:column}.side{width:100%;flex:1 1 auto}}
+.board-frame{position:relative;border-radius:26px;padding:calc(var(--u)*1.5);background:linear-gradient(150deg,#2a2158 0%,#1b1740 45%,#141132 100%);box-shadow:0 40px 80px -40px #000,0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.16)}
+.board-frame::before{content:'';position:absolute;inset:6px;border-radius:21px;pointer-events:none;border:1px dashed rgba(255,255,255,.16)}
+.board{position:relative;width:100%;aspect-ratio:10/7;border-radius:calc(var(--u)*1.6);background:radial-gradient(120% 120% at 50% 0%,#FFFDF6 0%,#F7EFE0 55%,#EFE5D2 100%);box-shadow:inset 0 0 0 calc(var(--u)*.25) rgba(60,40,10,.10),0 12px 26px -18px rgba(0,0,0,.8);overflow:hidden}
+.grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(7,1fr);gap:calc(var(--u)*1.05)}
+.trackline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;opacity:.55;mix-blend-mode:multiply}
+.trackline .dash{fill:none;stroke:#7a5a2a;stroke-width:.045;stroke-dasharray:.26 .34;stroke-linecap:round;animation:flow 2.4s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-.60}}
+.trackline .arr{fill:#7a5a2a;opacity:.75}
+.cell{position:relative;border-radius:calc(var(--u)*1.25);background:var(--cbg);color:var(--cac);border:calc(var(--u)*.22) solid var(--cac);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*.25);overflow:hidden;
+ box-shadow:0 calc(var(--u)*.3) calc(var(--u)*.7) rgba(60,40,10,.22),inset 0 0 0 calc(var(--u)*.28) rgba(255,255,255,.42);transition:transform .18s,box-shadow .2s}
+.cell::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.45),transparent 55%);pointer-events:none}
+.cell:hover{transform:translateY(calc(var(--u)*-.35)) scale(1.035);z-index:3}
+.cell .num{position:absolute;top:calc(var(--u)*.3);left:calc(var(--u)*.55);font-size:calc(var(--u)*1.1);font-weight:900;line-height:1;opacity:.6;font-family:'Fredoka Variable'}
+.cell .cico{width:calc(var(--u)*2.7);height:calc(var(--u)*2.7);stroke-width:1.9;flex:0 0 auto}
+.cell .clab{font-size:calc(var(--u)*.84);font-weight:900;text-align:center;line-height:1.08;padding:0 calc(var(--u)*.35);letter-spacing:-.1px;text-transform:uppercase}
+.cell.hot{animation:hot 1s ease}
+@keyframes hot{0%{transform:scale(1)}35%{transform:scale(1.09)}100%{transform:scale(1)}}
+.cell.ring{box-shadow:0 0 0 calc(var(--u)*.35) rgba(124,92,255,.85),0 calc(var(--u)*.4) calc(var(--u)*1) rgba(40,25,5,.3);z-index:3}
+.cell.finish{animation:finpulse 1.6s ease-in-out infinite}
+@keyframes finpulse{0%,100%{box-shadow:0 0 0 calc(var(--u)*.2) rgba(184,50,40,.45)}50%{box-shadow:0 0 0 calc(var(--u)*.5) rgba(184,50,40,.8)}}
+.tokens{position:absolute;inset:0;pointer-events:none;z-index:5}
+.token{position:absolute;left:0;top:0;border-radius:50%;display:grid;place-items:center;font-family:'Fredoka Variable';font-weight:700;color:#fff;border:calc(var(--u)*.22) solid rgba(255,255,255,.92);
+ box-shadow:0 calc(var(--u)*.45) calc(var(--u)*.8) rgba(0,0,0,.42),inset 0 calc(var(--u)*-.4) calc(var(--u)*.7) rgba(0,0,0,.28);
+ transition:left .26s cubic-bezier(.34,1.32,.64,1),top .26s cubic-bezier(.34,1.32,.64,1),width .2s,height .2s}
+.token span{display:block;transform:translateY(calc(var(--u)*-.15));text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.token.active{box-shadow:0 0 0 calc(var(--u)*.28) rgba(255,255,255,.55),0 calc(var(--u)*.5) calc(var(--u)*1) rgba(0,0,0,.5)}
+.token.hopping span{animation:hop .26s ease}
+@keyframes hop{0%{transform:translateY(0) scale(1)}45%{transform:translateY(calc(var(--u)*-1.1)) scale(1.08)}100%{transform:translateY(0) scale(1)}}
+.center{grid-column:2/10;grid-row:2/7;position:relative;z-index:7;border-radius:calc(var(--u)*1.5);padding:calc(var(--u)*1.5) calc(var(--u)*1.7);
+ background:radial-gradient(130% 100% at 50% 0%,#3b2f7d 0%,#241d54 45%,#171338 100%);border:calc(var(--u)*.2) solid rgba(255,255,255,.16);
+ box-shadow:inset 0 calc(var(--u)*.2) calc(var(--u)*1) rgba(255,255,255,.10),0 calc(var(--u)*.6) calc(var(--u)*1.6) rgba(40,25,5,.35);display:flex;flex-direction:column;gap:calc(var(--u)*.95);overflow:hidden;color:#EFEAFB}
+.c-head{display:flex;align-items:center;justify-content:space-between;gap:calc(var(--u)*1);position:relative}
+.c-logo{font-family:'Fredoka Variable';font-size:calc(var(--u)*2.1);font-weight:600;letter-spacing:.5px;line-height:1}
+.c-logo b{color:#6FE3D2;font-weight:700}
+.c-logo small{display:block;font-family:'Nunito';font-size:calc(var(--u)*.82);letter-spacing:calc(var(--u)*.22);color:#B9B2E4;text-transform:uppercase;font-weight:800;margin-top:calc(var(--u)*.25)}
+.c-timer{display:flex;align-items:center;gap:calc(var(--u)*.55);background:rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.14);border-radius:calc(var(--u)*1);padding:calc(var(--u)*.45) calc(var(--u)*.9)}
+.c-timer svg{width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);color:#FFD86F;stroke-width:2}
+.c-timer b{font-family:'Fredoka Variable';font-size:calc(var(--u)*2);letter-spacing:.5px;font-variant-numeric:tabular-nums}
+.c-timer.low b{color:#FF8A8A;animation:blink 1s steps(2,end) infinite}
+@keyframes blink{50%{opacity:.35}}
+.c-turn{display:flex;align-items:center;gap:calc(var(--u)*.8);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:calc(var(--u)*1.1);padding:calc(var(--u)*.6) calc(var(--u)*1)}
+.c-turn .pd{width:calc(var(--u)*2);height:calc(var(--u)*2);border-radius:50%;flex:0 0 auto;box-shadow:0 0 0 calc(var(--u)*.22) rgba(255,255,255,.25)}
+.c-turn .tx{min-width:0}
+.c-turn .tx em{display:block;font-style:normal;font-size:calc(var(--u)*.82);letter-spacing:calc(var(--u)*.14);text-transform:uppercase;color:#B9B2E4;font-weight:800}
+.c-turn .tx b{font-family:'Fredoka Variable';font-size:calc(var(--u)*1.5);font-weight:600;line-height:1.1;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-dice{display:flex;align-items:center;gap:calc(var(--u)*1.2);justify-content:center}
+.dice{width:calc(var(--u)*7);height:calc(var(--u)*7);border-radius:calc(var(--u)*1.3);flex:0 0 auto;background:linear-gradient(150deg,#fffdf7,#EFE6D4);border:calc(var(--u)*.2) solid rgba(0,0,0,.18);
+ box-shadow:0 calc(var(--u)*.6) calc(var(--u)*1.2) rgba(0,0,0,.45),inset 0 calc(var(--u)*.2) 0 rgba(255,255,255,.9);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:calc(var(--u)*.95)}
+.dice i{align-self:center;justify-self:center;width:calc(var(--u)*1.05);height:calc(var(--u)*1.05);border-radius:50%;background:radial-gradient(circle at 32% 30%,#5b4bd6,#241a63);opacity:0;transition:opacity .1s}
+.dice i.on{opacity:1}
+.dice.rolling{animation:shake .42s cubic-bezier(.36,.07,.19,.97) infinite}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg) translateY(calc(var(--u)*-.5))}50%{transform:rotate(6deg)}75%{transform:rotate(13deg) translateY(calc(var(--u)*-.35))}}
+.c-dice .btn{font-size:calc(var(--u)*1.25);padding:calc(var(--u)*.95) calc(var(--u)*1.7);border-radius:calc(var(--u)*1.1)}
+.c-dice .btn svg{width:calc(var(--u)*1.6);height:calc(var(--u)*1.6)}
+.c-info{font-size:calc(var(--u)*.95);line-height:1.35;color:#D6D0F2;text-align:center;min-height:calc(var(--u)*2.6);font-weight:700}
+.c-info b{color:#FFD86F}
+.c-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*.55)}
+.cl{display:flex;align-items:center;gap:calc(var(--u)*.5);padding:calc(var(--u)*.42) calc(var(--u)*.6);border-radius:calc(var(--u)*.8);background:var(--cbg);border:1px solid var(--cac);color:var(--cac);font-size:calc(var(--u)*.76);font-weight:900;line-height:1.05;text-transform:uppercase}
+.cl svg{width:calc(var(--u)*1.5);height:calc(var(--u)*1.5);flex:0 0 auto;stroke-width:2.1}
+.c-actions{display:flex;gap:calc(var(--u)*.5);flex-wrap:wrap;justify-content:center}
+.c-actions .btn{font-size:calc(var(--u)*.85);padding:calc(var(--u)*.55) calc(var(--u)*.9);border-radius:calc(var(--u)*.8)}
+.c-actions .btn svg{width:calc(var(--u)*1.25);height:calc(var(--u)*1.25)}
+.paused-veil{position:absolute;inset:0;z-index:6;display:grid;place-items:center;background:rgba(12,10,28,.78);backdrop-filter:blur(3px);border-radius:calc(var(--u)*1.6)}
+.pv{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.8);text-align:center;padding:calc(var(--u)*1)}
+.pv b{font-family:'Fredoka Variable';font-size:calc(var(--u)*2.4);letter-spacing:2px}
+.pv span{font-size:calc(var(--u)*.95);color:#C3BCDF;font-weight:800}
+.pv .btn{font-size:calc(var(--u)*1.1);padding:calc(var(--u)*.75) calc(var(--u)*1.5);border-radius:calc(var(--u)*1);margin-top:calc(var(--u)*.3)}
+.card{background:var(--card);border:1px solid var(--cardbrd);border-radius:var(--radius);padding:15px;box-shadow:0 20px 44px -34px #000;min-width:0}
+.card h3{margin:0 0 11px;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:#9FE9DC;display:flex;align-items:center;gap:8px}
+.card h3 .pill{margin-left:auto;font-size:11px;letter-spacing:.4px;color:var(--muted);text-transform:none}
+.pl{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;margin-bottom:8px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);transition:.22s;position:relative;overflow:hidden}
+.pl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pc)}
+.pl.active{background:rgba(124,92,255,.20);border-color:rgba(160,140,255,.55)}
+.pl .av{width:34px;height:34px;border-radius:50%;flex:0 0 34px;display:grid;place-items:center;font-family:'Fredoka Variable';font-weight:700;color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.16),inset 0 -5px 9px rgba(0,0,0,.28);background:var(--pc)}
+.pl .info{flex:1;min-width:0}
+.pl .info .nm{font-weight:900;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px}
+.pl .info .nm .tag{font-size:9.5px;letter-spacing:1px;padding:2px 6px;border-radius:6px;background:#7C5CFF;color:#fff;text-transform:uppercase}
+.pl .info .st{font-size:11.6px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#7C5CFF,#2BD9C0);transition:width .45s cubic-bezier(.4,1.3,.5,1)}
+.pl .sc{display:flex;gap:8px;font-size:11.5px;font-weight:900;color:var(--muted);align-items:center}
+.pl .sc em{font-style:normal}.pl .sc .g{color:#7BE3A4}.pl .sc .r{color:#FF9A99}
+.log{max-height:280px;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:6px;padding-right:6px;width:100%}
+.log::-webkit-scrollbar{width:7px}.log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+.li{display:flex;align-items:flex-start;gap:9px;width:100%;flex:0 0 auto;min-width:0;
+ font-size:12.6px;line-height:1.45;padding:8px 10px;border-radius:10px;
+ background:rgba(255,255,255,.05);border-left:3px solid #7C5CFF;color:#DFDAF6}
+.li .t{flex:0 0 38px;font-size:10.5px;font-weight:800;color:#9a94c0;font-variant-numeric:tabular-nums;letter-spacing:.2px;padding-top:2px}
+.li .m{flex:1 1 auto;min-width:0;overflow-wrap:break-word;word-break:normal;hyphens:none}
+.li b{color:#fff}
+.li.dice{border-color:#4EA8FF}.li.ok{border-color:#2FBE6B}.li.bad{border-color:#E2504F}
+.li.turbo{border-color:#0B7F8C}.li.falla{border-color:#8a8a8a}.li.com{border-color:#E0A800}
+.li.win{border-color:#FFD86F;background:rgba(255,216,111,.14);font-weight:800;color:#FFE9A8}
+.overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,6,20,.74);backdrop-filter:blur(7px);animation:fade .22s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:780px;border-radius:24px;overflow:hidden;background:#FFFDF7;color:#23203a;box-shadow:0 40px 90px -30px #000,0 0 0 1px rgba(255,255,255,.35);animation:pop .3s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:translateY(22px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+.modal.wide{max-width:1000px}
+.qhead{display:flex;align-items:center;gap:13px;padding:16px 20px;background:var(--cbg);border-bottom:3px solid var(--cac);color:var(--cac)}
+.qhead .ic{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.6);display:grid;place-items:center;flex:0 0 46px;border:2px solid var(--cac)}
+.qhead .ic svg{width:28px;height:28px;stroke-width:2}
+.qhead .tt{min-width:0;flex:1}
+.qhead .tt em{display:block;font-style:normal;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;font-weight:900;opacity:.85}
+.qhead .tt b{font-family:'Fredoka Variable';font-size:20px;font-weight:600;line-height:1.15;display:block}
+.qhead .who{font-size:11.5px;font-weight:900;padding:5px 11px;border-radius:999px;background:var(--cac);color:#fff;white-space:nowrap;text-transform:uppercase;letter-spacing:.6px}
+.qbody{padding:20px}
+.qtext{margin:0 0 6px;font-size:19px;line-height:1.45;font-weight:800;color:#221f3a}
+.qmeta{font-size:11.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#8a84ab;margin-bottom:14px}
+.opts{display:grid;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;cursor:pointer;background:#fff;border:2px solid #E2DACC;border-radius:14px;padding:12px 14px;font-size:15.4px;font-weight:700;color:#2b2745;transition:.16s;line-height:1.38}
+.opt:hover:not(:disabled){border-color:#7C5CFF;background:#F6F3FF;transform:translateX(3px)}
+.opt .k{width:28px;height:28px;flex:0 0 28px;border-radius:9px;display:grid;place-items:center;background:#EFE9DC;color:#6b6390;font-weight:900;font-size:14px}
+.opt.right{border-color:#2FBE6B;background:#E9FAF0;color:#14663A}.opt.right .k{background:#2FBE6B;color:#fff}
+.opt.wrong{border-color:#E2504F;background:#FDECEC;color:#96292A}.opt.wrong .k{background:#E2504F;color:#fff}
+.opt.mute{opacity:.45}.opt:disabled{cursor:default}
+.feedback{margin-top:15px;border-radius:14px;padding:13px 15px;font-size:14.4px;line-height:1.5;display:flex;gap:11px;align-items:flex-start}
+.feedback.good{background:#E9FAF0;border:2px solid #2FBE6B;color:#125C34}
+.feedback.bad{background:#FDECEC;border:2px solid #E2504F;color:#8E2626}
+.feedback svg{width:22px;height:22px;flex:0 0 22px;stroke-width:2.6;margin-top:1px}
+.qfoot{display:flex;justify-content:flex-end;gap:10px;padding:0 20px 18px}
+.catpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.catbtn{display:flex;align-items:center;gap:11px;padding:13px;border-radius:14px;cursor:pointer;text-align:left;border:2px solid var(--cac);background:var(--cbg);color:var(--cac);font-weight:900;font-size:14.5px;line-height:1.15;transition:.16s}
+.catbtn:hover{transform:translateY(-3px);box-shadow:0 14px 26px -16px rgba(0,0,0,.7)}
+.catbtn svg{width:26px;height:26px;flex:0 0 26px;stroke-width:2.1}
+.mhead{padding:18px 22px;background:linear-gradient(120deg,#2a2158,#1b1740);color:#fff;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mhead svg{width:26px;height:26px;stroke-width:2.2;color:#FFD86F}
+.mhead b{font-family:'Fredoka Variable';font-size:20px;font-weight:600}
+.mbody{padding:20px 22px;max-height:66vh;overflow:auto;font-size:14.6px;line-height:1.6;color:#33304f}
+.mbody h4{margin:16px 0 6px;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:#6E3AA8}
+.mbody h4:first-child{margin-top:0}
+.mbody ul{margin:0 0 8px;padding-left:20px}.mbody li{margin-bottom:5px}
+.mbody .kbd{background:#EFE9DC;border-radius:6px;padding:1px 6px;font-weight:900;font-size:12.5px}
+.mfoot{padding:0 22px 20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.banktools{position:sticky;top:0;background:#FFFDF7;padding:0 0 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #E7E0D2;margin-bottom:14px}
+.banktools select,.banktools input{background:#fff;border:2px solid #E2DACC;border-radius:11px;padding:8px 11px;font-family:inherit;font-size:13.5px;font-weight:700;color:#33304f;outline:none}
+.banktools input{flex:1;min-width:150px}
+.banktools input:focus,.banktools select:focus{border-color:#7C5CFF}
+.qitem{border:1px solid #E7E0D2;border-left:5px solid var(--ac);border-radius:13px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.qitem .qn{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#8a84ab;margin-bottom:5px}
+.qitem .qq{font-weight:800;font-size:15px;color:#22203a;margin-bottom:8px;line-height:1.4}
+.qitem ol{margin:0;padding-left:0;list-style:none;display:grid;gap:4px}
+.qitem ol li{font-size:13.6px;font-weight:700;color:#4a4668;display:flex;gap:8px;line-height:1.4}
+.qitem ol li b{flex:0 0 18px;color:#8a84ab}
+.qitem ol li.ok{color:#14663A;background:#EAF8F0;border-radius:8px;padding:3px 6px;margin-left:-6px}
+.qitem .ex{margin-top:8px;font-size:12.8px;color:#6a6590;font-weight:700;border-top:1px dashed #E2DACC;padding-top:7px}
+.winbody{text-align:center;padding:24px 22px 6px}
+.trophy{width:92px;height:92px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#FFE9A8,#F0A93B);box-shadow:0 16px 40px -16px #F0A93B;color:#7a4c00}
+.trophy svg{width:50px;height:50px;stroke-width:2}
+.winbody h2{margin:0;font-size:30px;font-family:'Fredoka Variable';font-weight:600;color:#22203a}
+.winbody p{margin:6px 0 16px;color:#5a5578;font-weight:700}
+.standwrap{text-align:left;background:#fff;border:2px solid #E7E0D2;border-radius:16px;padding:6px 8px;margin-bottom:8px}
+.standwrap h5{margin:8px 6px 6px;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#8a84ab;font-family:'Nunito';font-weight:900}
+.statstable{width:100%;border-collapse:collapse;font-size:14px}
+.statstable th{font-size:10.5px;letter-spacing:1.1px;text-transform:uppercase;color:#8a84ab;text-align:left;padding:8px 9px;border-bottom:2px solid #E7E0D2}
+.statstable th.num,.statstable td.num{text-align:center}
+.statstable td{padding:10px 9px;border-bottom:1px solid #EFE9DC;font-weight:800;color:#33304f}
+.statstable tbody tr:last-child td{border-bottom:none}
+.statstable tbody tr:first-child{background:#FFF7DE}
+.statstable .pos{font-family:'Fredoka Variable';font-size:16px;width:40px}
+.statstable .dot{width:14px;height:14px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:-2px}
+.statstable .ok{color:#14663A}.statstable .bad{color:#96292A}
+.statstable .pc{color:#6E3AA8}
+.endcd{margin:2px 0 14px;font-size:12.5px;font-weight:800;color:#8a84ab}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
+.toast{position:fixed;left:50%;top:88px;transform:translateX(-50%) translateY(-16px);z-index:70;padding:12px 22px;border-radius:999px;font-family:'Fredoka Variable';font-size:22px;font-weight:600;
+ background:linear-gradient(120deg,var(--tb1,#2BD9C0),var(--tb2,#4EA8FF));color:#08243a;box-shadow:0 20px 44px -20px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,1.3,.4,1)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footnote{max-width:1500px;margin:0 auto;padding:0 18px 26px;color:#8d87b3;font-size:12px;text-align:center}
+@media(max-width:640px){.brand h1{font-size:16px}.brand p{display:none}.topbar{padding:10px 12px;gap:8px}.game{padding:12px 12px 30px}.qtext{font-size:17px}.c-legend{display:none}}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+ <symbol id="i-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 18h5.6M10.2 21h3.6"/><path d="M12 2.8a6.1 6.1 0 0 0-3.7 10.9c.6.5 1 1.2 1.1 1.9l.05.4h5.1l.05-.4c.1-.7.5-1.4 1.1-1.9A6.1 6.1 0 0 0 12 2.8Z"/></symbol>
+ <symbol id="i-stairs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20.5h3.5V17H10v-3.5h3.5V10H17V6.5h4"/></symbol>
+ <symbol id="i-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><rect x="10" y="10" width="4" height="4" rx="1"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+ <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 4 5.8 4 9s-1.4 6.3-4 9c-2.6-2.7-4-5.8-4-9s1.4-6.3 4-9Z"/></symbol>
+ <symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4.4" height="7.6" rx="1.3"/><rect x="9.8" y="8.6" width="4.4" height="12" rx="1.3"/><rect x="16.6" y="3.6" width="4.4" height="17" rx="1.3"/></symbol>
+ <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 6 3 12l5.2 6M15.8 6 21 12l-5.2 6M13.6 3.6 10.4 20.4"/></symbol>
+ <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round"><path d="M12 2.8l2.85 5.9 6.45.85-4.72 4.45 1.2 6.4L12 17.3l-5.78 3.1 1.2-6.4L2.7 9.55l6.45-.85z"/></symbol>
+ <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-linejoin="round"><path d="M13.4 2 4.2 14.2h5.6L9 22l9.6-12.6h-6z"/></symbol>
+ <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 2.6 20.2h18.8z"/><path d="M12 9.4v4.6M12 17.3h.01"/></symbol>
+ <symbol id="i-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h3.6A2.4 2.4 0 0 1 20 6.4v11.2a2.4 2.4 0 0 1-2.4 2.4H14"/><path d="M9.6 8 5.4 12l4.2 4M5.4 12H15"/></symbol>
+ <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 21V3.6M5.5 4.2h12.8l-2.4 3.9 2.4 3.9H5.5"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.4 2.2"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.6A2.6 2.6 0 0 1 6.6 2H20v15.4H6.6A2.6 2.6 0 0 0 4 20z"/><path d="M4 17.4h16M8 6.4h7M8 9.8h5"/></symbol>
+ <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 10h16M4 15h11M4 20h7"/></symbol>
+ <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 5v14M14.6 5v14"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.4 4.6 19 12 7.4 19.4z"/></symbol>
+ <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 11.2a8.4 8.4 0 1 0-2.1 6.6"/><path d="M20.6 4.8v6.2h-6.2"/></symbol>
+ <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.2v5.6h3.8L13 19V5L7.8 9.2z"/><path d="M16.4 9a4.4 4.4 0 0 1 0 6M19 6.4a8 8 0 0 1 0 11.2"/></symbol>
+ <symbol id="i-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.2v5.6h3.8L13 19V5L7.8 9.2z"/><path d="M16.6 9.6l4.4 4.8M21 9.6l-4.4 4.8"/></symbol>
+ <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.6h8v5.2a4 4 0 0 1-8 0z"/><path d="M8 4.8H5v1.8a3.2 3.2 0 0 0 3.2 3.2M16 4.8h3v1.8a3.2 3.2 0 0 1-3.2 3.2"/><path d="M10.2 17.2h3.6M9 20.6h6M12 12.8v4.4"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 12.6 9.6 17.8 19.8 6.6"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+ <symbol id="i-dice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="4"/><path d="M8.4 8.4h.01M15.6 8.4h.01M12 12h.01M8.4 15.6h.01M15.6 15.6h.01"/></symbol>
+ <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 20c.6-3.4 3.1-5.4 6.2-5.4s5.6 2 6.2 5.4"/><path d="M16.4 5.2a3.4 3.4 0 0 1 0 6.4M18 14.9c2 .7 3.2 2.5 3.5 5.1"/></symbol>
+ <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></symbol>
+</svg>
+
+<!-- ============ MENÚ PRINCIPAL ============ -->
+<div id="scrSetup" class="screen">
+  <div class="topbar">
+    <div class="brand"><div class="mark">N</div><div><h1>Carrera <b>NTICx</b></h1><p>Tablero de 30 casillas · 180 preguntas</p></div></div>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button class="btn btn-sm" id="btnBank0"><svg><use href="#i-list"/></svg> Cuestionario</button>
+      <button class="btn btn-sm" id="btnRulesSetup"><svg><use href="#i-book"/></svg> Reglas</button>
+      <button class="btn btn-sm btn-icon" id="btnSoundSetup" title="Sonido"><svg><use href="#i-sound"/></svg></button>
+    </div>
+  </div>
+  <div class="setup-wrap">
+    <div class="hero">
+      <h2>Una carrera por la <span>alfabetización digital</span></h2>
+      <p>Recorré las 30 casillas del tablero en sentido antihorario y respondé preguntas de las seis categorías del Diseño Curricular de NTICx. El banco tiene <b>180 preguntas sin repetir</b>: 6 categorías × 3 niveles (fácil, intermedio, avanzado) × 10 preguntas. <b>Ni bien una ficha pisa el casillero META (el que dice SALIDA), la partida termina</b>: se muestran los puestos con las respuestas correctas e incorrectas de cada jugador y se vuelve a este menú para configurar otra partida.</p>
+      <div class="stats">
+        <div class="stat"><b id="stCat">6</b><span>Categorías</span></div>
+        <div class="stat"><b id="stLev">3</b><span>Niveles</span></div>
+        <div class="stat"><b id="stTot">180</b><span>Preguntas</span></div>
+        <div class="stat"><b>30</b><span>Casillas</span></div>
+      </div>
+    </div>
+    <div class="setup-grid">
+      <div class="panel">
+        <h3>Configurá la partida</h3>
+        <div class="field" style="margin-top:0"><label>Cantidad de jugadores</label>
+          <div class="seg" id="segCount"><button data-n="2">2</button><button data-n="3">3</button><button data-n="4" class="on">4</button></div>
+        </div>
+        <div class="field"><label>Fichas</label><div id="playerRows"></div></div>
+        <div class="field"><label>Nivel de las preguntas</label>
+          <div class="seg" id="segLevel">
+            <button data-l="facil">Fácil</button><button data-l="intermedio" class="on">Intermedio</button><button data-l="avanzado">Avanzado</button><button data-l="mixto">Mixto</button>
+          </div>
+        </div>
+        <div class="field"><label>Duración de la partida</label>
+          <select id="selTime"><option value="30" selected>30 minutos (reglamento)</option><option value="20">20 minutos</option><option value="15">15 minutos</option><option value="10">10 minutos · exprés</option></select>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="btnStart" style="flex:1;min-width:200px;font-size:16px;padding:14px 18px"><svg><use href="#i-play"/></svg> Comenzar la carrera</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Leyenda del tablero</h3>
+        <div class="legend-grid" id="setupLegend"></div>
+        <h3 style="margin-top:20px">Reglas rápidas</h3>
+        <ul class="rules-mini">
+          <li>Tirá el dado y avanzá sobre el recorrido <b>0 → 29</b> (una sola vuelta, antihorario).</li>
+          <li><b>Categoría:</b> respondés una pregunta con 4 opciones. Acierto = te quedás · Error = retrocedés 1.</li>
+          <li><b>Comodín:</b> elegís la categoría y, si acertás, avanzás <b>2 casillas extra</b>.</li>
+          <li><b>Turbo +3</b> avanzás 3 sin responder · <b>Falla −2</b> retrocedés 2 sin responder.</li>
+          <li>Los efectos especiales solo valen al caer con el <b>dado</b>.</li>
+          <li><b>META = casilla 0 (la que dice SALIDA).</b> Al pisarla, la partida <b>termina al instante</b>: no hace falta tiro exacto, con llegar o pasar alcanza.</li>
+          <li>Al terminar se muestra la <b>tabla de puestos</b> con correctas e incorrectas, y se vuelve al <b>menú principal</b> para configurar otra partida.</li>
+          <li>Si se agota el tiempo, gana quien esté más adelantado y también se muestra la tabla final.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PARTIDA ============ -->
+<div id="scrGame" class="screen hide">
+  <div class="topbar">
+    <div class="brand"><div class="mark">N</div><div><h1>Carrera <b>NTICx</b></h1><p id="topSub">Partida en curso</p></div></div>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button class="btn btn-sm" id="btnRules"><svg><use href="#i-book"/></svg> Reglas</button>
+      <button class="btn btn-sm" id="btnPause"><svg><use href="#i-pause"/></svg> <span>Pausa</span></button>
+      <button class="btn btn-sm btn-icon" id="btnSound" title="Sonido"><svg><use href="#i-sound"/></svg></button>
+      <button class="btn btn-sm" id="btnRestart"><svg><use href="#i-refresh"/></svg> Reiniciar</button>
+      <button class="btn btn-sm" id="btnExit"><svg><use href="#i-exit"/></svg> Menú</button>
+    </div>
+  </div>
+  <div class="game">
+    <div class="boardcol">
+      <div class="board-frame" id="boardFrame">
+        <div class="board" id="board">
+          <div class="grid" id="grid"></div>
+          <svg class="trackline" id="trackline" viewBox="0 0 10 7" preserveAspectRatio="none">
+            <path class="dash" id="trackpath" d=""/>
+            <polygon class="arr" points="0.33,3.24 0.67,3.24 0.5,3.78"/>
+            <polygon class="arr" points="4.74,6.33 4.74,6.67 5.26,6.5"/>
+            <polygon class="arr" points="9.33,3.76 9.67,3.76 9.5,3.22"/>
+            <polygon class="arr" points="5.26,0.33 5.26,0.67 4.74,0.5"/>
+          </svg>
+          <div class="tokens" id="tokenLayer"></div>
+          <div class="paused-veil hide" id="pauseVeil">
+            <div class="pv">
+              <b>⏸ PARTIDA EN PAUSA</b>
+              <span>El reloj está detenido</span>
+              <button class="btn btn-primary" id="btnResume"><svg><use href="#i-play"/></svg> Continuar partida</button>
+              <span>o presioná la tecla <b>P</b> · <b>Esc</b> · <b>Espacio</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="card"><h3><svg style="width:16px;height:16px"><use href="#i-users"/></svg> Jugadores <span class="pill" id="roundPill">Ronda 1</span></h3><div id="playerList"></div></div>
+      <div class="card"><h3><svg style="width:16px;height:16px"><use href="#i-clock"/></svg> Registro de la partida</h3><div class="log" id="logBox"></div></div>
+    </div>
+  </div>
+  <div class="footnote">Tablero fijo de 30 posiciones · grilla 10 × 7 · recorrido antihorario · banco de 180 preguntas (6 categorías × 3 niveles × 10).</div>
+</div>
+
+<div id="modalLayer"></div>
+<div class="toast" id="toast"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* =========================================================================
+   CARRERA NTICx — réplica del tablero impreso + cuestionario curricular NTICx
+   FLUJO DE CIERRE GARANTIZADO:
+   · Ni bien una ficha alcanza la posición 30 (casilla 0, la que dice SALIDA,
+     que pasa a mostrar META), la partida TERMINA en ese instante.
+   · Se muestra la tabla de PUESTOS con cantidades de respuestas CORRECTAS e
+     INCORRECTAS (y precisión) de cada jugador.
+   · Luego se vuelve al MENÚ PRINCIPAL (automático a los 20 s o con el botón),
+     listo para configurar e iniciar otra partida.
+   ========================================================================= */
+
+/* ---------- TABLERO: coordenadas fijas (columna, fila) ---------- */
+const COORDS=[[0,6],[0,5],[0,4],[0,3],[0,2],[0,1],[0,0],
+ [1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],
+ [9,1],[9,2],[9,3],[9,4],[9,5],[9,6],
+ [8,6],[7,6],[6,6],[5,6],[4,6],[3,6],[2,6],[1,6]];
+
+const CATS={
+ conceptos:{name:'Conceptos y Datos Informáticos',short:'Conceptos y datos',bg:'#BBD9F5',ac:'#1F5FA8',icon:'i-bulb'},
+ tic:{name:'TIC, NTIC, NTIT y NTICx',short:'TIC · NTIC · NTICx',bg:'#DCCBF2',ac:'#6E3AA8',icon:'i-stairs'},
+ arq:{name:'Arquitectura y Componentes',short:'Arquitectura',bg:'#FCDDAE',ac:'#C96A0A',icon:'i-chip'},
+ perif:{name:'Periféricos y Conectividad',short:'Periféricos y redes',bg:'#C6EBC5',ac:'#2A7F3B',icon:'i-globe'},
+ binario:{name:'Sistema Binario y Unidades de Medida',short:'Binario y medidas',bg:'#F8C4C4',ac:'#B83228',icon:'i-bars'},
+ programas:{name:'Programas, Sistemas Operativos y Seguridad',short:'Programas y SO',bg:'#CDE7E2',ac:'#0F6B5C',icon:'i-code'},
+ comodin:{name:'Comodín',short:'Comodín',bg:'#FFE58A',ac:'#9A7300',icon:'i-star'},
+ turbo:{name:'Turbo +3',short:'Turbo +3',bg:'#BDEFF2',ac:'#0B7F8C',icon:'i-bolt'},
+ falla:{name:'Falla −2',short:'Falla −2',bg:'#DADADA',ac:'#3D3D3D',icon:'i-warn'},
+ meta:{name:'Salida / Meta',short:'Salida · Meta',bg:'#FFFFFF',ac:'#8A6A1F',icon:'i-flag'}
+};
+const CAT_KEYS=['conceptos','tic','arq','perif','binario','programas'];
+const LEVELS=[['facil','Fácil'],['intermedio','Intermedio'],['avanzado','Avanzado']];
+
+/* ---------- CONTENIDO EXACTO DE LAS 30 CASILLAS (fijo) ---------- */
+const BOARD_DEF=[
+ {t:'meta'},
+ {t:'cat',c:'tic'},{t:'cat',c:'arq'},{t:'cat',c:'perif'},{t:'cat',c:'programas'},{t:'cat',c:'binario'},{t:'comodin'},
+ {t:'cat',c:'conceptos'},{t:'cat',c:'tic'},{t:'turbo'},
+ {t:'cat',c:'arq'},{t:'cat',c:'conceptos'},{t:'cat',c:'perif'},{t:'falla'},{t:'cat',c:'programas'},{t:'comodin'},
+ {t:'cat',c:'binario'},{t:'cat',c:'programas'},{t:'cat',c:'arq'},{t:'turbo'},{t:'cat',c:'perif'},{t:'comodin'},
+ {t:'cat',c:'tic'},{t:'cat',c:'binario'},{t:'cat',c:'conceptos'},{t:'cat',c:'perif'},{t:'falla'},{t:'cat',c:'programas'},
+ {t:'cat',c:'arq'},{t:'cat',c:'conceptos'}
+];
+const cellInfo=i=>BOARD_DEF[i].t==='cat'?CATS[BOARD_DEF[i].c]:(BOARD_DEF[i].t==='meta'?CATS.meta:CATS[BOARD_DEF[i].t]);
+const cellLabel=i=>BOARD_DEF[i].t==='cat'?CATS[BOARD_DEF[i].c].short:(BOARD_DEF[i].t==='meta'?'Salida':(BOARD_DEF[i].t==='turbo'?'Turbo +3':(BOARD_DEF[i].t==='falla'?'Falla −2':'Comodín')));
+
+/* =========================================================================
+   BANCO DE PREGUNTAS · [pregunta, opA, opB, opC, opD, índiceOK, explicación]
+   ========================================================================= */
+const QB={
+conceptos:{
+ facil:[
+  ["Un dato es…","un hecho o valor sin procesar","un archivo ya interpretado","un programa del sistema","una pieza del equipo",0,"El dato es la materia prima: adquiere sentido al procesarse."],
+  ["La información es el resultado de…","procesar los datos y darles sentido","comprar una memoria más grande","instalar un programa antivirus","conectar dos equipos en red",0,"Información = datos procesados, ordenados y con contexto."],
+  ["El hardware es…","la parte física y tangible","la parte lógica y abstracta","el manual del usuario","la licencia del programa",0,"Hardware: lo que se puede tocar del sistema."],
+  ["El software es…","el conjunto de programas","el conjunto de circuitos","el teclado y el mouse","la placa de circuitos",0,"Software: instrucciones y programas que se ejecutan."],
+  ["La Informática se ocupa de…","procesar información en forma automática","reparar equipos electrónicos","diseñar logos publicitarios","instalar redes telefónicas",0,"Informática = tratamiento automático de la información."],
+  ["Una técnica es…","un modo de hacer algo para lograr un fin","una máquina de gran complejidad","un tipo de dato numérico","un programa de diseño gráfico",0,"La técnica es un saber hacer con procedimientos."],
+  ["La tecnología aplica…","saberes científicos con fines prácticos","solo conocimientos artesanales","datos que no tienen contexto","piezas que no usan energía",0,"La tecnología pone el conocimiento en práctica."],
+  ["La innovación consiste en…","introducir mejoras que aportan valor","repetir los procesos antiguos","guardar datos en soporte papel","apagar los equipos del aula",0,"Innovar es incorporar novedades útiles."],
+  ["El mouse es un ejemplo de…","hardware","software","orgware","infoware",0,"Es un componente físico del sistema."],
+  ["Un procesador de textos es…","software","hardware","orgware","un periférico físico",0,"Es un programa, es decir, software de aplicación."]
+ ],
+ intermedio:[
+  ["La diferencia clave entre dato e información es…","el contexto y el significado","el tamaño del archivo","el tipo de soporte usado","la velocidad del disco",0,"Sin contexto el dato no comunica nada."],
+  ["La telemática combina…","informática y telecomunicaciones","mecánica y electricidad","dibujo y fotografía","química y biología",0,"Permite transmitir información a distancia."],
+  ["La ofimática automatiza…","las tareas propias de la oficina","los procesos de una fábrica","las funciones de una vivienda","los trámites del registro civil",0,"OFIcina + inforMÁTICA."],
+  ["La domótica se aplica en…","la vivienda","la oficina","el hospital","la escuela",0,"Automatiza iluminación, climatización y seguridad del hogar."],
+  ["La burótica se orienta a…","las tareas administrativas","los robots industriales","las redes satelitales","los juegos en línea",0,"Automatiza la gestión burocrática de las organizaciones."],
+  ["El orgware refiere a…","la organización y sus procesos","los componentes electrónicos","los programas del sistema","los dispositivos de la red",0,"Es la dimensión organizativa del sistema informático."],
+  ["El infoware abarca…","información, procedimientos y personas","solo los circuitos impresos","solo los discos externos","solo las pantallas táctiles",0,"Complementa al hardware y al software."],
+  ["La nanotecnología trabaja en la escala de…","1 a 100 nanómetros","1 a 100 micrómetros","1 a 100 milímetros","1 a 100 centímetros",0,"Manipula la materia a escala atómica y molecular."],
+  ["El software de base incluye…","el sistema operativo","la placa madre","el procesador de textos","el disco rígido",0,"Administra el equipo y da soporte a las aplicaciones."],
+  ["El conocimiento se diferencia de la información porque…","las personas lo incorporan y aplican","ocupa más espacio en el disco","viaja más rápido por la red","requiere más memoria RAM",0,"El conocimiento implica comprensión y uso."]
+ ],
+ avanzado:[
+  ["La secuencia correcta del tratamiento de la información es…","dato, información, conocimiento","conocimiento, dato, información","información, dato, conocimiento","dato, conocimiento, información",0,"Es el proceso de valor agregado de la información."],
+  ["La automatización se caracteriza porque…","el proceso corre sin intervención permanente","todo el trabajo es manual","no se emplean programas","los datos no se registran",0,"La máquina ejecuta la secuencia por sí misma."],
+  ["La digitalización de un documento implica…","convertirlo en valores discretos","imprimirlo en papel reciclado","comprimirlo dentro de una carpeta","cifrarlo con una contraseña",0,"Se pasa de lo analógico (continuo) a lo digital (discreto)."],
+  ["Un sistema informático se compone de…","hardware, software, infoware y usuarios","solo hardware y software","solo datos y programas","solo redes y servidores",0,"Las personas también forman parte del sistema."],
+  ["El orgware se distingue del infoware porque…","describe la organización, no la información","es la parte física del sistema","equivale al software de base","es una memoria de tipo volátil",0,"Uno refiere a la estructura organizativa y el otro a la información."],
+  ["En el Diseño Curricular, la técnica se define como…","procedimientos y saberes para transformar la realidad","el conjunto de datos en bruto","la memoria de la computadora","un protocolo de comunicación",0,"Es un saber hacer social e históricamente construido."],
+  ["La innovación tecnológica requiere…","una novedad adoptada que genera valor","una idea que no se aplica","un invento sin usuarios","un prototipo no difundido",0,"Sin adopción y valor no hay innovación."],
+  ["La convergencia digital afecta los conceptos porque…","un dispositivo cumple varias funciones","los datos dejan de existir","el hardware pierde utilidad","la información ya no se procesa",0,"Celular, cámara, radio y computadora en un solo equipo."],
+  ["La alfabetización informático-computacional implica…","comprender y usar las tecnologías con criterio","memorizar las piezas del equipo","programar en lenguaje ensamblador","administrar servidores de red",0,"Incluye uso crítico, no solo manejo instrumental."],
+  ["Un dato cualitativo se diferencia del cuantitativo porque…","expresa cualidades, no cantidades","siempre es un número entero","se mide en múltiplos del byte","requiere una planilla de cálculo",0,"Ejemplo: color o estado, frente a medidas numéricas."]
+ ]
+},
+tic:{
+ facil:[
+  ["TIC significa…","Tecnologías de la Información y la Comunicación","Técnicas de Impresión y de Copiado","Tarjetas de Interconexión Central","Trabajos de Investigación Científica",0,"Permiten crear, almacenar, procesar y transmitir información."],
+  ["Las TIC permiten…","crear, guardar y transmitir información","solo imprimir documentos","solo realizar llamadas","solo mirar películas",0,"Integran informática, telecomunicaciones y audiovisual."],
+  ["Un ejemplo de TIC es…","el teléfono celular","la máquina de escribir","el tablero de ajedrez","la regla de cálculo",0,"Combina procesamiento y comunicación digital."],
+  ["NTIC significa…","Nuevas Tecnologías de la Información y la Comunicación","Nuevos Tipos de Impresión a Color","Normas Técnicas de Instalación Central","Nodos de Transmisión Interna Compartida",0,"Surgen con la digitalización y las redes."],
+  ["La Web 1.0 era…","pasiva y de solo lectura","colaborativa y social","semántica y global","basada en la inteligencia artificial",0,"El usuario solo consumía contenidos."],
+  ["La Web 2.0 se caracteriza por ser…","participativa y colaborativa","pasiva y de solo lectura","exclusiva de las empresas","independiente de Internet",0,"El usuario también produce contenidos."],
+  ["Internet es…","una red mundial de redes","un programa de diseño","un tipo de memoria","una placa del equipo",0,"Interconecta redes de todo el planeta."],
+  ["La brecha digital es…","la desigualdad en el acceso a las TIC","la distancia entre dos equipos","la demora de una página","la falla de un disco rígido",0,"Puede ser de acceso, de uso o de calidad."],
+  ["Las redes sociales son un ejemplo de…","Web 2.0","Web 1.0","Web 3.0","hardware",0,"Se basan en la participación y el contenido del usuario."],
+  ["La alfabetización digital consiste en…","usar las tecnologías de manera crítica","armar una computadora","soldar circuitos impresos","instalar antenas de red",0,"Implica comprender, evaluar y producir con TIC."]
+ ],
+ intermedio:[
+  ["NTIT pone el acento en…","la transmisión de la información","el almacenamiento local","la impresión de documentos","el diseño de interfaces",0,"La T final refiere a transmisión / telecomunicación."],
+  ["NTICx se refiere a…","las TIC expandidas a todos los ámbitos","las TIC de uso solo escolar","un estándar de conectividad","una unidad de medida digital",0,"La x marca la expansión de lo digital a la vida cotidiana."],
+  ["La Web 3.0 se define como…","global y semántica","pasiva y estática","solo colaborativa","solo de mensajería",0,"Los datos se conectan y las máquinas los interpretan."],
+  ["La Web 4.0 se asocia con…","la inteligencia artificial","el papel impreso","las redes telefónicas fijas","el correo postal",0,"También se la llama web inteligente o predictiva."],
+  ["La convergencia tecnológica es…","la integración de informática, telecomunicaciones y audiovisual","la unión de dos empresas del sector","el aumento del tamaño de las pantallas","la reducción del consumo eléctrico",0,"Es la base de las NTIC."],
+  ["La sociedad de la información se basa en…","la disponibilidad masiva de datos","la ausencia total de datos","el uso exclusivo del papel","la prohibición de las redes",0,"La información circula como recurso central."],
+  ["La sociedad del conocimiento supone…","usar la información para generar saber","acumular datos sin procesar","almacenar todo en la nube","compartir solo imágenes",0,"Requiere apropiación crítica de la información."],
+  ["La cibercultura estudia…","las prácticas sociales del entorno digital","los circuitos del procesador","los cables submarinos","las licencias de software",0,"Incluye valores, lenguajes y formas de sociabilidad."],
+  ["La sociedad red se organiza en torno a…","las redes digitales de información","las rutas nacionales","las redes de agua potable","los ferrocarriles",0,"Concepto desarrollado por Manuel Castells."],
+  ["Un indicador de brecha digital de uso es…","no saber aprovechar un servicio en línea","no tener electricidad en la vivienda","no contar con ningún dispositivo","vivir lejos de una ciudad",0,"La brecha de uso es distinta de la brecha de acceso."]
+ ],
+ avanzado:[
+  ["La diferencia entre NTIC y NTICx radica en…","la expansión y la interactividad","el tipo de cable que se usa","la marca de los equipos","el tamaño del almacenamiento",0,"NTICx incorpora participación, colaboración y ubicuidad."],
+  ["En la Web semántica, los datos…","tienen significado interpretable por máquinas","solo se muestran en la pantalla","se imprimen automáticamente","se borran al cerrar",0,"Se estructuran y se relacionan entre sí."],
+  ["La ciudadanía digital implica…","derechos y deberes en los entornos digitales","tener muchos seguidores","usar varios dispositivos","crear páginas web propias",0,"Incluye seguridad, participación y responsabilidad."],
+  ["La folcsonomía consiste en…","clasificar contenidos con etiquetas de los usuarios","ordenar archivos por su tamaño","cifrar la información sensible","comprimir las imágenes pesadas",0,"Es una clasificación social y colectiva."],
+  ["Los marcadores sociales como Del.icio.us permiten…","guardar y compartir enlaces en la red","editar fotos en el equipo","crear hojas de cálculo","administrar servidores web",0,"El marcado es social, no local."],
+  ["La hipertextualidad transforma la lectura porque…","el recorrido deja de ser lineal","elimina los enlaces","exige leer de corrido","reduce los contenidos",0,"El lector elige su propio itinerario."],
+  ["La hipermedia combina…","texto, imagen, audio y video enlazados","solo texto y números","solo audio y video","solo imágenes fijas",0,"Extiende el hipertexto a varios lenguajes."],
+  ["La sociedad del aprendizaje supone…","aprender de forma continua y distribuida","estudiar solo en la escuela","memorizar sin comprender","aprender sin tecnologías",0,"El aprendizaje atraviesa todos los ámbitos."],
+  ["El hipervínculo es…","un enlace entre documentos digitales","un archivo comprimido","una dirección de correo","un tipo de memoria",0,"Es la unidad básica de navegación en la web."],
+  ["Una crítica a la sociedad de la información es que…","más datos no implican más conocimiento","los datos ya no existen","las redes no funcionan","el hardware es obsoleto",0,"Se requiere mediación, criterio y alfabetización."]
+ ]
+},
+arq:{
+ facil:[
+  ["La CPU es…","el procesador del equipo","el monitor del equipo","el disco del equipo","la placa de red",0,"Unidad Central de Proceso."],
+  ["La memoria RAM es…","volátil","permanente","externa","óptica",0,"Se pierde al apagar el equipo."],
+  ["La memoria ROM es…","de solo lectura","de solo escritura","de acceso por Internet","de tipo magnético",0,"Contiene instrucciones básicas de arranque."],
+  ["La placa madre…","conecta todos los componentes","imprime los documentos","enfría el procesador","muestra las imágenes",0,"Es la placa de circuitos principal."],
+  ["El USB es…","un puerto de conexión","una unidad de medida","un tipo de programa","una memoria volátil",0,"Universal Serial Bus: conexión de dispositivos."],
+  ["Las tarjetas SD se usan para…","almacenar información","enfriar el equipo","imprimir en colores","conectar el monitor",0,"Son memorias extraíbles."],
+  ["El proceso computacional es…","entrada, procesamiento y salida","salida, entrada y proceso","proceso, salida y entrada","entrada, salida y proceso",0,"Es el esquema del sistema informático."],
+  ["El gabinete contiene…","los componentes internos","las páginas web","los archivos borrados","las contraseñas",0,"Protege y aloja la placa madre y las unidades."],
+  ["El disco rígido o disco sólido (SSD) sirve para…","guardar los archivos de forma permanente","procesar los cálculos matemáticos","conectar el equipo a Internet","enfriar los componentes internos",0,"Es el almacenamiento masivo: conserva tus datos aunque apagues el equipo."],
+  ["La ALU realiza…","operaciones matemáticas y lógicas","copias de seguridad","conexiones a Internet","impresiones en colores",0,"Unidad Aritmético Lógica."]
+ ],
+ intermedio:[
+  ["La UC o Unidad de Control se encarga de…","coordinar y dirigir los componentes","realizar todas las sumas","guardar los archivos","mostrar los gráficos",0,"Interpreta las instrucciones del programa."],
+  ["La memoria caché se caracteriza por ser…","muy rápida y de poca capacidad","muy lenta y de gran tamaño","volátil y de uso externo","fija y de solo lectura",0,"Guarda lo que la CPU usa con frecuencia."],
+  ["Un SSD respecto de un disco rígido es…","más rápido y sin partes móviles","más lento y más pesado","igual en su rendimiento","solo de tipo óptico",0,"Usa memoria flash en lugar de platos giratorios."],
+  ["La frecuencia de reloj se mide en…","gigahertz","gigabytes","pixeles","baudios",0,"Indica ciclos por segundo del procesador."],
+  ["Los buses de la placa madre…","transportan datos y señales de control","almacenan los programas","generan la energía eléctrica","refrigeran el procesador",0,"Bus de datos, de direcciones y de control."],
+  ["La BIOS o firmware se aloja en…","una memoria no volátil","la memoria RAM","el disco externo","la tarjeta gráfica",0,"Permite arrancar el equipo sin energía previa en RAM."],
+  ["Un puerto SD del equipo permite…","leer tarjetas de memoria","imprimir en red local","medir el ancho de banda","cifrar los archivos",0,"Es una interfaz de lectura de memorias extraíbles."],
+  ["La fuente de alimentación…","convierte y distribuye la energía","procesa las instrucciones","guarda los documentos","muestra las imágenes",0,"Transforma la corriente alterna en continua."],
+  ["Los registros del procesador son…","memorias internas muy rápidas","discos de gran capacidad","archivos del sistema","tablas de la planilla",0,"Forman parte de la CPU."],
+  ["El disco rígido o disco sólido (SSD) se diferencia de la RAM porque…","guarda la información de forma permanente","pierde todo su contenido al apagar el equipo","es la memoria de trabajo de la CPU","solo funciona con conexión a Internet",0,"El disco o SSD conserva los datos sin energía; la RAM se borra al apagar."]
+ ],
+ avanzado:[
+  ["El ciclo de instrucción de la CPU es…","captar, decodificar y ejecutar","grabar, imprimir y guardar","leer, cifrar y borrar","copiar, pegar y mover",0,"Lo coordina la Unidad de Control."],
+  ["La arquitectura de von Neumann se basa en…","el programa almacenado en memoria","los programas grabados en ROM","los procesadores en paralelo","los datos solo en registros",0,"Datos e instrucciones comparten la memoria."],
+  ["La ALU opera con datos que provienen de…","los registros y la memoria","solo del disco rígido","solo de la impresora","solo de la placa de red",0,"El flujo lo dirige la Unidad de Control."],
+  ["Un procesador multinúcleo se caracteriza por…","tener varias unidades de proceso en un chip","usar varias placas madre","tener más de un gabinete","emplear varios monitores",0,"Permite ejecutar tareas en paralelo."],
+  ["La memoria RAM se direcciona por…","posiciones numeradas de acceso directo","nombres de archivos","etiquetas de red","rutas de carpetas",0,"De allí su nombre: acceso aleatorio."],
+  ["El ancho del bus de datos se relaciona con…","la cantidad de bits por ciclo","el tamaño del gabinete","la marca del procesador","la versión del sistema",0,"A mayor ancho, más información por ciclo."],
+  ["La caché L1 respecto de la L2 es…","más rápida y de menor tamaño","más lenta y más grande","igual en su velocidad","de solo lectura",0,"La jerarquía va de menor a mayor capacidad."],
+  ["El chipset de la placa madre…","controla el flujo de datos entre componentes","genera las imágenes","imprime los documentos","enfría el procesador",0,"Actúa como puente entre CPU, memoria y periféricos."],
+  ["La ROM de arranque se diferencia de la RAM porque…","conserva su contenido sin energía","es más rápida al escribir","guarda los archivos","aumenta con el uso",0,"Por eso el equipo puede encenderse."],
+  ["En el esquema de componentes, el disco rígido o SSD cumple la función de…","almacenamiento masivo y permanente","memoria de trabajo volátil","procesamiento aritmético y lógico","comunicación con otras redes",0,"Retiene el sistema operativo, los programas y los archivos sin necesidad de energía constante."]
+ ]
+},
+perif:{
+ facil:[
+  ["Un periférico de entrada es…","el teclado","el monitor","la impresora","el parlante",0,"Permite ingresar datos al sistema."],
+  ["Un periférico de salida es…","el monitor","el teclado","el escáner","el micrófono",0,"Muestra el resultado del procesamiento."],
+  ["La pantalla táctil es un periférico…","mixto","de entrada","de salida","de proceso",0,"Recibe el toque y muestra información."],
+  ["Una LAN es una red…","de alcance local","de alcance mundial","de alcance personal","de alcance urbano",0,"Cubre un edificio o una escuela."],
+  ["El wifi permite conectarse…","sin cables","por fibra óptica","por cable telefónico","por satélite",0,"Es una conexión inalámbrica."],
+  ["Un navegador web sirve para…","ver páginas de Internet","crear hojas de cálculo","editar fotografías","comprimir archivos",0,"Ejemplos: Chrome, Firefox, Edge."],
+  ["El correo electrónico permite…","enviar mensajes por la red","imprimir documentos","medir la temperatura","grabar discos ópticos",0,"Es uno de los servicios básicos de Internet."],
+  ["Una videollamada en vivo es comunicación…","sincrónica","asincrónica","diferida","simétrica",0,"Los participantes coinciden en el tiempo."],
+  ["El escáner se usa para…","digitalizar documentos","imprimir fotografías","conectar el monitor","guardar contraseñas",0,"Convierte papel en imagen digital."],
+  ["Una red es…","un conjunto de equipos conectados","un tipo de procesador","una memoria externa","un sistema operativo",0,"Comparten recursos e información."]
+ ],
+ intermedio:[
+  ["El orden de las redes por alcance creciente es…","PAN, LAN, MAN, WAN","LAN, PAN, WAN, MAN","WAN, MAN, LAN, PAN","MAN, WAN, PAN, LAN",0,"Personal, local, metropolitana y amplia."],
+  ["En la topología en estrella…","los nodos se conectan a un centro","los nodos forman un anillo","los nodos usan un único cable","cada nodo se conecta a todos",0,"El concentrador o switch es el punto central."],
+  ["El protocolo TCP/IP se encarga de…","transmitir datos en Internet","diseñar páginas web","imprimir en la red local","cifrar los discos rígidos",0,"IP direcciona y TCP asegura la entrega."],
+  ["El ancho de banda es…","la capacidad máxima del canal","el dato realmente enviado","la distancia entre los nodos","la cantidad de equipos",0,"Es el techo teórico de transmisión."],
+  ["La tasa de transferencia indica…","los datos enviados por segundo","el límite teórico del canal","el largo del cableado","el número de usuarios",0,"Es el rendimiento real de la conexión."],
+  ["El modelo cliente-servidor se basa en…","roles diferenciados entre equipos","nodos con funciones iguales","la ausencia de servidores","el uso de un solo equipo",0,"El servidor provee y el cliente solicita."],
+  ["Una red P2P se caracteriza porque…","los nodos cumplen funciones equivalentes","existe un servidor central único","solo hay un cliente activo","no se comparten recursos",0,"Par a par: todos pueden dar y recibir."],
+  ["La Intranet es…","una red privada de una organización","la red pública mundial","una red de acceso abierto","un buscador de sitios web",0,"Usa protocolos de Internet con acceso restringido."],
+  ["Los operadores booleanos para buscar son…","AND, OR y NOT","SUM, MAX y MIN","FTP, TCP y HTTP","LAN, MAN y WAN",0,"Permiten incluir, alternar o excluir términos."],
+  ["El router cumple la función de…","interconectar redes y enrutar datos","almacenar los archivos","mostrar las páginas web","convertir la señal de video",0,"Elige el mejor camino para los paquetes."]
+ ],
+ avanzado:[
+  ["HTML es…","un lenguaje de marcas para la web","un protocolo de transferencia","un programa navegador","una dirección de un sitio",0,"Estructura el contenido de las páginas."],
+  ["HTTP cumple la función de…","transferir los documentos de la web","estructurar las páginas","nombrar los dominios","cifrar los mensajes",0,"Es el protocolo de transferencia de hipertexto."],
+  ["Una URL sirve para…","localizar un recurso en Internet","comprimir un archivo","medir el ancho de banda","crear una contraseña",0,"Indica protocolo, dominio y ruta."],
+  ["El webmail se distingue porque…","se accede desde el navegador","requiere un cliente instalado","funciona sin conexión","solo admite archivos",0,"Ejemplos: Gmail, Outlook.com."],
+  ["El cloud computing implica…","servicios alojados en servidores remotos","datos solo en el disco local","trabajo sin conectividad","software sin licencias",0,"El procesamiento y el almacenamiento están en la nube."],
+  ["El software portable se caracteriza por…","ejecutarse sin instalación previa","requerir una licencia anual","funcionar solo en servidores","no poder copiarse nunca",0,"Se lleva en un pendrive y no deja rastros."],
+  ["Un metabuscador…","consulta varios buscadores a la vez","solo indexa imágenes","administra las contraseñas","traduce las páginas",0,"Combina y reordena los resultados."],
+  ["La comunicación asincrónica ocurre cuando…","los participantes no coinciden en el tiempo","todos hablan a la vez","el mensaje es bidireccional","se usa solo video",0,"Ejemplos: correo electrónico y foros."],
+  ["Un podcast es…","un archivo de audio publicado en la red","un chat de texto en vivo","un buscador de noticias","una red social de audio",0,"Se distribuye por suscripción."],
+  ["El RSS permite…","recibir las actualizaciones de un sitio","editar videos en línea","comprimir archivos grandes","traducir páginas web",0,"Sindica contenidos sin entrar al sitio."]
+ ]
+},
+binario:{
+ facil:[
+  ["El sistema binario usa los dígitos…","0 y 1","del 0 al 9","A y B","del 1 al 10",0,"Es un sistema de base 2."],
+  ["Un bit puede valer…","0 o 1","de 0 a 9","de 1 a 8","de 0 a 255",0,"Es la unidad mínima de información."],
+  ["Un byte está formado por…","8 bits","2 bits","16 bits","1024 bits",0,"Permite representar 256 valores."],
+  ["La unidad más pequeña de información es…","el bit","el byte","el kilobyte","el megabyte",0,"Todo se construye a partir del bit."],
+  ["¿Cuál de estas unidades es la mayor?","el terabyte","el byte","el bit","el kilobyte",0,"Orden: bit, byte, KB, MB, GB, TB."],
+  ["La base del sistema binario es…","2","8","10","16",0,"El decimal usa base 10 y el hexadecimal, base 16."],
+  ["El número binario 1 equivale en decimal a…","1","0","2","10",0,"Es el dígito más simple del sistema."],
+  ["El número binario 10 equivale en decimal a…","2","1","10","20",0,"1×2¹ + 0×2⁰ = 2."],
+  ["Las computadoras usan binario porque…","sus circuitos tienen dos estados","los números son más cortos","lo exige una norma legal","ahorra papel al imprimir",0,"Con y sin corriente eléctrica: 1 y 0."],
+  ["El símbolo del megabyte es…","MB","Gb","KB","Gb/s",0,"Mb, con b minúscula, indica megabits."]
+ ],
+ intermedio:[
+  ["El binario 1011 equivale en decimal a…","11","13","9","15",0,"8 + 0 + 2 + 1 = 11."],
+  ["El binario 1001 equivale en decimal a…","9","11","7","13",0,"8 + 0 + 0 + 1 = 9."],
+  ["El decimal 13 expresado en binario es…","1101","1011","1110","1001",0,"13 = 8 + 4 + 1."],
+  ["El decimal 5 expresado en binario es…","101","110","111","100",0,"5 = 4 + 1."],
+  ["Con 3 bits se pueden representar…","8 valores","3 valores","6 valores","9 valores",0,"2³ = 8 combinaciones."],
+  ["Un kilobyte equivale aproximadamente a…","1024 bytes","1000 bits","1024 bits","100 bytes",0,"2¹⁰ = 1024."],
+  ["El orden correcto de menor a mayor es…","KB, MB, GB, TB","MB, KB, TB, GB","GB, MB, TB, KB","TB, GB, MB, KB",0,"Cada unidad multiplica por 1024 a la anterior."],
+  ["La velocidad de una conexión se mide en…","bits por segundo","bytes por página","pixeles por pulgada","ciclos por minuto",0,"Por eso se habla de Mbps y no de MBps."],
+  ["Un archivo de 2 GB equivale aproximadamente a…","2048 MB","200 MB","1000 MB","20 MB",0,"2 × 1024 = 2048 MB."],
+  ["La digitalización convierte señales…","analógicas en digitales","digitales en analógicas","ópticas en magnéticas","eléctricas en sonoras",0,"Se toman muestras de la señal continua."]
+ ],
+ avanzado:[
+  ["El binario 101010 equivale en decimal a…","42","34","46","38",0,"32 + 8 + 2 = 42."],
+  ["El decimal 25 expresado en binario es…","11001","10101","11010","10011",0,"25 = 16 + 8 + 1."],
+  ["Con 8 bits se pueden representar…","256 valores","64 valores","128 valores","512 valores",0,"2⁸ = 256."],
+  ["Con un byte se representa como máximo el valor…","255","256","127","1024",0,"Del 0 al 255 hay 256 valores."],
+  ["Un megabyte equivale aproximadamente a…","1024 KB","1000 KB","1024 GB","1024 bits",0,"Cada escalón multiplica por 1024."],
+  ["En el esquema del bit al yottabyte, el YB equivale a…","1024 ZB","1024 EB","1024 PB","1024 TB",0,"Yottabyte es la unidad mayor del esquema."],
+  ["Una conexión de 8 Mbps transfiere aproximadamente…","1 MB por segundo","8 MB por segundo","1 Mb por segundo","8 KB por segundo",0,"8 megabits ÷ 8 = 1 megabyte."],
+  ["El binario 11111111 equivale en decimal a…","255","256","127","511",0,"Es el máximo de un byte."],
+  ["La menor cantidad de bits para representar 100 valores es…","7 bits","6 bits","8 bits","10 bits",0,"2⁶ = 64 no alcanza; 2⁷ = 128 sí."],
+  ["El muestreo en la digitalización consiste en…","tomar muestras de la señal en intervalos","comprimir el archivo final","cifrar los datos obtenidos","imprimir la señal original",0,"A más muestras por segundo, mayor fidelidad."]
+ ]
+},
+programas:{
+ facil:[
+  ["El sistema operativo es…","el programa base del equipo","un periférico de entrada","una memoria externa","un tipo de virus",0,"Administra el hardware y los programas."],
+  ["Un ejemplo de sistema operativo es…","Windows","Word","Chrome","Excel",0,"Otros: macOS, Linux, Android, iOS."],
+  ["Word es un…","procesador de textos","sistema operativo","programa de dibujo","navegador web",0,"Permite crear documentos con formato."],
+  ["Excel es una…","planilla de cálculo","base de datos","presentación","hoja de papel",0,"Trabaja con celdas, fórmulas y gráficos."],
+  ["Un virus informático es…","un programa que daña el equipo","una pieza del equipo","un tipo de memoria","un cable de red",0,"Es un programa malicioso."],
+  ["El antivirus sirve para…","detectar y eliminar malware","acelerar el procesador","aumentar la memoria","imprimir más rápido",0,"Debe mantenerse actualizado."],
+  ["Una contraseña segura debe…","combinar letras, números y símbolos","ser el nombre propio","ser muy corta y simple","repetirse en todos los sitios",0,"Cuanto más larga y variada, mejor."],
+  ["El software libre permite…","usar, estudiar y modificar el programa","solo ejecutar el programa","cobrar por cada copia","ocultar siempre su código",0,"Se basa en las cuatro libertades."],
+  ["Un archivo PDF sirve para…","leer documentos sin cambiar su formato","ejecutar programas","grabar música","comprimir fotos",0,"Conserva el diseño original."],
+  ["Una carpeta del sistema operativo sirve para…","organizar los archivos","enfriar el disco","medir la memoria","conectar la red",0,"Forma parte de la administración básica."]
+ ],
+ intermedio:[
+  ["Un sistema operativo de código abierto es…","GNU/Linux","Windows","macOS","iOS",0,"Su código fuente es público y modificable."],
+  ["El software propietario se caracteriza por…","tener el código fuente cerrado","ser siempre gratuito","permitir modificar el código","no requerir licencia",0,"Se compra una licencia de uso."],
+  ["La función principal del sistema operativo es…","administrar el hardware y los programas","crear documentos de texto","diseñar páginas web","imprimir los informes",0,"Es el software de base del equipo."],
+  ["En una planilla, la celda B7 está en…","la columna B y la fila 7","la fila B y la columna 7","la hoja B y la celda 7","el rango B y la tabla 7",0,"Letra para la columna, número para la fila."],
+  ["Una fórmula de la planilla empieza con…","el signo igual","el signo número","la letra F","el signo más",0,"Ejemplo: =SUMA(B2:B7)."],
+  ["Un troyano es un malware que…","se disfraza de programa legítimo","se propaga solo por la red","cifra todos los archivos","espía la navegación web",0,"Engaña al usuario para ejecutarse."],
+  ["El gusano informático se propaga…","solo, a través de la red","solo con un archivo infectado","solo por discos ópticos","solo por correo impreso",0,"No necesita anexarse a un programa."],
+  ["El spyware se dedica a…","recopilar datos del usuario","cifrar los archivos","optimizar la memoria","actualizar el sistema",0,"Actúa sin el consentimiento del usuario."],
+  ["El firewall se encarga de…","filtrar el tráfico de la red","enfriar el procesador","comprimir los archivos","traducir las páginas",0,"Aplica reglas de seguridad a las conexiones."],
+  ["Una copia de seguridad sirve para…","recuperar datos ante una pérdida","acelerar el inicio","liberar espacio en disco","ordenar las carpetas",0,"También se la llama backup."]
+ ],
+ avanzado:[
+  ["El ransomware se caracteriza por…","cifrar los datos y exigir un pago","borrar solo el historial","mostrar mucha publicidad","copiar archivos a la nube",0,"Del inglés ransom: rescate."],
+  ["El phishing es…","una suplantación de identidad para robar datos","un filtro de spam","un tipo de antivirus","una copia de seguridad",0,"Suele llegar por correo o mensajería falsa."],
+  ["La verificación en dos pasos agrega…","un segundo factor de autenticación","una contraseña más larga","un cifrado del disco","un firewall adicional",0,"Combina algo que sabés con algo que tenés."],
+  ["El adware se caracteriza por…","mostrar publicidad no solicitada","cifrar los documentos","robar las contraseñas","dañar el arranque",0,"Es molesto y suele rastrear la navegación."],
+  ["Una licencia GPL permite…","modificar y redistribuir el código","cerrar el código fuente","vender solo el binario","prohibir todas las copias",0,"Es la licencia típica del software libre."],
+  ["El software de aplicación se distingue del de sistema porque…","resuelve tareas concretas del usuario","administra todo el hardware","arranca el equipo","controla los discos",0,"Ejemplos: procesador de textos, planilla, navegador."],
+  ["Un DBMS o gestor de bases de datos permite…","almacenar y consultar datos","editar fotografías","crear presentaciones","diseñar páginas web",0,"Organiza la información en tablas y consultas."],
+  ["La administración básica de archivos incluye…","crear, mover y eliminar según permisos","soldar los circuitos","medir el ancho de banda","configurar la BIOS",0,"Son las tareas cotidianas del usuario."],
+  ["Un keylogger es un malware que…","registra lo que se teclea","cifra todo el disco","satura el procesador","envía spam masivo",0,"Por eso es riesgoso escribir contraseñas en equipos ajenos."],
+  ["Actualizar el sistema operativo mejora la seguridad porque…","corrige vulnerabilidades detectadas","aumenta la memoria RAM","mejora la velocidad del disco","elimina los archivos viejos",0,"Los parches cierran puertas de entrada al malware."]
+ ]
+}};
+
+const BANK={};let TOTALQ=0;
+CAT_KEYS.forEach(k=>{BANK[k]={};LEVELS.forEach(([lv])=>{
+  BANK[k][lv]=QB[k][lv].map(r=>({q:r[0],o:[r[1],r[2],r[3],r[4]],a:r[5],e:r[6]}));TOTALQ+=QB[k][lv].length;});});
+
+/* ---------- ESTADO ---------- */
+const PLAYER_COLORS=[{c:'#FF5A6E',n:'#B01A2E'},{c:'#4C8DFF',n:'#1B4FB0'},{c:'#35D07F',n:'#137A45'},{c:'#FFB020',n:'#A96A00'}];
+const S={players:[],cur:0,started:false,over:false,busy:false,timeLeft:1800,timerId:null,paused:false,sound:true,
+ round:1,deck:{},level:'intermedio',asked:0};
+let endCountdown=null;
+const $=s=>document.querySelector(s);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[b[i],b[j]]=[b[j],b[i]];}return b;}
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function stopEndCountdown(){if(endCountdown){clearInterval(endCountdown);endCountdown=null;}}
+
+/* ---------- AUDIO ---------- */
+const A={ctx:null,
+ ensure(){if(!this.ctx){try{this.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},
+ tone(f,d,type='sine',v=.06,dl=0){if(!S.sound)return;this.ensure();if(!this.ctx)return;const t0=this.ctx.currentTime+dl,o=this.ctx.createOscillator(),g=this.ctx.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t0);g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(v,t0+.012);g.gain.exponentialRampToValueAtTime(.0001,t0+d);
+  o.connect(g);g.connect(this.ctx.destination);o.start(t0);o.stop(t0+d+.03);},
+ tick(){this.tone(520,.05,'square',.028)},
+ roll(){for(let i=0;i<9;i++)this.tone(300+Math.random()*500,.05,'square',.03,i*.075)},
+ good(){this.tone(660,.13,'triangle',.07);this.tone(880,.16,'triangle',.07,.11);this.tone(1174,.24,'sine',.06,.24)},
+ bad(){this.tone(190,.22,'sawtooth',.05);this.tone(140,.3,'sawtooth',.05,.16)},
+ turbo(){this.tone(420,.09,'square',.05);this.tone(660,.09,'square',.05,.09);this.tone(990,.18,'square',.05,.18)},
+ falla(){this.tone(300,.14,'sawtooth',.05);this.tone(210,.24,'sawtooth',.05,.13)},
+ win(){[523,659,784,1046,1318].forEach((f,i)=>this.tone(f,.32,'triangle',.07,i*.12))}};
+
+/* ---------- TABLERO ---------- */
+const boardEl=$('#board'),gridEl=$('#grid'),frameEl=$('#boardFrame'),tokenLayer=$('#tokenLayer');
+const cellEls=[];
+function buildBoard(){
+  gridEl.innerHTML='';cellEls.length=0;
+  $('#trackpath').setAttribute('d','M 0.5 1.05 L 0.5 5.95 Q 0.5 6.5 1.05 6.5 L 8.95 6.5 Q 9.5 6.5 9.5 5.95 L 9.5 1.05 Q 9.5 0.5 8.95 0.5 L 1.05 0.5 Q 0.5 0.5 0.5 1.05 Z');
+  COORDS.forEach((xy,i)=>{
+    const x=xy[0],y=xy[1],info=cellInfo(i),def=BOARD_DEF[i];
+    const d=document.createElement('div');d.className='cell';d.dataset.i=i;
+    d.style.gridColumn=(x+1);d.style.gridRow=(6-y+1);
+    d.style.setProperty('--cbg',info.bg);d.style.setProperty('--cac',info.ac);
+    d.innerHTML='<span class="num">'+i+'</span>'+
+      '<svg class="cico'+((def.t==='comodin'||def.t==='turbo')?' fill':'')+'"><use href="#'+(def.t==='meta'?'i-flag':info.icon)+'"/></svg>'+
+      '<span class="clab">'+(def.t==='meta'?'Salida':cellLabel(i))+'</span>';
+    d.title='Casilla '+i+' — '+info.name;
+    d.addEventListener('mouseenter',()=>{if(S.paused||S.over)return;setInfo('Casilla <b>'+i+'</b> · '+info.name+(def.t==='comodin'?' · elegís la categoría y +2 si acertás':def.t==='turbo'?' · avanzás 3 sin responder':def.t==='falla'?' · retrocedés 2 sin responder':''));});
+    d.addEventListener('mouseleave',()=>{if(S.paused||S.over)return;setInfo(turnInfo());});
+    gridEl.appendChild(d);cellEls[i]=d;
+  });
+  const c=document.createElement('div');c.className='center';
+  c.innerHTML=
+   '<div class="c-head"><div class="c-logo">Carrera <b>NTICx</b><small>Tablero de 30 casillas</small></div>'+
+   '<div class="c-timer" id="cTimer"><svg><use href="#i-clock"/></svg><b id="timerTxt">30:00</b></div></div>'+
+   '<div class="c-turn" id="cTurn"><span class="pd" id="turnDot"></span><span class="tx"><em>Turno de</em><b id="turnName">—</b></span></div>'+
+   '<div class="c-dice" id="cDiceRow"><div class="dice" id="dice">'+Array.from({length:9},()=>'<i></i>').join('')+'</div>'+
+   '<button class="btn btn-primary" id="btnRoll"><svg><use href="#i-dice"/></svg> Tirar dado</button></div>'+
+   '<div class="c-info" id="cInfo">Preparados…</div>'+
+   '<div class="c-legend" id="cLegend"></div>'+
+   '<div class="c-actions">'+
+    '<button class="btn btn-sm" id="btnRules2"><svg><use href="#i-book"/></svg> Reglas</button>'+
+    '<button class="btn btn-sm" id="btnPause2"><svg><use href="#i-pause"/></svg> Pausa</button>'+
+    '<button class="btn btn-sm" id="btnSound2"><svg><use href="#i-sound"/></svg> Sonido</button>'+
+   '</div>';
+  gridEl.appendChild(c);
+  const lg=$('#cLegend');
+  CAT_KEYS.concat(['comodin','turbo','falla']).forEach(k=>{const i=CATS[k];const e=document.createElement('div');e.className='cl';
+    e.style.setProperty('--cbg',i.bg);e.style.setProperty('--cac',i.ac);
+    e.innerHTML='<svg><use href="#'+i.icon+'"/></svg><span>'+i.short+'</span>';lg.appendChild(e);});
+  $('#btnRules2').onclick=rulesModal;
+  $('#btnPause2').onclick=togglePause;
+  $('#btnSound2').onclick=toggleSound;
+}
+function rescale(){const w=frameEl.getBoundingClientRect().width;if(w>0)frameEl.style.setProperty('--u',(w/100)+'px');placeAllTokens();}
+if(window.ResizeObserver)new ResizeObserver(rescale).observe(frameEl);
+addEventListener('resize',rescale);
+
+/* ---------- FICHAS ---------- */
+function cellRect(i){const c=cellEls[i].getBoundingClientRect(),b=boardEl.getBoundingClientRect();return{x:c.left-b.left,y:c.top-b.top,w:c.width,h:c.height};}
+function placeToken(p){
+  const idx=p.pos>=30?0:p.pos,r=cellRect(idx);
+  const mates=S.players.filter(q=>(q.pos>=30?0:q.pos)===idx),n=mates.length,k=mates.indexOf(p);
+  const size=Math.min(r.w,r.h)*.44;let dx=0,dy=0;
+  if(n>1){const cols=2,rows=Math.ceil(n/cols),cx=k%cols,cy=Math.floor(k/cols);
+    dx=(cx-(cols-1)/2)*r.w*.40;dy=(cy-(rows-1)/2)*r.h*.42;if(n===3&&k===2){dx=0;dy=r.h*.21;}}
+  p.el.style.width=size+'px';p.el.style.height=size+'px';p.el.style.fontSize=(size*.46)+'px';
+  p.el.style.left=(r.x+r.w/2-size/2+dx)+'px';p.el.style.top=(r.y+r.h/2-size/2+dy)+'px';
+}
+function placeAllTokens(){if(!S.started)return;S.players.forEach(placeToken);markActiveCell();}
+function markActiveCell(){cellEls.forEach(c=>c.classList.remove('ring'));if(S.over||!S.players.length)return;const p=S.players[S.cur];cellEls[p.pos>=30?0:p.pos].classList.add('ring');}
+
+/* ---------- PANEL LATERAL ---------- */
+function levelName(){const f=LEVELS.find(l=>l[0]===S.level);return f?f[1]:'Mixto';}
+function renderPlayers(){
+  const box=$('#playerList');if(!box)return;box.innerHTML='';
+  S.players.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='pl'+(i===S.cur&&!S.over?' active':'');d.style.setProperty('--pc',p.color);
+    const txt=p.pos>=30?'¡META alcanzada!':'Casilla '+p.pos+' · '+cellLabel(p.pos);
+    d.innerHTML='<div class="av">'+esc(p.name[0].toUpperCase())+'</div>'+
+      '<div class="info"><div class="nm">'+esc(p.name)+(i===S.cur&&!S.over?'<span class="tag">Turno</span>':'')+'</div>'+
+      '<div class="st">'+esc(txt)+'</div><div class="bar"><i style="width:'+Math.min(100,p.pos/30*100)+'%"></i></div></div>'+
+      '<div class="sc"><em class="g">✔'+p.ok+'</em><em class="r">✘'+p.fail+'</em></div>';
+    box.appendChild(d);
+  });
+  $('#roundPill').textContent=S.over?'Partida finalizada':'Ronda '+S.round+' · Nivel '+levelName();
+}
+function log(msg,type){
+  const box=$('#logBox');if(!box)return;
+  const d=document.createElement('div');d.className='li '+(type||'');
+  d.innerHTML='<span class="t">'+fmt(Math.max(0,S.timeLeft))+'</span><span class="m">'+msg+'</span>';
+  box.prepend(d);
+  while(box.children.length>80)box.removeChild(box.lastChild);
+}
+function setInfo(h){const e=$('#cInfo');if(e)e.innerHTML=h;}
+function turnInfo(){if(!S.players.length)return'Preparados…';if(S.over)return'Partida finalizada.';const p=S.players[S.cur];
+ return'<b>'+esc(p.name)+'</b> está en la casilla '+p.pos+(p.pos>0?' ('+cellLabel(p.pos)+')':' (SALIDA)')+'. Tirá el dado.';}
+function syncTurnUI(){const p=S.players[S.cur];if(!p)return;$('#turnName').textContent=p.name;
+ $('#turnDot').style.background='radial-gradient(circle at 32% 28%,'+p.color+','+p.dark+')';
+ p.el.classList.add('active');S.players.forEach(q=>{if(q!==p)q.el.classList.remove('active')});
+ setInfo(turnInfo());renderPlayers();markActiveCell();}
+
+/* ---------- DADO ---------- */
+const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function showFace(n){const dice=$('#dice');if(!dice)return;const dots=dice.querySelectorAll('i');dots.forEach(d=>d.classList.remove('on'));(PIPS[n]||[]).forEach(i=>{if(dots[i])dots[i].classList.add('on');});}
+async function rollDice(){const dice=$('#dice');A.roll();dice.classList.add('rolling');
+ for(let i=0;i<11;i++){showFace(1+Math.floor(Math.random()*6));await sleep(70);}
+ dice.classList.remove('rolling');const v=1+Math.floor(Math.random()*6);showFace(v);
+ dice.animate([{transform:'scale(1)'},{transform:'scale(1.16)'},{transform:'scale(1)'}],{duration:280,easing:'ease-out'});
+ A.tone(880,.1,'triangle',.05);return v;}
+
+/* ---------- MOVIMIENTO ---------- */
+async function stepTo(p,target){
+  target=Math.max(0,Math.min(30,target));const dir=target>p.pos?1:-1;
+  while(p.pos!==target){
+    p.pos+=dir;p.el.classList.remove('hopping');void p.el.offsetWidth;p.el.classList.add('hopping');
+    placeToken(p);renderPlayers();A.tick();
+    const c=cellEls[p.pos>=30?0:p.pos];c.classList.remove('hot');void c.offsetWidth;c.classList.add('hot');
+    await sleep(300);
+  }
+  p.el.classList.remove('hopping');renderPlayers();setInfo(turnInfo());
+}
+
+/* ---------- MODALES ---------- */
+const layer=$('#modalLayer');
+function openModal(html,cls){const o=document.createElement('div');o.className='overlay';o.innerHTML='<div class="modal '+(cls||'')+'">'+html+'</div>';layer.appendChild(o);return o;}
+function closeModal(o){if(o&&o.parentNode){o.style.animation='fade .18s reverse';setTimeout(()=>{if(o.parentNode)o.remove();},150);}}
+let toastT=null;
+function toast(t,b1,b2){const e=$('#toast');e.textContent=t;e.style.setProperty('--tb1',b1||'#2BD9C0');e.style.setProperty('--tb2',b2||'#4EA8FF');
+ e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),1500);}
+
+/* ---------- PREGUNTAS (sin repetición) ---------- */
+function pickLevel(){if(S.level!=='mixto')return S.level;return LEVELS[Math.floor(Math.random()*LEVELS.length)][0];}
+function nextQuestion(cat){
+  const lv=pickLevel(),key=cat+'|'+lv,bank=BANK[cat][lv];
+  if(!S.deck[key]||!S.deck[key].length)S.deck[key]=shuffle(bank.map((_,i)=>i));
+  const qi=S.deck[key].pop();
+  return{q:bank[qi],level:lv,levelName:(LEVELS.find(l=>l[0]===lv)||[])[1],left:S.deck[key].length};
+}
+function askQuestion(catKey,player){
+  return new Promise(resolve=>{
+    const cat=CATS[catKey],pack=nextQuestion(catKey),q=pack.q;
+    const order=shuffle([0,1,2,3]),opts=order.map(i=>q.o[i]),correct=order.indexOf(q.a),letters=['a','b','c','d'];
+    S.asked++;
+    const m=openModal(
+      '<div class="qhead" style="--cbg:'+cat.bg+';--cac:'+cat.ac+'">'+
+       '<div class="ic"><svg><use href="#'+cat.icon+'"/></svg></div>'+
+       '<div class="tt"><em>'+cat.name+'</em><b>Pregunta para '+esc(player.name)+'</b></div>'+
+       '<span class="who">'+pack.levelName+'</span></div>'+
+      '<div class="qbody"><p class="qtext">'+esc(q.q)+'</p>'+
+       '<div class="qmeta">Nivel '+pack.levelName+' · casilla '+player.pos+' · pregunta '+S.asked+' · restan '+pack.left+' sin repetir en este banco</div>'+
+       '<div class="opts">'+opts.map((t,i)=>'<button class="opt" data-i="'+i+'"><span class="k">'+letters[i]+'</span><span>'+esc(t)+'</span></button>').join('')+'</div>'+
+       '<div id="fb"></div></div>'+
+      '<div class="qfoot" id="qfoot" style="display:none"><button class="btn btn-primary" id="qcont">Continuar <svg><use href="#i-play"/></svg></button></div>');
+    const btns=[...m.querySelectorAll('.opt')];let done=false;
+    function answer(i){
+      if(done)return;done=true;
+      btns.forEach((b,j)=>{b.disabled=true;if(j!==i&&j!==correct)b.classList.add('mute');});
+      const ok=i===correct;btns[correct].classList.add('right');if(!ok)btns[i].classList.add('wrong');
+      m.querySelector('#fb').innerHTML='<div class="feedback '+(ok?'good':'bad')+'"><svg><use href="#'+(ok?'i-check':'i-x')+'"/></svg><div><b>'+
+        (ok?'¡Correcto!':'Incorrecto.')+'</b> '+(ok?'Te quedás en la casilla '+player.pos+'.':'Retrocedés 1 casilla.')+
+        (q.e?'<br><span style="opacity:.85">'+esc(q.e)+'</span>':'')+'</div></div>';
+      m.querySelector('#qfoot').style.display='flex';
+      ok?A.good():A.bad();
+      log('<b>'+esc(player.name)+'</b> '+(ok?'acertó':'falló')+' una pregunta de '+cat.name+' ('+pack.levelName+').',ok?'ok':'bad');
+      const cont=m.querySelector('#qcont');cont.focus();cont.onclick=()=>{closeModal(m);resolve(ok);};
+    }
+    btns.forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+    m._key=e=>{const n='1234'.indexOf(e.key);if(n>=0&&!done){answer(n);return;}if(e.key==='Enter'&&done){const c=m.querySelector('#qcont');if(c)c.click();}};
+    setTimeout(()=>btns[0]&&btns[0].focus(),80);
+  });
+}
+function chooseComodin(player){
+  return new Promise(resolve=>{
+    const m=openModal(
+     '<div class="qhead" style="--cbg:'+CATS.comodin.bg+';--cac:'+CATS.comodin.ac+'">'+
+      '<div class="ic"><svg class="fill"><use href="#i-star"/></svg></div>'+
+      '<div class="tt"><em>Comodín · casilla '+player.pos+'</em><b>'+esc(player.name)+', elegí tu categoría</b></div></div>'+
+     '<div class="qbody"><p style="margin:0 0 14px;font-weight:800;color:#5a5578">Si acertás, avanzás <b style="color:#9A7300">2 casillas extra</b>. Si fallás, retrocedés 1.</p>'+
+      '<div class="catpick">'+CAT_KEYS.map(k=>'<button class="catbtn" data-k="'+k+'" style="--cbg:'+CATS[k].bg+';--cac:'+CATS[k].ac+'"><svg><use href="#'+CATS[k].icon+'"/></svg><span>'+CATS[k].name+'</span></button>').join('')+'</div></div>');
+    m.querySelectorAll('.catbtn').forEach(b=>b.onclick=()=>{A.tone(760,.12,'triangle',.05);
+      log('<b>'+esc(player.name)+'</b> usó el Comodín y eligió '+CATS[b.dataset.k].name+'.','com');closeModal(m);resolve(b.dataset.k);});
+  });
+}
+
+/* ---------- RESOLUCIÓN DE CASILLA ---------- */
+async function resolveCell(p,byDice){
+  const idx=p.pos>=30?0:p.pos,def=BOARD_DEF[idx];
+  const c=cellEls[idx];c.classList.remove('hot');void c.offsetWidth;c.classList.add('hot');
+  if(def.t==='meta'){setInfo('<b>'+esc(p.name)+'</b> está en la SALIDA.');return;}
+  if(!byDice){setInfo('Efecto no activado: solo valen las casillas alcanzadas con el dado.');return;}
+  if(def.t==='cat'){
+    setInfo('<b>'+esc(p.name)+'</b> cayó en '+CATS[def.c].name+'.');A.tone(600,.1,'sine',.05);
+    const ok=await askQuestion(def.c,p);
+    if(ok)p.ok++;else{p.fail++;await stepTo(p,p.pos-1);}
+    renderPlayers();return;
+  }
+  if(def.t==='comodin'){
+    toast('★ COMODÍN','#FFE58A','#F0A93B');A.tone(880,.16,'triangle',.06);
+    setInfo('<b>'+esc(p.name)+'</b> cayó en el Comodín.');
+    const cat=await chooseComodin(p);
+    const ok=await askQuestion(cat,p);
+    if(ok){p.ok++;toast('+2 Comodín','#FFE58A','#F0A93B');await stepTo(p,Math.min(30,p.pos+2));
+      if(p.pos>=30){await win(p,'Comodín + acierto');return;}}
+    else{p.fail++;await stepTo(p,p.pos-1);}
+    renderPlayers();return;
+  }
+  if(def.t==='turbo'){
+    toast('TURBO +3','#BDEFF2','#0B7F8C');A.turbo();
+    log('<b>'+esc(p.name)+'</b> activó Turbo +3 (sin responder).','turbo');
+    setInfo('<b>'+esc(p.name)+'</b> activó Turbo +3.');await sleep(480);
+    await stepTo(p,Math.min(30,p.pos+3));
+    if(p.pos>=30){await win(p,'Turbo +3');return;}
+    renderPlayers();return;
+  }
+  if(def.t==='falla'){
+    toast('FALLA −2','#DADADA','#8B8B8B');A.falla();
+    log('<b>'+esc(p.name)+'</b> cayó en Falla −2 (sin responder).','falla');
+    setInfo('<b>'+esc(p.name)+'</b> cayó en Falla −2.');await sleep(480);
+    await stepTo(p,Math.max(0,p.pos-2));renderPlayers();return;
+  }
+}
+
+/* ---------- TURNO ---------- */
+async function onRoll(){
+  if(S.busy||S.over||S.paused)return;
+  S.busy=true;$('#btnRoll').disabled=true;
+  const p=S.players[S.cur],v=await rollDice();
+  log('<b>'+esc(p.name)+'</b> sacó <b>'+v+'</b> en el dado.','dice');
+  setInfo('<b>'+esc(p.name)+'</b> sacó <b>'+v+'</b>.');await sleep(240);
+  await stepTo(p,Math.min(30,p.pos+v));
+  if(p.pos>=30){await win(p,'llegada a la META');return;}   /* FIN inmediato */
+  await resolveCell(p,true);
+  if(S.over)return;
+  S.busy=false;S.cur=(S.cur+1)%S.players.length;if(S.cur===0)S.round++;
+  syncTurnUI();$('#btnRoll').disabled=false;$('#btnRoll').focus();
+}
+
+/* ---------- FIN DE PARTIDA ---------- */
+async function win(p,how){
+  if(S.over)return;
+  S.over=true;S.busy=true;stopTimer();
+  p.pos=30;placeToken(p);setMeta(true);              /* la casilla SALIDA pasa a mostrar META */
+  const r=$('#btnRoll');if(r)r.disabled=true;
+  cellEls[0].classList.add('finish');A.win();
+  log('🏁 <b>'+esc(p.name)+'</b> pisó la META: la partida terminó ('+how+').','win');
+  log('🏆 <b>'+esc(p.name)+'</b> ganó la Carrera NTICx.','win');
+  confettiBurst();renderPlayers();
+  $('#topSub').textContent='Partida finalizada';
+  await sleep(650);
+  showEndModal('¡'+p.name+' llegó a la META!','La partida terminó al pisar el casillero META. Posiciones finales con respuestas correctas e incorrectas:');
+}
+function timeUp(){
+  if(S.over)return;
+  S.over=true;S.busy=true;stopTimer();
+  const max=Math.max(...S.players.map(p=>p.pos)),w=S.players.filter(p=>p.pos===max);
+  A.win();confettiBurst();
+  log('⏱ Se acabó el tiempo. '+w.map(p=>'<b>'+esc(p.name)+'</b>').join(' y ')+' en la casilla '+max+'.','win');
+  $('#topSub').textContent='Partida finalizada';
+  showEndModal(w.length===1?'¡'+w[0].name+' gana por posición!':'¡Empate en la punta!',
+    'Se agotó el tiempo: la ficha más adelantada estaba en la casilla '+max+'. Posiciones finales:');
+}
+/* Tabla de puestos + correctas/incorrectas + vuelta automática al menú principal */
+function showEndModal(title,sub){
+  stopEndCountdown();
+  const ranked=S.players.slice().sort((a,b)=>(b.pos-a.pos)||(b.ok-a.ok)||(a.fail-b.fail));
+  const rows=ranked.map((p,i)=>{
+    const tot=p.ok+p.fail, pc=tot?Math.round(p.ok/tot*100)+'%':'—';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.º';
+    return '<tr><td class="pos">'+medal+'</td>'+
+      '<td><span class="dot" style="background:'+p.color+'"></span>'+esc(p.name)+'</td>'+
+      '<td class="num">'+(p.pos>=30?'META 🏁':p.pos)+'</td>'+
+      '<td class="num ok">✔ '+p.ok+'</td>'+
+      '<td class="num bad">✘ '+p.fail+'</td>'+
+      '<td class="num pc">'+pc+'</td></tr>';
+  }).join('');
+  const totOk=S.players.reduce((s,p)=>s+p.ok,0), totFail=S.players.reduce((s,p)=>s+p.fail,0);
+  const m=openModal('<div class="winbody"><div class="trophy"><svg><use href="#i-trophy"/></svg></div>'+
+    '<h2>'+esc(title)+'</h2><p>'+esc(sub)+'</p>'+
+    '<div class="standwrap"><h5>Tabla de puestos · correctas e incorrectas</h5>'+
+    '<table class="statstable"><thead><tr><th>Puesto</th><th>Jugador</th><th class="num">Casilla</th>'+
+    '<th class="num">Correctas</th><th class="num">Incorrectas</th><th class="num">Precisión</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table></div>'+
+    '<p style="font-size:12.5px;color:#8a84ab;font-weight:800;margin:0 0 6px">Total de la partida: '+totOk+' correctas y '+totFail+' incorrectas ('+(totOk+totFail)+' preguntas respondidas).</p>'+
+    '<p class="endcd" id="endCd"></p></div>'+
+    '<div class="mfoot">'+
+      '<button class="btn btn-primary" data-menu><svg><use href="#i-home"/></svg> Volver al menú principal</button>'+
+      '<button class="btn btn-amber" data-again><svg><use href="#i-refresh"/></svg> Jugar de nuevo</button>'+
+      '<button class="btn" data-stay>Quedarme a ver los resultados</button></div>');
+  m.classList.add('noesc');
+  const cd=m.querySelector('#endCd');
+  let secs=20;
+  const goMenu=()=>{stopEndCountdown();closeModal(m);backToSetup(true);};
+  const goAgain=()=>{stopEndCountdown();closeModal(m);restartSame();};
+  const stay=()=>{stopEndCountdown();cd.textContent='Sin retorno automático: usá los botones cuando quieras.';};
+  cd.textContent='Volviendo al menú principal en '+secs+' s para configurar otra partida…';
+  endCountdown=setInterval(()=>{secs--;
+    if(secs<=0){goMenu();return;}
+    cd.textContent='Volviendo al menú principal en '+secs+' s para configurar otra partida…';},1000);
+  m.querySelector('[data-menu]').onclick=goMenu;
+  m.querySelector('[data-again]').onclick=goAgain;
+  m.querySelector('[data-stay]').onclick=stay;
+  m.querySelector('[data-menu]').focus();
+}
+function setMeta(on){
+  S.metaReached=on||S.metaReached;
+  const lab=cellEls[0].querySelector('.clab'),ico=cellEls[0].querySelector('use');
+  if(S.metaReached){lab.textContent='Meta';ico.setAttribute('href','#i-trophy');cellEls[0].title='Casilla 0 — META';}
+  else{lab.textContent='Salida';ico.setAttribute('href','#i-flag');cellEls[0].title='Casilla 0 — SALIDA / META';}
+}
+
+/* ---------- TIEMPO ---------- */
+function startTimer(){stopTimer();S.timerId=setInterval(()=>{
+  if(S.paused||S.over)return;S.timeLeft--;
+  const t=$('#timerTxt');if(t)t.textContent=fmt(S.timeLeft);
+  const c=$('#cTimer');if(c)c.classList.toggle('low',S.timeLeft<=300);
+  if(S.timeLeft<=0){S.timeLeft=0;timeUp();}},1000);}
+function stopTimer(){if(S.timerId){clearInterval(S.timerId);S.timerId=null;}}
+
+/* ---------- REGLAS ---------- */
+function rulesModal(){
+  const legend=CAT_KEYS.concat(['comodin','turbo','falla','meta']).map(k=>{const c=CATS[k];
+    return '<div class="lg" style="--cbg:'+c.bg+';--cac:'+c.ac+';background:'+c.bg+'"><svg><use href="#'+c.icon+'"/></svg><span>'+c.name+(k==='meta'?'<small>Casilla 0: SALIDA al iniciar, META al llegar</small>':'')+'</span></div>';}).join('');
+  const cells=BOARD_DEF.map((d,i)=>{const c=cellInfo(i);
+    return '<div class="lg" style="background:'+c.bg+';--cac:'+c.ac+'"><b style="min-width:16px">'+i+'</b><svg style="width:16px;height:16px"><use href="#'+c.icon+'"/></svg><span style="font-size:11px;text-transform:none;font-weight:800">'+(d.t==='meta'?'SALIDA / META':c.name)+'</span></div>';}).join('');
+  const qcount=CAT_KEYS.map(k=>'<li><b>'+CATS[k].name+'</b>: 10 fáciles + 10 intermedias + 10 avanzadas = 30 preguntas.</li>').join('');
+  const m=openModal(
+   '<div class="mhead"><svg><use href="#i-book"/></svg><b>Reglamento · Carrera NTICx</b></div>'+
+   '<div class="mbody">'+
+    '<h4>Objetivo</h4><p style="margin:0 0 8px">Recorrer las 30 casillas (0 → 29) en sentido <b>antihorario</b> y llegar a la <b>META</b>, que es la misma casilla física de la SALIDA (posición 0/30). Partida para <b>2 a 4 jugadores</b> y <b>30 minutos</b> máximo.</p>'+
+    '<h4>Desarrollo del turno</h4><ul>'+
+     '<li>Se tira el dado y la ficha avanza esa cantidad de posiciones. Es una carrera de un solo tramo: <b>no se da la vuelta al circuito</b>.</li>'+
+     '<li><b>Categoría:</b> se responde una pregunta con 4 opciones (a/b/c/d). Acierto = la ficha <b>se queda</b>; error = <b>retrocede 1</b>.</li>'+
+     '<li><b>Comodín:</b> el jugador <b>elige la categoría</b>. Acierto = avanza <b>2 extra</b>; error = retrocede 1.</li>'+
+     '<li><b>Turbo +3:</b> avanza 3 posiciones <b>sin responder</b>.</li>'+
+     '<li><b>Falla −2:</b> retrocede 2 posiciones <b>sin responder</b>.</li>'+
+     '<li>Los efectos especiales <b>solo se activan al caer con el valor del dado</b> (no por acierto, error, Turbo o Falla).</li></ul>'+
+    '<h4>Cuestionario</h4><ul>'+
+     '<li><b>180 preguntas</b>: 6 categorías × 3 niveles (fácil, intermedio, avanzado) × 10 preguntas.</li>'+
+     '<li>El nivel se elige en el menú principal; la opción <b>Mixto</b> sortea el nivel en cada pregunta.</li>'+
+     '<li>Las preguntas <b>no se repiten</b> hasta agotar el banco de esa categoría y nivel.</li>'+
+     '<li>El listado completo se consulta <b>solo desde el menú principal</b>.</li>'+qcount+'</ul>'+
+    '<h4>Fin de la partida</h4><ul>'+
+     '<li><b>Ni bien una ficha pisa la META</b> (la casilla que dice SALIDA), la partida <b>termina en ese instante</b>. No hace falta tiro exacto: con llegar o pasar alcanza.</li>'+
+     '<li>Se muestra la <b>tabla de puestos</b> con las cantidades de respuestas <b>correctas e incorrectas</b> y la precisión de cada jugador.</li>'+
+     '<li>Después se vuelve al <b>menú principal</b> (automático a los 20 s o con el botón) para configurar e iniciar otra partida.</li>'+
+     '<li>Si se agotan los minutos, gana quien esté más adelantado y también se muestra la tabla final.</li></ul>'+
+    '<h4>Pausa y atajos</h4><ul><li><span class="kbd">P</span> pausa y reanuda (también <span class="kbd">Esc</span> o <span class="kbd">Espacio</span> en pausa, o el botón <b>Continuar partida</b>).</li>'+
+     '<li><span class="kbd">Espacio</span> tirar el dado · <span class="kbd">1</span>–<span class="kbd">4</span> responder · <span class="kbd">Enter</span> continuar.</li></ul>'+
+    '<h4>Identidad visual del tablero</h4><div class="legend-grid">'+legend+'</div>'+
+    '<h4>Mapa de las 30 casillas (fijo)</h4><div class="legend-grid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">'+cells+'</div>'+
+   '</div><div class="mfoot"><button class="btn btn-primary" data-close>Entendido</button></div>');
+  m.querySelector('[data-close]').onclick=()=>closeModal(m);
+}
+
+/* ---------- CUESTIONARIO: solo menú principal ---------- */
+function bankModal(){
+  if(S.started&&!S.over){toast('El cuestionario se consulta desde el menú');return;}
+  const m=openModal(
+   '<div class="mhead"><svg><use href="#i-list"/></svg><b>Cuestionario · '+TOTALQ+' preguntas</b>'+
+    '<button class="btn btn-sm" data-close style="margin-left:auto">Cerrar</button></div>'+
+   '<div class="mbody">'+
+    '<div class="banktools">'+
+     '<select id="bkCat"><option value="all">Todas las categorías</option>'+CAT_KEYS.map(k=>'<option value="'+k+'">'+CATS[k].name+'</option>').join('')+'</select>'+
+     '<select id="bkLev"><option value="all">Todos los niveles</option>'+LEVELS.map(l=>'<option value="'+l[0]+'">'+l[1]+'</option>').join('')+'</select>'+
+     '<input id="bkQ" type="search" placeholder="Buscar palabra…">'+
+     '<label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#5a5578"><input type="checkbox" id="bkA" checked> Ver respuestas</label>'+
+    '</div><div id="bkList"></div></div>','wide');
+  m.querySelector('[data-close]').onclick=()=>closeModal(m);
+  const list=m.querySelector('#bkList'),catSel=m.querySelector('#bkCat'),levSel=m.querySelector('#bkLev'),qIn=m.querySelector('#bkQ'),aChk=m.querySelector('#bkA');
+  function paint(){
+    const cf=catSel.value,lf=levSel.value,txt=qIn.value.trim().toLowerCase();
+    let html='',n=0;
+    CAT_KEYS.forEach(k=>{if(cf!=='all'&&cf!==k)return;
+      LEVELS.forEach(([lv,lname])=>{if(lf!=='all'&&lf!==lv)return;
+        const arr=BANK[k][lv].filter(q=>!txt||(q.q+' '+q.o.join(' ')).toLowerCase().includes(txt));
+        if(!arr.length)return;
+        html+='<h4 style="color:'+CATS[k].ac+'">'+CATS[k].name+' · '+lname+' <span style="color:#8a84ab">('+arr.length+')</span></h4>';
+        arr.forEach((q,i)=>{n++;
+          html+='<div class="qitem" style="--ac:'+CATS[k].ac+'"><div class="qn">'+CATS[k].short+' · '+lname+' · N.º '+(i+1)+'</div>'+
+            '<div class="qq">'+esc(q.q)+'</div><ol>'+
+            q.o.map((t,j)=>'<li class="'+(aChk.checked&&j===q.a?'ok':'')+'"><b>'+'abcd'[j]+'.</b><span>'+esc(t)+'</span></li>').join('')+
+            '</ol>'+(aChk.checked&&q.e?'<div class="ex">'+esc(q.e)+'</div>':'')+'</div>';});
+      });});
+    list.innerHTML=html||'<p style="color:#8a84ab;font-weight:800">Sin resultados para esa búsqueda.</p>';
+    m.querySelector('.mhead b').textContent='Cuestionario · '+n+' pregunta'+(n===1?'':'s')+' listada'+(n===1?'':'s');
+  }
+  [catSel,levSel,aChk].forEach(e=>e.addEventListener('change',paint));
+  qIn.addEventListener('input',paint);paint();
+}
+
+/* ---------- CONFETTI ---------- */
+const cv=$('#confetti'),cx=cv.getContext('2d');let parts=[],confRAF=null;
+function confettiBurst(){cv.width=innerWidth;cv.height=innerHeight;
+ const cols=['#7C5CFF','#2BD9C0','#FFD86F','#FF5A6E','#4C8DFF','#35D07F','#F8C4C4','#DCCBF2'];parts=[];
+ for(let i=0;i<170;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*260,y:innerHeight*.32+(Math.random()-.5)*90,
+  vx:(Math.random()-.5)*11,vy:Math.random()*-11-3,g:.28+Math.random()*.16,s:5+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.32,c:cols[i%cols.length],l:1});
+ if(!confRAF)loopConf();setTimeout(()=>parts.forEach(p=>p.fade=true),2200);}
+function loopConf(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(p=>p.l>0&&p.y<cv.height+40);
+ parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;if(p.fade)p.l-=.02;
+  cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.62);cx.restore();});
+ if(parts.length)confRAF=requestAnimationFrame(loopConf);else{confRAF=null;cx.clearRect(0,0,cv.width,cv.height);}}
+addEventListener('resize',()=>{cv.width=innerWidth;cv.height=innerHeight;});
+
+/* ---------- MENÚ ---------- */
+let setupCount=4;
+function renderSetupRows(){
+  const box=$('#playerRows');box.innerHTML='';
+  for(let i=0;i<setupCount;i++){const d=document.createElement('div');d.className='prow';
+   d.innerHTML='<span class="pdot" style="background:radial-gradient(circle at 32% 28%,'+PLAYER_COLORS[i].c+','+PLAYER_COLORS[i].n+')"></span>'+
+   '<input type="text" maxlength="16" value="Jugador '+(i+1)+'" aria-label="Nombre del jugador '+(i+1)+'">';box.appendChild(d);}
+}
+function renderSetupLegend(){
+  const box=$('#setupLegend');box.innerHTML='';
+  CAT_KEYS.concat(['comodin','turbo','falla','meta']).forEach(k=>{const c=CATS[k];const e=document.createElement('div');e.className='lg';
+   e.style.setProperty('--ac',c.ac);e.style.background=c.bg;
+   e.innerHTML='<svg><use href="#'+c.icon+'"/></svg><span>'+c.name+(k==='meta'?'<small>Casilla 0: SALIDA al iniciar, META al llegar</small>':'<small>30 preguntas · 3 niveles</small>')+'</span>';box.appendChild(e);});
+}
+$('#segCount').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ [...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');setupCount=+b.dataset.n;renderSetupRows();A.tone(660,.07,'sine',.04);});
+$('#segLevel').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ [...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');S.level=b.dataset.l;A.tone(720,.07,'sine',.04);});
+$('#btnStart').onclick=()=>{
+  const names=[...document.querySelectorAll('#playerRows input')].map((inp,i)=>inp.value.trim()||('Jugador '+(i+1)));
+  startGame(names);
+};
+function backToSetup(keepNames){
+  stopTimer();stopEndCountdown();
+  S.over=true;S.started=false;S.busy=false;S.paused=false;
+  $('#scrGame').classList.add('hide');$('#scrSetup').classList.remove('hide');layer.innerHTML='';
+  $('#pauseVeil').classList.add('hide');
+  if(keepNames){const inputs=[...document.querySelectorAll('#playerRows input')];S.players.forEach((p,i)=>{if(inputs[i])inputs[i].value=p.name;});}
+}
+$('#btnExit').onclick=()=>backToSetup(true);
+
+/* ---------- INICIO ---------- */
+function startGame(names){
+  A.ensure();stopEndCountdown();
+  S.players=names.map((n,i)=>({name:n,color:PLAYER_COLORS[i].c,dark:PLAYER_COLORS[i].n,pos:0,ok:0,fail:0,el:null}));
+  S.cur=0;S.round=1;S.over=false;S.busy=false;S.paused=false;S.deck={};S.metaReached=false;S.asked=0;
+  S.timeLeft=(+$('#selTime').value)*60;
+  layer.innerHTML='';
+  $('#scrSetup').classList.add('hide');$('#scrGame').classList.remove('hide');
+  $('#logBox').innerHTML='';$('#timerTxt').textContent=fmt(S.timeLeft);$('#cTimer').classList.remove('low');
+  $('#pauseVeil').classList.add('hide');
+  $('#topSub').textContent='Nivel '+levelName()+' · '+S.players.length+' jugadores';
+  buildBoard();setPauseUI(false);
+  tokenLayer.innerHTML='';
+  S.players.forEach(p=>{const t=document.createElement('div');t.className='token';
+   t.style.background='radial-gradient(circle at 32% 26%,'+p.color+','+p.dark+')';
+   t.innerHTML='<span>'+esc(p.name[0].toUpperCase())+'</span>';tokenLayer.appendChild(t);p.el=t;});
+  requestAnimationFrame(()=>{rescale();placeAllTokens();});
+  setMeta(false);cellEls.forEach(c=>c.classList.remove('finish'));showFace(1);S.started=true;
+  log('Comienza la Carrera NTICx · '+S.players.length+' jugadores · nivel '+levelName()+' · '+fmt(S.timeLeft)+'.','');
+  log('Banco activo: '+TOTALQ+' preguntas (6 categorías × 3 niveles × 10), sin repetición.','');
+  syncTurnUI();startTimer();$('#btnRoll').disabled=false;$('#btnRoll').onclick=onRoll;
+  const pb=$('#btnPause');if(pb)pb.disabled=false;
+  setTimeout(()=>$('#btnRoll').focus(),120);
+}
+
+/* ---------- PAUSA ---------- */
+function setPauseUI(p){
+  S.paused=p;
+  $('#pauseVeil').classList.toggle('hide',!p);
+  ['#btnPause','#btnPause2'].forEach(s=>{const b=$(s);if(b)b.innerHTML='<svg><use href="#'+(p?'i-play':'i-pause')+'"/></svg> '+(p?'Seguir':'Pausa');});
+  const r=$('#btnRoll');if(r)r.disabled=p||S.busy||S.over;
+  if(p){setInfo('Partida en pausa · el reloj está detenido.');}
+  else{if(!S.over){setInfo(turnInfo());const rb=$('#btnRoll');if(rb)rb.focus();}}
+}
+function togglePause(){
+  if(!S.started||S.over)return;
+  if(layer.children.length)return;
+  setPauseUI(!S.paused);A.tone(S.paused?400:700,.1,'sine',.04);
+}
+function toggleSound(){S.sound=!S.sound;
+ ['#btnSound','#btnSound2','#btnSoundSetup'].forEach(s=>{const b=$(s);if(b)b.innerHTML='<svg><use href="#'+(S.sound?'i-sound':'i-mute')+'"/></svg>';});
+ if(S.sound)A.tone(880,.1,'triangle',.05);}
+function restartSame(){
+  if(!S.players.length){backToSetup(false);return;}
+  startGame(S.players.map(p=>p.name));
+}
+
+/* ---------- EVENTOS ---------- */
+$('#btnRules').onclick=rulesModal;$('#btnRulesSetup').onclick=rulesModal;
+$('#btnBank0').onclick=bankModal;
+$('#btnPause').onclick=togglePause;
+$('#btnSound').onclick=toggleSound;$('#btnSoundSetup').onclick=toggleSound;
+$('#btnRestart').onclick=restartSame;
+$('#btnResume').onclick=()=>{if(S.paused)togglePause();};
+
+document.addEventListener('keydown',e=>{
+  const k=e.key;
+  if(k==='p'||k==='P'){
+    if(S.started&&!S.over&&!layer.children.length){e.preventDefault();togglePause();}
+    return;
+  }
+  if(S.paused){
+    if(!layer.children.length&&(k==='Escape'||k===' '||e.code==='Space'||k==='Enter')){e.preventDefault();togglePause();}
+    return;
+  }
+  const m=layer.lastElementChild;
+  if(m){
+    if(m._key){m._key(e);return;}
+    if(k==='Escape'&&!m.classList.contains('noesc')&&!m.querySelector('.qhead .who')&&!m.querySelector('.catpick'))closeModal(m);
+    return;
+  }
+  if(!S.started||S.over)return;
+  if(e.code==='Space'||k==='Enter'){const r=$('#btnRoll');if(r&&!r.disabled){e.preventDefault();r.click();}}
+});
+
+/* ---------- INIT ---------- */
+renderSetupRows();renderSetupLegend();buildBoard();rescale();
+$('#timerTxt').textContent='30:00';showFace(1);
+$('#stCat').textContent=CAT_KEYS.length;$('#stLev').textContent=LEVELS.length;$('#stTot').textContent=TOTALQ;
+</script>
+</body>
+</html>
+
