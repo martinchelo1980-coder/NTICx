@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTiCx · La Evolución de la Web — De la Web 1.0 a la Web 4.0</title>
+
+<!-- Tipografías (fontsource CDN) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/unbounded@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/unbounded@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/700.css">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: {
+      display: ['Unbounded','sans-serif'],
+      body: ['"Space Grotesk"','sans-serif'],
+      mono: ['"JetBrains Mono"','monospace'],
+    }
+  }}
+};
+</script>
+
+<style>
+/* ================= BASE ================= */
+html{scroll-behavior:smooth}
+:root{color-scheme:dark}
+body{font-family:'Space Grotesk',system-ui,sans-serif;background:#04060d;color:#e2e8f0;overflow-x:hidden}
+::selection{background:#38bdf8;color:#001018}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#334155}
+::-webkit-scrollbar-track{background:transparent}
+
+#netbg{position:fixed;inset:0;z-index:0;pointer-events:none}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(148,163,184,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.045) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 25%,transparent 80%);
+  mask-image:radial-gradient(ellipse at 50% 0%,#000 25%,transparent 80%);}
+.wrap{position:relative;z-index:10}
+
+/* ================= ERAS (variables de acento) ================= */
+.era-w1{--acc:#f5a524}
+.era-w2{--acc:#38bdf8}
+.era-w3{--acc:#a78bfa}
+.era-w4{--acc:#34d399}
+.era-w5{--acc:#fb7185}
+.accent-text{color:var(--acc)}
+.accent-bg{background:var(--acc)}
+.accent-border{border-color:var(--acc)}
+
+/* ================= COMPONENTES ================= */
+.chip{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;border:1px solid rgba(148,163,184,.25);
+  padding:.3rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;background:rgba(15,23,42,.5)}
+.accent-chip{border-color:color-mix(in srgb,var(--acc) 60%,transparent);color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.card{border:1px solid rgba(148,163,184,.14);border-radius:1.25rem;background:rgba(11,16,29,.72);backdrop-filter:blur(6px);padding:1.25rem 1.4rem;transition:border-color .3s}
+.card:hover{border-color:rgba(148,163,184,.3)}
+.sec-label{display:flex;align-items:center;gap:.6rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:#64748b;margin-bottom:1rem}
+.sec-label b{color:var(--acc);font-size:.8rem}
+.outline-text{color:transparent;-webkit-text-stroke:1px rgba(148,163,184,.22)}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* ================= TABS ================= */
+.tabbtn{position:relative;display:flex;align-items:center;gap:.6rem;padding:.55rem .9rem;border-radius:.8rem;border:1px solid transparent;color:#94a3b8;white-space:nowrap;transition:.25s;font-weight:600;font-size:.9rem}
+.tabbtn:hover{color:#e2e8f0;background:rgba(148,163,184,.08)}
+.tabbtn .tabnum{font-family:'JetBrains Mono',monospace;font-size:.62rem;border:1px solid rgba(148,163,184,.3);padding:.15rem .35rem;border-radius:.4rem;transition:.25s}
+.tabbtn.on{color:#fff;border-color:color-mix(in srgb,var(--acc) 55%,transparent);background:color-mix(in srgb,var(--acc) 12%,transparent);box-shadow:0 0 22px -6px var(--acc)}
+.tabbtn.on .tabnum{border-color:var(--acc);color:var(--acc)}
+.tabsub{display:block;font-size:.6rem;color:#64748b;font-weight:400;letter-spacing:.04em;line-height:1.1;margin-top:2px}
+.tabbtn.on .tabsub{color:color-mix(in srgb,var(--acc) 65%,#cbd5e1)}
+.tabcheck{color:var(--acc);font-size:.7rem;border:1px solid var(--acc);border-radius:999px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeup .5s ease both}
+
+/* ================= NODOS DE ERA (apertura) ================= */
+.eranode{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.9rem .4rem;border:1px solid rgba(148,163,184,.15);border-radius:1rem;background:rgba(11,16,29,.6);transition:.25s;text-align:center;cursor:pointer}
+.eranode:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--acc) 55%,transparent)}
+.eranode.on{border-color:var(--acc);box-shadow:0 0 26px -8px var(--acc);background:color-mix(in srgb,var(--acc) 10%,rgba(11,16,29,.6))}
+.eranode-dot{width:10px;height:10px;border-radius:999px;background:#334155;margin-bottom:.35rem;transition:.3s}
+.eranode.on .eranode-dot{background:var(--acc);box-shadow:0 0 12px var(--acc)}
+.eranode .year{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--acc)}
+.eranode .name{font-weight:700;font-size:.85rem}
+.eranode .tag{font-size:.56rem;color:#64748b;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.dial-line{position:absolute;left:5%;right:5%;top:1.35rem;height:2px;background:linear-gradient(90deg,#f5a524,#38bdf8,#a78bfa,#34d399);opacity:.35}
+.dial-pulse{position:absolute;top:1.15rem;width:8px;height:8px;border-radius:99px;background:#fff;box-shadow:0 0 12px #fff;animation:travel 7s linear infinite}
+
+/* ================= TICKER ================= */
+.ticker{overflow:hidden;border-block:1px solid rgba(148,163,184,.12);background:rgba(7,11,20,.7)}
+.ticker-track{display:flex;white-space:nowrap;width:max-content;animation:marquee 30s linear infinite}
+.ticker-track span{padding:.5rem 1.4rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.2em;color:#64748b;text-transform:uppercase}
+.ticker-track em{font-style:normal;color:#94a3b8}
+
+/* ================= ANIMACIONES ================= */
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes blink98{50%{opacity:0}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes shake98{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.28)}100%{transform:scale(1)}}
+@keyframes dash{to{stroke-dashoffset:-14}}
+@keyframes travel{0%{left:4%}100%{left:95%}}
+@keyframes toastin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glowpulse{0%,100%{box-shadow:0 0 18px -6px var(--acc)}50%{box-shadow:0 0 30px -4px var(--acc)}}
+.shake98{animation:shake98 .4s}
+.pop{animation:pop .35s}
+.floaty{animation:floaty 4s ease-in-out infinite}
+.dashline{stroke-dasharray:7 7;animation:dash 1s linear infinite}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ================= RETRO (WEB 1.0) ================= */
+.retro-titlebar{background:linear-gradient(90deg,#000080,#1084d0)}
+.rbtn{width:18px;height:15px;background:#c0c0c0;border-style:solid;border-width:1px;border-color:#fff #404040 #404040 #fff;font-size:9px;line-height:13px;text-align:center;color:#000;display:inline-block;font-style:normal}
+.rtool{background:#c0c0c0;border-style:solid;border-width:2px;border-color:#fff #404040 #404040 #fff;font-size:10px;padding:2px 8px;color:#000;font-family:'JetBrains Mono',monospace;cursor:pointer}
+.rtool:active{border-color:#404040 #fff #fff #404040}
+.retro-page{font-family:'JetBrains Mono',monospace}
+.blink98{animation:blink98 1s steps(2) infinite}
+.marquee98{overflow:hidden;white-space:nowrap;background:#000080;color:#ffff80;font-size:11px;padding:2px 0}
+.marquee98 span{display:inline-block;padding-left:100%;animation:marquee 14s linear infinite}
+.construction98{display:inline-block;background:#000;color:#ffd400;font-weight:700;font-size:11px;padding:4px 14px;border:2px solid #ffd400;letter-spacing:.12em;animation:blink98 1.4s steps(2) infinite}
+.counter98{font-family:'JetBrains Mono',monospace;background:#000;color:#39ff14;letter-spacing:4px;padding:2px 8px;border:2px inset #808080;display:inline-block;font-size:14px}
+.retro-input{background:#fff;border:2px inset #808080;font-family:'JetBrains Mono',monospace;font-size:12px;padding:3px 6px;color:#000;width:100%}
+.retro-btn{background:#c0c0c0;border:2px outset #fff;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;color:#000}
+.retro-btn:active{border-style:inset}
+.retro-status{background:#c0c0c0;border-top:2px solid #fff;font-family:'JetBrains Mono',monospace;font-size:11px;color:#000;padding:3px 10px}
+.errflash{animation:errflash .5s}
+@keyframes errflash{0%,100%{background:#c0c0c0}50%{background:#ffb4b4}}
+.w1link{color:#0000ee;text-decoration:underline;display:block;margin:3px 0;cursor:pointer;font-size:12px}
+
+/* ================= TRIVIA / QUIZ ================= */
+.tropt{text-align:left;border:1px solid rgba(148,163,184,.2);border-radius:.75rem;padding:.7rem 1rem;background:rgba(15,23,42,.5);transition:.2s;cursor:pointer;font-size:.93rem}
+.tropt:hover:not(:disabled){border-color:var(--acc);transform:translateX(4px)}
+.tropt:disabled{cursor:default;opacity:.9}
+.tropt.good{border-color:#34d399;background:rgba(52,211,153,.12);color:#a7f3d0}
+.tropt.bad{border-color:#f87171;background:rgba(248,113,113,.1);color:#fecaca}
+.btn-next{margin-top:.9rem;background:var(--acc);color:#0b1020;font-weight:700;padding:.55rem 1.2rem;border-radius:.7rem;transition:.2s}
+.btn-next:hover{transform:translateY(-2px)}
+
+/* ================= MURAL ================= */
+.m-post{border:1px solid rgba(148,163,184,.14);border-radius:1rem;padding:1rem;background:rgba(15,23,42,.5);animation:fadeup .4s both}
+.avatar{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0b1020;flex-shrink:0}
+.likebtn{display:inline-flex;gap:.4rem;align-items:center;font-size:.85rem;color:#94a3b8;transition:.2s;background:none;cursor:pointer}
+.likebtn.liked{color:#fb7185}
+.likebtn.pop{animation:pop .35s}
+.star{color:#334155;transition:.15s;cursor:pointer;font-size:1.05rem;background:none;padding:0 .12rem}
+.star.on{color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.6)}
+.star:hover{transform:scale(1.25)}
+
+/* ================= SEMÁNTICA ================= */
+.tok2{font-family:'JetBrains Mono',monospace;font-size:.72rem;border:1px solid rgba(56,189,248,.4);color:#7dd3fc;background:rgba(56,189,248,.08);padding:.15rem .5rem;border-radius:.4rem}
+.ent3{display:flex;gap:.6rem;align-items:center;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.08);border-radius:.6rem;padding:.45rem .65rem;animation:fadeup .4s both;font-size:.82rem}
+.triple{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#c4b5fd;background:rgba(167,139,250,.1);border-left:2px solid #a78bfa;padding:.32rem .55rem;border-radius:.3rem;animation:fadeup .4s both}
+.res-item{border:1px solid rgba(148,163,184,.15);border-radius:.8rem;padding:.6rem .75rem;background:rgba(15,23,42,.4);animation:fadeup .4s both}
+
+/* ================= ASISTENTE 4.0 ================= */
+.ptile{border:1px solid rgba(148,163,184,.15);border-radius:.8rem;padding:.6rem .4rem;background:rgba(15,23,42,.5);transition:.35s;text-align:center}
+.ptile.tile-on{border-color:#34d399;box-shadow:0 0 18px -6px rgba(52,211,153,.7);background:rgba(52,211,153,.07)}
+.ptstate{color:#cbd5e1;font-size:.72rem;transition:.3s}
+.tile-on .ptstate{color:#6ee7b7}
+.logline{padding:3px 0;border-bottom:1px dashed rgba(148,163,184,.08);animation:fadeup .35s both;line-height:1.5}
+.logtag{font-size:9px;font-weight:700;letter-spacing:.1em;padding:1px 6px;border-radius:4px;margin:0 4px;font-family:'JetBrains Mono',monospace}
+.tag-sky{background:rgba(56,189,248,.15);color:#7dd3fc}
+.tag-violet{background:rgba(167,139,250,.15);color:#c4b5fd}
+.tag-amber{background:rgba(245,165,36,.15);color:#fcd34d}
+.tag-emerald{background:rgba(52,211,153,.15);color:#6ee7b7}
+.tag-rose{background:rgba(251,113,133,.15);color:#fda4af}
+.tag-ok{background:rgba(52,211,153,.28);color:#bbf7d0}
+.scen-btn{border:1px solid rgba(148,163,184,.2);border-radius:.8rem;padding:.65rem .8rem;font-size:.85rem;background:rgba(15,23,42,.5);transition:.25s;text-align:left;cursor:pointer}
+.scen-btn:hover{border-color:color-mix(in srgb,var(--acc) 55%,transparent);transform:translateX(3px)}
+.scen-btn.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);box-shadow:0 0 16px -6px var(--acc)}
+
+/* ================= TABLA / LÍNEA DE TIEMPO ================= */
+.tlbtn{border:1px solid rgba(148,163,184,.2);border-radius:999px;padding:.45rem .9rem;font-size:.78rem;font-weight:600;color:#94a3b8;transition:.25s;background:rgba(15,23,42,.5);cursor:pointer}
+.tlbtn:hover{color:#e2e8f0}
+.tlbtn.on{color:#fff;border-color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:0 0 16px -6px var(--acc)}
+#cmp-table tbody tr{transition:opacity .3s}
+
+/* ================= TOASTS / MODAL / MISC ================= */
+.toast{background:#0b1222;border:1px solid rgba(148,163,184,.25);border-left:3px solid #fbbf24;padding:.65rem .95rem;border-radius:.6rem;font-size:.85rem;box-shadow:0 10px 30px -10px rgba(0,0,0,.6);animation:toastin .3s ease both;max-width:320px}
+.caret{display:inline-block;width:9px;height:1.05em;background:#34d399;vertical-align:-2px;animation:blink98 1s steps(2) infinite;margin-left:2px}
+.term-line{white-space:pre-wrap;word-break:break-word}
+.pulse-dot{width:8px;height:8px;border-radius:99px;background:var(--acc);animation:glowpulse 2s infinite}
+.btn-cta{background:#e2e8f0;color:#0b1020;font-weight:700;padding:.7rem 1.4rem;border-radius:.8rem;display:inline-flex;gap:.5rem;align-items:center;transition:.25s}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 12px 32px -10px rgba(226,232,240,.45)}
+.pipe-step{position:relative;border:1px solid rgba(52,211,153,.2);border-radius:1rem;padding:1rem;background:rgba(52,211,153,.04)}
+.eq-box{border:1px solid rgba(56,189,248,.3);border-radius:1rem;padding:.9rem 1.2rem;background:rgba(56,189,248,.06);text-align:center;font-size:.95rem}
+.eq-box small{display:block;font-family:'Space Grotesk';font-size:.62rem;color:#94a3b8;margin-top:.25rem;font-weight:400}
+.eq-final{border-color:#38bdf8;animation:glowpulse 2.6s infinite;background:rgba(56,189,248,.14)}
+</style>
+</head>
+
+<body class="font-body">
+<canvas id="netbg"></canvas>
+
+<div class="wrap">
+
+<!-- ══════════ CROMO DE NAVEGADOR ══════════ -->
+<header class="border-b border-slate-800/80 bg-[#070b16]/85">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+    <div class="flex gap-1.5 shrink-0">
+      <span class="w-3 h-3 rounded-full bg-rose-500/90"></span>
+      <span class="w-3 h-3 rounded-full bg-amber-400/90"></span>
+      <span class="w-3 h-3 rounded-full bg-emerald-400/90"></span>
+    </div>
+    <div class="flex-1 flex items-center gap-2 rounded-lg border border-slate-700/70 bg-[#0b1222] px-3 py-1.5 mono text-[11px] md:text-xs text-slate-400 max-w-xl overflow-hidden">
+      <span class="text-emerald-400 shrink-0">🔒</span>
+      <span class="truncate">https://nticx.aula.ar/evolucion-de-la-web</span>
+    </div>
+    <div class="chip hidden md:inline-flex shrink-0">NTiCx · 4.º año 🇦🇷</div>
+  </div>
+</header>
+
+<!-- ══════════ APERTURA: CONSOLA DE EVOLUCIÓN ══════════ -->
+<section class="relative overflow-hidden">
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[380px] rounded-full opacity-25 blur-3xl pointer-events-none" style="background:radial-gradient(closest-side,#38bdf8,transparent)"></div>
+  <div class="max-w-6xl mx-auto px-4 pt-12 pb-10 grid lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <div class="flex flex-wrap gap-2 mb-5">
+        <span class="chip accent-chip era-w2">⚡ Módulo NTiCx</span>
+        <span class="chip">Escuela secundaria · Argentina</span>
+      </div>
+      <h1 class="font-display font-bold text-4xl md:text-[3.4rem] leading-[1.05] tracking-tight">
+        La evolución<br>de la <span class="accent-text era-w2">WEB</span><span class="text-slate-600">_</span>
+      </h1>
+      <div class="mono text-sm md:text-base text-slate-400 mt-5">
+        <span class="accent-text era-w2">▸</span> <span id="type-line"></span><span class="caret era-w2" style="background:#38bdf8"></span>
+      </div>
+      <p class="text-slate-300 mt-5 max-w-lg leading-relaxed">
+        Un recorrido interactivo por las <b class="text-white">cuatro generaciones</b> de la Web: de las páginas que solo se leían
+        a las redes inteligentes que se anticipan a vos. Simuladores, comparadores y desafíos con XP.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a href="#tabnav" class="btn-cta">▶ Comenzar el recorrido</a>
+        <span class="chip">5 pestañas</span><span class="chip">4 simuladores</span><span class="chip">12 desafíos</span>
+      </div>
+
+      <!-- Dial de eras -->
+      <div class="relative mt-10 era-dial">
+        <div class="dial-line"></div><div class="dial-pulse"></div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 relative">
+          <button class="eranode era-w1" id="node-w1" data-tab="w1"><span class="eranode-dot"></span><span class="year">1991</span><span class="name">Web 1.0</span><span class="tag">Solo lectura</span></button>
+          <button class="eranode era-w2" id="node-w2" data-tab="w2"><span class="eranode-dot"></span><span class="year">2004</span><span class="name">Web 2.0</span><span class="tag">Participativa</span></button>
+          <button class="eranode era-w3" id="node-w3" data-tab="w3"><span class="eranode-dot"></span><span class="year">2010s</span><span class="name">Web 3.0</span><span class="tag">Semántica</span></button>
+          <button class="eranode era-w4" id="node-w4" data-tab="w4"><span class="eranode-dot"></span><span class="year">HOY</span><span class="name">Web 4.0</span><span class="tag">IA ubicua</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="floaty">
+      <div class="rounded-2xl border border-slate-800 bg-[#070b16]/95 overflow-hidden shadow-2xl shadow-sky-900/20">
+        <div class="flex items-center gap-2 px-4 py-2 border-b border-slate-800 bg-[#0b1120]">
+          <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-emerald-400/80"></span>
+          <span class="ml-2 mono text-[11px] text-slate-500">nticx@aula: ~/evolucion-web</span>
+        </div>
+        <div id="term-body" class="p-4 mono text-[12px] md:text-[13px] leading-6 text-emerald-300/90 min-h-[220px]"></div>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-3 justify-end">
+        <span class="chip era-w1" style="--acc:#f5a524">⌨ HTML a mano</span>
+        <span class="chip era-w2" style="--acc:#38bdf8">🤝 Prosumidores</span>
+        <span class="chip era-w3" style="--acc:#a78bfa">🧠 Semántica</span>
+        <span class="chip era-w4" style="--acc:#34d399">🤖 IA + IoT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker homenaje <marquee> -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>WEB 1.0 · SOLO LECTURA ▸ <em>WEB 2.0 · PARTICIPATIVA</em> ▸ WEB 3.0 · SEMÁNTICA ▸ <em>WEB 4.0 · IA PREDICTIVA</em> ▸ NTICX 4.º AÑO ▸ <em>DE GEOCITIES A LOS AGENTES DE IA</em> ▸ </span>
+    <span>WEB 1.0 · SOLO LECTURA ▸ <em>WEB 2.0 · PARTICIPATIVA</em> ▸ WEB 3.0 · SEMÁNTICA ▸ <em>WEB 4.0 · IA PREDICTIVA</em> ▸ NTICX 4.º AÑO ▸ <em>DE GEOCITIES A LOS AGENTES DE IA</em> ▸ </span>
+  </div>
+</div>
+
+<!-- ══════════ NAVEGACIÓN POR PESTAÑAS ══════════ -->
+<nav id="tabnav" class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#05080f]/88 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3">
+    <div class="flex gap-1.5 overflow-x-auto flex-1 py-1" role="tablist" aria-label="Generaciones de la Web">
+      <button class="tabbtn era-w1" id="tab-w1" data-tab="w1" role="tab" aria-selected="false"><span class="tabnum">01</span><span><span>Web 1.0</span><span class="tabsub">Red pasiva · 1991–2003</span></span><span id="chk-w1" class="tabcheck hidden">✓</span></button>
+      <button class="tabbtn era-w2" id="tab-w2" data-tab="w2" role="tab" aria-selected="false"><span class="tabnum">02</span><span><span>Web 2.0</span><span class="tabsub">Participativa · 2004→</span></span><span id="chk-w2" class="tabcheck hidden">✓</span></button>
+      <button class="tabbtn era-w3" id="tab-w3" data-tab="w3" role="tab" aria-selected="false"><span class="tabnum">03</span><span><span>Web 3.0</span><span class="tabsub">Semántica</span></span><span id="chk-w3" class="tabcheck hidden">✓</span></button>
+      <button class="tabbtn era-w4" id="tab-w4" data-tab="w4" role="tab" aria-selected="false"><span class="tabnum">04</span><span><span>Web 4.0</span><span class="tabsub">IA ubicua</span></span><span id="chk-w4" class="tabcheck hidden">✓</span></button>
+      <button class="tabbtn era-w5" id="tab-w5" data-tab="w5" role="tab" aria-selected="false"><span class="tabnum">05</span><span><span>Integrador</span><span class="tabsub">Comparativo + evaluación</span></span><span id="chk-w5" class="tabcheck hidden">✓</span></button>
+    </div>
+    <div id="xp-badge" class="chip shrink-0 text-amber-300 border-amber-400/40 bg-amber-400/10">⚡ <span id="xp-val" class="font-bold">0</span>&nbsp;XP</div>
+  </div>
+</nav>
+
+<main>
+<!-- ╔══════════════════════════════════════════╗
+     ║ PESTAÑA 1 · WEB 1.0                       ║
+     ╚══════════════════════════════════════════╝ -->
+<section id="panel-w1" class="tab-panel era-w1">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0b0f1d]/85 p-6 md:p-10 reveal">
+      <span class="outline-text absolute -right-6 top-1/2 -translate-y-1/2 font-display font-bold text-[6rem] md:text-[9rem] select-none hidden lg:block" aria-hidden="true">READ-ONLY</span>
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="chip accent-chip">Generación 01</span>
+          <span class="chip">📅 1991 – 2003</span>
+          <span class="chip">🌐 Nace en el CERN · Tim Berners-Lee</span>
+        </div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl leading-tight">WEB 1.0 <span class="accent-text">— La Red Pasiva</span></h2>
+        <p class="mt-3 text-slate-300 max-w-2xl leading-relaxed">La web de <b class="text-white">solo lectura</b>: el sitio publica, vos mirás.
+        Nada de comentarios, nada de perfiles, nada de "compartir". Una biblioteca gigante donde nadie podía escribir en los libros.</p>
+      </div>
+    </div>
+
+    <div class="sec-label mt-10"><b>01</b> Conceptos clave</div>
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">DEFINICIÓN</div>
+        <p class="font-display text-xl leading-snug">“Read-Only Web”</p>
+        <p class="text-sm text-slate-300 mt-2 leading-relaxed">La primera generación de sitios: <b>comunicación unidireccional</b> (sitio web ➔ usuario).
+        El contenido lo creaba un único autor y casi nunca cambiaba.</p>
+        <div class="mt-3 chip">📻 Como la radio: escuchás, pero no hablás</div>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">👤 ROL DEL USUARIO</div>
+        <ul class="text-sm text-slate-300 space-y-2">
+          <li>✅ Lee textos y mira imágenes</li>
+          <li>✅ Sigue enlaces entre páginas</li>
+          <li>✅ Imprime o guarda la información</li>
+          <li>⛔ No comenta ni puntúa</li>
+          <li>⛔ No publica ni edita contenido</li>
+        </ul>
+        <div class="mt-3 chip">Consumidor 100% pasivo</div>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">⚙️ CARACTERÍSTICAS TÉCNICAS</div>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="chip">HTML básico</span><span class="chip">&lt;table&gt; para maquetar</span><span class="chip">GIFs animados</span>
+          <span class="chip">&lt;marquee&gt;</span><span class="chip">Sin bases de datos dinámicas</span><span class="chip">FTP para subir archivos</span>
+          <span class="chip">Módem 56k 🐢</span><span class="chip">Libros de visita estáticos</span>
+        </div>
+        <p class="text-xs text-slate-400 mt-3">Cada página era un archivo escrito a mano: el servidor solo lo <b>entregaba</b>, nunca procesaba datos del visitante.</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-4 mt-4">
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-3">🏛️ EJEMPLOS HISTÓRICOS</div>
+        <div class="space-y-3 text-sm">
+          <div class="flex gap-3"><span class="text-xl">🖥️</span><div><b>El primer sitio web (1991)</b><div class="text-slate-400 text-xs">Creado por Tim Berners-Lee en el CERN. Era puro texto con enlaces.</div></div></div>
+          <div class="flex gap-3"><span class="text-xl">📚</span><div><b>Enciclopedias digitales estáticas</b><div class="text-slate-400 text-xs">Como Encarta: el contenido venía "cerrado", nadie podía corregirlo.</div></div></div>
+          <div class="flex gap-3"><span class="text-xl">🏘️</span><div><b>GeoCities y páginas personales</b><div class="text-slate-400 text-xs">Los usuarios armaban su "barrio" con HTML, contadores de visitas y GIFs.</div></div></div>
+          <div class="flex gap-3"><span class="text-xl">🗂️</span><div><b>Directorios como Yahoo!</b><div class="text-slate-400 text-xs">Listados de sitios organizados a mano por editores humanos.</div></div></div>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-3">📡 ESQUEMA ANIMADO · COMUNICACIÓN UNIDIRECCIONAL</div>
+        <svg viewBox="0 0 560 170" class="w-full" role="img" aria-label="Diagrama de comunicación unidireccional">
+          <rect x="10" y="45" width="155" height="82" rx="10" fill="rgba(245,165,36,.08)" stroke="#f5a524"/>
+          <text x="87" y="82" text-anchor="middle" fill="#fcd34d" font-size="15" font-weight="700">🖥 SERVIDOR</text>
+          <text x="87" y="103" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">página HTML estática</text>
+          <rect x="395" y="45" width="155" height="82" rx="10" fill="rgba(148,163,184,.06)" stroke="#64748b"/>
+          <text x="472" y="82" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">🙋 USUARIO</text>
+          <text x="472" y="103" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">solo mira y lee</text>
+          <line x1="172" y1="68" x2="378" y2="68" stroke="#f5a524" stroke-width="2.5" class="dashline"/>
+          <polygon points="378,61 378,75 394,68" fill="#f5a524"/>
+          <text x="280" y="55" text-anchor="middle" fill="#fcd34d" font-size="11" font-family="monospace">envía información ➔</text>
+          <line x1="388" y1="103" x2="175" y2="103" stroke="#334155" stroke-width="2" stroke-dasharray="3 7"/>
+          <text x="280" y="128" text-anchor="middle" fill="#64748b" font-size="11" font-family="monospace">✕ sin retorno: no podés responder</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card reveal mt-4 border-amber-400/20 bg-amber-400/5">
+      💡 <b>¿Sabías que…?</b> <span class="text-slate-300">La primera página web de la historia sigue en línea hoy, tal como en 1991. Podés visitarla en el sitio del CERN: es puro texto azul con enlaces subrayados. ¡Sin fotos, sin videos, sin un solo "me gusta"!</span>
+    </div>
+
+    <!-- SIMULADOR -->
+    <div class="sec-label mt-12"><b>03</b> Simulador · Navegá como en 1998</div>
+    <p class="text-slate-300 max-w-3xl -mt-2 mb-5">Este es un sitio de la Web 1.0 reconstruido para el aula. <b class="text-white">Probá interactuar</b>: tocá los botones del navegador, hacé clic en los enlaces, firmá el libro de visitas… y fijate qué responde el sistema. <span class="mono text-xs text-amber-300">Intentos de interacción: <span id="w1-tries">0</span></span></p>
+
+    <div class="max-w-3xl mx-auto reveal">
+      <div id="sim98" class="rounded-lg overflow-hidden border-2 border-[#9a9a9a] shadow-2xl shadow-amber-900/20 bg-[#c0c0c0]">
+        <div class="retro-titlebar flex items-center justify-between px-2 py-1">
+          <span class="text-[11px] font-bold text-white mono">Netscape Navigator — Mi primer sitio</span>
+          <span class="flex gap-1"><i class="rbtn w1deny">_</i><i class="rbtn w1deny">□</i><i class="rbtn w1deny">✕</i></span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1 px-2 py-1.5 border-b border-[#808080]">
+          <button class="rtool w1deny">◀ Atrás</button>
+          <button class="rtool w1deny">▶</button>
+          <button class="rtool w1deny">⟳ Recargar</button>
+          <button class="rtool w1deny">🏠</button>
+          <div class="flex-1 min-w-[180px] flex items-center gap-1 bg-white border border-[#808080] px-2 py-0.5 text-[10px] mono text-black truncate">📍 http://www.geocities.com/~pepito98/index.htm</div>
+        </div>
+        <div class="retro-page bg-[#f2f2e9] text-[#000080] p-4">
+          <h3 class="text-center text-lg md:text-xl font-bold blink98">¡¡BIENVENIDOS A MI PÁGINA PERSONAL!!</h3>
+          <div class="marquee98 mt-2"><span>★·.·´¯`·.·★ Última actualización: 12/03/1999 · Mejor visto en 800×600 · ¡No te olvides de firmar mi libro de visitas! ★·.·´¯`·.·★</span></div>
+          <div class="text-center mt-3"><span class="construction98">🚧 PÁGINA EN CONSTRUCCIÓN 🚧</span></div>
+          <table class="w-full mt-4 text-[13px]" cellspacing="6">
+            <tr>
+              <td class="align-top w-36 md:w-44 bg-[#dcdcd0] border border-[#808080] p-2">
+                <div class="font-bold mb-1 underline text-[12px]">≡ MENÚ ≡</div>
+                <a class="w1link" href="#">📄 Inicio</a>
+                <a class="w1link" href="#">🖼 Mis fotos</a>
+                <a class="w1link" href="#">📖 Libro de visitas</a>
+                <a class="w1link" href="#">🔗 Links copados</a>
+                <div class="mt-4 text-center">
+                  <div class="text-[10px]">Visitante N.º</div>
+                  <div id="hitcounter" class="counter98 mt-1">000127</div>
+                </div>
+              </td>
+              <td class="align-top bg-white border border-[#808080] p-3 text-[#333]">
+                <p class="text-[13px]">¡Hola! Soy <b>Pepito</b> y esta es mi página. Acá cuento cosas de mi vida: en 4.º grado gané el concurso de ortografía 🏆, colecciono <b>tazos</b> y mi banda favorita es Soda Stereo. Esta página la hice yo solito con el Bloc de notas.</p>
+                <p class="mt-2 text-[12px] text-center tracking-[.4em]">🖥️ 💾 📼 🕹️ 📟</p>
+                <hr class="my-2 border-[#808080]">
+                <div class="font-bold text-[13px]">📖 Libro de visitas</div>
+                <div class="text-[11px] mt-1 space-y-1 text-[#555]">
+                  <div>✍️ <b>Marisa:</b> "¡Qué linda página! Saludos desde Rosario" (02/03/1999)</div>
+                  <div>✍️ <b>Carloncho:</b> "Buenísimos los links, volvé pronto" (28/02/1999)</div>
+                </div>
+                <div class="mt-2 flex flex-col gap-1.5">
+                  <input id="gb-name" class="retro-input" placeholder="Tu nombre">
+                  <textarea id="gb-text" class="retro-input" rows="2" placeholder="Tu mensaje"></textarea>
+                  <button id="gb-send" class="retro-btn self-start">✒ Firmar el libro de visitas</button>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <div class="text-center text-[10px] mt-3 text-[#666]">Hecho a mano con HTML · © 1999 · Contacto: pepito98@hotmail.com</div>
+        </div>
+        <div id="sim98status" class="retro-status">Documento: Listo ✓</div>
+      </div>
+    </div>
+
+    <div id="w1-conclusion" class="hidden max-w-3xl mx-auto mt-4 card border-amber-400/40 bg-amber-400/10">
+      💡 <b>Conclusión del experimento:</b> <span class="text-slate-200">por más que hagas clic, la Web 1.0 no te deja responder. La comunicación era <b>unidireccional</b>: del sitio hacia vos. Por eso se la llama <b class="accent-text">red pasiva</b>.</span>
+    </div>
+
+    <!-- TRIVIA -->
+    <div class="sec-label mt-12"><b>04</b> Mini-desafío · ¿Entendiste la red pasiva?</div>
+    <div id="trivia-w1" class="card reveal max-w-3xl"></div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║ PESTAÑA 2 · WEB 2.0                       ║
+     ╚══════════════════════════════════════════╝ -->
+<section id="panel-w2" class="tab-panel era-w2">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0b0f1d]/85 p-6 md:p-10 reveal">
+      <span class="outline-text absolute -right-6 top-1/2 -translate-y-1/2 font-display font-bold text-[6rem] md:text-[9rem] select-none hidden lg:block" aria-hidden="true">PROSUMER</span>
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="chip accent-chip">Generación 02</span>
+          <span class="chip">📅 2004 → hoy</span>
+          <span class="chip">📣 Término acuñado por Tim O'Reilly</span>
+        </div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl leading-tight">WEB 2.0 <span class="accent-text">— La Red Participativa</span></h2>
+        <p class="mt-3 text-slate-300 max-w-2xl leading-relaxed">La web de <b class="text-white">lectura y escritura</b>: la página deja de ser un folleto y se convierte en una <b>conversación</b>. Vos también publicás, comentás y compartís.</p>
+      </div>
+    </div>
+
+    <div class="sec-label mt-10"><b>01</b> La ecuación de esta era</div>
+    <div class="card reveal">
+      <div class="flex flex-wrap items-center justify-center gap-3 md:gap-5 font-display font-bold text-sm md:text-base">
+        <div class="eq-box">PRODUCTOR<small>crea fotos, videos, textos</small></div>
+        <span class="text-2xl md:text-3xl accent-text">＋</span>
+        <div class="eq-box">CONSUMIDOR<small>mira, lee, escucha</small></div>
+        <span class="text-2xl md:text-3xl accent-text">＝</span>
+        <div class="eq-box eq-final accent-text">PROSUMIDOR<small>el usuario de la Web 2.0</small></div>
+      </div>
+      <p class="text-center text-sm text-slate-400 mt-4">Ya no hay "audiencia": hay <b class="text-slate-200">participantes</b>. Cada comentario, foto o video que subís alimenta la red.</p>
+    </div>
+
+    <div class="sec-label mt-10"><b>02</b> Conceptos clave</div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">📖 DEFINICIÓN</div>
+        <p class="text-sm text-slate-300 leading-relaxed">La <b class="text-white">Read-Write Web</b>: plataformas donde el contenido lo generan los propios usuarios sobre páginas <b>dinámicas</b> conectadas a bases de datos. Nace formalmente como concepto en la conferencia de O'Reilly Media (2004).</p>
+        <div class="mt-3 flex flex-wrap gap-1.5"><span class="chip">Blogs</span><span class="chip">Wikis</span><span class="chip">Redes sociales</span><span class="chip">Compartir archivos</span></div>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">⚙️ TECNOLOGÍA QUE LO HIZO POSIBLE</div>
+        <ul class="text-sm text-slate-300 space-y-1.5">
+          <li>🗄️ <b>Bases de datos</b> detrás de cada sitio</li>
+          <li>⚡ <b>AJAX + JavaScript</b>: las páginas se actualizan sin recargarse</li>
+          <li>☁️ Servicios <b>en la nube</b> (documentos colaborativos)</li>
+          <li>🔌 <b>APIs</b>: las plataformas se conectan entre sí</li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">🌎 IMPACTO SOCIAL</div>
+        <ul class="text-sm text-slate-300 space-y-1.5">
+          <li>🤝 <b>Trabajo colaborativo</b> a escala global</li>
+          <li>🗳️ <b>Democratización</b>: cualquiera puede publicar</li>
+          <li>🧩 <b>Inteligencia colectiva</b>: muchos saben más que pocos</li>
+          <li>⚠️ También: huella digital, desinformación y algoritmos que deciden qué ves → <b>pensamiento crítico</b></li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">🇦🇷 EJEMPLOS (CON SELLO LOCAL)</div>
+        <div class="grid grid-cols-2 gap-2 text-sm text-slate-300">
+          <div class="chip justify-start">📚 Wikipedia</div><div class="chip justify-start">▶️ YouTube</div>
+          <div class="chip justify-start">📸 Instagram / TikTok / X</div><div class="chip justify-start">📝 Blogs</div>
+          <div class="chip justify-start">📄 Google Docs</div><div class="chip justify-start">🌐 Taringa! (2004, argentina)</div>
+          <div class="chip justify-start">📷 Fotolog (furor teen AR)</div><div class="chip justify-start">💬 foros y comunidades</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal mt-4">
+      <div class="mono text-[11px] tracking-widest accent-text mb-3">🕸 ESQUEMA ANIMADO · RED MUCHOS-A-MUCHOS</div>
+      <svg viewBox="0 0 560 210" class="w-full" role="img" aria-label="Red colaborativa muchos a muchos">
+        <g stroke="rgba(56,189,248,.45)" stroke-width="1.5">
+          <line x1="280" y1="105" x2="120" y2="45" class="dashline"/><line x1="280" y1="105" x2="440" y2="45" class="dashline"/>
+          <line x1="280" y1="105" x2="90" y2="150" class="dashline"/><line x1="280" y1="105" x2="470" y2="150" class="dashline"/>
+          <line x1="280" y1="105" x2="280" y2="30" class="dashline"/><line x1="120" y1="45" x2="280" y2="30" class="dashline"/>
+          <line x1="440" y1="45" x2="280" y2="30" class="dashline"/><line x1="90" y1="150" x2="470" y2="150" class="dashline"/>
+        </g>
+        <g font-size="13" text-anchor="middle">
+          <circle cx="280" cy="105" r="26" fill="rgba(56,189,248,.2)" stroke="#38bdf8" stroke-width="2"/><text x="280" y="110" fill="#e2e8f0" font-weight="700">VOS</text>
+          <circle cx="120" cy="45" r="20" fill="#0b1222" stroke="#38bdf8"/><text x="120" y="50">👩‍💻</text>
+          <circle cx="440" cy="45" r="20" fill="#0b1222" stroke="#38bdf8"/><text x="440" y="50">🧑‍🎤</text>
+          <circle cx="90" cy="150" r="20" fill="#0b1222" stroke="#38bdf8"/><text x="90" y="155">👨‍🏫</text>
+          <circle cx="470" cy="150" r="20" fill="#0b1222" stroke="#38bdf8"/><text x="470" y="155">🧑‍🚀</text>
+          <circle cx="280" cy="30" r="20" fill="#0b1222" stroke="#38bdf8"/><text x="280" y="35">👾</text>
+        </g>
+        <circle cx="280" cy="105" r="26" fill="none" stroke="#38bdf8">
+          <animate attributeName="r" values="26;48" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".7;0" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <text x="280" y="195" text-anchor="middle" fill="#64748b" font-size="11" font-family="monospace">todos publican ↔ todos leen · comunicación multidireccional</text>
+      </svg>
+    </div>
+
+    <!-- MURAL -->
+    <div class="sec-label mt-12"><b>03</b> Recurso interactivo · Mural colaborativo del curso</div>
+    <p class="text-slate-300 max-w-3xl -mt-2 mb-5">Escribí un aporte, dale ❤️ o calificá con estrellas las publicaciones de tus compañeros ficticios. Mirá cómo todo cambia <b class="text-white">en tiempo real</b>: eso es la red participativa.</p>
+
+    <div class="card reveal p-0 overflow-hidden">
+      <div class="flex flex-wrap items-center gap-3 px-5 py-4 border-b border-slate-800 bg-[#0a1120]">
+        <span class="font-display font-bold text-lg accent-text">🧱 MuralNTiCx</span>
+        <span class="chip">📝 <span id="m-posts">0</span> publicaciones</span>
+        <span class="chip">❤️ <span id="m-likes">0</span> me gusta</span>
+        <span class="chip">👥 <span id="m-parts">0</span> participantes</span>
+        <span class="chip text-emerald-300 border-emerald-400/40"><span class="pulse-dot" style="--acc:#34d399"></span> en línea</span>
+      </div>
+      <div class="p-5 border-b border-slate-800">
+        <div class="flex gap-3">
+          <div class="avatar accent-bg" style="--acc:#38bdf8">V</div>
+          <textarea id="m-input" rows="2" maxlength="180" placeholder="¿Qué aprendiste hoy sobre la Web 2.0? Escribí tu aporte…" class="flex-1 bg-[#0b1222] border border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-sky-400 transition resize-none"></textarea>
+        </div>
+        <div class="flex items-center justify-between mt-2 pl-[52px]">
+          <div class="flex gap-1">
+            <button class="m-emoji chip hover:border-sky-400" data-e="🔥">🔥</button>
+            <button class="m-emoji chip hover:border-sky-400" data-e="👍">👍</button>
+            <button class="m-emoji chip hover:border-sky-400" data-e="🚀">🚀</button>
+            <button class="m-emoji chip hover:border-sky-400" data-e="😂">😂</button>
+          </div>
+          <button id="m-send" class="px-4 py-2 rounded-lg font-bold text-[#04202e] accent-bg hover:-translate-y-0.5 transition text-sm">Publicar ➔</button>
+        </div>
+      </div>
+      <div id="m-feed" class="p-5 space-y-3 bg-[#080d1a]"></div>
+    </div>
+
+    <div class="sec-label mt-12"><b>04</b> Mini-desafío · Prosumidores en acción</div>
+    <div id="trivia-w2" class="card reveal max-w-3xl"></div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║ PESTAÑA 3 · WEB 3.0                       ║
+     ╚══════════════════════════════════════════╝ -->
+<section id="panel-w3" class="tab-panel era-w3">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0b0f1d]/85 p-6 md:p-10 reveal">
+      <span class="outline-text absolute -right-6 top-1/2 -translate-y-1/2 font-display font-bold text-[6rem] md:text-[9rem] select-none hidden lg:block" aria-hidden="true">SEMANTIC</span>
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="chip accent-chip">Generación 03</span>
+          <span class="chip">📅 Visión 2001 → en despliegue</span>
+          <span class="chip">🕸 Propuesta por Tim Berners-Lee</span>
+        </div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl leading-tight">WEB 3.0 <span class="accent-text">— La Red Semántica</span></h2>
+        <p class="mt-3 text-slate-300 max-w-2xl leading-relaxed">Leer + escribir + <b class="text-white">comprender</b>. Las máquinas dejan de comparar texto y empiezan a entender el <b>significado</b> y el contexto de lo que pedís.</p>
+      </div>
+    </div>
+
+    <div class="sec-label mt-10"><b>01</b> ¿Qué significa "semántica"?</div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card reveal">
+        <div class="font-display text-lg mb-2">El problema de la palabra <b class="accent-text">"jaguar"</b></div>
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="rounded-xl border border-violet-400/30 bg-violet-400/5 p-4"><div class="text-3xl">🐆</div><div class="text-sm mt-1 text-slate-300">el animal felino</div></div>
+          <div class="rounded-xl border border-violet-400/30 bg-violet-400/5 p-4"><div class="text-3xl">🚗</div><div class="text-sm mt-1 text-slate-300">la marca de autos</div></div>
+        </div>
+        <p class="text-sm text-slate-400 mt-3">La palabra es la misma: el <b class="text-slate-200">significado depende del contexto</b>. La Web 3.0 usa metadatos para que la máquina capte esa diferencia, igual que vos.</p>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">📖 DEFINICIÓN</div>
+        <p class="text-sm text-slate-300 leading-relaxed">La <b class="text-white">Read-Write-Execute Web</b>: datos etiquetados con su significado para que las aplicaciones <b>interpreten, relacionen y ejecuten</b> acciones de forma interoperable. Suma además la <b>descentralización</b> (blockchain / Web3) y los datos abiertos enlazados.</p>
+        <div class="mt-3 flex flex-wrap gap-1.5"><span class="chip">Metadatos</span><span class="chip">RDF</span><span class="chip">OWL</span><span class="chip">Ontologías</span><span class="chip">Blockchain</span><span class="chip">Contratos inteligentes</span></div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4 mt-4">
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">✨ CARACTERÍSTICAS</div>
+        <ul class="text-sm text-slate-300 space-y-1.5">
+          <li>🔗 <b>Interoperabilidad</b>: los datos viajan entre aplicaciones</li>
+          <li>🌐 <b>Datos abiertos</b> y enlazados entre bases globales</li>
+          <li>🏛️ <b>Descentralización</b>: menos intermediarios</li>
+          <li>🎯 <b>Personalización extrema</b> según contexto</li>
+          <li>🔎 <b>Búsquedas inteligentes</b> por intención, no por palabra</li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">🪄 EJEMPLOS</div>
+        <ul class="text-sm text-slate-300 space-y-1.5">
+          <li>🗣️ Asistentes que entienden tu contexto completo</li>
+          <li>🧠 Wikidata / DBpedia: conocimiento enlazado del planeta</li>
+          <li>📜 Contratos inteligentes que se ejecutan solos</li>
+          <li>🎫 Identidad digital auto-soberana</li>
+        </ul>
+        <div class="mt-3">
+          <div class="mono text-[10px] text-slate-500 mb-1">Ejemplo de "triple" RDF (sujeto → predicado → objeto):</div>
+          <div class="triple">⟨Bariloche⟩ — esUna → ⟨Ciudad turística⟩</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal mt-4">
+      <div class="mono text-[11px] tracking-widest accent-text mb-3">🧬 ESQUEMA ANIMADO · DATOS CON SIGNIFICADO</div>
+      <svg viewBox="0 0 560 190" class="w-full" role="img" aria-label="Grafo semántico">
+        <g stroke="#a78bfa" stroke-width="2" fill="none">
+          <path d="M150 70 Q240 30 330 70" class="dashline"/>
+          <path d="M330 90 Q390 130 460 130" class="dashline"/>
+        </g>
+        <rect x="40" y="50" width="115" height="42" rx="10" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+        <text x="97" y="76" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700">🏔 Bariloche</text>
+        <rect x="330" y="50" width="115" height="42" rx="10" fill="rgba(167,139,250,.12)" stroke="#a78bfa"/>
+        <text x="387" y="76" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700">🏙 Ciudad</text>
+        <rect x="400" y="110" width="140" height="42" rx="10" fill="rgba(167,139,250,.06)" stroke="#7c6bb0"/>
+        <text x="470" y="136" text-anchor="middle" fill="#c4b5fd" font-size="12">❄️ temporada invierno</text>
+        <text x="240" y="40" text-anchor="middle" fill="#c4b5fd" font-size="11" font-family="monospace">esUna</text>
+        <text x="405" y="112" text-anchor="middle" fill="#c4b5fd" font-size="11" font-family="monospace">ofrece</text>
+        <text x="97" y="120" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">entidad</text>
+        <text x="97" y="134" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">etiquetada con</text>
+        <text x="97" y="148" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">metadatos RDF</text>
+        <text x="280" y="178" text-anchor="middle" fill="#64748b" font-size="11" font-family="monospace">los datos forman una red de significados, no de documentos</text>
+      </svg>
+    </div>
+
+    <!-- BUSCADOR SEMÁNTICO -->
+    <div class="sec-label mt-12"><b>03</b> Recurso interactivo · Buscador semántico comparativo</div>
+    <p class="text-slate-300 max-w-3xl -mt-2 mb-5">Ingresá una consulta ambigua y compará, lado a lado, cómo la entienden la Web 2.0 (palabras clave) y la Web 3.0 (significado completo). Podés usar los ejemplos o escribir la tuya.</p>
+
+    <div class="card reveal p-0 overflow-hidden">
+      <div class="p-5 border-b border-slate-800 bg-[#0a1120]">
+        <label class="mono text-[11px] tracking-widest accent-text">TU CONSULTA ▸</label>
+        <div class="flex flex-col md:flex-row gap-2 mt-2">
+          <input id="sem-input" value="Quiero volar a Bariloche en invierno con perro" class="flex-1 bg-[#0b1222] border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-violet-400 transition" placeholder="Escribí una frase cotidiana y ambigua…">
+          <button id="sem-run" class="px-5 py-2.5 rounded-xl font-bold text-[#1d1040] accent-bg hover:-translate-y-0.5 transition text-sm shrink-0">🔍 Comparar búsquedas</button>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <button class="sem-preset chip hover:border-violet-400" data-q="Quiero volar a Bariloche en invierno con perro">✈️ Volar a Bariloche con perro</button>
+          <button class="sem-preset chip hover:border-violet-400" data-q="Receta fácil sin gluten para celíacos">🍞 Receta sin gluten</button>
+          <button class="sem-preset chip hover:border-violet-400" data-q="Préstamo de bici cerca de la escuela">🚲 Bici cerca de la escuela</button>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-800">
+        <div class="p-5">
+          <div class="flex items-center gap-2 mb-1"><span class="pulse-dot" style="--acc:#38bdf8"></span><span class="mono text-xs font-bold text-sky-300">WEB 2.0 · BÚSQUEDA POR PALABRAS CLAVE</span></div>
+          <div id="sem-out2" class="min-h-[260px]"><p class="text-sm text-slate-500 mt-6 text-center">Los resultados de la búsqueda por palabras clave aparecerán acá. 🤖</p></div>
+        </div>
+        <div class="p-5 bg-violet-950/10">
+          <div class="flex items-center gap-2 mb-1"><span class="pulse-dot" style="--acc:#a78bfa"></span><span class="mono text-xs font-bold text-violet-300">WEB 3.0 · COMPRENSIÓN SEMÁNTICA</span></div>
+          <div id="sem-out3" class="min-h-[260px]"><p class="text-sm text-slate-500 mt-6 text-center">Acá verás cómo la red interpreta el significado. 🧠</p></div>
+        </div>
+      </div>
+      <div id="sem-concl" class="hidden border-t border-slate-800 px-5 py-4 bg-violet-400/5 text-sm text-slate-200">
+        🧠 <b>Conclusión:</b> la Web 2.0 encontró <b>palabras</b>; la Web 3.0 entendió tu <b>intención</b> y conectó datos de vuelos, clima, alojamiento y mascotas para darte una respuesta con sentido.
+      </div>
+    </div>
+
+    <div class="sec-label mt-12"><b>04</b> Mini-desafío · Detectives del significado</div>
+    <div id="trivia-w3" class="card reveal max-w-3xl"></div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║ PESTAÑA 4 · WEB 4.0                       ║
+     ╚══════════════════════════════════════════╝ -->
+<section id="panel-w4" class="tab-panel era-w4">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0b0f1d]/85 p-6 md:p-10 reveal">
+      <span class="outline-text absolute -right-6 top-1/2 -translate-y-1/2 font-display font-bold text-[6rem] md:text-[9rem] select-none hidden lg:block" aria-hidden="true">AI·IOT</span>
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="chip accent-chip">Generación 04</span>
+          <span class="chip">📅 Presente → futuro</span>
+          <span class="chip">🧪 Concepto en construcción</span>
+        </div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl leading-tight">WEB 4.0 <span class="accent-text">— La Red Inteligente</span></h2>
+        <p class="mt-3 text-slate-300 max-w-2xl leading-relaxed"><b class="text-white">Ubicua, simbiótica y predictiva</b>: la red está en todas partes, conversa con vos (y con las cosas) y se <b>anticipa</b> a tus necesidades gracias a la Inteligencia Artificial.</p>
+      </div>
+    </div>
+
+    <div class="sec-label mt-10"><b>01</b> El motor de la Web 4.0</div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 reveal">
+      <div class="pipe-step"><div class="text-2xl">🗣️</div><div class="font-bold text-sm mt-1 accent-text">PLN</div><p class="text-xs text-slate-400 mt-1">Procesamiento de Lenguaje Natural: la máquina entiende lo que decís (¡con acento y todo!).</p></div>
+      <div class="pipe-step"><div class="text-2xl">🧠</div><div class="font-bold text-sm mt-1 accent-text">Deep Learning</div><p class="text-xs text-slate-400 mt-1">Redes neuronales que aprenden de millones de datos y mejoran solas con la práctica.</p></div>
+      <div class="pipe-step"><div class="text-2xl">🤖</div><div class="font-bold text-sm mt-1 accent-text">Agentes autónomos</div><p class="text-xs text-slate-400 mt-1">Programas que deciden y ejecutan tareas por vos: reservan, reprograman, avisan.</p></div>
+      <div class="pipe-step"><div class="text-2xl">🌐</div><div class="font-bold text-sm mt-1 accent-text">IoT</div><p class="text-xs text-slate-400 mt-1">Objetos cotidianos con sensores conectados: heladeras, relojes, autos, aulas.</p></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4 mt-4">
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">📖 DEFINICIÓN + DEBATE</div>
+        <p class="text-sm text-slate-300 leading-relaxed">La Web 4.0 describe una red <b class="text-white">que nos acompaña</b>: comunicación máquina-máquina y máquina-humano en tiempo real, interfaces por voz, síntesis de voz e imagen y modelos predictivos.
+        <span class="text-slate-400">Ojo: es un concepto en construcción — algunos autores la llaman "web simbiótica" o "internet de las cosas inteligente".</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="mono text-[11px] tracking-widest accent-text mb-2">⚙️ CARACTERÍSTICAS</div>
+        <ul class="text-sm text-slate-300 space-y-1.5">
+          <li>📡 <b>Ubicuidad</b>: la red está en todos lados (wearables, domótica)</li>
+          <li>🔮 <b>Predicción</b>: anticipa necesidades con modelos de IA</li>
+          <li>🗨️ <b>Interacción natural</b>: voz, gestos, contexto</li>
+          <li>🤝 <b>Simbiosis</b> humano-máquina: decide con vos (o por vos)</li>
+        </ul>
+      </div>
+      <div class="card reveal md:col-span-2">
+        <div class="mono text-[11px] tracking-widest accent-text mb-3">🧬 ESQUEMA ANIMADO · AMBIENTE INTELIGENTE</div>
+        <svg viewBox="0 0 560 200" class="w-full" role="img" aria-label="Persona rodeada de dispositivos inteligentes">
+          <g stroke="rgba(52,211,153,.4)" stroke-width="1.5" class="dashline">
+            <line x1="280" y1="100" x2="120" y2="50"/><line x1="280" y1="100" x2="440" y2="50"/>
+            <line x1="280" y1="100" x2="110" y2="150"/><line x1="280" y1="100" x2="450" y2="150"/>
+          </g>
+          <circle cx="280" cy="100" r="30" fill="rgba(52,211,153,.15)" stroke="#34d399" stroke-width="2"/>
+          <text x="280" y="107" text-anchor="middle" font-size="16">🧑 VOS</text>
+          <circle cx="280" cy="100" r="30" fill="none" stroke="#34d399">
+            <animate attributeName="r" values="30;58" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".8;0" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+          <g font-size="15" text-anchor="middle">
+            <circle cx="120" cy="50" r="20" fill="#0b1222" stroke="#34d399"/><text x="120" y="56">⌚</text>
+            <circle cx="440" cy="50" r="20" fill="#0b1222" stroke="#34d399"/><text x="440" y="56">🏠</text>
+            <circle cx="110" cy="150" r="20" fill="#0b1222" stroke="#34d399"/><text x="110" y="156">🚗</text>
+            <circle cx="450" cy="150" r="20" fill="#0b1222" stroke="#34d399"/><text x="450" y="156">🛰️</text>
+          </g>
+          <text x="280" y="188" text-anchor="middle" fill="#64748b" font-size="11" font-family="monospace">los dispositivos sensan ➔ la IA analiza ➔ el entorno actúa</text>
+        </svg>
+        <div class="flex flex-wrap gap-1.5 mt-2"><span class="chip">Asistentes generativos</span><span class="chip">Domótica autónoma</span><span class="chip">Smartwatches</span><span class="chip">Vehículos conectados</span></div>
+      </div>
+    </div>
+
+    <!-- ASISTENTE PREDICTIVO -->
+    <div class="sec-label mt-12"><b>03</b> Recurso interactivo · Asistente predictivo "PREDICTA"</div>
+    <p class="text-slate-300 max-w-3xl -mt-2 mb-5">Elegí una situación cotidiana y observá cómo el agente de la Web 4.0 <b class="text-white">sensa, piensa y actúa</b> de forma autónoma sobre los dispositivos conectados.</p>
+
+    <div class="card reveal">
+      <div class="flex flex-wrap items-center gap-3 pb-4 border-b border-slate-800">
+        <span class="font-display font-bold text-lg accent-text">🤖 PREDICTA</span>
+        <span class="chip text-emerald-300 border-emerald-400/40"><span class="pulse-dot"></span> en línea · 6 sensores conectados</span>
+      </div>
+      <div class="grid lg:grid-cols-[300px_1fr] gap-5 mt-4">
+        <aside>
+          <div class="mono text-[11px] tracking-widest text-slate-500 mb-2">ESCENARIOS · ELEGÍ UNO ▸</div>
+          <div class="flex flex-col gap-2">
+            <button class="scen-btn" data-scen="tormenta">⛈️ Llega una tormenta a la ciudad</button>
+            <button class="scen-btn" data-scen="examen">📚 Mañana tenés examen a las 8:00</button>
+            <button class="scen-btn" data-scen="viaje">🧳 Salís de viaje a las 6:00</button>
+            <button class="scen-btn" data-scen="frio">🍲 Llegás a casa con frío y hambre</button>
+          </div>
+          <button id="p-reset" class="chip mt-3 hover:border-emerald-400 w-full justify-center py-2">🔁 Reiniciar simulador</button>
+        </aside>
+        <div>
+          <div class="mono text-[11px] tracking-widest text-slate-500 mb-2">HOGAR CONECTADO (IoT) ▸</div>
+          <div id="p-tiles" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+          <div class="mono text-[11px] tracking-widest text-slate-500 mt-4 mb-2">REGISTRO DE DECISIONES DEL AGENTE ▸</div>
+          <div id="p-log" class="mono text-[11px] md:text-xs h-52 overflow-y-auto rounded-xl border border-slate-800 bg-[#060a13] p-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-label mt-12"><b>04</b> Mini-desafío · La red que se anticipa</div>
+    <div id="trivia-w4" class="card reveal max-w-3xl"></div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║ PESTAÑA 5 · INTEGRADOR                    ║
+     ╚══════════════════════════════════════════╝ -->
+<section id="panel-w5" class="tab-panel era-w5">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0b0f1d]/85 p-6 md:p-10 reveal">
+      <span class="outline-text absolute -right-6 top-1/2 -translate-y-1/2 font-display font-bold text-[6rem] md:text-[9rem] select-none hidden lg:block" aria-hidden="true">1.0→4.0</span>
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-4"><span class="chip accent-chip">Integración final</span><span class="chip">🗺️ Repaso + autoevaluación</span></div>
+        <h2 class="font-display font-bold text-3xl md:text-5xl leading-tight">CUADRO <span class="accent-text">COMPARATIVO INTEGRADOR</span></h2>
+        <p class="mt-3 text-slate-300 max-w-2xl">Todo el recorrido en un solo vistazo: filtrá por generación, repasá la línea de tiempo y cerrá el módulo con la autoevaluación final.</p>
+      </div>
+    </div>
+
+    <div class="sec-label mt-10"><b>01</b> Línea de tiempo interactiva · filtrá la tabla</div>
+    <div class="flex flex-wrap gap-2 reveal">
+      <button class="tlbtn era-w1 on" data-era="all" style="--acc:#fb7185">🕸 Todas las generaciones</button>
+      <button class="tlbtn era-w1" data-era="w1">1991 · Web 1.0 — Lectura</button>
+      <button class="tlbtn era-w2" data-era="w2">2004 · Web 2.0 — Lectura + Escritura</button>
+      <button class="tlbtn era-w3" data-era="w3">2010s · Web 3.0 — + Comprensión</button>
+      <button class="tlbtn era-w4" data-era="w4">HOY · Web 4.0 — Ubicua · Predictiva · IA</button>
+    </div>
+
+    <div class="mt-4 card reveal overflow-hidden p-0">
+      <div class="overflow-x-auto">
+        <table id="cmp-table" class="w-full text-sm min-w-[760px]">
+          <thead>
+            <tr class="mono text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">
+              <th class="text-left px-4 py-3">Generación</th><th class="text-left px-4 py-3">Período</th><th class="text-left px-4 py-3">Paradigma</th><th class="text-left px-4 py-3">Rol del usuario</th><th class="text-left px-4 py-3">Tecnologías clave</th><th class="text-left px-4 py-3">Ejemplos</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr data-era="w1" class="border-b border-slate-800/60 hover:bg-amber-400/5" style="border-left:3px solid #f5a524">
+              <td class="px-4 py-3 font-bold text-amber-300">Web 1.0</td><td class="px-4 py-3 mono text-xs">1991–2003</td><td class="px-4 py-3">Solo lectura (Read-Only)</td><td class="px-4 py-3">Espectador pasivo</td><td class="px-4 py-3 text-xs">HTML estático, tablas, GIFs, FTP</td><td class="px-4 py-3 text-xs">Sitio del CERN, GeoCities, Encarta</td>
+            </tr>
+            <tr data-era="w2" class="border-b border-slate-800/60 hover:bg-sky-400/5" style="border-left:3px solid #38bdf8">
+              <td class="px-4 py-3 font-bold text-sky-300">Web 2.0</td><td class="px-4 py-3 mono text-xs">2004→hoy</td><td class="px-4 py-3">Lectura y escritura (Read-Write)</td><td class="px-4 py-3">Prosumidor</td><td class="px-4 py-3 text-xs">AJAX, bases de datos, blogs, wikis, redes</td><td class="px-4 py-3 text-xs">Wikipedia, YouTube, Instagram, Taringa!</td>
+            </tr>
+            <tr data-era="w3" class="border-b border-slate-800/60 hover:bg-violet-400/5" style="border-left:3px solid #a78bfa">
+              <td class="px-4 py-3 font-bold text-violet-300">Web 3.0</td><td class="px-4 py-3 mono text-xs">2001→en despliegue</td><td class="px-4 py-3">Lectura + escritura + comprensión semántica</td><td class="px-4 py-3">Usuario contextual</td><td class="px-4 py-3 text-xs">RDF, OWL, metadatos, blockchain, datos enlazados</td><td class="px-4 py-3 text-xs">Asistentes contextuales, Wikidata, contratos inteligentes</td>
+            </tr>
+            <tr data-era="w4" class="hover:bg-emerald-400/5" style="border-left:3px solid #34d399">
+              <td class="px-4 py-3 font-bold text-emerald-300">Web 4.0</td><td class="px-4 py-3 mono text-xs">Presente → futuro</td><td class="px-4 py-3">Red ubicua, simbiótica y predictiva</td><td class="px-4 py-3">Usuario asistido por agentes</td><td class="px-4 py-3 text-xs">IA, PLN, deep learning, IoT, voz</td><td class="px-4 py-3 text-xs">Agentes generativos, domótica autónoma, wearables</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 py-3 border-t border-slate-800 bg-[#0a1120] mono text-[11px] text-slate-400 flex flex-wrap items-center gap-2">
+        <span class="text-amber-300">LECTURA</span><span class="accent-text">➔</span>
+        <span class="text-sky-300">LECTURA + ESCRITURA</span><span class="accent-text">➔</span>
+        <span class="text-violet-300">+ COMPRENSIÓN DEL SIGNIFICADO</span><span class="accent-text">➔</span>
+        <span class="text-emerald-300">RED UBICUA · PREDICTIVA · IA</span>
+      </div>
+    </div>
+
+    <div class="sec-label mt-12"><b>03</b> Autoevaluación final · 8 preguntas</div>
+    <p class="text-slate-300 -mt-2 mb-4">Respondé sin apuro: hay devolución con explicación en cada pregunta. Cada respuesta correcta suma <b class="text-white">⚡15 XP</b>.</p>
+    <div id="quiz" class="card reveal max-w-3xl"></div>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-slate-800/80 mt-6">
+  <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+    <div class="text-sm text-slate-400">📚 <b class="text-slate-200">NTiCx · 4.º año</b> — «Evolución teórica y tecnológica de la Web: de la Web 1.0 a la Web 4.0»</div>
+    <div class="chip">Material didáctico · HTML + Tailwind + JS · funciona en las netbooks del aula</div>
+  </div>
+</footer>
+
+</div><!-- /wrap -->
+
+<!-- Toasts + Modal -->
+<div id="toasts" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 items-end"></div>
+<div id="modal" class="hidden fixed inset-0 z-[90] items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+  <div class="max-w-md w-full card border-slate-600 bg-[#0b1120] relative">
+    <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-500 hover:text-white text-lg" aria-label="Cerrar">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<noscript><div style="padding:2rem;text-align:center;font-family:monospace">⚠️ Esta aplicación necesita JavaScript habilitado.</div></noscript>
+
+<script>
+/* ═══════════════ UTILIDADES ═══════════════ */
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const $id = id => document.getElementById(id);
+
+function toast(msg){
+  const box = $id('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.transition='opacity .4s, transform .4s'; t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(()=>t.remove(),400); }, 3200);
+}
+let XP = 0;
+function addXP(n, reason){
+  XP += n;
+  $id('xp-val').textContent = XP;
+  const b = $id('xp-badge');
+  b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  toast(`⚡ +${n} XP · ${reason}`);
+}
+function openModal(html){ $id('modal-body').innerHTML = html; const m=$id('modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
+function closeModal(){ const m=$id('modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+$id('modal').addEventListener('click', e=>{ if(e.target === $id('modal')) closeModal(); });
+
+/* ═══════════════ FONDO: RED DE NODOS ═══════════════ */
+const cv = $id('netbg'), ctx = cv.getContext('2d');
+let NW = 0, NH = 0, mouse = {x:-999, y:-999};
+const netNodes = [];
+const ERA_RGB = { w1:[245,165,36], w2:[56,189,248], w3:[167,139,250], w4:[52,211,153], w5:[251,113,133] };
+let netTarget = ERA_RGB.w1.slice(), netCur = ERA_RGB.w2.slice();
+function sizeCv(){ NW = cv.width = innerWidth; NH = cv.height = innerHeight; }
+window.addEventListener('resize', sizeCv); sizeCv();
+(function initNet(){
+  const n = Math.min(70, Math.floor(innerWidth * innerHeight / 16000));
+  for(let i=0;i<n;i++) netNodes.push({ x:Math.random()*NW, y:Math.random()*NH, vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35, r:Math.random()*1.6+.8 });
+})();
+window.addEventListener('pointermove', e=>{ mouse.x=e.clientX; mouse.y=e.clientY; });
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function drawNet(){
+  netCur[0]+=(netTarget[0]-netCur[0])*.02; netCur[1]+=(netTarget[1]-netCur[1])*.02; netCur[2]+=(netTarget[2]-netCur[2])*.02;
+  const col = netCur.map(Math.round).join(',');
+  ctx.clearRect(0,0,NW,NH);
+  for(const p of netNodes){
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>NW) p.vx*=-1; if(p.y<0||p.y>NH) p.vy*=-1;
+  }
+  for(let i=0;i<netNodes.length;i++){
+    const a = netNodes[i];
+    for(let j=i+1;j<netNodes.length;j++){
+      const b = netNodes[j], dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
+      if(d<140){ ctx.strokeStyle=`rgba(${col},${(1-d/140)*.28})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+    }
+    const dm = Math.hypot(a.x-mouse.x, a.y-mouse.y);
+    if(dm<180){ ctx.strokeStyle=`rgba(${col},${(1-dm/180)*.5})`; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(mouse.x,mouse.y); ctx.stroke(); }
+    ctx.fillStyle=`rgba(${col},.7)`; ctx.beginPath(); ctx.arc(a.x,a.y,a.r,0,7); ctx.fill();
+  }
+  if(!reducedMotion) requestAnimationFrame(drawNet);
+}
+drawNet();
+
+/* ═══════════════ MÁQUINA DE ESCRIBIR (APERTURA) ═══════════════ */
+const PHRASES = ['Web 1.0 · solo lectura 📄','Web 2.0 · lectura y escritura 🤝','Web 3.0 · comprensión semántica 🧠','Web 4.0 · IA que se anticipa 🤖'];
+(function typeLoop(){
+  const el = $id('type-line'); let pi=0, ci=0, del=false;
+  function step(){
+    const p = PHRASES[pi];
+    if(!del){ ci++; el.textContent = p.slice(0,ci);
+      if(ci === p.length){ del = true; setTimeout(step, 1700); return; } setTimeout(step, 52); }
+    else { ci--; el.textContent = p.slice(0,ci);
+      if(ci === 0){ del = false; pi = (pi+1)%PHRASES.length; } setTimeout(step, 26); }
+  }
+  step();
+})();
+
+/* ═══════════════ TERMINAL ═══════════════ */
+const TERM_LINES = [
+  'nticx@aula:~$ conectando con el servidor educativo…',
+  'HTTP 200 · conexión establecida ✓',
+  'cargando línea de tiempo: 1991 → hoy …',
+  '4 generaciones de la Web detectadas',
+  'nticx@aula:~$ iniciar_recorrido --modo interactivo',
+  '▸ listo. ¡A navegar la historia! 🚀'
+];
+(async function runTerm(){
+  const box = $id('term-body');
+  for(const line of TERM_LINES){
+    const d = document.createElement('div'); d.className='term-line'; box.appendChild(d);
+    for(let i=0;i<line.length;i++){ d.textContent += line[i]; await sleep(13); }
+    await sleep(240);
+  }
+  const c = document.createElement('div');
+  c.innerHTML = 'nticx@aula:~$ <span class="caret" style="background:#34d399"></span>';
+  box.appendChild(c);
+})();
+
+/* ═══════════════ SISTEMA DE PESTAÑAS ═══════════════ */
+const TAB_IDS = ['w1','w2','w3','w4','w5'];
+function setTab(id, scroll = true){
+  if(!TAB_IDS.includes(id)) return;
+  TAB_IDS.forEach(t=>{
+    const on = t === id;
+    const b = $id('tab-'+t), p = $id('panel-'+t), n = $id('node-'+t);
+    if(b){ b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }
+    if(p) p.classList.toggle('active', on);
+    if(n) n.classList.toggle('on', on);
+  });
+  netTarget = ERA_RGB[id].slice();
+  if(scroll){
+    const y = $id('tabnav').getBoundingClientRect().top + window.scrollY - 4;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+/* Scroll reveal */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{ threshold:.12 });
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ═══════════════ PESTAÑA 1 · SIMULADOR 1998 ═══════════════ */
+let w1Attempts = 0, w1Done = false;
+function w1Status(msg){
+  const st = $id('sim98status');
+  st.textContent = msg;
+  st.classList.remove('errflash'); void st.offsetWidth; st.classList.add('errflash');
+}
+function w1Deny(msg){
+  w1Attempts++;
+  $id('w1-tries').textContent = w1Attempts;
+  w1Status(msg);
+  const fr = $id('sim98');
+  fr.classList.remove('shake98'); void fr.offsetWidth; fr.classList.add('shake98');
+  if(w1Attempts >= 3 && !w1Done){
+    w1Done = true;
+    $id('w1-conclusion').classList.remove('hidden');
+    addXP(10, 'Experimento completado: red pasiva comprobada');
+  }
+}
+document.querySelectorAll('.w1deny').forEach(b => b.addEventListener('click', e=>{
+  e.preventDefault();
+  w1Deny('⛔ Nada que hacer acá: la Web 1.0 no procesa tus clics. Es de SOLO LECTURA.');
+}));
+document.querySelectorAll('.w1link').forEach(a => a.addEventListener('click', e=>{
+  e.preventDefault();
+  w1Deny('⛔ El enlace te lleva a otra página estática: sigue sin existir interacción.');
+  openModal(`
+    <h3 class="font-display text-lg text-amber-300 mb-2">📄 Página estática detectada</h3>
+    <p class="text-sm text-slate-300 leading-relaxed">El autor escribió este archivo <b>HTML a mano</b> y lo subió por FTP. El contenido es idéntico para todos los visitantes, sin importar quiénes sean ni qué hagan: el servidor solo <b>entrega</b> archivos, nunca <b>recibe</b> datos.</p>
+    <p class="text-xs text-slate-400 mt-2">Por eso la comunicación era <b>unidireccional</b>: sitio ➔ usuario.</p>
+    <button class="btn-next era-w1" style="--acc:#f5a524" onclick="closeModal()">Entendido ✓</button>`);
+}));
+$id('gb-send').addEventListener('click', ()=>{
+  const nom = $id('gb-name').value.trim();
+  w1Deny(`⛔ ${nom ? '¡'+nom+', tu mensaje NO se envió! ' : ''}Tu mensaje NO se envió: el servidor de 1999 no recibe datos de visitantes.`);
+});
+let hitVal = 127;
+setInterval(()=>{
+  hitVal += Math.floor(Math.random()*3)+1;
+  const hc = $id('hitcounter');
+  if(hc) hc.textContent = String(hitVal).padStart(6,'0');
+}, 8000);
+
+/* ═══════════════ PESTAÑA 2 · MURAL ═══════════════ */
+let mNextId = 100, mFirstPost = false, botCount = 0;
+const mPosts = [
+  {id:1, name:'Valen', time:'hace 5 min',  text:'¿Se acuerdan de Fotolog? ¡Mis viejos tenían uno con fotos de su adolescencia! 😅', likes:12, liked:false, rating:0, color:'#fb7185'},
+  {id:2, name:'Tomi',  time:'hace 12 min', text:'Subí un video explicando la Web 1.0 con memes. ¡Mírenlo y comenten! 🎬',          likes:8,  liked:false, rating:0, color:'#38bdf8'},
+  {id:3, name:'Sofi',  time:'hace 20 min', text:'Editamos la wiki del proyecto entre todas: eso es INTELIGENCIA COLECTIVA 📚✨',     likes:15, liked:false, rating:0, color:'#a78bfa'},
+  {id:4, name:'Nico',  time:'hace 34 min', text:'Creé mi primer blog: "Tecnología en el recreo". ¡Pasen y comenten! 🚀',            likes:6,  liked:false, rating:0, color:'#34d399'}
+];
+const feedEl = $id('m-feed');
+function renderStars(container, p){
+  container.innerHTML = '';
+  for(let i=1;i<=5;i++){
+    const s = document.createElement('button');
+    s.textContent = '★';
+    s.className = 'star' + (i <= p.rating ? ' on' : '');
+    s.title = 'Calificar con ' + i + ' estrella' + (i>1?'s':'');
+    s.addEventListener('click', ()=>{ p.rating = i; renderStars(container, p); toast(`⭐ Calificaste el aporte de ${p.name}`); });
+    container.appendChild(s);
+  }
+}
+function buildPost(p){
+  const el = document.createElement('article');
+  el.className = 'm-post';
+  el.innerHTML = `
+    <div class="flex gap-3">
+      <div class="avatar" style="background:${p.color}">${p.name.charAt(0)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-baseline gap-2 flex-wrap">
+          <b class="text-sm">${p.name}</b>
+          <span class="mono text-[10px] text-slate-500">${p.time}</span>
+        </div>
+        <p class="text-sm text-slate-200 mt-1 break-words">${p.text}</p>
+        <div class="flex items-center gap-4 mt-2">
+          <button class="likebtn"><span class="like-ico">🤍</span> <span class="like-n">${p.likes}</span></button>
+          <div class="flex items-center gap-0.5"><span class="mono text-[9px] text-slate-500 mr-1">CALIFICÁ:</span><span class="starsbox flex"></span></div>
+        </div>
+      </div>
+    </div>`;
+  const btn = el.querySelector('.likebtn');
+  btn.addEventListener('click', ()=>{
+    p.liked = !p.liked;
+    p.likes += p.liked ? 1 : -1;
+    btn.querySelector('.like-n').textContent = p.likes;
+    btn.querySelector('.like-ico').textContent = p.liked ? '❤️' : '🤍';
+    btn.classList.toggle('liked', p.liked);
+    btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+    muralCounters();
+  });
+  renderStars(el.querySelector('.starsbox'), p);
+  return el;
+}
+function muralCounters(){
+  $id('m-posts').textContent = mPosts.length;
+  $id('m-likes').textContent = mPosts.reduce((a,p)=>a+p.likes,0);
+  $id('m-parts').textContent = new Set(mPosts.map(p=>p.name)).size;
+}
+function addMuralPost(data, announce){
+  const p = Object.assign({ id:mNextId++, rating:0, likes:0, liked:false }, data);
+  mPosts.unshift(p);
+  feedEl.prepend(buildPost(p));
+  muralCounters();
+  if(announce) toast('📬 ¡' + p.name + ' publicó en el mural!');
+}
+mPosts.slice().reverse().forEach(p => feedEl.appendChild(buildPost(p)));
+muralCounters();
+
+$id('m-send').addEventListener('click', ()=>{
+  const t = $id('m-input').value.trim();
+  if(!t){ const inp=$id('m-input'); inp.classList.add('shake98'); setTimeout(()=>inp.classList.remove('shake98'),400); return; }
+  addMuralPost({ name:'Vos', time:'ahora', text:t, color:'#f5a524' });
+  $id('m-input').value = '';
+  toast('🎉 ¡Publicado! Acabas de actuar como PROSUMIDOR.');
+  if(!mFirstPost){ mFirstPost = true; addXP(10, 'Primer aporte en el mural colaborativo'); }
+});
+document.querySelectorAll('.m-emoji').forEach(b => b.addEventListener('click', ()=>{ $id('m-input').value += b.dataset.e; $id('m-input').focus(); }));
+
+const botQueue = [
+  { name:'Meli',   time:'ahora', text:'¡Compartí mis apuntes en el drive del curso! Editen lo que quieran 📁🙌', color:'#facc15' },
+  { name:'Juani',  time:'ahora', text:'¿Alguien vio el documental sobre la historia de Wikipedia? Está buenísimo 🤓', color:'#2dd4bf' },
+  { name:'Brenda', time:'ahora', text:'El profe subió un Kahoot de la Web 1.0 vs 2.0. ¡Les gano a todos! 🔥', color:'#f97316' }
+];
+setInterval(()=>{
+  const active = !$id('panel-w2').classList.contains('active') ? false : true;
+  if(active && botQueue.length){ botCount++; addMuralPost(botQueue.shift(), true); }
+}, 9000);
+
+/* ═══════════════ PESTAÑA 3 · BUSCADOR SEMÁNTICO ═══════════════ */
+const SEM_CASES = [
+  {
+    match: q => /bariloche/i.test(q),
+    tokens: ['quiero','volar','bariloche','invierno','perro'],
+    w2: [
+      {icon:'✈️', title:'Resultados para "volar"', desc:'Aerolíneas y pasajes… pero no sabe a dónde ni con quién viajás.'},
+      {icon:'🏔️', title:'Resultados para "bariloche"', desc:'Hoteles genéricos y excursiones. Ninguno filtra por mascotas.'},
+      {icon:'❄️', title:'Resultados para "invierno"', desc:'Notas sobre clima y nieve en general, sin fechas concretas.'},
+      {icon:'🐶', title:'Resultados para "perro"', desc:'Veterinarias y adiestradores. Nada que ver con tu viaje 😅'}
+    ],
+    entidades: [
+      {t:'"quiero"', m:'intención → planificar un viaje', icon:'🎯'},
+      {t:'"volar"', m:'acción → buscar vuelos', icon:'✈️'},
+      {t:'"bariloche"', m:'lugar → destino (S. C. de Bariloche)', icon:'📍'},
+      {t:'"invierno"', m:'período → julio/agosto · temporada de nieve', icon:'❄️'},
+      {t:'"perro"', m:'restricción → viaje pet-friendly', icon:'🐶'}
+    ],
+    triples: [
+      '⟨Viaje⟩ — destino → ⟨Bariloche⟩',
+      '⟨Vuelo⟩ — admite → ⟨mascota en cabina⟩',
+      '⟨Reserva⟩ — fecha → ⟨julio · invierno⟩',
+      '⟨Alojamiento⟩ — política → ⟨pet-friendly⟩'
+    ],
+    resultados: [
+      {icon:'✈️', title:'Vuelo EZE → BRC · 12 de julio', desc:'Aerolínea con opción "mascota en cabina" · 2 h 10 min · precio comparado entre 3 fuentes.'},
+      {icon:'🏨', title:'Cabaña pet-friendly en el Centro Cívico', desc:'Patio cercado · acepta perros medianos · 4,8 ★ con 230 opiniones verificadas.'},
+      {icon:'🗓️', title:'Itinerario integrado en 1 clic', desc:'Vuelo + cabaña + traslado del aeropuerto con transportadora. Todo vinculado a tu calendario.'}
+    ]
+  },
+  {
+    match: q => /receta|gluten|cel[ií]ac/i.test(q),
+    tokens: ['receta','fácil','sin','gluten','celíacos'],
+    w2: [
+      {icon:'🍲', title:'Resultados para "receta"', desc:'Miles de recetas de todo tipo, con y sin gluten mezcladas.'},
+      {icon:'🚫', title:'Resultados para "sin"', desc:'La palabra "sin" sola no significa nada para el buscador.'},
+      {icon:'🌾', title:'Resultados para "gluten"', desc:'Artículos sobre qué es el gluten… no recetas aptas.'},
+      {icon:'🩺', title:'Resultados para "celíacos"', desc:'Información médica general, sin recetas concretas.'}
+    ],
+    entidades: [
+      {t:'"receta"', m:'objeto → preparación de comida', icon:'🍳'},
+      {t:'"fácil"', m:'atributo → dificultad baja · poco tiempo', icon:'⏱️'},
+      {t:'"sin gluten"', m:'restricción alimentaria → sin TACC', icon:'🌾'},
+      {t:'"celíacos"', m:'contexto de salud → seguridad alimentaria', icon:'🩺'}
+    ],
+    triples: [
+      '⟨Receta⟩ — condición → ⟨sin TACC certificada⟩',
+      '⟨Plato⟩ — tiempo → ⟨menos de 30 minutos⟩',
+      '⟨Usuario⟩ — necesidad → ⟨alimentación segura⟩'
+    ],
+    resultados: [
+      {icon:'🥞', title:'3 recetas sin TACC paso a paso', desc:'Verificadas contra bases de datos de ingredientes aptos para celíacos.'},
+      {icon:'🧊', title:'Filtro por tu heladera', desc:'Cruza la receta con el inventario de tu heladera inteligente: 2 recetas posibles hoy.'},
+      {icon:'🛒', title:'Lista de compras automática', desc:'Lo que falta se agrega al carrito del súper más cercano con precios comparados.'}
+    ]
+  },
+  {
+    match: q => /bici|bicicleta|pr[eé]stamo/i.test(q),
+    tokens: ['préstamo','bici','cerca','escuela'],
+    w2: [
+      {icon:'🏦', title:'Resultados para "préstamo"', desc:'Bancos y créditos personales 😱 ¡No era lo que buscabas!'},
+      {icon:'🚲', title:'Resultados para "bici"', desc:'Bicicleterías que VENDEN bicis, no que las prestan.'},
+      {icon:'📍', title:'Resultados para "cerca"', desc:'Definiciones de la palabra "cerca" en el diccionario.'},
+      {icon:'🏫', title:'Resultados para "escuela"', desc:'El portal del Ministerio de Educación. Sin relación con tu pedido.'}
+    ],
+    entidades: [
+      {t:'"préstamo"', m:'acción → uso temporario, no compra', icon:'🤝'},
+      {t:'"bici"', m:'objeto → bicicleta compartida', icon:'🚲'},
+      {t:'"cerca"', m:'distancia → radio de 500 m desde tu ubicación', icon:'📍'},
+      {t:'"escuela"', m:'lugar → tu escuela (geolocalización)', icon:'🏫'}
+    ],
+    triples: [
+      '⟨Bicicleta⟩ — estado → ⟨disponible⟩',
+      '⟨Estación⟩ — distancia → ⟨200 m de la escuela⟩',
+      '⟨Usuario⟩ — perfil → ⟨estudiante · tarifa gratuita⟩'
+    ],
+    resultados: [
+      {icon:'🚲', title:'Estación de bicis compartidas a 2 cuadras', desc:'3 unidades disponibles ahora mismo · estado mecánico verificado.'},
+      {icon:'🗺️', title:'Ruta segura sugerida', desc:'Por ciclovía, evitando la avenida: 6 minutos estimados.'},
+      {icon:'🎫', title:'Reserva hecha por 30 minutos', desc:'Con tu perfil de estudiante el viaje es gratuito. QR enviado a tu celu.'}
+    ]
+  }
+];
+function genericSemCase(q){
+  const words = [...new Set((q.toLowerCase().match(/[a-záéíóúüñ]+/g) || []))].filter(w => w.length > 3).slice(0,6);
+  const toks = words.length ? words : ['consulta'];
+  return {
+    tokens: toks,
+    w2: toks.slice(0,4).map(w => ({ icon:'🔎', title:`Resultados para "${w}"`, desc:'Documentos que contienen exactamente esa palabra, sin interpretar contexto ni intención.' })),
+    entidades: toks.slice(0,4).map(w => ({ t:`"${w}"`, m:'posible entidad por identificar', icon:'🔎' })),
+    triples: ['⟨Consulta⟩ — requiere → ⟨más contexto⟩','⟨Usuario⟩ — intención → ⟨por inferir con sus datos⟩'],
+    resultados: [
+      {icon:'🤖', title:'La Web 3.0 pediría contexto', desc:'Consultaría tus datos vinculados (ubicación, calendario, preferencias) para responder con sentido.'},
+      {icon:'🔗', title:'Cruzaría bases de datos abiertas', desc:'Conectaría tu consulta con fuentes públicas para armar una respuesta integrada.'}
+    ],
+    nota: true
+  };
+}
+let semDone = false, semBusy = false;
+function semItemHTML(r){
+  return `<div class="res-item"><div class="flex gap-2"><span class="text-xl">${r.icon}</span><div><div class="font-semibold text-sm text-slate-100">${r.title}</div><div class="text-xs text-slate-400 mt-0.5">${r.desc}</div></div></div></div>`;
+}
+async function runSemantic(){
+  if(semBusy) return;
+  const q = $id('sem-input').value.trim();
+  if(!q){ const i=$id('sem-input'); i.classList.add('shake98'); setTimeout(()=>i.classList.remove('shake98'),400); return; }
+  semBusy = true;
+  const btn = $id('sem-run'); btn.disabled = true; btn.style.opacity = .5;
+  const out2 = $id('sem-out2'), out3 = $id('sem-out3');
+  $id('sem-concl').classList.add('hidden');
+  out2.innerHTML = '<p class="mono text-xs text-sky-300 mt-6 text-center">⏳ cortando la frase en palabras clave…</p>';
+  out3.innerHTML = '<p class="mono text-xs text-violet-300 mt-6 text-center">⏳ preparando análisis semántico…</p>';
+  const cs = SEM_CASES.find(c => c.match(q)) || genericSemCase(q);
+  await sleep(600);
+
+  /* WEB 2.0 */
+  let h2 = '<div class="mono text-[10px] tracking-widest text-sky-300 mb-2">TOKENIZANDO CONSULTA ▸</div><div class="flex flex-wrap gap-1.5 mb-3">';
+  cs.tokens.forEach(t => { h2 += `<span class="tok2">${t}</span>`; });
+  h2 += '</div><div class="text-xs text-slate-400 mb-2">El buscador corta la frase en palabras sueltas y busca documentos que las contengan:</div><div id="s2list" class="space-y-2"></div>';
+  out2.innerHTML = h2;
+  const list2 = out2.querySelector('#s2list');
+  for(const r of cs.w2){ const d = document.createElement('div'); d.innerHTML = semItemHTML(r); list2.appendChild(d.firstElementChild); await sleep(300); }
+  const n2 = document.createElement('div');
+  n2.className = 'text-xs text-slate-500 mt-3 border-t border-slate-800 pt-2';
+  n2.innerHTML = '⚠️ Encontró <b>palabras</b>, no tu intención. Nada fue pensado para vos.';
+  out2.appendChild(n2);
+  await sleep(400);
+
+  /* WEB 3.0 */
+  let h3 = '<div class="mono text-[10px] tracking-widest text-violet-300 mb-2">🧠 INTERPRETANDO EL SIGNIFICADO ▸</div><div id="s3ent" class="space-y-1.5"></div><div id="s3tri" class="mt-3 space-y-1 hidden"></div><div id="s3res" class="mt-3 space-y-2 hidden"></div>';
+  out3.innerHTML = h3;
+  const entBox = out3.querySelector('#s3ent');
+  for(const e of cs.entidades){
+    const d = document.createElement('div');
+    d.className = 'ent3';
+    d.innerHTML = `<span class="text-lg">${e.icon}</span><span><b class="text-violet-200">${e.t}</b> <span class="text-slate-400">→ ${e.m}</span></span>`;
+    entBox.appendChild(d); await sleep(380);
+  }
+  const triBox = out3.querySelector('#s3tri'); triBox.classList.remove('hidden');
+  const triTitle = document.createElement('div'); triTitle.className='mono text-[10px] tracking-widest text-slate-500'; triTitle.textContent='TRIPLES RDF QUE CONECTAN LOS DATOS ▸'; triBox.appendChild(triTitle);
+  for(const t of cs.triples){ const d=document.createElement('div'); d.className='triple'; d.textContent=t; triBox.appendChild(d); await sleep(300); }
+  const resBox = out3.querySelector('#s3res'); resBox.classList.remove('hidden');
+  const resTitle = document.createElement('div'); resTitle.className='mono text-[10px] tracking-widest text-slate-500 mb-1'; resTitle.textContent='RESPUESTA INTEGRADA ▸'; resBox.appendChild(resTitle);
+  for(const r of cs.resultados){ const d=document.createElement('div'); d.innerHTML=semItemHTML(r); resBox.appendChild(d.firstElementChild); await sleep(340); }
+  if(cs.nota){ const nt=document.createElement('div'); nt.className='text-xs text-slate-500 mt-3'; nt.innerHTML='💡 <b>Tip:</b> probá los ejemplos sugeridos para ver un análisis semántico completo.'; out3.appendChild(nt); }
+
+  $id('sem-concl').classList.remove('hidden');
+  btn.disabled = false; btn.style.opacity = 1; semBusy = false;
+  if(!semDone){ semDone = true; addXP(10, 'Análisis semántico comparado'); }
+}
+$id('sem-run').addEventListener('click', runSemantic);
+$id('sem-input').addEventListener('keydown', e=>{ if(e.key === 'Enter') runSemantic(); });
+document.querySelectorAll('.sem-preset').forEach(b => b.addEventListener('click', ()=>{ $id('sem-input').value = b.dataset.q; runSemantic(); }));
+
+/* ═══════════════ PESTAÑA 4 · ASISTENTE PREDICTIVO ═══════════════ */
+const TILES_DEFAULT = {
+  alarm:{icon:'⏰', name:'Alarma', state:'07:00'},
+  pers:{icon:'🪟', name:'Persianas', state:'Abiertas · 100%'},
+  luces:{icon:'💡', name:'Luces', state:'Blanco · 80%'},
+  cal:{icon:'📅', name:'Calendario', state:'Sin cambios'},
+  notif:{icon:'📱', name:'Notificaciones', state:'Sin nuevas'},
+  clima:{icon:'🌡️', name:'Climatización', state:'22 °C · Normal'}
+};
+const SCENARIOS = {
+  tormenta:{ label:'⛈️ Llega una tormenta a la ciudad', steps:[
+    ['SENSOR','📡 El radar meteorológico conectado detecta tormenta eléctrica en 40 minutos.'],
+    ['IA','Analizo contexto: el usuario vuelve a casa a las 14:30 · hay ropa tendida · ventanas abiertas.'],
+    ['ACCIÓN','📱 Notificación predictiva enviada: "Se viene una tormenta. Cierro persianas y te aviso si hay cortes."', {notif:'⚠️ Alerta de tormenta'}],
+    ['DOMÓTICA','🪟 Persianas cerradas automáticamente · 💡 luces en modo cálido por posible corte de luz.', {pers:'Cerradas', luces:'Cálido · 40%'}],
+    ['CALENDARIO','📅 Turno de odontología de las 15:00 reagendado a las 16:00 · usuario notificado.', {cal:'Turno → 16:00'}],
+    ['ALARMA','⏰ Alarma de mañana confirmada · la red eléctrica queda bajo monitoreo preventivo.', {alarm:'07:00 · monitoreo'}],
+    ['OK','✅ Secuencia completa: la red sintió, pensó y actuó sin intervención humana.']
+  ]},
+  examen:{ label:'📚 Mañana tenés examen a las 8:00', steps:[
+    ['SENSOR','📅 El calendario detecta: examen de NTiCx mañana 08:00 · hoy a las 20:00 tenés entrenamiento.'],
+    ['IA','Analizo tus patrones: rendís mejor descansado · faltan repasar 3 temas del módulo.'],
+    ['ACCIÓN','📱 Sugerencia enviada: "¿Cancelamos el entrenamiento y repasamos 45 minutos?"', {notif:'📚 Recordatorio de repaso'}],
+    ['DOMÓTICA','💡 Escritorio en "modo estudio" · 🌡️ ambiente a 21 °C para concentrarte.', {luces:'Luz de estudio', clima:'21 °C · foco'}],
+    ['CALENDARIO','📅 Bloque de repaso 21:00–21:45 agendado con los apuntes del aula virtual adjuntos.', {cal:'Repaso 21:00'}],
+    ['ALARMA','⏰ Alarma adelantada a las 06:30 para que desayunes tranquilo.', {alarm:'06:30 · examen'}],
+    ['OK','✅ Todo listo: la Web 4.0 organizó tu noche antes de que lo pidieras.']
+  ]},
+  viaje:{ label:'🧳 Salís de viaje a las 6:00', steps:[
+    ['SENSOR','🧳 Calendario + datos de tráfico: salida al aeropuerto 04:45 · ruta con obras.'],
+    ['IA','Analizo: check-in online disponible · pronóstico de mucho frío en destino.'],
+    ['ACCIÓN','📱 Boarding pass descargado + notificación: "Llevá abrigo: 2 °C al llegar".', {notif:'🎫 Boarding pass'}],
+    ['DOMÓTICA','🪟 Persianas programadas para simular presencia · 💡 luces en modo ahorro.', {pers:'Program · seguridad', luces:'Modo ahorro'}],
+    ['CALENDARIO','📅 Traslado en remise confirmado 04:45 · recordatorio de DNI y cargador.', {cal:'Remise 04:45 ✓'}],
+    ['ALARMA','⏰ Alarma reprogramada: 04:15, 30 minutos antes de lo habitual.', {alarm:'04:15 · viaje'}],
+    ['OK','✅ La casa queda cuidada y el viaje preparado: red ubicua en acción.']
+  ]},
+  frio:{ label:'🍲 Llegás a casa con frío y hambre', steps:[
+    ['SENSOR','⌚ Tu smartwatch detecta: temperatura corporal baja · estás a 10 minutos de casa.'],
+    ['IA','Analizo tu rutina: los jueves a las 19:00 llegás caminando · la heladera tiene stock bajo.'],
+    ['DOMÓTICA','🌡️ Calefacción encendida a 24 °C · 💡 luces cálidas de bienvenida.', {clima:'24 °C · encendida', luces:'Cálida · bienvenida'}],
+    ['ACCIÓN','📱 Sugerencia enviada: "¿Te pido una sopa de verduras? Llega en 20 minutos".', {notif:'🍲 Sugerencia de cena'}],
+    ['CALENDARIO','📅 Cena registrada 19:30 · el asistente sugiere desconectar pantallas después de las 22:00.', {cal:'Cena 19:30 ✓'}],
+    ['ALARMA','⏰ Alarma de mañana confirmada según tu rutina habitual.', {alarm:'07:00 · sin cambios'}],
+    ['OK','✅ La red anticipó tus necesidades antes de que abras la puerta.']
+  ]}
+};
+const TAGCLS = {'SENSOR':'tag-sky','IA':'tag-violet','ACCIÓN':'tag-amber','DOMÓTICA':'tag-emerald','CALENDARIO':'tag-rose','ALARMA':'tag-sky','OK':'tag-ok'};
+const tilesEl = $id('p-tiles'), logEl = $id('p-log');
+let pRun = 0, pBusy = false;
+const pDoneSet = new Set();
+function renderTilesDefault(){
+  tilesEl.innerHTML = '';
+  Object.keys(TILES_DEFAULT).forEach(k => {
+    const t = TILES_DEFAULT[k];
+    const d = document.createElement('div');
+    d.className = 'ptile'; d.id = 'tile-' + k;
+    d.innerHTML = `<div class="text-xl">${t.icon}</div><div class="mono text-[9px] uppercase tracking-widest text-slate-500 mt-0.5">${t.name}</div><div class="ptstate font-semibold mt-0.5">${t.state}</div>`;
+    tilesEl.appendChild(d);
+  });
+}
+function setTile(k, v){
+  const t = $id('tile-' + k); if(!t) return;
+  t.classList.add('tile-on');
+  t.querySelector('.ptstate').textContent = v;
+}
+function pLog(tag, txt){
+  const d = document.createElement('div');
+  d.className = 'logline';
+  const hora = new Date().toLocaleTimeString('es-AR', { hour12:false });
+  d.innerHTML = `<span class="text-slate-600">${hora}</span> <span class="logtag ${TAGCLS[tag] || 'tag-sky'}">${tag}</span> <span class="text-slate-200">${txt}</span>`;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+async function runScenario(key){
+  if(pBusy) return;
+  pBusy = true;
+  const run = ++pRun;
+  document.querySelectorAll('[data-scen]').forEach(x => x.disabled = true);
+  renderTilesDefault();
+  logEl.innerHTML = '';
+  pLog('IA', 'PREDICTA en línea · Escenario: ' + SCENARIOS[key].label);
+  await sleep(500);
+  for(const s of SCENARIOS[key].steps){
+    if(run !== pRun) return;
+    pLog(s[0], s[1]);
+    if(s[2]) Object.keys(s[2]).forEach(k => setTile(k, s[2][k]));
+    await sleep(1000);
+  }
+  document.querySelectorAll('[data-scen]').forEach(x => x.disabled = false);
+  pBusy = false;
+  toast('✅ Simulación completada: ' + SCENARIOS[key].label);
+  if(!pDoneSet.has(key)){
+    pDoneSet.add(key);
+    if(pDoneSet.size === 1) addXP(15, 'Primera simulación de la Web 4.0');
+  }
+}
+document.querySelectorAll('[data-scen]').forEach(b => b.addEventListener('click', ()=>{
+  document.querySelectorAll('[data-scen]').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  runScenario(b.dataset.scen);
+}));
+$id('p-reset').addEventListener('click', ()=>{
+  pRun++; pBusy = false;
+  document.querySelectorAll('[data-scen]').forEach(x => { x.disabled = false; x.classList.remove('on'); });
+  renderTilesDefault();
+  logEl.innerHTML = '<div class="logline text-slate-500">Sistema reiniciado. Elegí un escenario para comenzar.</div>';
+});
+renderTilesDefault();
+logEl.innerHTML = '<div class="logline text-slate-500">Sistema en espera. Elegí un escenario para comenzar la simulación.</div>';
+
+/* ═══════════════ PESTAÑA 5 · FILTRO DE TABLA ═══════════════ */
+document.querySelectorAll('[data-era]').forEach(b => b.addEventListener('click', ()=>{
+  document.querySelectorAll('[data-era]').forEach(x => x.classList.toggle('on', x === b));
+  const era = b.dataset.era;
+  document.querySelectorAll('#cmp-table tbody tr').forEach(r => {
+    r.classList.toggle('hidden', !(era === 'all' || r.dataset.era === era));
+  });
+}));
+
+/* ═══════════════ TRIVIAS (una por pestaña) ═══════════════ */
+const TRIVIAS = {
+  w1: [
+    { q:'En la Web 1.0, ¿qué podía hacer el usuario?', opts:['Leer y mirar la información publicada','Comentar y subir sus propias fotos','Editar el contenido de cualquier página'], a:0, exp:'La Web 1.0 era "solo lectura": el usuario era un espectador pasivo, sin herramientas para publicar ni modificar contenido.' },
+    { q:'¿Cuál era una característica técnica de la Web 1.0?', opts:['Páginas dinámicas conectadas a bases de datos','Páginas estáticas escritas en HTML básico','Redes sociales con perfiles de usuario'], a:1, exp:'Los sitios se escribían "a mano" en HTML: el mismo contenido para todos los visitantes, sin bases de datos ni interacción.' }
+  ],
+  w2: [
+    { q:'Un "prosumidor" es alguien que…', opts:['Solo consume contenido sin producir nada','Produce y consume información al mismo tiempo','Administra servidores y redes'], a:1, exp:'En la Web 2.0 el usuario publica, comenta y comparte, además de consumir: produce + consume = prosumidor.' },
+    { q:'¿Cuál de estos es un ejemplo típico de Web 2.0?', opts:['Un sitio institucional de 1997 sin formulario','Una enciclopedia en CD-ROM','Wikipedia, editada por millones de usuarios'], a:2, exp:'Wikipedia es el símbolo de la inteligencia colectiva: cualquiera puede editarla y mejorarla en forma colaborativa.' }
+  ],
+  w3: [
+    { q:'La Web 3.0 busca que las máquinas comprendan…', opts:['Solo las palabras clave escritas por el usuario','El significado y el contexto de la información','Únicamente imágenes y videos'], a:1, exp:'"Semántica" significa significado: mediante metadatos, las máquinas entienden la intención detrás de los datos.' },
+    { q:'RDF y OWL son…', opts:['Lenguajes para describir datos y su significado (metadatos)','Dos redes sociales descentralizadas','Formatos de imagen animada de los años 90'], a:0, exp:'Son lenguajes estructurados que etiquetan los datos para que distintas aplicaciones puedan entenderlos e interoperar.' }
+  ],
+  w4: [
+    { q:'La capacidad "predictiva" de la Web 4.0 significa que…', opts:['La red responde más lento para poder pensar','Anticipa las necesidades del usuario usando modelos de IA','Predice el futuro sin ningún dato'], a:1, exp:'Los modelos predictivos analizan patrones y contexto para anticiparse: reprograman alarmas, sugieren y ejecutan acciones automáticamente.' },
+    { q:'¿Cuál es un ejemplo de IoT (Internet de las Cosas)?', opts:['Una heladera conectada que avisa qué alimentos faltan','Un libro impreso','Un televisor sin conexión a internet'], a:0, exp:'IoT son objetos cotidianos con sensores y conexión que intercambian datos entre sí y con los asistentes de IA.' }
+  ]
+};
+const doneTabs = new Set();
+function markTabDone(t){
+  if(doneTabs.has(t)) return;
+  doneTabs.add(t);
+  const c = $id('chk-' + t);
+  if(c){ c.classList.remove('hidden'); c.classList.add('pop'); }
+}
+function mountTrivia(containerId, qs, tabKey){
+  const root = $id(containerId);
+  let i = 0, ok = 0, finished = false;
+  function paint(){
+    if(i >= qs.length){
+      root.innerHTML = `
+        <div class="text-center py-4">
+          <div class="text-4xl mb-2">${ok === qs.length ? '🏆' : ok >= qs.length/2 ? '💪' : '📖'}</div>
+          <div class="font-display font-bold text-xl">Mini-desafío completado: ${ok}/${qs.length} correctas</div>
+          <p class="text-sm text-slate-400 mt-2">${ok === qs.length ? '¡Impecable! Dominás esta generación de la Web.' : 'Buen intento: repasá los conceptos y volvé a intentarlo.'}</p>
+          <button class="btn-next">🔁 Repetir el desafío</button>
+        </div>`;
+      root.querySelector('button').addEventListener('click', ()=>{ i = 0; ok = 0; paint(); });
+      if(!finished){ finished = true; markTabDone(tabKey); }
+      return;
+    }
+    const q = qs[i];
+    root.innerHTML = `
+      <div class="flex justify-between items-center mono text-[11px] tracking-widest text-slate-500">
+        <span>🎯 PREGUNTA ${i+1} / ${qs.length}</span><span>✔ ${ok} CORRECTAS</span>
+      </div>
+      <h4 class="font-semibold text-lg mt-3">${q.q}</h4>
+      <div class="mt-4 grid gap-2" data-opts></div>
+      <div data-fb class="hidden mt-4"></div>`;
+    const optsBox = root.querySelector('[data-opts]');
+    q.opts.forEach((o, idx) => {
+      const b = document.createElement('button');
+      b.className = 'tropt';
+      b.innerHTML = `<b class="mono accent-text mr-2">${String.fromCharCode(65+idx)}.</b>${o}`;
+      b.addEventListener('click', ()=>{
+        optsBox.querySelectorAll('button').forEach(x => x.disabled = true);
+        const win = idx === q.a;
+        if(win){ b.classList.add('good'); ok++; if(!doneTabs.has(tabKey)) addXP(10, 'Respuesta correcta'); }
+        else { b.classList.add('bad'); optsBox.children[q.a].classList.add('good'); }
+        const fb = root.querySelector('[data-fb]');
+        fb.classList.remove('hidden');
+        fb.innerHTML = `
+          <div class="rounded-xl border ${win ? 'border-emerald-400/40 bg-emerald-400/10' : 'border-rose-400/30 bg-rose-400/10'} p-3 text-sm text-slate-200">
+            ${win ? '✅ ¡Correcto!' : '❌ No exactamente.'} ${q.exp}
+          </div>
+          <button class="btn-next">${i === qs.length-1 ? 'Ver resultado ➔' : 'Siguiente ➔'}</button>`;
+        fb.querySelector('button').addEventListener('click', ()=>{ i++; paint(); });
+      });
+      optsBox.appendChild(b);
+    });
+  }
+  paint();
+}
+mountTrivia('trivia-w1', TRIVIAS.w1, 'w1');
+mountTrivia('trivia-w2', TRIVIAS.w2, 'w2');
+mountTrivia('trivia-w3', TRIVIAS.w3, 'w3');
+mountTrivia('trivia-w4', TRIVIAS.w4, 'w4');
+
+/* ═══════════════ AUTOEVALUACIÓN FINAL ═══════════════ */
+const TAB_NAMES = { w1:'Web 1.0', w2:'Web 2.0', w3:'Web 3.0', w4:'Web 4.0' };
+const QUIZ = [
+  { q:'¿Qué generación de la web se conoce como "read-only web" (solo lectura)?', opts:['Web 2.0','Web 1.0','Web 4.0','Web 3.0'], a:1, exp:'La Web 1.0 era de solo lectura: el usuario únicamente consumía información.', tab:'w1' },
+  { q:'El término "prosumidor" pertenece a la…', opts:['Web 1.0','Web 3.0','Web 2.0','Web 4.0'], a:2, exp:'En la Web 2.0 el usuario produce y consume contenido al mismo tiempo.', tab:'w2' },
+  { q:'La Web 3.0 intenta que las máquinas comprendan…', opts:['El significado de los datos','Solo palabras clave','Solo texto plano','Únicamente enlaces'], a:0, exp:'La web semántica agrega metadatos para que las máquinas entiendan el significado.', tab:'w3' },
+  { q:'RDF y OWL son tecnologías asociadas a…', opts:['La Web 1.0','La web semántica (3.0)','El correo postal','Los GIF animados'], a:1, exp:'Son lenguajes para describir metadatos y ontologías dentro de la Web 3.0.', tab:'w3' },
+  { q:'¿Cuál es un ejemplo clásico de Web 2.0?', opts:['Una página estática de GeoCities','Una enciclopedia en CD-ROM','Wikipedia','Un módem 56k'], a:2, exp:'Wikipedia combina lectura y escritura colaborativa: pura Web 2.0.', tab:'w2' },
+  { q:'La Web 4.0 se describe como una red…', opts:['Ubicua, predictiva y basada en IA','Exclusivamente de escritorio','Sin conexión a internet','Solo de lectura'], a:0, exp:'Integra IA, IoT y modelos predictivos para anticiparse al usuario.', tab:'w4' },
+  { q:'En la Web 1.0, la comunicación era…', opts:['Bidireccional y colaborativa','Unidireccional: del sitio al usuario','Entre máquinas únicamente','Inexistente'], a:1, exp:'El sitio publicaba y el usuario solo recibía: flecha única.', tab:'w1' },
+  { q:'Un asistente que reprograma tu alarma porque se acerca una tormenta combina…', opts:['Web 1.0 y GeoCities','IA + IoT (Web 4.0)','Solo HTML estático','Enciclopedias digitales'], a:1, exp:'Sensa el ambiente (IoT), analiza con IA y ejecuta acciones: Web 4.0 en estado puro.', tab:'w4' }
+];
+let quizXpDone = false;
+(function mountQuiz(){
+  const root = $id('quiz');
+  let i = 0, score = 0;
+  const wrong = [];
+  function paint(){
+    if(i >= QUIZ.length){ results(); return; }
+    const q = QUIZ[i];
+    const pct = Math.round((i / QUIZ.length) * 100);
+    root.innerHTML = `
+      <div class="flex justify-between items-center mono text-[11px] tracking-widest text-slate-500">
+        <span>🏁 PREGUNTA ${i+1} DE ${QUIZ.length}</span><span>✔ ${score}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-slate-800 mt-2 overflow-hidden"><div class="h-full rounded-full accent-bg transition-all duration-500" style="width:${pct}%"></div></div>
+      <h4 class="font-semibold text-lg mt-4">${q.q}</h4>
+      <div class="mt-4 grid gap-2" data-opts></div>
+      <div data-fb class="hidden mt-4"></div>`;
+    const optsBox = root.querySelector('[data-opts]');
+    q.opts.forEach((o, idx) => {
+      const b = document.createElement('button');
+      b.className = 'tropt';
+      b.innerHTML = `<b class="mono accent-text mr-2">${String.fromCharCode(65+idx)}.</b>${o}`;
+      b.addEventListener('click', ()=>{
+        optsBox.querySelectorAll('button').forEach(x => x.disabled = true);
+        const win = idx === q.a;
+        if(win){ b.classList.add('good'); score++; if(!quizXpDone) addXP(15, 'Autoevaluación: respuesta correcta'); }
+        else { b.classList.add('bad'); optsBox.children[q.a].classList.add('good'); wrong.push(q); }
+        const fb = root.querySelector('[data-fb]');
+        fb.classList.remove('hidden');
+        fb.innerHTML = `
+          <div class="rounded-xl border ${win ? 'border-emerald-400/40 bg-emerald-400/10' : 'border-rose-400/30 bg-rose-400/10'} p-3 text-sm text-slate-200">
+            ${win ? '✅ ¡Correcto!' : '❌ La correcta era la opción ' + String.fromCharCode(65+q.a) + '.'} ${q.exp}
+          </div>
+          <button class="btn-next">${i === QUIZ.length-1 ? 'Ver mi resultado 🏁' : 'Siguiente ➔'}</button>`;
+        fb.querySelector('button').addEventListener('click', ()=>{ i++; paint(); });
+      });
+      optsBox.appendChild(b);
+    });
+  }
+  function results(){
+    const medal = score >= 7 ? '🥇' : score >= 5 ? '🥈' : score >= 3 ? '🥉' : '📚';
+    const msg = score >= 7 ? '¡Excelente! Recorriste la evolución de la Web como un profesional.' :
+                score >= 5 ? '¡Muy bien! Solo algunos detalles para pulir.' :
+                score >= 3 ? 'Vas por buen camino: repasá las pestañas marcadas y volvé a intentarlo.' :
+                'Te sugerimos recorrer de nuevo las pestañas con calma. ¡Vos podés!';
+    let wrongHtml = '';
+    if(wrong.length){
+      wrongHtml = '<div class="mt-5 text-left border-t border-slate-800 pt-4"><div class="mono text-[11px] tracking-widest text-slate-500 mb-3">PARA REPASAR ▸</div><div class="space-y-2">' +
+        wrong.map(w => `<div class="flex items-start justify-between gap-3 rounded-lg border border-slate-800 p-3">
+            <div class="text-xs text-slate-300">${w.q}<div class="text-emerald-300 mt-1">✔ ${w.opts[w.a]}</div></div>
+            <button class="chip shrink-0 hover:border-rose-400" data-go="${w.tab}">↩ ${TAB_NAMES[w.tab]}</button>
+          </div>`).join('') + '</div></div>';
+    }
+    root.innerHTML = `
+      <div class="text-center py-4">
+        <div class="text-6xl">${medal}</div>
+        <div class="font-display font-bold text-3xl mt-3">${score}/${QUIZ.length}</div>
+        <p class="text-slate-300 mt-2">${msg}</p>
+        ${wrongHtml}
+        <button class="btn-next mt-5" data-retry>🔁 Reintentar la evaluación</button>
+      </div>`;
+    root.querySelector('[data-retry]').addEventListener('click', ()=>{ i = 0; score = 0; wrong.length = 0; paint(); });
+    root.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', ()=> setTab(b.dataset.go)));
+    if(!quizXpDone){ quizXpDone = true; markTabDone('w5'); toast('🏁 ¡Módulo completado! Recorriste las 4 generaciones de la Web.'); }
+  }
+  paint();
+})();
+
+/* ═══════════════ INICIO ═══════════════ */
+setTab('w1', false);
+</script>
+</body>
+</html>
+
