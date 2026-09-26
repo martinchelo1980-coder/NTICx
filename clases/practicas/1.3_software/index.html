@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTICx 4.º Año — Software, Sistemas Operativos y Seguridad Digital</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💾</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/chakra-petch@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/chakra-petch@5/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/chakra-petch@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5/600.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{
+display:['"Chakra Petch"','system-ui','sans-serif'],
+body:['"IBM Plex Sans"','system-ui','sans-serif'],
+mono:['"IBM Plex Mono"','ui-monospace','monospace']
+}}}};
+</script>
+<style>
+:root{--acc:#38e1ff}
+html{scroll-behavior:smooth}
+body{background:#070d1a;color:#dbe6f5;font-family:"IBM Plex Sans",system-ui,sans-serif;overflow-x:hidden}
+::selection{background:rgba(56,225,255,.25)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#0a1220}
+::-webkit-scrollbar-thumb{background:#22314e;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#33507e}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+background-image:linear-gradient(rgba(96,140,210,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(96,140,210,.06) 1px,transparent 1px);
+background-size:44px 44px;
+mask-image:radial-gradient(ellipse 90% 70% at 50% 12%,#000 30%,transparent 90%)}
+.orb{position:fixed;border-radius:9999px;filter:blur(80px);pointer-events:none;z-index:0}
+.glyph{position:fixed;font-family:"IBM Plex Mono",monospace;opacity:.07;pointer-events:none;z-index:0;animation:floaty 10s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes ticker{to{transform:translateX(-50%)}}
+.anim-pop{animation:popIn .45s cubic-bezier(.2,.7,.3,1.1) both}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.revealed{opacity:1;transform:none}
+.tint{background:color-mix(in srgb,var(--acc) 12%,transparent)}
+.tintline{border-color:color-mix(in srgb,var(--acc) 45%,transparent)}
+.term{position:relative}
+.term::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.035) 2px 4px)}
+.cursor{display:inline-block;width:.6em;height:1em;background:#a3e635;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+.tabbtn .chk{display:none}
+.tabbtn.done .chk{display:inline-flex}
+.tabbtn.active{color:#fff;border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.tab-panel{display:none}
+.tab-panel.on{display:block;animation:popIn .45s both}
+.ghost{position:absolute;right:0;top:-1.2rem;font-family:"Chakra Petch";font-weight:700;font-size:6.5rem;line-height:1;opacity:.05;pointer-events:none;user-select:none}
+.card{border:1px solid #22314e;background:#0c1526;border-radius:1rem;padding:1.5rem;transition:border-color .3s,transform .3s}
+.card:hover{border-color:#33507e;transform:translateY(-2px)}
+.lab{border:1px solid color-mix(in srgb,var(--acc) 35%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 6%,transparent),rgba(12,21,38,.6));border-radius:1rem}
+.fbtn{border:1px solid #2a3b5e;border-radius:9999px;padding:.4rem .9rem;font-size:.72rem;font-family:"IBM Plex Mono",monospace;color:#b8c6dd;transition:all .25s;cursor:pointer}
+.fbtn:hover{border-color:var(--acc);color:#fff}
+.fbtn.on{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:600}
+.fbtn2{border:1px solid #2a3b5e;background:#101c33;border-radius:.5rem;padding:.45rem .8rem;font-size:.75rem;font-family:"IBM Plex Mono",monospace;color:#cbd8ec;transition:all .25s;cursor:pointer}
+.fbtn2:hover{border-color:var(--acc);color:#fff;transform:translateY(-1px)}
+.fsrow{cursor:pointer;display:flex;align-items:center;gap:.4rem;color:#c6d3e8;transition:background .2s}
+.fsrow:hover{background:rgba(255,255,255,.04)}
+.fsrow.sel{background:color-mix(in srgb,var(--acc) 15%,transparent);outline:1px solid var(--acc);color:#fff}
+.layer{transition:all .35s}
+.layer.lit{border-color:var(--acc)!important;background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:0 0 24px color-mix(in srgb,var(--acc) 30%,transparent)}
+.layer.sel{border-color:var(--acc)!important}
+.tsel{background:#0d1830;border:1px solid #2a3b5e;border-radius:.4rem;padding:.4rem .5rem;font-size:.72rem;color:#cbd8ec;outline:none;cursor:pointer}
+.tbtn{min-width:2rem;height:2rem;padding:0 .5rem;display:inline-flex;align-items:center;justify-content:center;border:1px solid #2a3b5e;border-radius:.4rem;background:#0d1830;color:#dbe6f5;font-size:.8rem;transition:all .2s;cursor:pointer}
+.tbtn:hover{border-color:#fbbf24;color:#fbbf24;transform:translateY(-1px)}
+.fmtchip{font-size:.65rem;border:1px solid #2a3b5e;border-radius:.3rem;padding:.15rem .4rem;font-family:"IBM Plex Mono",monospace;color:#9fb2cf;cursor:pointer;transition:all .2s}
+.fmtchip:hover{border-color:#fbbf24;color:#fbbf24}
+.paper{background:#f7f5ee;color:#26303d;padding:2rem;min-height:340px;outline:none;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65}
+.paper:focus{box-shadow:inset 0 0 0 3px rgba(251,191,36,.3)}
+.paper h1{font-size:1.45em;font-weight:800;margin:0 0 .5em;color:#111827}
+.paper p{margin:.5em 0}
+.paper ul{margin:.5em 0 .5em 1.5em;list-style:disc}
+.paper ol{margin:.5em 0 .5em 1.5em;list-style:decimal}
+.paper table{border-collapse:collapse;width:100%;margin:.8em 0}
+.paper td,.paper th{border:1px solid #9aa5b1;padding:.45em .6em;font-size:.9em;min-width:70px;background:#fff}
+.paper th{background:#e8edf4;font-weight:700}
+.sheet th{background:#101c33;color:#8fa3c0;font-family:"IBM Plex Mono",monospace;font-size:.7rem;padding:.4rem .6rem;border:1px solid #1e2c47;text-align:center}
+.shcell{width:100%;background:transparent;padding:.45rem .55rem;font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:#dbe6f5;outline:none;border:none}
+.shcell.is-num{text-align:right;color:#a3e635}
+.sheet td:focus-within{outline:2px solid #b48bff;outline-offset:-2px;background:#131f38}
+.gamebtn{padding:.6rem 1.1rem;border-radius:.6rem;border:2px solid;background:#0d1830;font-family:"Chakra Petch";font-weight:600;font-size:.85rem;transition:all .2s;cursor:pointer}
+.gamebtn:hover:not(:disabled){transform:scale(1.04)}
+.gamebtn:disabled{opacity:.4;cursor:not-allowed}
+.lnk{color:#ff8787;border-bottom:1px dotted #ff8787;font-family:"IBM Plex Mono",monospace;font-size:.85em}
+.pcheck{border:1px solid #2a3b5e;border-radius:.5rem;padding:.45rem .5rem;font-size:.68rem;font-family:"IBM Plex Mono",monospace;color:#8fa3c0;opacity:.45;transition:all .3s;text-align:center}
+.pcheck.ok{opacity:1;border-color:#a3e635;color:#a3e635}
+.ticker-track{display:flex;width:max-content;animation:ticker 50s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+#toasts{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body class="font-body">
+
+<div class="bg-grid"></div>
+<div class="orb" style="width:420px;height:420px;left:-120px;top:-80px;background:radial-gradient(circle,#38e1ff,transparent 70%);opacity:.13"></div>
+<div class="orb" style="width:380px;height:380px;right:-100px;top:35%;background:radial-gradient(circle,#a3e635,transparent 70%);opacity:.09"></div>
+<div class="orb" style="width:360px;height:360px;left:15%;bottom:-120px;background:radial-gradient(circle,#ff6b6b,transparent 70%);opacity:.08"></div>
+<span class="glyph" style="left:4%;top:22%;font-size:1.4rem">&lt;/&gt;</span>
+<span class="glyph" style="right:6%;top:14%;font-size:1.1rem;animation-delay:-3s">0101</span>
+<span class="glyph" style="left:8%;top:64%;font-size:1.3rem;animation-delay:-5s">{ }</span>
+<span class="glyph" style="right:10%;top:72%;font-size:1.2rem;animation-delay:-7s">C:\&gt;</span>
+
+<!-- ============ CABECERA: VENTANA DE SO ============ -->
+<header class="relative z-10 max-w-6xl mx-auto px-4 pt-8">
+  <div class="rounded-xl border border-[#22314e] bg-[#0c1526] shadow-[0_24px_70px_-24px_rgba(0,0,0,.8)] overflow-hidden">
+    <div class="flex items-center gap-2 px-4 py-2.5 bg-[#101c33] border-b border-[#22314e]">
+      <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span><span class="w-3 h-3 rounded-full bg-[#febc2e]"></span><span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+      <span class="ml-3 font-mono text-xs text-slate-400 truncate">modulo_nticx.exe — aula digital · unidad 04</span>
+      <span class="ml-auto font-mono text-xs text-slate-600 hidden sm:block">─ □ ✕</span>
+    </div>
+    <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 p-6 md:p-8">
+      <div>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[10px] tracking-[.25em] px-2.5 py-1 rounded border border-[#38e1ff66] text-[#38e1ff]">NTICx · 4.º AÑO</span>
+          <span class="font-mono text-[10px] tracking-[.25em] px-2.5 py-1 rounded border border-[#a3e63566] text-[#a3e635]">🇦🇷 SECUNDARIA · ARGENTINA</span>
+        </div>
+        <h1 class="font-display font-bold text-3xl md:text-[2.9rem] leading-tight mt-4">SOFTWARE, SISTEMAS OPERATIVOS <span class="text-[#38e1ff]">&amp;</span> SEGURIDAD DIGITAL</h1>
+        <p class="text-slate-400 mt-4 max-w-xl">Un recorrido interactivo por el módulo: qué es un programa, cómo administrás tu compu, cómo se arma un TP, cómo calcula una planilla y cómo te defendés en internet. <b class="text-slate-200">Tocá, probá y jugá: así se aprende.</b></p>
+        <div class="flex flex-wrap gap-4 mt-5 font-mono text-[11px] text-slate-500">
+          <span>▣ 5 módulos</span><span>▣ 7 laboratorios</span><span>▣ 15 preguntas</span><span>▣ 100% aula-ready</span>
+        </div>
+      </div>
+      <div>
+        <div class="term rounded-lg bg-[#060b16] border border-[#1d2b47] p-4 font-mono text-[12px] leading-relaxed min-h-[150px]">
+          <div id="bootlog"></div>
+        </div>
+        <div class="mt-4 rounded-lg border border-[#1d2b47] bg-[#0a1220] p-4 flex items-center gap-4">
+          <svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#1e2c47" stroke-width="6"/>
+            <circle id="ring" cx="32" cy="32" r="26" fill="none" stroke="#38e1ff" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="163.36" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset .8s cubic-bezier(.2,.7,.2,1)"/>
+            <text id="ringTxt" x="32" y="37" text-anchor="middle" fill="#e2e8f0" font-size="14" font-family="IBM Plex Mono, monospace">0/5</text>
+          </svg>
+          <div class="flex-1">
+            <p class="font-mono text-[10px] tracking-[.25em] text-slate-500">PROGRESO DEL MÓDULO</p>
+            <p id="ringLabel" class="text-sm mt-1 text-slate-300">0/5 desafíos superados</p>
+            <div class="h-2 rounded bg-[#152036] mt-2"><div id="ringBar" class="h-full rounded bg-gradient-to-r from-[#38e1ff] to-[#a3e635] transition-all duration-700" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ NAVEGACIÓN POR PESTAÑAS ============ -->
+<nav id="tabnav" class="sticky top-0 z-40 mt-6 bg-[#070d1a]/90 backdrop-blur border-y border-[#1c2a45]">
+  <div class="max-w-6xl mx-auto px-2 flex overflow-x-auto">
+    <button class="tabbtn active flex items-center gap-2 px-4 md:px-5 py-3.5 border-b-2 border-transparent font-display text-sm whitespace-nowrap text-slate-400 hover:text-slate-200 transition-colors" data-tab="1" style="--acc:#38e1ff"><span class="font-mono text-[10px] opacity-70">01</span>💾 <span>Programas &amp; SO</span><span class="chk text-lime-400 text-xs">✔</span></button>
+    <button class="tabbtn flex items-center gap-2 px-4 md:px-5 py-3.5 border-b-2 border-transparent font-display text-sm whitespace-nowrap text-slate-400 hover:text-slate-200 transition-colors" data-tab="2" style="--acc:#a3e635"><span class="font-mono text-[10px] opacity-70">02</span>🗂️ <span>Administración del SO</span><span class="chk text-lime-400 text-xs">✔</span></button>
+    <button class="tabbtn flex items-center gap-2 px-4 md:px-5 py-3.5 border-b-2 border-transparent font-display text-sm whitespace-nowrap text-slate-400 hover:text-slate-200 transition-colors" data-tab="3" style="--acc:#fbbf24"><span class="font-mono text-[10px] opacity-70">03</span>📝 <span>Procesador de textos</span><span class="chk text-lime-400 text-xs">✔</span></button>
+    <button class="tabbtn flex items-center gap-2 px-4 md:px-5 py-3.5 border-b-2 border-transparent font-display text-sm whitespace-nowrap text-slate-400 hover:text-slate-200 transition-colors" data-tab="4" style="--acc:#b48bff"><span class="font-mono text-[10px] opacity-70">04</span>📊 <span>Planillas de cálculo</span><span class="chk text-lime-400 text-xs">✔</span></button>
+    <button class="tabbtn flex items-center gap-2 px-4 md:px-5 py-3.5 border-b-2 border-transparent font-display text-sm whitespace-nowrap text-slate-400 hover:text-slate-200 transition-colors" data-tab="5" style="--acc:#ff6b6b"><span class="font-mono text-[10px] opacity-70">05</span>🛡️ <span>Seguridad digital</span><span class="chk text-lime-400 text-xs">✔</span></button>
+  </div>
+</nav>
+
+<main class="relative z-10 max-w-6xl mx-auto px-4 pb-20">
+
+<!-- ================= PESTAÑA 1 ================= -->
+<section id="panel-1" class="tab-panel on scroll-mt-16 pt-10" style="--acc:#38e1ff">
+  <div class="relative">
+    <span class="ghost">01</span>
+    <p class="font-mono text-xs tracking-[.3em]" style="color:var(--acc)">MÓDULO 01</p>
+    <h2 class="font-display text-3xl md:text-4xl font-bold mt-1">Programas y Sistemas Operativos</h2>
+    <p class="text-slate-400 mt-3 max-w-3xl">Todo lo que hacés en una pantalla —mandar un mensaje, editar un TP, jugar— es software: instrucciones que alguien escribió y que tu compu ejecuta. En este módulo entendemos quién manda en el equipo y con qué reglas.</p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-5 mt-8">
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🧠 ¿Qué es un programa?</h3>
+      <p class="text-sm leading-relaxed">Es una <b class="text-slate-100">secuencia finita, ordenada y lógica de instrucciones</b> que la CPU lee y ejecuta paso a paso para resolver una tarea. Sin programas, el hardware es una caja cara.</p>
+      <p class="text-sm text-slate-400 mt-2">Pensalo como una receta: los pasos están escritos en un orden preciso y la CPU los sigue al pie de la letra, sin improvisar nada.</p>
+      <pre class="mt-4 bg-[#060b16] border border-[#1d2b47] rounded-lg p-3 font-mono text-xs text-cyan-200 overflow-x-auto whitespace-pre">INICIO
+  LEER nombre
+  SI nombre = "" ENTONCES
+     MOSTRAR "¡Hola, visitante!"
+  SINO
+     MOSTRAR "¡Hola, " + nombre + "!"
+  FIN SI
+FIN</pre>
+      <p class="font-mono text-[11px] text-slate-500 mt-2">↑ pseudocódigo: así "piensa" un programa antes de escribirse en un lenguaje real (Python, Java, etc.).</p>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">⚙️ El Sistema Operativo (SO)</h3>
+      <p class="text-sm leading-relaxed">Es el <b class="text-slate-100">software fundamental</b>: arranca apenas encendés la compu y administra el hardware, la memoria y los recursos para que todo lo demás funcione.</p>
+      <ul class="mt-4 space-y-2 text-sm">
+        <li class="flex gap-2"><span>📂</span> Gestiona archivos y carpetas (crear, mover, borrar).</li>
+        <li class="flex gap-2"><span>▶️</span> Ejecuta aplicaciones y reparte la CPU entre ellas.</li>
+        <li class="flex gap-2"><span>🖨️</span> Controla periféricos: teclado, mouse, impresora, parlantes.</li>
+        <li class="flex gap-2"><span>👥</span> Administra usuarios, cuentas y permisos.</li>
+      </ul>
+      <div class="flex flex-wrap gap-2 mt-4 font-mono text-[11px]">
+        <span class="px-2 py-1 rounded border border-[#2a3b5e] text-slate-300">Windows</span><span class="px-2 py-1 rounded border border-[#2a3b5e] text-slate-300">macOS</span><span class="px-2 py-1 rounded border border-[#2a3b5e] text-slate-300">GNU/Linux</span><span class="px-2 py-1 rounded border border-[#2a3b5e] text-slate-300">Android</span><span class="px-2 py-1 rounded border border-[#2a3b5e] text-slate-300">iOS</span><span class="px-2 py-1 rounded border border-[#a3e63566] text-[#a3e635]">Huayra 🇦🇷</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="reveal mt-5 grid md:grid-cols-2 rounded-xl overflow-hidden border border-[#22314e]">
+    <div class="p-6 bg-[#0d1830]">
+      <h4 class="font-display text-lg font-semibold text-[#fbbf24]">🔐 Propietarios (código cerrado)</h4>
+      <p class="text-sm text-slate-400 mt-2">Solo la empresa dueña puede ver y modificar el código. Pagás licencia y aceptás sus reglas.</p>
+      <ul class="mt-3 text-sm space-y-1"><li>· Windows (Microsoft)</li><li>· macOS / iOS (Apple)</li></ul>
+    </div>
+    <div class="p-6 bg-[#0d2018]">
+      <h4 class="font-display text-lg font-semibold text-[#a3e635]">🌱 Open Source (código abierto)</h4>
+      <p class="text-sm text-slate-400 mt-2">El código se puede ver, modificar y compartir. Lo construyen comunidades enteras.</p>
+      <ul class="mt-3 text-sm space-y-1"><li>· GNU/Linux (Ubuntu, Debian…)</li><li>· Android (AOSP) · Huayra</li></ul>
+    </div>
+  </div>
+  <div class="reveal mt-4 rounded-xl border border-[#a3e63544] bg-gradient-to-r from-[#0d2018] to-[#0c1526] p-5 flex flex-wrap items-center gap-4">
+    <span class="text-3xl">🇦</span>
+    <p class="text-sm flex-1 min-w-[240px]"><b class="text-[#a3e635]">Huayra GNU/Linux</b> es el sistema operativo libre desarrollado por <b>Educ.AR</b> que venía instalado en las netbooks de <b>Conectar Igualdad</b>. Software libre hecho en Argentina, para escuelas argentinas.</p>
+  </div>
+
+  <!-- Laboratorio 1.1 -->
+  <div class="lab reveal mt-8 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 1.1</span>
+      <h3 class="font-display font-semibold">Comparador de sistemas operativos</h3>
+    </div>
+    <div id="osfilter" class="flex flex-wrap gap-2 mt-4 items-center">
+      <button data-f="all" class="fbtn on">Todos</button>
+      <button data-f="prop" class="fbtn">🔐 Propietarios</button>
+      <button data-f="open" class="fbtn">🌱 Open Source</button>
+      <span id="oscount" class="ml-auto font-mono text-xs text-slate-500"></span>
+    </div>
+    <div id="osgrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"></div>
+    <div class="mt-5 overflow-x-auto rounded-lg border border-[#22314e]">
+      <table class="w-full text-xs min-w-[520px]">
+        <thead><tr class="bg-[#101c33] text-slate-400 font-mono"><th class="p-3 text-left">Aspecto</th><th class="p-3 text-left text-[#fbbf24]">🔐 Propietario</th><th class="p-3 text-left text-[#a3e635]">🌱 Open Source</th></tr></thead>
+        <tbody class="text-slate-300">
+          <tr class="border-t border-[#1c2a45]"><td class="p-3 font-semibold">Código</td><td class="p-3">Cerrado y secreto</td><td class="p-3">Abierto, auditable por cualquiera</td></tr>
+          <tr class="border-t border-[#1c2a45] bg-[#0b1424]"><td class="p-3 font-semibold">Costo</td><td class="p-3">Licencia paga (o incluida)</td><td class="p-3">Generalmente gratuito</td></tr>
+          <tr class="border-t border-[#1c2a45]"><td class="p-3 font-semibold">Personalización</td><td class="p-3">Limitada a lo que permite la empresa</td><td class="p-3">Total: cambiás hasta el escritorio</td></tr>
+          <tr class="border-t border-[#1c2a45] bg-[#0b1424]"><td class="p-3 font-semibold">Soporte</td><td class="p-3">Empresa responsable</td><td class="p-3">Comunidad + foros + documentación</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Laboratorio 1.2 -->
+  <div class="lab reveal mt-6 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 1.2</span>
+      <h3 class="font-display font-semibold">La capa de abstracción: ¿quién le habla a quién?</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Tocá cada capa para ver su rol y después simulá qué pasa cuando guardás un archivo.</p>
+    <div class="grid lg:grid-cols-[1fr_.9fr] gap-6 mt-5 items-start">
+      <div>
+        <div class="relative pl-7">
+          <div class="absolute left-[11px] top-3 bottom-3 w-px bg-[#22314e]"></div>
+          <div id="layerDot" class="absolute left-[4px] w-[15px] h-[15px] rounded-full shadow-[0_0_14px_var(--acc)] transition-all duration-700" style="background:var(--acc);top:28px"></div>
+          <div id="layerstack" class="space-y-2"></div>
+        </div>
+        <button id="btnSim" class="fbtn2 mt-5">▶ Simular: "Guardar TP.docx"</button>
+        <p id="layerMsg" class="mt-3 font-mono text-sm text-slate-300 min-h-[1.6rem]"></p>
+      </div>
+      <div id="layerDetail" class="rounded-lg border tintline tint p-5 min-h-[210px]"></div>
+    </div>
+  </div>
+
+  <div class="reveal mt-8 rounded-xl border border-[#22314e] bg-[#0c1526] p-5 md:p-6">
+    <div class="flex items-center gap-3"><span class="text-xl">🎯</span><h3 class="font-display font-semibold">Micro-desafío</h3><span class="font-mono text-xs text-slate-500">· 3 preguntas · módulo 01</span></div>
+    <div id="quiz-1" class="mt-5"></div>
+  </div>
+</section>
+
+<!-- ================= PESTAÑA 2 ================= -->
+<section id="panel-2" class="tab-panel scroll-mt-16 pt-10" style="--acc:#a3e635">
+  <div class="relative">
+    <span class="ghost">02</span>
+    <p class="font-mono text-xs tracking-[.3em]" style="color:var(--acc)">MÓDULO 02</p>
+    <h2 class="font-display text-3xl md:text-4xl font-bold mt-1">Administración de un Sistema Operativo</h2>
+    <p class="text-slate-400 mt-3 max-w-3xl">Administrar el SO es como organizar el aula: cada archivo en su carpeta, cada programa con su porción de memoria y cada usuario con sus permisos. Acá lo practicás sin miedo a romper nada.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-8">
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🌳 Árbol de archivos y directorios</h3>
+      <p class="text-sm text-slate-300">Los archivos se organizan en una estructura jerárquica de <b>carpetas y subcarpetas</b>, como un árbol invertido con una raíz.</p>
+      <div class="mt-3 font-mono text-xs space-y-1.5">
+        <p class="text-slate-400">En Windows: <span class="text-[#a3e635]">C:\</span> › Usuarios › alumno › <span class="text-[#a3e635]">Documentos</span></p>
+        <p class="text-slate-400">En Huayra/Linux: <span class="text-[#a3e635]">/</span>home/alumno/<span class="text-[#a3e635]">Documentos</span></p>
+      </div>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">📈 Administrador de tareas</h3>
+      <p class="text-sm text-slate-300">Muestra en tiempo real qué programas usan la <b>CPU</b>, cuánta <b>RAM</b> consumen y cómo está el <b>almacenamiento</b>. Si algo se tilda, ahí lo "finalizás".</p>
+      <p class="text-xs text-slate-500 mt-2 font-mono">Atajo real: Ctrl + Shift + Esc (Windows) · probalo en tu casa 😉</p>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🎛️ Panel de control y configuración</h3>
+      <p class="text-sm text-slate-300">Desde ahí se configura todo el sistema:</p>
+      <div class="flex flex-wrap gap-2 mt-3 text-xs font-mono">
+        <span class="px-2 py-1 rounded border border-[#2a3b5e]">🌐 Redes y Wi-Fi</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">🖨️ Periféricos</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">👤 Cuentas de usuario</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">🔄 Actualizaciones</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">🌎 Fecha e idioma</span>
+      </div>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🔐 Permisos y privilegios</h3>
+      <div class="grid grid-cols-2 gap-3 text-xs mt-2">
+        <div class="rounded-lg border border-[#2a3b5e] p-3"><b class="text-slate-200">👤 Usuario estándar</b><ul class="mt-2 space-y-1 text-slate-400"><li>Usa apps y archivos propios</li><li>No instala programas</li><li>No toca archivos del sistema</li></ul></div>
+        <div class="rounded-lg border border-[#a3e63555] p-3"><b class="text-[#a3e635]">🛡️ Administrador</b><ul class="mt-2 space-y-1 text-slate-400"><li>Instala y desinstala software</li><li>Modifica el sistema</li><li>Gestiona a otros usuarios</li></ul></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- Laboratorio 2.1 -->
+  <div class="lab reveal mt-8 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 2.1</span>
+      <h3 class="font-display font-semibold">Explorador de archivos + permisos (simulado)</h3>
+    </div>
+    <div class="relative h-28 md:h-36 rounded-lg overflow-hidden border border-[#22314e] mt-4">
+      <img src="https://image.qwenlm.ai/public_source/ba4f945d-bebb-47fa-a39f-93c3d560bd6f/1f4f75aa4-15a8-4018-926b-cc40bbc24548.png" alt="Escritorio pixel art de una netbook del aula" class="absolute inset-0 w-full h-full object-cover opacity-70" onerror="this.style.display='none'">
+      <div class="absolute inset-0 bg-gradient-to-t from-[#070d1a] via-transparent to-transparent"></div>
+      <div class="absolute bottom-2 left-3 font-mono text-[11px] text-slate-200">🖥️ Escritorio del aula — netbook del programa Conectar Igualdad</div>
+    </div>
+    <div class="flex flex-wrap gap-2 items-center mt-4">
+      <button id="btnNew" class="fbtn2">📁 Nueva carpeta</button>
+      <button id="btnRen" class="fbtn2">✏️ Renombrar</button>
+      <button id="btnMov" class="fbtn2">📦 Mover</button>
+      <button id="btnDel" class="fbtn2">🗑️ Eliminar</button>
+      <label class="ml-auto flex items-center gap-2 text-xs font-mono cursor-pointer select-none"><input id="adminToggle" type="checkbox" class="accent-lime-400 w-4 h-4"> 🔐 Modo administrador</label>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4 mt-4">
+      <div>
+        <div id="fstree" class="rounded-lg border border-[#22314e] bg-[#0a1220] p-2 min-h-[240px] font-mono text-[13px]"></div>
+        <p id="fsstatus" class="mt-2 font-mono text-xs text-slate-400 min-h-[1.2rem]"></p>
+      </div>
+      <div>
+        <p class="font-mono text-[10px] tracking-widest text-slate-500 mb-1">CONSOLA DE OPERACIONES</p>
+        <div id="fslog" class="term rounded-lg border border-[#22314e] bg-[#060b16] p-3 h-[240px] overflow-y-auto font-mono text-[12px] leading-relaxed"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Laboratorio 2.2 -->
+  <div class="lab reveal mt-6 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 2.2</span>
+      <h3 class="font-display font-semibold">Administrador de tareas en vivo</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Abrí y cerrá apps simuladas y mirá cómo laten la CPU y la RAM.</p>
+    <div class="grid md:grid-cols-[1fr_.9fr] gap-6 mt-4">
+      <div>
+        <div id="tmapps" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        <div class="mt-5 space-y-4">
+          <div><div class="flex justify-between font-mono text-xs"><span class="text-slate-400">CPU</span><span id="tmcpuTxt">5%</span></div><div class="h-2.5 rounded bg-[#152036] mt-1"><div id="tmcpuBar" class="h-full rounded transition-all duration-700" style="width:5%;background:#a3e635"></div></div></div>
+          <div><div class="flex justify-between font-mono text-xs"><span class="text-slate-400">MEMORIA RAM</span><span id="tmramTxt">1,7 GB de 8 GB</span></div><div class="h-2.5 rounded bg-[#152036] mt-1"><div id="tmramBar" class="h-full rounded transition-all duration-700" style="width:22%;background:#a3e635"></div></div></div>
+          <div class="flex justify-between font-mono text-[11px] text-slate-500"><span>⏱️ sesión activa: <span id="tmuptime">00:00</span></span><span>💾 Disco C: 112 GB libres</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="font-mono text-[10px] tracking-widest text-slate-500 mb-2">PROCESOS EN EJECUCIÓN</p>
+        <div id="tmprocs" class="rounded-lg border border-[#22314e] bg-[#0a1220] p-3 min-h-[180px]"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal mt-8 rounded-xl border border-[#22314e] bg-[#0c1526] p-5 md:p-6">
+    <div class="flex items-center gap-3"><span class="text-xl">🎯</span><h3 class="font-display font-semibold">Micro-desafío</h3><span class="font-mono text-xs text-slate-500">· 3 preguntas · módulo 02</span></div>
+    <div id="quiz-2" class="mt-5"></div>
+  </div>
+</section>
+
+<!-- ================= PESTAÑA 3 ================= -->
+<section id="panel-3" class="tab-panel scroll-mt-16 pt-10" style="--acc:#fbbf24">
+  <div class="relative">
+    <span class="ghost">03</span>
+    <p class="font-mono text-xs tracking-[.3em]" style="color:var(--acc)">MÓDULO 03</p>
+    <h2 class="font-display text-3xl md:text-4xl font-bold mt-1">Procesadores de Textos</h2>
+    <p class="text-slate-400 mt-3 max-w-3xl">El procesador de textos es el cuaderno digital de la escuela: sirve para escribir, dar formato y presentar trabajos prolijos. Acá probás las herramientas sin salir del navegador.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-8">
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">📄 ¿Qué es y para qué sirve?</h3>
+      <p class="text-sm text-slate-300">Es una aplicación para <b>crear, editar y dar formato a documentos de texto</b>: TPs, monografías, solicitudes, revistas escolares…</p>
+      <div class="flex flex-wrap gap-2 mt-3 text-xs font-mono">
+        <span class="px-2 py-1 rounded border border-[#2a3b5e]">Microsoft Word (pago)</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">Google Docs (online)</span><span class="px-2 py-1 rounded border border-[#a3e63555] text-[#a3e635]">LibreOffice Writer (libre)</span>
+      </div>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🎨 Formato de texto y párrafo</h3>
+      <ul class="text-sm space-y-1.5 text-slate-300">
+        <li>· <b>Fuente y tamaño</b>: la "letra" (Arial, Times…) y su cuerpo.</li>
+        <li>· <b>Alineación</b>: izquierda, centrada, derecha o justificada.</li>
+        <li>· <b>Interlineado</b>: separación entre líneas (1,0 · 1,5 · 2,0).</li>
+        <li>· <b>Sangría</b>: espacio entre el margen y el inicio del párrafo.</li>
+      </ul>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🏗️ Estructura de un documento académico</h3>
+      <ul class="text-sm space-y-1.5 text-slate-300">
+        <li>✅ Título y encabezado · ✅ Pie de página con n.º de página</li>
+        <li>✅ Listas con viñetas y numeradas · ✅ Tablas comparativas</li>
+        <li>✅ Imágenes con epígrafe · ✅ Bibliografía al final</li>
+      </ul>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🧐 Revisar y exportar</h3>
+      <p class="text-sm text-slate-300"><b>Corrector ortográfico</b> (subrayado rojo), <b>control de cambios</b> para corregir en equipo y exportación a formatos estándar:</p>
+      <div class="flex flex-wrap gap-2 mt-3 text-xs font-mono">
+        <span class="px-2 py-1 rounded border border-[#2a3b5e]" title="Universal, no se edita">PDF — universal</span><span class="px-2 py-1 rounded border border-[#2a3b5e]" title="Formato de Word">DOCX — Word</span><span class="px-2 py-1 rounded border border-[#a3e63555] text-[#a3e635]" title="Formato abierto y libre">ODT — abierto</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- Laboratorio 3.1 -->
+  <div class="lab reveal mt-8 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 3.1</span>
+      <h3 class="font-display font-semibold">Mini-procesador de textos: probá todo</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Seleccioná un texto del documento y tocá los botones: vas a ver el cambio en tiempo real, igual que en Word o Writer.</p>
+    <div class="mt-4 rounded-lg overflow-hidden border border-[#22314e]">
+      <div class="flex flex-wrap items-center gap-1.5 bg-[#101c33] border-b border-[#22314e] p-2">
+        <select id="fontSel" class="tsel"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Courier New">Courier New</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option></select>
+        <select id="sizeSel" class="tsel"><option value="">Tamaño…</option><option value="2">Chica</option><option value="3">Normal</option><option value="4">Grande</option><option value="5">Muy grande</option><option value="6">Título</option></select>
+        <span class="w-px h-6 bg-[#22314e] mx-1"></span>
+        <button data-cmd="bold" class="tbtn font-black" title="Negrita">B</button>
+        <button data-cmd="italic" class="tbtn italic" title="Cursiva">I</button>
+        <button data-cmd="underline" class="tbtn underline" title="Subrayado">U</button>
+        <span class="w-px h-6 bg-[#22314e] mx-1"></span>
+        <button data-cmd="justifyLeft" class="tbtn text-[10px]">Izq</button>
+        <button data-cmd="justifyCenter" class="tbtn text-[10px]">Cen</button>
+        <button data-cmd="justifyRight" class="tbtn text-[10px]">Der</button>
+        <button data-cmd="justifyFull" class="tbtn text-[10px]">Just</button>
+        <span class="w-px h-6 bg-[#22314e] mx-1"></span>
+        <button data-cmd="insertUnorderedList" class="tbtn text-[10px]">• Lista</button>
+        <button data-cmd="insertOrderedList" class="tbtn text-[10px]">1. Lista</button>
+        <button data-cmd="indent" class="tbtn text-[10px]" title="Aumentar sangría">⇥ Sangría</button>
+        <button data-cmd="outdent" class="tbtn text-[10px]" title="Disminuir sangría">⇤</button>
+        <span class="w-px h-6 bg-[#22314e] mx-1"></span>
+        <button id="btnTable" class="tbtn text-[10px]">▦ Tabla</button>
+        <button data-cmd="undo" class="tbtn" title="Deshacer">↩</button>
+        <button data-cmd="redo" class="tbtn" title="Rehacer">↪</button>
+        <label class="ml-auto flex items-center gap-2 text-xs cursor-pointer select-none"><input id="spellToggle" type="checkbox" checked class="accent-amber-400 w-4 h-4">Corrector</label>
+      </div>
+      <div id="paper" class="paper" contenteditable="true" spellcheck="true">
+        <h1>Trabajo Práctico N.º 3 — La Revolución de Mayo</h1>
+        <p><b>Integrantes:</b> ____________________ &nbsp;·&nbsp; <b>Curso:</b> 4.º A &nbsp;·&nbsp; <b>Materia:</b> NTICx</p>
+        <p>En mayo de 1810, los vecinos de Buenos Aires se reunieron en la Plaza Mayor para decidir el futuro del Virreinato del Río de la Plata. Tras una semana de debates y cabildos abiertos, se formó la <b>Primera Junta</b> de gobierno.</p>
+        <ul>
+          <li>22 de mayo: Cabildo Abierto y votación.</li>
+          <li>25 de mayo: creación de la Primera Junta.</li>
+        </ul>
+        <p>Conclusión: la organización y la comunicación fueron claves para el proceso revolucionario… <i>(¡seleccioná este texto y probá negrita, alineación o sangría!)</i></p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 bg-[#101c33] px-3 py-2 text-xs font-mono text-slate-400 border-t border-[#22314e]">
+        <span><span id="wordcount">0</span> palabras · <span id="charcount">0</span> caracteres</span>
+        <span class="ml-auto flex items-center gap-2">
+          <button id="btnSave" class="text-amber-300 hover:text-amber-200 transition-colors">💾 Guardar</button>
+          <span class="opacity-40">|</span>
+          <button data-fmt="PDF" class="fmtchip">PDF</button>
+          <button data-fmt="DOCX" class="fmtchip">DOCX</button>
+          <button data-fmt="ODT" class="fmtchip">ODT</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal mt-8 rounded-xl border border-[#22314e] bg-[#0c1526] p-5 md:p-6">
+    <div class="flex items-center gap-3"><span class="text-xl">🎯</span><h3 class="font-display font-semibold">Micro-desafío</h3><span class="font-mono text-xs text-slate-500">· 3 preguntas · módulo 03</span></div>
+    <div id="quiz-3" class="mt-5"></div>
+  </div>
+</section>
+
+<!-- ================= PESTAÑA 4 ================= -->
+<section id="panel-4" class="tab-panel scroll-mt-16 pt-10" style="--acc:#b48bff">
+  <div class="relative">
+    <span class="ghost">04</span>
+    <p class="font-mono text-xs tracking-[.3em]" style="color:var(--acc)">MÓDULO 04</p>
+    <h2 class="font-display text-3xl md:text-4xl font-bold mt-1">Planillas Electrónicas de Cálculo</h2>
+    <p class="text-slate-400 mt-3 max-w-3xl">Una planilla convierte datos en información: notas, gastos del kiosco, estadísticas del torneo del curso. Si sabés escribir una fórmula, la compu hace las cuentas por vos.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 mt-8">
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🧮 ¿Qué es una planilla?</h3>
+      <p class="text-sm text-slate-300">Una cuadrícula digital de <b>celdas</b> donde cargás datos y aplicás fórmulas y funciones que se recalculan solas.</p>
+      <div class="flex flex-wrap gap-2 mt-3 text-xs font-mono">
+        <span class="px-2 py-1 rounded border border-[#2a3b5e]">Microsoft Excel</span><span class="px-2 py-1 rounded border border-[#2a3b5e]">Google Sheets</span><span class="px-2 py-1 rounded border border-[#a3e63555] text-[#a3e635]">LibreOffice Calc</span>
+      </div>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">🔬 Anatomía: filas, columnas, celdas</h3>
+      <div class="flex gap-4 items-center">
+        <div class="font-mono text-[11px] shrink-0">
+          <div class="grid grid-cols-4 gap-px">
+            <span class="p-1.5 bg-[#101c33] text-slate-500"></span><span class="p-1.5 bg-[#101c33] text-slate-400">A</span><span class="p-1.5 bg-[#101c33] text-slate-400">B</span><span class="p-1.5 bg-[#101c33] text-slate-400">C</span>
+            <span class="p-1.5 bg-[#101c33] text-slate-400">1</span><span class="p-1.5 bg-[#152036]"></span><span class="p-1.5 bg-[#152036]"></span><span class="p-1.5 bg-[#152036]"></span>
+            <span class="p-1.5 bg-[#101c33] text-slate-400">2</span><span class="p-1.5 bg-[#152036]"></span><span class="p-1.5 bg-[#b48bff] text-[#14082b] font-bold">B2</span><span class="p-1.5 bg-[#152036]"></span>
+            <span class="p-1.5 bg-[#101c33] text-slate-400">3</span><span class="p-1.5 bg-[#152036]"></span><span class="p-1.5 bg-[#152036]"></span><span class="p-1.5 bg-[#152036]"></span>
+          </div>
+        </div>
+        <ul class="text-xs space-y-1.5 text-slate-300">
+          <li>· <b>Columnas</b>: letras (A, B, C…)</li>
+          <li>· <b>Filas</b>: números (1, 2, 3…)</li>
+          <li>· <b>Celda</b>: la intersección → <b class="text-[#b48bff]">B2</b></li>
+          <li>· <b>Rango</b>: un bloque → B2:D4</li>
+        </ul>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">Tipos de datos: texto · número · fecha · moneda · fórmula.</p>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">➗ Operadores matemáticos</h3>
+      <div class="font-mono text-xs grid grid-cols-2 gap-2">
+        <span class="p-2 rounded border border-[#2a3b5e]">+ suma</span><span class="p-2 rounded border border-[#2a3b5e]">− resta</span><span class="p-2 rounded border border-[#2a3b5e]">* multiplicación</span><span class="p-2 rounded border border-[#2a3b5e]">/ división</span>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">Toda fórmula empieza con <b class="text-[#b48bff]">=</b> · ejemplo: <span class="font-mono text-slate-300">=B2*2+1</span></p>
+    </article>
+    <article class="reveal card">
+      <h3 class="font-display font-semibold text-lg mb-3">⭐ Funciones esenciales</h3>
+      <div class="font-mono text-[11px] space-y-1.5 text-slate-300">
+        <p><span class="text-[#b48bff]">=SUMA(B2:B5)</span> → suma todo el rango</p>
+        <p><span class="text-[#b48bff]">=PROMEDIO(B2:B5)</span> → suma ÷ cantidad</p>
+        <p><span class="text-[#b48bff]">=MAX(B2:B5)</span> / <span class="text-[#b48bff]">=MIN(B2:B5)</span></p>
+        <p><span class="text-[#b48bff]">=CONTAR.SI(B2:B5;"&gt;=7")</span> → cuenta las que cumplen la condición</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- Laboratorio 4.1 -->
+  <div class="lab reveal mt-8 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 4.1</span>
+      <h3 class="font-display font-semibold">Mini-planilla: "Notas del trimestre"</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Tocá una celda para editarla (las notas van de 1 a 10). Escribí fórmulas con <b class="text-[#b48bff]">=</b> o usá los botones de funciones. El gráfico se actualiza solo. ✨</p>
+    <div class="flex flex-wrap gap-2 items-center mt-4">
+      <span class="font-mono text-xs tint tintline border rounded px-2.5 py-1.5" id="fbarAddr">A1</span>
+      <input id="fbarInput" class="flex-1 min-w-[160px] bg-[#0a1220] border border-[#22314e] rounded px-3 py-1.5 font-mono text-xs focus:border-[#b48bff] outline-none" placeholder="Escribí un valor o una fórmula, ej: =PROMEDIO(B2:D2)">
+    </div>
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button data-fx="prom" class="fbtn">=PROMEDIO()</button>
+      <button data-fx="suma" class="fbtn">=SUMA()</button>
+      <button data-fx="max" class="fbtn">=MAX()</button>
+      <button data-fx="contar" class="fbtn">=CONTAR.SI()</button>
+      <button data-fx="arit" class="fbtn">=B?*2+1</button>
+    </div>
+    <div class="overflow-x-auto rounded-lg border border-[#22314e] mt-4"><div id="sheetgrid" class="min-w-[560px]"></div></div>
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+      <div>
+        <p class="font-mono text-[10px] tracking-widest text-slate-500 mb-2">GRÁFICO DE BARRAS · PROMEDIO POR MATERIA</p>
+        <div class="relative h-48 flex items-end gap-6 px-4 pt-6 border-b-2 border-l-2 border-[#22314e]">
+          <div class="absolute left-0 right-0 border-t border-dashed border-[#ff6b6b99] pointer-events-none" style="bottom:70%"><span class="absolute right-1 -top-4 font-mono text-[10px] text-[#ff6b6b]">7 = aprobás ✔</span></div>
+          <div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><div id="bar-2" class="w-10 md:w-14 rounded-t-md transition-all duration-700" style="height:0%"></div></div>
+          <div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><div id="bar-3" class="w-10 md:w-14 rounded-t-md transition-all duration-700" style="height:0%"></div></div>
+          <div class="flex-1 flex flex-col items-center justify-end h-full gap-1"><div id="bar-4" class="w-10 md:w-14 rounded-t-md transition-all duration-700" style="height:0%"></div></div>
+        </div>
+        <div class="flex gap-6 px-4 mt-1">
+          <div class="flex-1 text-center"><span id="barl-2" class="text-[11px] text-slate-400 block truncate">—</span><span id="barv-2" class="font-mono text-xs"></span></div>
+          <div class="flex-1 text-center"><span id="barl-3" class="text-[11px] text-slate-400 block truncate">—</span><span id="barv-3" class="font-mono text-xs"></span></div>
+          <div class="flex-1 text-center"><span id="barl-4" class="text-[11px] text-slate-400 block truncate">—</span><span id="barv-4" class="font-mono text-xs"></span></div>
+        </div>
+      </div>
+      <div class="rounded-lg border tintline tint p-5 flex flex-col justify-center">
+        <p class="font-mono text-[10px] tracking-widest text-slate-400">PROMEDIO GENERAL (=PROMEDIO de todas las notas)</p>
+        <p id="promBig" class="font-display text-6xl font-bold mt-2" style="color:var(--acc)">—</p>
+        <span id="promState" class="mt-2 self-start font-mono text-xs px-2.5 py-1 rounded-full border"></span>
+        <p class="text-xs text-slate-500 mt-3">Escala 1–10 · aprobás con 7 o más. Cambiá una nota y mirá cómo se recalcula todo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal mt-8 rounded-xl border border-[#22314e] bg-[#0c1526] p-5 md:p-6">
+    <div class="flex items-center gap-3"><span class="text-xl">🎯</span><h3 class="font-display font-semibold">Micro-desafío</h3><span class="font-mono text-xs text-slate-500">· 3 preguntas · módulo 04</span></div>
+    <div id="quiz-4" class="mt-5"></div>
+  </div>
+</section>
+
+<!-- ================= PESTAÑA 5 ================= -->
+<section id="panel-5" class="tab-panel scroll-mt-16 pt-10" style="--acc:#ff6b6b">
+  <div class="relative">
+    <span class="ghost">05</span>
+    <p class="font-mono text-xs tracking-[.3em]" style="color:var(--acc)">MÓDULO 05</p>
+    <h2 class="font-display text-3xl md:text-4xl font-bold mt-1">Virus, Antivirus y Seguridad Digital</h2>
+    <p class="text-slate-400 mt-3 max-w-3xl">Conectarse también exige cuidarse. Acá conocés a los villanos del mundo digital (malware), cómo trabajan los defensores (antivirus) y cómo entrenar tu ojo para detectar engaños.</p>
+  </div>
+
+  <div class="grid lg:grid-cols-[1fr_.8fr] gap-5 mt-8">
+    <div class="space-y-5">
+      <article class="reveal card">
+        <h3 class="font-display font-semibold text-lg mb-3">👾 ¿Qué es el malware?</h3>
+        <p class="text-sm text-slate-300"><b>Malware</b> = software malicioso: cualquier programa diseñado para dañar, robar o secuestrar información. El <b>virus</b> es solo uno de sus tipos.</p>
+        <div class="flex flex-wrap gap-2 mt-3 text-xs font-mono">
+          <span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🦠 Virus</span><span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🐴 Troyano</span><span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🪱 Gusano</span><span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🔒 Ransomware</span><span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🕵️ Spyware</span><span class="px-2 py-1 rounded border border-[#ff6b6b55] text-[#ff9b9b]">🎣 Phishing</span>
+        </div>
+      </article>
+      <article class="reveal card">
+        <h3 class="font-display font-semibold text-lg mb-3">🚪 ¿Cómo se cuela en tu equipo?</h3>
+        <ul class="text-sm space-y-1.5 text-slate-300">
+          <li>· Descargas de sitios dudosos y "cracks" de juegos</li>
+          <li>· Adjuntos de correos desconocidos</li>
+          <li>· Pendrives infectados sin escanear</li>
+          <li>· Enlaces engañosos y acortados</li>
+          <li>· Apps instaladas fuera de las tiendas oficiales</li>
+        </ul>
+      </article>
+      <article class="reveal card">
+        <h3 class="font-display font-semibold text-lg mb-3">🛡️ ¿Cómo te defiende un antivirus?</h3>
+        <div class="grid sm:grid-cols-2 gap-3 text-xs mt-2">
+          <div class="rounded-lg border border-[#2a3b5e] p-3"><b class="text-slate-200">🔎 Detección por firmas</b><p class="text-slate-400 mt-1">Compara archivos con una base de virus conocidos.</p></div>
+          <div class="rounded-lg border border-[#2a3b5e] p-3"><b class="text-slate-200">🧠 Análisis heurístico</b><p class="text-slate-400 mt-1">Detecta comportamientos sospechosos, aunque el virus sea nuevo.</p></div>
+          <div class="rounded-lg border border-[#2a3b5e] p-3"><b class="text-slate-200">📦 Cuarentena</b><p class="text-slate-400 mt-1">Aísla el archivo infectado para que no haga daño.</p></div>
+          <div class="rounded-lg border border-[#2a3b5e] p-3"><b class="text-slate-200">🧱 Firewall</b><p class="text-slate-400 mt-1">Filtra el tráfico de red que entra y sale del equipo.</p></div>
+        </div>
+      </article>
+      <article class="reveal card">
+        <h3 class="font-display font-semibold text-lg mb-3">✅ Buenas prácticas de ciberseguridad</h3>
+        <ul class="text-sm space-y-1.5 text-slate-300">
+          <li>🔑 Contraseñas largas y únicas (frase &gt; palabra)</li>
+          <li>📲 Verificación en dos pasos (2FA) en todas tus cuentas</li>
+          <li>🔄 Actualizar el SO y las apps: parchean agujeros de seguridad</li>
+          <li>💾 Copias de seguridad (backup): nube + pendrive</li>
+        </ul>
+      </article>
+    </div>
+    <div class="reveal">
+      <img src="https://image.qwenlm.ai/public_source/ba4f945d-bebb-47fa-a39f-93c3d560bd6f/1f37bc8ba-2af4-42c8-803a-149ca005d292.png" alt="Escudo digital protegiendo una laptop, ilustración de ciberseguridad" class="rounded-xl border border-[#22314e] w-full object-cover" onerror="this.style.display='none'">
+      <p class="font-mono text-[10px] text-slate-600 mt-2 text-center">tu escudo digital: sentido común + herramientas</p>
+    </div>
+  </div>
+
+  <!-- Laboratorio 5.1 -->
+  <div class="lab reveal mt-8 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 5.1</span>
+      <h3 class="font-display font-semibold">Amenaza vs. Defensa</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Elegí un villano y descubrí cómo ataca y cómo lo frenás.</p>
+    <div id="threatgrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-4"></div>
+    <div id="threatDetail" class="mt-4 rounded-lg border border-[#22314e] bg-[#0a1220] p-5 min-h-[190px]"></div>
+  </div>
+
+  <!-- Laboratorio 5.2 -->
+  <div class="lab reveal mt-6 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 5.2</span>
+      <h3 class="font-display font-semibold">Mini-juego: ¿Fake o Real? 🔍</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">Leé cada mensaje y decidí si es legítimo o un engaño (phishing/fake). +1 punto por acierto.</p>
+    <div id="gameDots" class="flex gap-2 mt-4"></div>
+    <div id="gameCard" class="mt-3 rounded-lg border border-[#22314e] bg-[#0a1220] p-5"></div>
+    <div id="gameFeedback" class="hidden mt-4 rounded-lg border p-4 text-sm"></div>
+    <div class="flex flex-wrap gap-3 mt-4">
+      <button id="btnReal" class="gamebtn border-lime-400/60 text-lime-300">✅ Es real</button>
+      <button id="btnFake" class="gamebtn border-red-400/60 text-red-300">🚨 Es phishing / fake</button>
+      <button id="btnNext" class="gamebtn border-[#38e1ff] text-[#38e1ff] hidden">Siguiente ➜</button>
+    </div>
+  </div>
+
+  <!-- Laboratorio 5.3 -->
+  <div class="lab reveal mt-6 p-5 md:p-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-[10px] tracking-widest tint tintline border rounded px-2 py-1">LABORATORIO 5.3</span>
+      <h3 class="font-display font-semibold">Medidor de contraseñas</h3>
+    </div>
+    <p class="text-sm text-slate-400 mt-2">⚠️ Es un simulador local: <b>no escribas tus contraseñas reales</b>. Inventá una y mirá cuántos siglos tardarían en crackearla.</p>
+    <input id="passInput" type="text" autocomplete="off" placeholder="Escribí una contraseña de prueba…" class="mt-4 w-full bg-[#0a1220] border border-[#22314e] rounded-lg px-4 py-3 font-mono text-sm focus:border-[#ff6b6b] outline-none">
+    <div class="h-3 rounded bg-[#152036] mt-3"><div id="passBar" class="h-full rounded transition-all duration-500" style="width:0%;background:#152036"></div></div>
+    <div class="flex justify-between items-baseline mt-2 gap-3"><span id="passLabel" class="font-display font-semibold">—</span><span id="passTime" class="font-mono text-xs text-slate-500"></span></div>
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4">
+      <span class="pcheck" data-k="len">8+ caracteres</span><span class="pcheck" data-k="up">Mayúscula</span><span class="pcheck" data-k="low">Minúscula</span><span class="pcheck" data-k="num">Número</span><span class="pcheck" data-k="sym">Símbolo (!, #…)</span>
+    </div>
+  </div>
+
+  <div class="reveal mt-8 rounded-xl border border-[#22314e] bg-[#0c1526] p-5 md:p-6">
+    <div class="flex items-center gap-3"><span class="text-xl">🎯</span><h3 class="font-display font-semibold">Micro-desafío</h3><span class="font-mono text-xs text-slate-500">· 3 preguntas · módulo 05</span></div>
+    <div id="quiz-5" class="mt-5"></div>
+  </div>
+</section>
+</main>
+
+<!-- ============ TICKER DE TIPS ============ -->
+<div class="relative z-10 border-t border-[#1c2a45] bg-[#0a1220] py-2.5 overflow-hidden">
+  <div id="tickerTrack" class="ticker-track font-mono text-[11px] text-slate-500"></div>
+</div>
+
+<footer class="relative z-10 max-w-6xl mx-auto px-4 py-10">
+  <div class="grid md:grid-cols-3 gap-6 text-sm">
+    <div>
+      <p class="font-display font-semibold">💾 modulo_nticx.exe</p>
+      <p class="text-slate-500 text-xs mt-2 leading-relaxed">Material interactivo para la materia NTICx — Nuevas Tecnologías de la Información y la Conectividad · 4.º año · Educación Secundaria, Argentina.</p>
+    </div>
+    <div>
+      <p class="font-display font-semibold text-slate-300">Contenidos del módulo</p>
+      <ul class="text-slate-500 text-xs mt-2 space-y-1"><li>01 · Programas y sistemas operativos</li><li>02 · Administración del SO</li><li>03 · Procesadores de textos</li><li>04 · Planillas de cálculo</li><li>05 · Virus, antivirus y seguridad digital</li></ul>
+    </div>
+    <div>
+      <p class="font-display font-semibold text-slate-300">Ficha técnica</p>
+      <p class="text-slate-500 text-xs mt-2 leading-relaxed">HTML5 + Tailwind CSS + JavaScript vanilla. Autocontenido: se abre directo en cualquier navegador del aula. Escala de notas del simulador: 1–10 (aprobás con 7). Hecho con 🧉 para aulas argentinas.</p>
+    </div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+<noscript><p style="text-align:center;padding:2rem;color:#ff6b6b">Esta aplicación necesita JavaScript habilitado para funcionar.</p></noscript>
+
+<script>
+/* ================= UTILIDADES ================= */
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function toast(msg){const t=document.createElement('div');t.className='anim-pop font-mono text-xs px-4 py-2.5 rounded-lg border border-[#2a3b5e] bg-[#0d1830] text-slate-200 shadow-xl max-w-[92vw]';t.innerHTML='<span class="text-lime-400">▸</span> '+msg;$('toasts').appendChild(t);setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),400)},2800);}
+function confetti(){const em=['🎉','💾','🛡️','','✨','🐧'];for(let i=0;i<30;i++){const s=document.createElement('span');s.textContent=em[i%em.length];s.style.cssText='position:fixed;left:50%;top:42%;z-index:80;font-size:'+(14+Math.random()*18)+'px;pointer-events:none';document.body.appendChild(s);const a=Math.random()*Math.PI*2,d=120+Math.random()*280;s.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d+200)+'px) rotate('+(Math.random()*720-360)+'deg)',opacity:0}],{duration:1300+Math.random()*800,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove();}}
+
+/* ================= BOOT TERMINAL ================= */
+const BOOT=[
+[['> init modulo_nticx v4.0.2 — aula digital ','text-slate-300'],['[OK]','text-lime-400']],
+[['> cargando unidad 04: software &amp; sistemas ','text-slate-300'],['[OK]','text-lime-400']],
+[['> montando /home/estudiantes/4to-anio ','text-slate-300'],['[LISTO]','text-cyan-300']],
+[['> interfaz de aprendizaje lista. ¡a jugar! ','text-slate-300'],['','']]
+];
+(async function(){const log=$('bootlog');for(const line of BOOT){const div=document.createElement('div');log.appendChild(div);for(const[txt,cls]of line){const sp=document.createElement('span');sp.className=cls;div.appendChild(sp);for(const ch of txt){sp.textContent+=ch;await sleep(11);}}await sleep(130);}const c=document.createElement('span');c.className='cursor';log.appendChild(c);})();
+
+/* ================= PESTAÑAS ================= */
+const tabBtns=[...document.querySelectorAll('.tabbtn')];
+function showTab(i){tabBtns.forEach(b=>b.classList.toggle('active',+b.dataset.tab===i));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('on',p.id==='panel-'+i));setTimeout(()=>$('panel-'+i).scrollIntoView({behavior:'smooth',block:'start'}),50);}
+tabBtns.forEach(b=>b.addEventListener('click',()=>showTab(+b.dataset.tab)));
+
+/* ================= SCROLL REVEAL ================= */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');io.unobserve(e.target);}}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ================= TRIVIAS ================= */
+const QUIZ={
+1:[{q:'¿Qué es, en esencia, un programa?',opts:['Un componente físico de la compu','Una secuencia de instrucciones que la CPU ejecuta paso a paso','Un tipo de virus informático','Una red social'],a:1,exp:'Un programa es una lista ordenada y finita de instrucciones lógicas que la CPU interpreta y ejecuta.'},
+{q:'¿Cuál de estos sistemas operativos es de código abierto?',opts:['Windows 11','macOS','Huayra GNU/Linux','iOS'],a:2,exp:'Huayra es un SO libre desarrollado en Argentina: su código puede verse, modificarse y compartirse.'},
+{q:'En la capa de abstracción, ¿quién actúa de intermediario entre la app y el hardware?',opts:['El usuario','La aplicación','El sistema operativo','El teclado'],a:2,exp:'El SO traduce lo que piden las aplicaciones al lenguaje eléctrico del hardware.'}],
+2:[{q:'Para ver cuánta RAM está consumiendo un programa usás…',opts:['El explorador de archivos','El administrador de tareas','El corrector ortográfico','El protector de pantalla'],a:1,exp:'El administrador de tareas muestra CPU, RAM y procesos en tiempo real.'},
+{q:'¿Qué usuario puede instalar programas y modificar archivos del sistema?',opts:['El usuario estándar','El invitado','El administrador','Cualquiera'],a:2,exp:'El administrador tiene privilegios totales; el usuario estándar, limitados.'},
+{q:'La organización jerárquica de carpetas y archivos se llama…',opts:['Árbol de directorios','Nube','Firewall','Partición'],a:0,exp:'Es una estructura de árbol: raíz → carpetas → subcarpetas → archivos.'}],
+3:[{q:'¿Cuál de estos es un formato de documento abierto y libre?',opts:['DOCX','PDF','ODT','EXE'],a:2,exp:'ODT es el formato abierto que usa LibreOffice Writer.'},
+{q:'La sangría en un párrafo es…',opts:['El color de la letra','El espacio entre el margen y el inicio del texto','El tipo de fuente','El pie de página'],a:1,exp:'La sangría separa el párrafo del margen y mejora la lectura.'},
+{q:'¿Qué herramienta subraya en rojo las palabras mal escritas?',opts:['El administrador de tareas','El corrector ortográfico','La tabla dinámica','El zoom'],a:1,exp:'El corrector compara con su diccionario y marca los errores.'}],
+4:[{q:'La celda de la columna C, fila 4 se escribe…',opts:['4C','C-4','C4','FILA4'],a:2,exp:'Primero la letra de la columna, después el número de fila: C4.'},
+{q:'¿Qué función suma los valores y divide el resultado por la cantidad?',opts:['SUMA','MAX','PROMEDIO','CONTAR'],a:2,exp:'PROMEDIO = suma de los valores ÷ cantidad de valores.'},
+{q:'¿Qué símbolo va siempre al inicio de una fórmula?',opts:['$','%','=','#'],a:2,exp:'Toda fórmula empieza con = para que la planilla la calcule.'}],
+5:[{q:'¿Qué malware secuestra tus archivos y pide un rescate?',opts:['Spyware','Ransomware','Adware','Troyano'],a:1,exp:'Ransomware viene de "ransom" (rescate): cifra tus archivos y exige un pago.'},
+{q:'El phishing es…',opts:['Un antivirus gratuito','Un engaño para robar tus datos personales','Un tipo de cable de red','Una actualización del SO'],a:1,exp:'Suplanta identidades (bancos, organismos, redes) para "pescar" tus datos.'},
+{q:'¿Qué agrega una capa extra de seguridad además de la contraseña?',opts:['Usar la misma clave en todo','La verificación en dos pasos (2FA)','Apagar la compu','El modo avión'],a:1,exp:'El 2FA pide un segundo código (app o SMS) para entrar a tu cuenta.'}]
+};
+const completed={};
+function quizTrack(id){const box=$('quiz-'+id);if(box.querySelectorAll('.qq[data-done]').length===QUIZ[id].length&&!completed[id]){completed[id]=true;document.querySelector('.tabbtn[data-tab="'+id+'"]').classList.add('done');const n=Object.keys(completed).length;$('ringTxt').textContent=n+'/5';$('ring').style.strokeDashoffset=163.36*(1-n/5);$('ringBar').style.width=(n/5*100)+'%';$('ringLabel').textContent=n+'/5 desafíos superados';toast('¡Módulo '+id+' superado! ✔');if(n===5){setTimeout(()=>{toast('🏆 ¡Completaste TODOS los desafíos del módulo!');confetti();},900);}}}
+function renderQuiz(id){const box=$('quiz-'+id);box.innerHTML=QUIZ[id].map((q,i)=>'<div class="qq mb-6 last:mb-0" data-q="'+i+'"><p class="font-semibold mb-3 text-sm md:text-base"><span class="font-mono text-[10px] px-2 py-1 rounded mr-2 tint tintline border">'+String(i+1).padStart(2,'0')+'</span>'+q.q+'</p><div class="grid sm:grid-cols-2 gap-2">'+q.opts.map((o,j)=>'<button data-i="'+j+'" class="qopt text-left px-4 py-3 rounded-lg border border-[#22314e] bg-[#0d1830] hover:border-[var(--acc)] hover:-translate-y-0.5 transition-all duration-200 text-sm">'+o+'</button>').join('')+'</div><div class="qexp hidden mt-3 text-sm rounded-lg px-4 py-3 border"></div></div>').join('');
+box.querySelectorAll('.qq').forEach((qq,i)=>{qq.querySelectorAll('.qopt').forEach(btn=>{btn.addEventListener('click',()=>{if(qq.dataset.done)return;qq.dataset.done='1';const j=+btn.dataset.i,ok=j===QUIZ[id][i].a;qq.querySelectorAll('.qopt').forEach((b,bi)=>{b.classList.add('pointer-events-none');if(bi===QUIZ[id][i].a)b.classList.add('!border-lime-400','!bg-lime-400/10','text-lime-200');else if(bi===j&&!ok)b.classList.add('!border-red-400','!bg-red-400/10','text-red-300');else b.classList.add('opacity-50');});const exp=qq.querySelector('.qexp');exp.classList.remove('hidden');exp.classList.add('anim-pop',ok?'border-lime-400/40':'border-amber-400/40','bg-[#0f1b30]');exp.innerHTML=(ok?'✔ ¡Correcto! ':'✖ Casi. La buena era: <b>'+QUIZ[id][i].opts[QUIZ[id][i].a]+'</b>. ')+'<span class="text-slate-400">'+QUIZ[id][i].exp+'</span>';quizTrack(id);});});});}
+for(let i=1;i<=5;i++)renderQuiz(i);
+
+/* ================= PESTAÑA 1: OS COMPARADOR ================= */
+const OSDATA=[
+{n:'Windows 11',icon:'🪟',cat:'prop',lic:'Licencia comercial de Microsoft',cost:'Pago (o incluido en la PC)',pro:['Enorme compatibilidad de programas y juegos','Soporte y actualizaciones oficiales'],con:['Código cerrado: no se puede auditar','Exige hardware relativamente nuevo']},
+{n:'macOS',icon:'🍎',cat:'prop',lic:'Licencia de Apple (solo hardware Apple)',cost:'Incluido en las Mac',pro:['Muy optimizado con su hardware','Ecosistema integrado con iPhone'],con:['Atado a equipos caros de Apple','Código cerrado']},
+{n:'iOS',icon:'📱',cat:'prop',lic:'Licencia de Apple para iPhone/iPad',cost:'Incluido en el dispositivo',pro:['Seguro y muy fluido','Actualizaciones por años'],con:['Solo en dispositivos Apple','Poca libertad para personalizar']},
+{n:'GNU/Linux (Ubuntu)',icon:'🐧',cat:'open',lic:'GPL y licencias libres',cost:'Gratis',pro:['Código abierto y auditable por todos','Revive computadoras viejas'],con:['Algunos programas no tienen versión nativa','Hay que animarse a aprenderlo']},
+{n:'Android',icon:'🤖',cat:'open',cat2:'',lic:'Base abierta (AOSP)',cost:'Gratis para fabricantes',pro:['Enorme variedad de equipos y precios','Su código base es abierto'],con:['Capas de cada fabricante','Fragmentación de versiones']},
+{n:'Huayra GNU/Linux',icon:'🇦🇷',cat:'open',lic:'Software libre · Educ.AR (Argentina)',cost:'Gratis',pro:['Hecho para las escuelas argentinas','Trae apps educativas y de oficina libres'],con:['Menos difusión fuera del aula','Catálogo de juegos más acotado']}
+];
+$('osgrid').innerHTML=OSDATA.map(o=>'<div class="oscard anim-pop rounded-xl border border-[#22314e] bg-[#0d1830] p-4 flex flex-col gap-2" data-cat="'+o.cat+'"><div class="flex items-center gap-2"><span class="text-2xl">'+o.icon+'</span><b class="font-display text-sm">'+o.n+'</b><span class="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full border '+(o.cat==='prop'?'border-amber-400/50 text-amber-300':'border-lime-400/50 text-lime-300')+'">'+(o.cat==='prop'?'PROPIETARIO':'OPEN SOURCE')+'</span></div><p class="text-[11px] text-slate-400">📜 '+o.lic+'<br>💸 '+o.cost+'</p><ul class="text-[11px] space-y-1 mt-auto"><li class="text-lime-300">+ '+o.pro[0]+'</li><li class="text-lime-300">+ '+o.pro[1]+'</li><li class="text-red-300">− '+o.con[0]+'</li><li class="text-red-300">− '+o.con[1]+'</li></ul></div>').join('');
+function osCount(){$('oscount').textContent='mostrando '+$('osgrid').querySelectorAll('.oscard:not(.hidden)').length+' de 6';}
+$('osfilter').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;$('osfilter').querySelectorAll('.fbtn').forEach(x=>x.classList.toggle('on',x===b));const f=b.dataset.f;$('osgrid').querySelectorAll('.oscard').forEach(c=>{const show=f==='all'||c.dataset.cat===f;c.classList.toggle('hidden',!show);if(show){c.classList.remove('anim-pop');void c.offsetWidth;c.classList.add('anim-pop');}});osCount();});
+osCount();
+
+/* ================= PESTAÑA 1: CAPAS ================= */
+const LAYERS=[
+{i:'🙋',t:'USUARIO',d:'La persona que usa el equipo. Pide cosas con clics, toques y teclas: "guardame este TP", "poné esta canción". No necesita saber electrónica.',v:'pide ➜'},
+{i:'📱',t:'APLICACIÓN',d:'El programa que ves en pantalla (navegador, editor, juego). Recibe tu pedido y se lo solicita al SO mediante una llamada al sistema, sin tocar el hardware directamente.',v:'solicita ➜'},
+{i:'⚙️',t:'SISTEMA OPERATIVO',d:'El intermediario y administrador: decide qué app usa la CPU, dónde se escribe el archivo y cómo hablan los periféricos. Es LA capa de abstracción del equipo.',v:'traduce y gestiona ➜'},
+{i:'🖥️',t:'HARDWARE',d:'Lo físico: CPU, memoria RAM, disco, placa de video, teclado. Ejecuta las órdenes eléctricas que le llegan ya traducidas por el SO.',v:'ejecuta ✔'}
+];
+$('layerstack').innerHTML=LAYERS.map((l,i)=>'<div class="layer cursor-pointer rounded-lg border border-[#22314e] bg-[#0d1830] px-4 py-3.5 flex items-center gap-3" data-i="'+i+'"><span class="text-2xl">'+l.i+'</span><b class="font-display tracking-wide text-sm">'+l.t+'</b><span class="ml-auto text-slate-500 text-xs hidden sm:block">'+l.v+'</span></div>').join('');
+function setLayer(i){$('layerstack').querySelectorAll('.layer').forEach((l,li)=>l.classList.toggle('sel',li===i));$('layerDetail').innerHTML='<div class="anim-pop"><p class="text-3xl">'+LAYERS[i].i+'</p><h4 class="font-display font-semibold mt-1" style="color:var(--acc)">'+LAYERS[i].t+'</h4><p class="text-sm text-slate-300 mt-2 leading-relaxed">'+LAYERS[i].d+'</p></div>';}
+$('layerstack').addEventListener('click',e=>{const l=e.target.closest('.layer');if(l)setLayer(+l.dataset.i);});
+setLayer(0);
+function moveDot(i){const rows=$('layerstack').querySelectorAll('.layer');const r=rows[i];$('layerDot').style.top=(r.offsetTop+r.offsetHeight/2-8)+'px';}
+let simBusy=false;
+$('btnSim').addEventListener('click',async()=>{if(simBusy)return;simBusy=true;$('btnSim').classList.add('opacity-50');const rows=[...$('layerstack').querySelectorAll('.layer')];const MSGS=['🙋 El usuario hace clic en "Guardar TP.docx".','📱 La aplicación le pide al SO escribir el archivo.','⚙️ El SO reserva espacio en el disco y chequea permisos.','🖥️ El hardware guarda los bits (¡chas!).','✅ ¡Listo! La confirmación vuelve al usuario por pantalla.'];for(let i=0;i<4;i++){rows.forEach(r=>r.classList.remove('lit'));rows[i].classList.add('lit');moveDot(i);$('layerMsg').textContent=MSGS[i];await sleep(950);} $('layerMsg').textContent=MSGS[4];moveDot(0);await sleep(800);rows.forEach(r=>r.classList.remove('lit'));simBusy=false;$('btnSim').classList.remove('opacity-50');});
+
+/* ================= PESTAÑA 2: EXPLORADOR ================= */
+let fsNodes=[
+{id:1,name:'Documentos',parent:0,type:'folder',sys:true},
+{id:2,name:'Imágenes',parent:0,type:'folder',sys:true},
+{id:3,name:'Descargas',parent:0,type:'folder',sys:true},
+{id:4,name:'Tareas NTICx',parent:1,type:'folder'},
+{id:5,name:'trabajo_so.odt',parent:1,type:'file'},
+{id:6,name:'foto_mate.jpg',parent:2,type:'file'}];
+let fsNext=100,fsSel=null,fsMove=null,fsEdit=null,fsAdmin=false;
+const byId=id=>fsNodes.find(n=>n.id===id);
+const kids=id=>fsNodes.filter(n=>n.parent===id);
+function pathOf(n){const p=[];let c=n;while(c){p.unshift(c.name);c=byId(c.parent);}return 'C:\\'+p.join('\\');}
+function fsLog(cmd){const d=document.createElement('div');d.innerHTML='<span class="text-lime-400">alumno@aula04</span><span class="text-slate-600">:~$</span> <span class="text-slate-200">'+cmd+'</span>';$('fslog').appendChild(d);while($('fslog').children.length>60)$('fslog').firstChild.remove();$('fslog').scrollTop=$('fslog').scrollHeight;}
+function renderFS(){let html='<div class="fsrow rounded px-2 py-1.5" data-id="0">🖥️ Mi PC (C:)</div>';const walk=(pid,depth)=>{kids(pid).forEach(n=>{const icon=n.type==='folder'?'📁':(n.name.endsWith('.jpg')?'🖼️':'📄');const name=fsEdit===n.id?'<input data-edit="'+n.id+'" class="bg-[#0d1830] border border-[#a3e635] rounded px-1 w-40 text-[12px] outline-none" value="'+n.name+'">':'<span>'+n.name+'</span>';html+='<div class="fsrow rounded px-2 py-1.5 '+(fsSel===n.id?'sel':'')+'" data-id="'+n.id+'" style="padding-left:'+(10+depth*16)+'px">'+icon+name+(n.sys?'<span class="text-[10px] opacity-60" title="carpeta del sistema">🔒</span>':'')+'</div>';if(n.type==='folder')walk(n.id,depth+1);});};walk(0,1);$('fstree').innerHTML=html;const e=$('fstree').querySelector('input[data-edit]');if(e){e.focus();e.select();}
+if(fsMove!=null)$('fsstatus').textContent='📦 Modo MOVER: hacé clic en la carpeta destino (Esc cancela).';else if(fsSel){const n=byId(fsSel);$('fsstatus').textContent=n?('Seleccionado: '+n.name+' · '+pathOf(n)):'Mi PC';}else $('fsstatus').textContent='Tocá un elemento para seleccionarlo. Las carpetas con 🔒 son del sistema.';}
+function isDesc(c,anc){let cur=c;while(cur){if(cur.id===anc.id)return true;cur=byId(cur.parent);}return false;}
+$('fstree').addEventListener('click',e=>{if(e.target.matches('input'))return;const row=e.target.closest('.fsrow');if(!row)return;const id=+row.dataset.id;if(fsMove!=null){const src=byId(fsMove);if(!src){fsMove=null;renderFS();return;}if(id===src.id){toast('Elegí otra carpeta destino 😉');return;}const dest=id===0?null:byId(id);if(dest&&dest.type!=='folder'){toast('El destino tiene que ser una carpeta 📁');return;}if(dest&&isDesc(dest,src)){toast('¡No podés meter una carpeta dentro de sí misma! 🌀');return;}if(src.sys&&!fsAdmin){toast('🔐 Mover carpetas del sistema requiere modo administrador.');return;}src.parent=id;fsLog('mv "'+src.name+'" → "'+(dest?dest.name:'C:')+'"');fsMove=null;fsSel=src.id;renderFS();return;}fsSel=id===0?null:id;renderFS();});
+$('fstree').addEventListener('keydown',e=>{if(e.target.hasAttribute&&e.target.hasAttribute('data-edit')){if(e.key==='Enter')e.target.blur();if(e.key==='Escape'){fsEdit=null;renderFS();}}});
+$('fstree').addEventListener('focusout',e=>{if(e.target.hasAttribute&&e.target.hasAttribute('data-edit')){const id=+e.target.getAttribute('data-edit');const n=byId(id);const v=e.target.value.trim();if(n&&v&&v!==n.name){n.name=v;fsLog('ren → "'+v+'"');}fsEdit=null;renderFS();}});
+$('btnNew').addEventListener('click',()=>{const sel=fsSel?byId(fsSel):null;const parent=sel?(sel.type==='folder'?sel.id:sel.parent):0;const id=fsNext++;fsNodes.push({id,name:'Nueva carpeta',parent,type:'folder'});fsEdit=id;fsSel=id;fsLog('mkdir "Nueva carpeta"');renderFS();});
+$('btnRen').addEventListener('click',()=>{if(!fsSel){toast('Primero seleccioná algo ✋');return;}fsEdit=fsSel;renderFS();});
+$('btnMov').addEventListener('click',()=>{if(!fsSel){toast('Primero seleccioná algo ✋');return;}fsMove=fsSel;renderFS();});
+$('btnDel').addEventListener('click',()=>{if(!fsSel){toast('Primero seleccioná algo ✋');return;}const n=byId(fsSel);if(n.sys&&!fsAdmin){toast('🔐 "'+n.name+'" es del sistema: activá el modo administrador.');return;}if(n.type==='folder'&&kids(n.id).length){toast('La carpeta no está vacía: mové o eliminá lo de adentro primero.');return;}fsNodes=fsNodes.filter(x=>x.id!==n.id);fsLog('rm "'+n.name+'"');fsSel=null;renderFS();});
+$('adminToggle').addEventListener('change',()=>{fsAdmin=$('adminToggle').checked;fsLog(fsAdmin?'sudo su ✔ permisos de administrador':'exit ✔ volviendo a usuario estándar');toast(fsAdmin?'🔐 Modo administrador ACTIVADO':'Modo usuario estándar');renderFS();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fsMove!=null){fsMove=null;renderFS();}});
+renderFS();fsLog('ls -la  →  3 carpetas, 2 archivos');fsLog('explorador simulado listo ✔ probá los botones');
+
+/* ================= PESTAÑA 2: ADMIN DE TAREAS ================= */
+const APPS=[{id:'nav',n:'Navegador',e:'🌐',cpu:16,ram:1150},{id:'txt',n:'Editor de texto',e:'📝',cpu:5,ram:180},{id:'mus',n:'Música',e:'🎧',cpu:7,ram:260},{id:'vid',n:'Videollamada',e:'📹',cpu:22,ram:720},{id:'jue',n:'Videojuego',e:'🎮',cpu:48,ram:2600}];
+const openApps=new Map([['nav',4321]]);
+function renderApps(){$('tmapps').innerHTML=APPS.map(a=>'<button data-app="'+a.id+'" class="rounded-lg border p-3 text-left transition-all '+(openApps.has(a.id)?'border-lime-400/60 bg-lime-400/10':'border-[#22314e] bg-[#0d1830] hover:border-[#3a558a]')+'"><span class="text-xl">'+a.e+'</span><span class="block text-xs font-semibold mt-1">'+a.n+'</span><span class="block text-[10px] font-mono '+(openApps.has(a.id)?'text-lime-300':'text-slate-500')+'">'+(openApps.has(a.id)?'● en ejecución':'○ cerrada')+'</span></button>').join('');}
+function renderProcs(){if(!openApps.size){$('tmprocs').innerHTML='<p class="text-xs text-slate-500 font-mono p-2">Sin procesos activos. Abrí una app para verla acá.</p>';return;}$('tmprocs').innerHTML='<table class="w-full text-xs font-mono"><thead><tr class="text-slate-500 text-left"><th class="py-1">Proceso</th><th>PID</th><th>RAM</th><th></th></tr></thead><tbody>'+[...openApps.entries()].map(([id,pid])=>{const a=APPS.find(x=>x.id===id);return '<tr class="border-t border-[#1c2a45]"><td class="py-2">'+a.e+' '+a.n+'</td><td>'+pid+'</td><td>'+a.ram+' MB</td><td class="text-right"><button data-kill="'+id+'" class="text-red-300 hover:text-red-200">✖ finalizar</button></td></tr>';}).join('')+'</tbody></table>';}
+$('tmapps').addEventListener('click',e=>{const b=e.target.closest('[data-app]');if(!b)return;const id=b.dataset.app;if(openApps.has(id)){openApps.delete(id);fsLogTM('taskkill '+id);}else{openApps.set(id,1000+Math.floor(Math.random()*9000));fsLogTM('abriendo '+id+'…');}renderApps();renderProcs();});
+$('tmprocs').addEventListener('click',e=>{const b=e.target.closest('[data-kill]');if(!b)return;openApps.delete(b.dataset.kill);renderApps();renderProcs();});
+function fsLogTM(t){/* log visual en consola de operaciones */fsLog(t);}
+function setBar(bar,txt,pct,label){bar.style.width=Math.min(100,pct)+'%';bar.style.background=pct<50?'#a3e635':pct<80?'#fbbf24':'#ff6b6b';txt.textContent=label;}
+setInterval(()=>{let cpu=5,ram=1750;openApps.forEach((pid,id)=>{const a=APPS.find(x=>x.id===id);cpu+=a.cpu;ram+=a.ram;});cpu=Math.min(99,Math.max(2,cpu+Math.round((Math.random()-.5)*12)));ram=Math.min(8000,ram+Math.round((Math.random()-.5)*240));setBar($('tmcpuBar'),$('tmcpuTxt'),cpu,cpu+'%');setBar($('tmramBar'),$('tmramTxt'),Math.round(ram/8192*100),(ram/1024).toFixed(1).replace('.',',')+' GB de 8 GB');},900);
+const t0=Date.now();setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('tmuptime').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},1000);
+renderApps();renderProcs();
+
+/* ================= PESTAÑA 3: EDITOR ================= */
+document.querySelectorAll('[data-cmd]').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault());b.addEventListener('click',()=>{$('paper').focus();document.execCommand(b.dataset.cmd,false,null);updateCounts();});});
+$('fontSel').addEventListener('change',()=>{$('paper').focus();document.execCommand('fontName',false,$('fontSel').value);});
+$('sizeSel').addEventListener('change',()=>{if(!$('sizeSel').value)return;$('paper').focus();document.execCommand('fontSize',false,$('sizeSel').value);$('sizeSel').value='';});
+$('btnTable').addEventListener('click',()=>{$('paper').focus();const t='<table><thead><tr><th>Columna 1</th><th>Columna 2</th><th>Columna 3</th></tr></thead><tbody><tr><td><br></td><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td><td><br></td></tr></tbody></table><p><br></p>';if(!document.execCommand('insertHTML',false,t))$('paper').insertAdjacentHTML('beforeend',t);updateCounts();toast('▦ Tabla insertada: completala como en tu TP');});
+$('spellToggle').addEventListener('change',()=>{$('paper').setAttribute('spellcheck',$('spellToggle').checked?'true':'false');$('paper').focus();toast($('spellToggle').checked?'🧐 Corrector activado: lo dudoso se subraya en rojo':'Corrector desactivado');});
+function updateCounts(){const t=$('paper').innerText.trim();$('wordcount').textContent=t?t.split(/\s+/).length:0;$('charcount').textContent=t.length;}
+$('paper').addEventListener('input',updateCounts);updateCounts();
+$('btnSave').addEventListener('click',()=>toast('💾 Borrador guardado en el aula ✔'));
+const FMT={PDF:'📕 PDF: formato universal de lectura, nadie puede editarlo por accidente.',DOCX:'📘 DOCX: el formato de Microsoft Word, editable.',ODT:'📗 ODT: formato abierto y libre (LibreOffice Writer).'};
+document.querySelectorAll('[data-fmt]').forEach(b=>b.addEventListener('click',()=>toast('Exportar como '+FMT[b.dataset.fmt])));
+
+/* ================= PESTAÑA 4: MINI-PLANILLA ================= */
+const COLS=['A','B','C','D','E'],ROWS=[1,2,3,4,5,6];
+const SHEET_DEF={'A1':'Materia','B1':'T1','C1':'T2','D1':'T3','E1':'Promedio','A2':'Matemática','B2':'8','C2':'7','D2':'9','E2':'=PROMEDIO(B2:D2)','A3':'Lengua','B3':'6','C3':'8','D3':'7','E3':'=PROMEDIO(B3:D3)','A4':'Historia','B4':'9','C4':'9','D4':'8','E4':'=PROMEDIO(B4:D4)','A5':'Nota más alta','B5':'=MAX(B2:D4)','A6':'Notas ≥ 7','B6':'=CONTAR.SI(B2:D4;">=7")'};
+const sheet={};let valsCache=new Map(),computing=new Set(),lastAddr='A1';
+const sheetInputs={};
+function fmtNum(v){const r=Math.round(v*100)/100;return String(r).replace('.',',');}
+function cellValue(addr){if(valsCache.has(addr))return valsCache.get(addr);if(computing.has(addr))throw new Error('circular');computing.add(addr);const raw=sheet[addr]||'';let v;if(raw==='')v=NaN;else if(raw[0]==='=')v=evalExpr(raw);else{const n=parseFloat(raw.replace(',','.'));v=(!isNaN(n)&&isFinite(n)&&String(n).length)?n:NaN;}computing.delete(addr);valsCache.set(addr,v);return v;}
+function rangeValues(range){const m=range.match(/^([A-E])([1-6]):([A-E])([1-6])$/);if(!m){const s=range.match(/^([A-E])([1-6])$/);if(s)return[cellValue(range)];throw new Error('range');}const c1=m[1].charCodeAt(0),c2=m[3].charCodeAt(0),r1=+m[2],r2=+m[4];const ca=Math.min(c1,c2),cb=Math.max(c1,c2),ra=Math.min(r1,r2),rb=Math.max(r1,r2);const out=[];for(let r=ra;r<=rb;r++)for(let c=ca;c<=cb;c++)out.push(cellValue(String.fromCharCode(c)+r));return out;}
+function computeFn(fn,args){const parts=args.split(';');const range=parts[0].trim();if(fn==='CONTAR.SI'){const cond=(parts[1]||'').trim().replace(/"/g,'');const m=cond.match(/^([<>]=?|=)\s*(-?\d+(?:\.\d+)?)$/);if(!m)throw new Error('cond');const op=m[1],num=parseFloat(m[2]);return rangeValues(range).filter(v=>!isNaN(v)).filter(v=>op==='>'?v>num:op==='<'?v<num:op==='>='?v>=num:op==='<='?v<=num:v===num).length;}const nums=rangeValues(range).filter(v=>!isNaN(v));if(fn==='CONTAR')return nums.length;if(!nums.length)throw new Error('empty');if(fn==='SUMA')return nums.reduce((a,b)=>a+b,0);if(fn==='PROMEDIO')return nums.reduce((a,b)=>a+b,0)/nums.length;if(fn==='MAX')return Math.max(...nums);if(fn==='MIN')return Math.min(...nums);throw new Error('fn');}
+function evalExpr(src){let e=src.slice(1).trim().toUpperCase();const fnRe=/(SUMA|PROMEDIO|MAX|MIN|CONTAR\.SI|CONTAR)\(([^()]*)\)/;let g=0;while(fnRe.test(e)&&g++<12){e=e.replace(fnRe,(m,fn,args)=>String(computeFn(fn,args)));}e=e.replace(/\b([A-E])([1-6])\b/g,m=>{const v=cellValue(m);if(isNaN(v))throw new Error('ref');return '('+v+')';});if(!/^[0-9+\-*/().,\s]*$/.test(e))throw new Error('chars');e=e.replace(/,/g,'.');const r=Function('"use strict";return('+e+')')();if(typeof r!=='number'||!isFinite(r))throw new Error('num');return r;}
+function buildSheet(){let html='<table class="sheet w-full border-collapse"><thead><tr><th class="w-8"></th>'+COLS.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>';for(const r of ROWS){html+='<tr><th>'+r+'</th>'+COLS.map(c=>{const a=c+r;return '<td class="p-0 border border-[#1e2c47] bg-[#0b1424]"><input data-addr="'+a+'" class="shcell" value=""></td>';}).join('')+'</tr>';}html+='</tbody></table>';$('sheetgrid').innerHTML=html;document.querySelectorAll('.shcell').forEach(inp=>{sheetInputs[inp.dataset.addr]=inp;inp.addEventListener('focus',()=>{lastAddr=inp.dataset.addr;$('fbarAddr').textContent=lastAddr;$('fbarInput').value=sheet[lastAddr]||'';});inp.addEventListener('input',()=>{sheet[inp.dataset.addr]=inp.value;if(lastAddr===inp.dataset.addr)$('fbarInput').value=inp.value;});inp.addEventListener('change',()=>recalcAll());inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();});});Object.assign(sheet,SHEET_DEF);for(const a in sheet)sheetInputs[a].value=sheet[a];recalcAll();}
+function recalcAll(){valsCache=new Map();computing=new Set();for(const a in sheetInputs){const raw=sheet[a]||'';let disp=raw,num=false;if(raw[0]==='='){try{disp=fmtNum(evalExpr(raw));num=true;}catch(err){disp='#ERROR';num=true;}}else if(raw.trim()!==''&&!isNaN(parseFloat(raw.replace(',','.')))&&isFinite(raw.replace(',','.'))){num=true;}if(document.activeElement!==sheetInputs[a])sheetInputs[a].value=disp;sheetInputs[a].classList.toggle('is-num',num);}updateSheetExtras();}
+function updateSheetExtras(){for(let r=2;r<=4;r++){const vals=['B','C','D'].map(c=>cellValue(c+r)).filter(v=>!isNaN(v));const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;const bar=$('bar-'+r);bar.style.height=Math.max(4,avg*10)+'%';bar.style.background=avg>=7?'#a3e635':avg>=4?'#fbbf24':'#ff6b6b';$('barv-'+r).textContent=fmtNum(avg);$('barv-'+r).style.color=avg>=7?'#a3e635':avg>=4?'#fbbf24':'#ff6b6b';$('barl-'+r).textContent=sheet['A'+r]||('Materia '+(r-1));}
+const all=rangeValues('B2:D4').filter(v=>!isNaN(v));const g=all.length?all.reduce((a,b)=>a+b,0)/all.length:0;$('promBig').textContent=fmtNum(Math.round(g*10)/10);const st=$('promState');if(g>=7){st.textContent='🎉 ¡Promocionado!';st.className='mt-2 self-start font-mono text-xs px-2.5 py-1 rounded-full border border-lime-400/50 text-lime-300 bg-lime-400/10';}else if(g>=4){st.textContent='📚 En recuperación…';st.className='mt-2 self-start font-mono text-xs px-2.5 py-1 rounded-full border border-amber-400/50 text-amber-300 bg-amber-400/10';}else{st.textContent='💪 A reforzar contenidos';st.className='mt-2 self-start font-mono text-xs px-2.5 py-1 rounded-full border border-red-400/50 text-red-300 bg-red-400/10';}}
+$('fbarInput').addEventListener('input',()=>{if(lastAddr){sheet[lastAddr]=$('fbarInput').value;if(document.activeElement!==sheetInputs[lastAddr])sheetInputs[lastAddr].value=$('fbarInput').value;}});
+$('fbarInput').addEventListener('keydown',e=>{if(e.key==='Enter'){recalcAll();$('fbarInput').blur();}});
+document.querySelectorAll('[data-fx]').forEach(b=>b.addEventListener('click',()=>{if(!lastAddr){toast('Primero tocá una celda de la planilla ✋');return;}let r=+lastAddr.slice(1);if(isNaN(r)||r<2||r>4)r=2;const k=b.dataset.fx;let f='';if(k==='prom')f='=PROMEDIO(B'+r+':D'+r+')';if(k==='suma')f='=SUMA(B'+r+':D'+r+')';if(k==='max')f='=MAX(B'+r+':D'+r+')';if(k==='contar')f='=CONTAR.SI(B2:D4;">=7")';if(k==='arit')f='=B'+r+'*2+1';sheet[lastAddr]=f;sheetInputs[lastAddr].value=f;$('fbarInput').value=f;recalcAll();toast('⚡ Fórmula aplicada en '+lastAddr);}));
+buildSheet();
+
+/* ================= PESTAÑA 5: AMENAZAS ================= */
+const THREATS=[
+{id:'virus',e:'🦠',n:'Virus',risk:3,atk:'Se pega a archivos y programas limpios. Cuando los abrís, se activa, se copia y puede dañar o borrar datos.',sig:['Programas lentos o que fallan','Archivos que cambian de tamaño solos','Ventanas y mensajes extraños'],def:['No abras adjuntos de desconocidos','Antivirus siempre actualizado','Escaneá los pendrives antes de usarlos']},
+{id:'troyano',e:'🐴',n:'Troyano',risk:4,atk:'Se disfraza de app legítima (un juego, un "crack"). Una vez adentro, abre puertas para robar información.',sig:['Barras y publicidades que aparecen solas','Cuentas que se desconectan sin motivo'],def:['Descargá solo de sitios oficiales','Desconfiá de "cracks" y "keygens"']},
+{id:'gusano',e:'🪱',n:'Gusano',risk:3,atk:'Se replica solo por la red, sin que nadie haga clic, saturando conexiones y saltando de equipo en equipo.',sig:['Red lentísima sin motivo','Equipos vecinos infectados en cadena'],def:['Mantené el SO y las apps actualizados','Usá firewall activado']},
+{id:'ransomware',e:'🔒',n:'Ransomware',risk:5,atk:'Cifra tus archivos y pide un rescate por ellos. Puede dejar la compu inutilizable y borrar todo.',sig:['Archivos que no abren y cambian de extensión','Pantalla con mensaje de rescate'],def:['Backup periódico (nube + pendrive)','No abrir enlaces ni adjuntos dudosos','Pagar no garantiza recuperar nada']},
+{id:'spyware',e:'🕵️',n:'Spyware',risk:3,atk:'Espía lo que hacés: teclas, contraseñas, historial. Manda todo a terceros sin que te des cuenta.',sig:['Publicidad que "adivina" tus gustos','Equipo lento y batería que rinde menos'],def:['Revisá permisos de las apps','Análisis completo con antivirus cada tanto']},
+{id:'phishing',e:'🎣',n:'Phishing',risk:5,atk:'Suplanta a un banco, red social u organismo para que entregues contraseñas o datos. Es ingeniería social, no un virus.',sig:['Urgencia y amenazas ("su cuenta se bloquea")','Remitentes con errores (banc0)','Enlaces que no son lo que parecen'],def:['Mirá remitente y enlace ANTES de clickear','Nadie serio te pide claves por mail','Activá el 2FA en todas tus cuentas']}
+];
+$('threatgrid').innerHTML=THREATS.map(t=>'<button data-t="'+t.id+'" class="tcard rounded-lg border border-[#22314e] bg-[#0d1830] p-3 text-center hover:-translate-y-1 hover:border-[#ff6b6b] transition-all"><span class="text-2xl block">'+t.e+'</span><b class="text-xs font-display block mt-1">'+t.n+'</b><span class="text-[10px] font-mono text-red-300 tracking-widest">'+'●'.repeat(t.risk)+'<span class="text-slate-700">'+'○'.repeat(5-t.risk)+'</span></span></button>').join('');
+function showThreat(id){const t=THREATS.find(x=>x.id===id);$('threatgrid').querySelectorAll('.tcard').forEach(c=>c.classList.toggle('!border-[#ff6b6b]',c.dataset.t===id));$('threatDetail').innerHTML='<div class="anim-pop grid md:grid-cols-2 gap-5"><div><h4 class="font-display font-semibold text-red-300">'+t.e+' '+t.n+' — cómo ataca</h4><p class="text-sm mt-2 leading-relaxed">'+t.atk+'</p><p class="font-mono text-[10px] text-slate-500 mt-3">NIVEL DE RIESGO: '+t.risk+'/5</p><div class="h-1.5 bg-[#152036] rounded mt-1"><div class="h-full bg-red-400 rounded transition-all duration-700" style="width:'+t.risk*20+'%"></div></div><ul class="mt-3 text-xs space-y-1.5 text-slate-300">'+t.sig.map(s=>'<li>⚠️ '+s+'</li>').join('')+'</ul></div><div><h4 class="font-display font-semibold text-lime-300">🛡️ Cómo defenderte</h4><ul class="mt-2 text-sm space-y-2">'+t.def.map(d=>'<li>✅ '+d+'</li>').join('')+'</ul></div></div>';}
+$('threatgrid').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(c)showThreat(c.dataset.t);});
+showThreat('ransomware');
+
+/* ================= PESTAÑA 5: JUEGO FAKE O REAL ================= */
+const GAME=[
+{canal:'📧 Correo',de:'soporte@banc0-nacion-arg.com',asunto:'URGENTE: su cuenta será suspendida en 24 hs',cuerpo:'Estimado cliente: detectamos movimientos sospechosos. Verifique su identidad ingresando su usuario y clave en: <span class="lnk">banc0-nacion-arg.com/verificacion</span>. De lo contrario, su cuenta será bloqueada.',fake:true,why:'El remitente dice "banc0" con cero. Los bancos NUNCA piden tu clave por mail, y menos con urgencia.'},
+{canal:'💬 WhatsApp',de:'Profe de NTICx · grupo 4.º A',asunto:'',cuerpo:'Chicos, recuerden traer mañana el pendrive con el TP de sistemas operativos. ¡Hasta mañana! 📚',fake:false,why:'Contexto conocido del aula, sin enlaces ni pedidos de datos: mensaje real.'},
+{canal:'📧 Correo',de:'premios@mercadolibre-ofertas.xyz',asunto:'🎉 ¡GANASTE un iPhone 15!',cuerpo:'Felicitaciones, fuiste seleccionado. Confirmá tus datos y pagá el "envío" de $4.999 en <span class="lnk">mercadolibre-ofertas.xyz/premio</span> dentro de las próximas 24 horas.',fake:true,why:'"Saliste sorteado" sin participar, dominio raro (.xyz) y apuro: phishing de manual.'},
+{canal:'📧 Correo',de:'noticias@conectarigualdad.edu.ar',asunto:'Nueva versión de Huayra disponible para tu netbook',cuerpo:'Ya podés actualizar Huayra GNU/Linux desde el ícono "Actualizador" de tu escritorio. No necesitás compartir ninguna contraseña. Consultas: mesa de ayuda de tu escuela.',fake:false,why:'Dominio oficial .edu.ar, no pide datos y te indica un canal real de consulta.'},
+{canal:'💬 WhatsApp',de:'Reenviado por "⚠️ ALERTA TOTAL ⚠️"',asunto:'',cuerpo:'URGENTE: nuevo virus "El Triángulo" que explota tu celular si abrís cualquier mensaje con un triángulo 🔺. Reenvialo a 10 contactos o se bloquea tu WhatsApp PARA SIEMPRE.',fake:true,why:'Cadena de miedo sin fuente verificable que pide reenviar: es un hoax (noticia falsa).'},
+{canal:'📧 Correo',de:'atencion@anses-gob-argentina.com',asunto:'Pago retenido: responda con su DNI y CBU',cuerpo:'Posee un pago pendiente. Responda este correo con su DNI, CBU y clave de home banking para acreditarlo hoy mismo.',fake:true,why:'Ningún organismo pide CBU ni claves por correo. El dominio oficial real es anses.gob.ar.'}
+];
+let gIdx=0,gScore=0,gAns=false,gHist=[];
+function renderDots(){$('gameDots').innerHTML=GAME.map((g,i)=>{let cls='w-3 h-3 rounded-full border border-[#2a3b5e]';if(i===gIdx)cls+=' ring-2 ring-[#38e1ff]';if(gHist[i]===true)cls='w-3 h-3 rounded-full bg-lime-400';if(gHist[i]===false)cls='w-3 h-3 rounded-full bg-red-400';return '<span class="'+cls+'"></span>';}).join('');}
+function renderGame(){gAns=false;const g=GAME[gIdx];$('gameFeedback').classList.add('hidden');$('btnNext').classList.add('hidden');$('btnReal').disabled=false;$('btnFake').disabled=false;renderDots();$('gameCard').innerHTML='<div class="anim-pop"><div class="flex items-center gap-2 text-xs font-mono text-slate-400"><span>'+g.canal+'</span><span class="ml-auto">mensaje '+(gIdx+1)+'/'+GAME.length+'</span></div><p class="mt-3 text-sm"><span class="text-slate-500">De:</span> <b class="text-slate-200">'+g.de+'</b></p>'+(g.asunto?'<p class="text-sm mt-1"><span class="text-slate-500">Asunto:</span> <b class="text-amber-300">'+g.asunto+'</b></p>':'')+'<p class="mt-3 text-sm bg-[#0d1830] border border-[#1c2a45] rounded-lg p-4 leading-relaxed">'+g.cuerpo+'</p></div>';}
+function answer(guessFake){if(gAns)return;gAns=true;const g=GAME[gIdx];const ok=guessFake===g.fake;gHist[gIdx]=ok;if(ok)gScore++;$('btnReal').disabled=true;$('btnFake').disabled=true;const fb=$('gameFeedback');fb.classList.remove('hidden');fb.className='mt-4 rounded-lg border p-4 text-sm anim-pop '+(ok?'border-lime-400/50 bg-lime-400/10 text-lime-200':'border-red-400/50 bg-red-400/10 text-red-200');fb.innerHTML=(ok?'✔ ¡Bien visto! ':'✖ Ups. ')+(g.fake?'Era phishing/fake.':'Era un mensaje real.')+' <span class="text-slate-300">'+g.why+'</span>';$('btnNext').classList.remove('hidden');$('btnNext').textContent=gIdx===GAME.length-1?'Ver resultado 🏁':'Siguiente ➜';renderDots();}
+$('btnReal').addEventListener('click',()=>answer(false));
+$('btnFake').addEventListener('click',()=>answer(true));
+$('btnNext').addEventListener('click',()=>{gIdx++;if(gIdx>=GAME.length){const badge=gScore===6?'🏆 Ciberexperto/a':gScore>=4?'😎 Ciberdetective':'🐣 Aprendiz digital — repasá las señales y volvé a intentarlo';$('gameCard').innerHTML='<div class="anim-pop text-center py-6"><p class="text-5xl">'+(gScore>=4?'🏆':'')+'</p><h4 class="font-display text-2xl font-bold mt-3">'+badge+'</h4><p class="font-mono text-sm text-slate-400 mt-2">puntaje: '+gScore+'/'+GAME.length+'</p><button id="btnRestart" class="fbtn2 mt-5">🔄 Jugar de nuevo</button></div>';$('gameFeedback').classList.add('hidden');$('btnNext').classList.add('hidden');$('btnReal').disabled=true;$('btnFake').disabled=true;renderDots();$('btnRestart').addEventListener('click',()=>{gIdx=0;gScore=0;gHist=[];renderGame();});if(gScore>=5)confetti();}else renderGame();});
+renderGame();
+
+/* ================= PESTAÑA 5: MEDIDOR DE CONTRASEÑAS ================= */
+$('passInput').addEventListener('input',()=>{const v=$('passInput').value;const checks={len:v.length>=8,up:/[A-ZÁÉÍÓÚÑ]/.test(v),low:/[a-záéíóúñ]/.test(v),num:/\d/.test(v),sym:/[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]/.test(v)};const s=v?Object.values(checks).filter(Boolean).length:0;$('passBar').style.width=(s/5*100)+'%';$('passBar').style.background=['#152036','#ff6b6b','#ff6b6b','#fbbf24','#a3e635','#38e1ff'][s];$('passLabel').textContent=['—','Muy débil 😬','Débil 😬','Media 🙂','Fuerte 😎','¡Excelente! 🚀'][s];$('passTime').textContent=v?('para crackearla: '+['','menos de 1 segundo ⚡','unos segundos ⏳','algunas horas 🕐','varias semanas 📅','¡siglos! 🗿'][s]):'';document.querySelectorAll('.pcheck').forEach(p=>p.classList.toggle('ok',!!checks[p.dataset.k]));});
+
+/* ================= TICKER ================= */
+const TIPS=['Ctrl + G guarda tu documento en Word y Google Docs','Huayra GNU/Linux es software libre hecho en Argentina 🇦','Una contraseña larga vale más que una corta complicada','Ante un link dudoso: no clickear, consultar','El 2FA es el candado extra de tus cuentas','Backup = tranquilidad: nube + pendrive','=PROMEDIO() suma y divide por vos','El SO es el director de orquesta de tu compu'];
+$('tickerTrack').innerHTML=(TIPS.map(t=>'<span class="mx-6">✦ '+t+'</span>').join('')).repeat(2);
+</script>
+</body>
+</html>
+
