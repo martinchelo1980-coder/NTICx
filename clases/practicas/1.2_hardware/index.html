@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NTiCx 4to año — Hardware y Fundamentos del Computador. Aula interactiva con simuladores, juegos, mini-tests, evaluación final, reporte imprimible y glosario.">
+<title>NTiCx · Hardware y Fundamentos del Computador</title>
+
+<!-- 🎨 Tailwind CSS vía CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /* 🎓 Configuración del tema: tipografías modernas y colores "tech" */
+  tailwind.config = {
+    theme: { extend: {
+      colors: { mid:'#070b15' },
+      fontFamily: {
+        display: ['"Space Grotesk"','ui-sans-serif','sans-serif'],
+        body: ['Outfit','ui-sans-serif','sans-serif'],
+        mono: ['"JetBrains Mono"','ui-monospace','monospace']
+      }
+    }}
+  };
+</script>
+
+<!-- 🔤 Fuentes (CDN Fontsource) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@latest/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@latest/700.css">
+
+<style>
+/* ============================================================
+   🎨 ESTILOS PROPIOS (lo que Tailwind no cubre)
+   ============================================================ */
+html{scroll-behavior:smooth}
+body{background:#070b15}
+.bg-grid{
+  background-image:linear-gradient(rgba(148,163,184,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{scrollbar-width:none}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#0a0f1c}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#334155}
+
+.glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09)}
+.grad{background:linear-gradient(90deg,#22d3ee,#a78bfa,#a3e635);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.chip{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.32rem .75rem;border-radius:9999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:#67e8f9}
+.chip-violet{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.1);color:#c4b5fd}
+.chip-lime{border-color:rgba(163,230,53,.4);background:rgba(163,230,53,.1);color:#bef264}
+.chip-amber{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.1);color:#fcd34d}
+.chip-pink{border-color:rgba(244,114,182,.4);background:rgba(244,114,182,.1);color:#f9a8d4}
+
+.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:9999px;font-weight:700;color:#04121c;background:linear-gradient(90deg,#22d3ee,#a3e635);box-shadow:0 4px 22px rgba(34,211,238,.35);transition:.25s}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 30px rgba(34,211,238,.5)}
+.btn-primary:disabled{opacity:.45;pointer-events:none}
+.btn-ghost{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border-radius:9999px;font-weight:600;color:#cbd5e1;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);transition:.25s;cursor:pointer}
+.btn-ghost:hover{border-color:#22d3ee;color:#fff;transform:translateY(-2px)}
+
+.tab-btn{display:flex;align-items:center;gap:.55rem;padding:.6rem 1rem;border-radius:9999px;border:1px solid rgba(255,255,255,.1);color:#94a3b8;font-weight:600;font-size:.85rem;white-space:nowrap;transition:.25s;background:rgba(255,255,255,.02)}
+.tab-btn:hover{color:#e2e8f0;border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+.tab-btn.active{background:linear-gradient(90deg,rgba(34,211,238,.18),rgba(167,139,250,.18));border-color:rgba(34,211,238,.6);color:#fff;box-shadow:0 0 22px rgba(34,211,238,.18)}
+.tab-btn .num{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:#22d3ee;font-weight:700}
+.tab-btn.tab-final.active{background:linear-gradient(90deg,rgba(244,114,182,.2),rgba(251,191,36,.2));border-color:rgba(244,114,182,.6)}
+
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.pop{animation:pop .35s ease}
+.shake{animation:shake .4s}
+
+.reveal{opacity:0;transform:translateY(26px);transition:.7s ease}
+.reveal.vis{opacity:1;transform:none}
+.reveal .grow-bar{width:0;transition:width 1.3s cubic-bezier(.22,1,.36,1) .3s}
+.reveal.vis .grow-bar{width:var(--w)}
+
+.badge{width:2.4rem;height:2.4rem;border-radius:.8rem;display:flex;align-items:center;justify-content:center;font-size:1.15rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);filter:grayscale(1);opacity:.35;transition:.4s}
+.badge.unlocked{filter:none;opacity:1;border-color:rgba(163,230,53,.6);box-shadow:0 0 18px rgba(163,230,53,.35)}
+
+/* ---- XP / puntaje ---- */
+.xp-box{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:9999px;border:1px solid rgba(251,191,36,.45);background:rgba(251,191,36,.08);font-weight:700;color:#fcd34d;font-family:'JetBrains Mono',monospace}
+#xp-toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:70;padding:.8rem 1.2rem;border-radius:1rem;background:linear-gradient(90deg,#fbbf24,#a3e635);color:#1a1403;font-weight:800;box-shadow:0 8px 34px rgba(251,191,36,.45);opacity:0;transform:translateY(18px);pointer-events:none;transition:.35s}
+#xp-toast.show{opacity:1;transform:none}
+
+/* ---- Simulador (Pestaña 1) ---- */
+.station{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:1rem;transition:.4s;position:relative;z-index:10}
+.station-active{border-color:#22d3ee!important;box-shadow:0 0 32px rgba(34,211,238,.4);transform:scale(1.04);background:rgba(34,211,238,.08)!important}
+.station-done{border-color:rgba(163,230,53,.5)!important}
+#flow-track{position:absolute;top:50%;left:16%;right:16%;height:3px;transform:translateY(-50%);border-radius:99px;background:linear-gradient(90deg,rgba(34,211,238,.4),rgba(167,139,250,.4),rgba(163,230,53,.4));z-index:1}
+#flow-dot{position:absolute;top:50%;left:0%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#22d3ee);box-shadow:0 0 18px #22d3ee;transition:left 1s cubic-bezier(.65,.05,.36,1)}
+#st-disk.on{border-color:#a3e635!important;box-shadow:0 0 24px rgba(163,230,53,.45);background:rgba(163,230,53,.1)!important}
+.log-line{animation:fadeUp .4s ease}
+.log-cyan{color:#67e8f9}.log-violet{color:#c4b5fd}.log-lime{color:#bef264}.log-amber{color:#fcd34d}
+
+/* ---- Mapa placa madre (Pestaña 2) ---- */
+#mobo text{font-family:'Space Grotesk',sans-serif;user-select:none}
+.hotspot{cursor:pointer;outline:none}
+.hotspot .hs{stroke:rgba(255,255,255,.28);transition:.25s}
+.hotspot:hover .hs,.hotspot:focus-visible .hs{stroke:#22d3ee;stroke-width:3;filter:drop-shadow(0 0 7px rgba(34,211,238,.9))}
+.hotspot:hover .hs-badge,.hotspot:focus-visible .hs-badge{fill:#22d3ee}
+.legend-chip{display:inline-flex;align-items:center;gap:.45rem;padding:.4rem .8rem;border-radius:9999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);font-size:.8rem;font-weight:600;color:#cbd5e1;transition:.2s;cursor:pointer}
+.legend-chip:hover{border-color:#22d3ee;color:#fff;transform:translateY(-1px)}
+.cpu-part{border:2px solid rgba(167,139,250,.4);background:rgba(167,139,250,.08);border-radius:.9rem;padding:.8rem;text-align:center;font-weight:700;color:#ddd6fe;transition:.25s;cursor:pointer}
+.cpu-part:hover,.cpu-part.sel{border-color:#a78bfa;background:rgba(167,139,250,.18);box-shadow:0 0 20px rgba(167,139,250,.3);transform:translateY(-2px)}
+
+/* ---- Juego clasificación (Pestaña 3) ---- */
+.g-chip{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .85rem;border-radius:9999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);font-size:.85rem;font-weight:600;cursor:grab;transition:.2s;user-select:none}
+.g-chip:hover{transform:translateY(-2px);border-color:#22d3ee;box-shadow:0 4px 16px rgba(34,211,238,.2)}
+.g-chip.sel{border-color:#a3e635;box-shadow:0 0 0 2px rgba(163,230,53,.55)}
+.g-chip.placed{cursor:default;font-size:.75rem;padding:.3rem .6rem;border-color:rgba(163,230,53,.5);background:rgba(163,230,53,.08)}
+.bin{border:2px dashed rgba(255,255,255,.16);border-radius:1rem;padding:.8rem;min-height:10rem;transition:.25s;background:rgba(255,255,255,.02)}
+.bin-over{border-color:#22d3ee;background:rgba(34,211,238,.08)}
+@keyframes binFlash{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(248,113,113,.7)}}
+.bin.flash-bad{animation:binFlash .5s}
+.core-dot{width:14px;height:14px;border-radius:50%;background:#a78bfa;box-shadow:0 0 9px rgba(167,139,250,.7);display:inline-block}
+
+/* ---- Máquina de bits (Pestaña 4) ---- */
+.bitkey{width:100%;aspect-ratio:1/1.08;border-radius:.9rem;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.3rem;color:#64748b;transition:.2s;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bitkey:hover{border-color:rgba(34,211,238,.6);transform:translateY(-2px)}
+.bitkey.on{background:linear-gradient(160deg,#22d3ee,#0891b2);color:#04222e;box-shadow:0 0 24px rgba(34,211,238,.5);border-color:#67e8f9}
+
+/* ---- Quizzes ---- */
+.opt{display:flex;gap:.65rem;align-items:center;text-align:left;padding:.7rem .95rem;border-radius:.85rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);font-weight:500;transition:.2s;cursor:pointer;color:#e2e8f0}
+.opt:hover:not(:disabled){border-color:#a78bfa;transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt-letter{flex:none;width:1.7rem;height:1.7rem;border-radius:.5rem;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.4);color:#c4b5fd;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700}
+.opt-correct{border-color:#a3e635!important;background:rgba(163,230,53,.12)!important}
+.opt-correct .opt-letter{background:rgba(163,230,53,.25);border-color:#a3e635;color:#d9f99d}
+.opt-wrong{border-color:#f87171!important;background:rgba(248,113,113,.12)!important;animation:shake .4s}
+
+/* ---- Evaluación final ---- */
+.fq-opt{display:flex;gap:.6rem;align-items:center;padding:.5rem .8rem;border-radius:.7rem;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:.2s;font-size:.9rem;color:#e2e8f0}
+.fq-opt:hover{border-color:#a78bfa}
+.fq-opt input{accent-color:#22d3ee;flex:none}
+.fq-card.correcta{border-color:rgba(163,230,53,.6)!important}
+.fq-card.incorrecta{border-color:rgba(248,113,113,.6)!important}
+
+/* ---- Campos de formulario ---- */
+.field{width:100%;border-radius:.75rem;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);padding:.55rem .85rem;font-size:.9rem;color:#e2e8f0;outline:none}
+.field:focus{border-color:#22d3ee}
+
+/* ---- Glosario ---- */
+.glo-item{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);border-radius:.9rem;padding:.8rem 1rem;transition:.2s}
+.glo-item:hover{border-color:rgba(34,211,238,.4)}
+
+input[type=range]{accent-color:#22d3ee}
+
+/* ============================================================
+   🖨️ DOCUMENTOS IMPRIMIBLES (A4)
+   🔧 FIX: la clase .doc se aplica SIEMPRE al contenedor, y al
+   imprimir se oculta TODA la interfaz (app, modales, toast y
+   decoraciones) para que salga SOLO el documento blanco/negro.
+   ============================================================ */
+#print-reporte,#print-teoria{display:none}
+.doc{color:#111;font-family:'Outfit',Arial,sans-serif;font-size:10.5pt;line-height:1.5;background:#fff}
+.doc h1{font-size:19pt;color:#0e7490;margin:0 0 4pt;border-bottom:3px solid #0e7490;padding-bottom:6pt}
+.doc h2{font-size:13pt;color:#0e7490;border-bottom:1px solid #999;padding-bottom:3pt;margin:16pt 0 6pt;page-break-after:avoid}
+.doc h3{font-size:11pt;color:#0e7490;margin:12pt 0 2pt;page-break-after:avoid}
+.doc p{margin:4pt 0}
+.doc ul{margin:4pt 0 4pt 16pt;padding:0}
+.doc li{margin:2pt 0}
+.doc table{width:100%;border-collapse:collapse;margin:6pt 0;font-size:9pt}
+.doc td,.doc th{border:1px solid #999;padding:3.5pt 5pt;text-align:left;vertical-align:top}
+.doc th{background:#e2e8f0}
+.doc .mod{page-break-before:always}
+.doc .dim{color:#666;font-style:italic}
+.doc small{font-size:8pt;color:#555;line-height:1.3}
+.doc .fill{border:1px dashed #999;padding:6pt;border-radius:4pt;margin-top:8pt;font-size:9.5pt}
+.doc .ok{color:#15803d;font-weight:700}
+.doc .bad{color:#b91c1c;font-weight:700}
+.doc .box{border:1px solid #999;border-radius:6pt;padding:8pt;margin:6pt 0;background:#f8fafc}
+@media print{
+  @page{size:A4;margin:1.4cm}
+  html,body{background:#fff!important}
+  /* 🔧 CLAVE: ocultar TODA la interfaz HTML al imprimir */
+  #app-wrap,#modal,#reporte-modal,#glosario-modal,#xp-toast,.no-print{display:none!important}
+  body.printing-reporte #print-reporte{display:block}
+  body.printing-teoria #print-teoria{display:block}
+  .doc tr{page-break-inside:avoid}
+  .doc h1,.doc h2,.doc h3{page-break-after:avoid}
+  .doc table{page-break-inside:auto}
+}
+</style>
+</head>
+
+<body class="bg-mid text-slate-200 font-body antialiased bg-grid min-h-screen">
+
+<!-- ✨ Decoración de fondo (no se imprime) -->
+<div class="no-print pointer-events-none fixed -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+<div class="no-print pointer-events-none fixed top-1/3 -right-40 w-[28rem] h-[28rem] rounded-full bg-violet-500/10 blur-3xl"></div>
+<div class="no-print pointer-events-none fixed bottom-0 left-1/3 w-96 h-96 rounded-full bg-lime-500/5 blur-3xl"></div>
+
+<div id="app-wrap">
+
+<!-- ============================================================
+     🏠 ENCABEZADO
+     ============================================================ -->
+<header class="relative max-w-6xl mx-auto px-4 pt-10 pb-8">
+  <div class="flex flex-col lg:flex-row gap-8 items-center">
+    <div class="flex-1">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <span class="chip">⚡ NTiCx · 4.º año · Secundaria 🇦🇷</span>
+        <!-- ⭐ Puntaje global por interacción -->
+        <div class="xp-box">⭐ <b id="xp-total">0</b>&nbsp;XP <span id="xp-level" class="text-amber-200/80 text-xs font-body">🐣 Novato/a</span></div>
+      </div>
+      <h1 class="font-display font-bold text-4xl md:text-6xl mt-4 leading-tight">
+        Hardware y <span class="grad">Fundamentos</span><br>del Computador
+      </h1>
+      <p class="mt-4 text-slate-400 text-lg max-w-xl">
+        Una aventura interactiva para descubrir qué hay dentro de la compu, cómo piensa en ceros y unos… ¡y por qué todo cabe en un bit! 🚀
+      </p>
+      <p class="mt-2 text-sm text-slate-500">Explorá los módulos, tocá los simuladores, ganá XP ⭐ y superá los mini-tests y la evaluación final para conseguir insignias. 🏅</p>
+
+      <!-- 🏅 Insignias -->
+      <div class="flex items-center gap-3 mt-6 flex-wrap">
+        <span class="text-xs uppercase tracking-widest text-slate-500 font-bold">Insignias:</span>
+        <div class="flex gap-2">
+          <span class="badge" id="badge-1" title="Módulo 1 · Sistema Informático">🧩</span>
+          <span class="badge" id="badge-2" title="Módulo 2 · Arquitectura">🛠️</span>
+          <span class="badge" id="badge-3" title="Módulo 3 · Periféricos">🕹️</span>
+          <span class="badge" id="badge-4" title="Módulo 4 · Binario">🔢</span>
+          <span class="badge" id="badge-5" title="Módulo 5 · Unidades">📦</span>
+          <span class="badge" id="badge-6" title="Evaluación Final">🎓</span>
+        </div>
+        <span id="badge-count" class="font-mono text-xs text-slate-400"></span>
+      </div>
+
+      <!-- 🧰 Acciones globales: Reporte · Glosario · Imprimir teoría -->
+      <div class="flex flex-wrap gap-2 mt-6">
+        <button id="btn-reporte" class="btn-primary">📄 Mi Reporte</button>
+        <button id="btn-glosario" class="btn-ghost">📖 Glosario</button>
+        <button id="btn-teoria" class="btn-ghost">🖨️ Imprimir Teoría (A4)</button>
+      </div>
+    </div>
+    <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/1f561618f-4520-433e-9361-0ca25633f5f6.png"
+         alt="Ilustración isométrica de componentes de hardware: placa madre, CPU, memorias RAM, SSD, teclado y mouse"
+         class="w-full max-w-md rounded-3xl ring-1 ring-white/10 shadow-2xl shadow-cyan-500/10 object-cover">
+  </div>
+</header>
+
+<!-- ============================================================
+     🧭 NAVEGACIÓN POR PESTAÑAS (6 módulos)
+     ============================================================ -->
+<nav class="sticky top-0 z-40 backdrop-blur-xl bg-[#070b15]/85 border-y border-white/10">
+  <div class="max-w-6xl mx-auto px-4">
+    <div role="tablist" aria-label="Módulos del curso" class="flex gap-2 overflow-x-auto no-scrollbar py-3">
+      <button class="tab-btn active" data-tab="1" role="tab" aria-selected="true"><span class="num">01</span><span>🧩</span><span class="hidden md:inline">Sistema Informático</span></button>
+      <button class="tab-btn" data-tab="2" role="tab" aria-selected="false"><span class="num">02</span><span>🛠️</span><span class="hidden md:inline">Arquitectura</span></button>
+      <button class="tab-btn" data-tab="3" role="tab" aria-selected="false"><span class="num">03</span><span>🕹️</span><span class="hidden md:inline">Periféricos</span></button>
+      <button class="tab-btn" data-tab="4" role="tab" aria-selected="false"><span class="num">04</span><span>🔢</span><span class="hidden md:inline">Binario</span></button>
+      <button class="tab-btn" data-tab="5" role="tab" aria-selected="false"><span class="num">05</span><span>📦</span><span class="hidden md:inline">Unidades</span></button>
+      <button class="tab-btn tab-final" data-tab="6" role="tab" aria-selected="false"><span class="num">06</span><span>🎓</span><span class="hidden md:inline">Evaluación Final</span></button>
+    </div>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10 relative">
+
+<!-- ============================================================
+     📌 PESTAÑA 1 · SISTEMA INFORMÁTICO Y PROCESO COMPUTACIONAL
+     ============================================================ -->
+<section class="panel active" id="panel-1">
+
+  <div class="grid lg:grid-cols-5 gap-6 items-stretch">
+    <div class="lg:col-span-3 glass rounded-3xl p-6 md:p-8 reveal">
+      <span class="chip">Concepto clave</span>
+      <h2 class="font-display text-3xl font-bold mt-3">¿Qué es un <span class="grad">Sistema Informático</span>?</h2>
+      <p class="mt-3 text-slate-300 leading-relaxed">
+        Es un <strong class="text-white">conjunto de elementos que trabajan en equipo</strong> para recibir, procesar, guardar y entregar información. Para que exista, hacen falta <em>tres</em> componentes:
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mt-5">
+        <div class="rounded-2xl border border-cyan-400/30 bg-cyan-400/5 p-4">
+          <div class="text-2xl">🔩</div>
+          <h3 class="font-display font-bold text-cyan-300 mt-1">HARDWARE</h3>
+          <p class="text-xs text-slate-400 mt-1">Todo lo que podés <b>tocar</b>: chips, cables, teclado, pantalla.</p>
+          <p class="font-mono text-[10px] text-cyan-400/70 mt-2">CPU · RAM · mouse · SSD</p>
+        </div>
+        <div class="rounded-2xl border border-violet-400/30 bg-violet-400/5 p-4">
+          <div class="text-2xl">🧠</div>
+          <h3 class="font-display font-bold text-violet-300 mt-1">SOFTWARE</h3>
+          <p class="text-xs text-slate-400 mt-1">Los <b>programas e instrucciones</b>: no se tocan, se ejecutan.</p>
+          <p class="font-mono text-[10px] text-violet-400/70 mt-2">Windows · WhatsApp · juegos</p>
+        </div>
+        <div class="rounded-2xl border border-lime-400/30 bg-lime-400/5 p-4">
+          <div class="text-2xl">👤</div>
+          <h3 class="font-display font-bold text-lime-300 mt-1">HUMANWARE</h3>
+          <p class="text-xs text-slate-400 mt-1">Las <b>personas</b>: quienes usan, programan o reparan el sistema.</p>
+          <p class="font-mono text-[10px] text-lime-400/70 mt-2">vos · técnicos · programadores</p>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-slate-400 italic">💡 Ejemplo cotidiano: <b class="text-slate-300">vos</b> (humanware) usando <b class="text-slate-300">WhatsApp</b> (software) en tu <b class="text-slate-300">celu</b> (hardware) para mandar un audio.</p>
+    </div>
+    <div class="lg:col-span-2 reveal">
+      <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/1e90e0fa3-3b23-431b-bd97-c05594d64f1c.png"
+           alt="Estudiante con notebook conectada a tres hexágonos: hardware, software y humanware"
+           class="w-full h-full min-h-[260px] object-cover rounded-3xl ring-1 ring-white/10">
+    </div>
+  </div>
+
+  <div class="mt-12 reveal">
+    <h3 class="font-display text-2xl md:text-3xl font-bold">🔄 El Proceso Computacional</h3>
+    <p class="text-slate-400 mt-1">Toda tarea de una compu —mandar un mensaje, jugar, calcular— repite siempre este ciclo:</p>
+    <div class="grid md:grid-cols-4 gap-3 mt-5">
+      <div class="glass rounded-2xl p-4 border-t-4 border-cyan-400">
+        <span class="font-mono text-[10px] text-cyan-300">PASO 1</span>
+        <h4 class="font-display font-bold text-lg mt-1">📥 ENTRADA</h4>
+        <p class="text-xs text-slate-400 mt-1">Los datos <b>entran</b> al sistema a través de dispositivos.</p>
+        <p class="font-mono text-[10px] text-slate-500 mt-2">teclado · mouse · mic · cámara</p>
+      </div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-violet-400">
+        <span class="font-mono text-[10px] text-violet-300">PASO 2</span>
+        <h4 class="font-display font-bold text-lg mt-1">⚙️ PROCESAMIENTO</h4>
+        <p class="text-xs text-slate-400 mt-1">La <b>CPU</b> transforma, calcula y decide qué hacer.</p>
+        <p class="font-mono text-[10px] text-slate-500 mt-2">sumar · abrir · traducir datos</p>
+      </div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-lime-400">
+        <span class="font-mono text-[10px] text-lime-300">PASO 3</span>
+        <h4 class="font-display font-bold text-lg mt-1">📤 SALIDA</h4>
+        <p class="text-xs text-slate-400 mt-1">El resultado <b>llega</b> al usuario.</p>
+        <p class="font-mono text-[10px] text-slate-500 mt-2">monitor · parlantes · impresora</p>
+      </div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-amber-400">
+        <span class="font-mono text-[10px] text-amber-300">PARALELO</span>
+        <h4 class="font-display font-bold text-lg mt-1">💾 ALMACENAMIENTO</h4>
+        <p class="text-xs text-slate-400 mt-1">Guarda datos <b>para el futuro</b> y también los aporta.</p>
+        <p class="font-mono text-[10px] text-slate-500 mt-2">HDD · SSD · pendrive · nube</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧪 SIMULADOR interactivo del recorrido del dato -->
+  <div class="mt-12 glass rounded-3xl p-6 md:p-8 reveal border-cyan-400/20">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h3 class="font-display text-2xl font-bold">🧪 Laboratorio: ¿cómo viaja el dato?</h3>
+        <p class="text-slate-400 text-sm mt-1">Elegí una acción, presioná <b class="text-cyan-300">▶</b> y mirá el recorrido de la información. <span class="text-amber-300">⭐ +10 XP por cada acción que explores.</span></p>
+      </div>
+      <button id="sim-run" class="btn-primary">▶ Ver el recorrido</button>
+    </div>
+
+    <div id="acc-chips" class="flex flex-wrap gap-2 mt-5"></div>
+
+    <div class="relative mt-8">
+      <div id="flow-track"><div id="flow-dot"></div></div>
+      <div class="grid grid-cols-3 gap-2 md:gap-8 relative">
+        <div id="st-in" class="station p-3 md:p-5 text-center">
+          <div class="text-[10px] font-mono text-cyan-300 tracking-widest">ENTRADA</div>
+          <div id="st-in-emoji" class="text-3xl md:text-5xl mt-2">⌨️</div>
+          <div id="st-in-name" class="text-xs md:text-sm font-semibold mt-2 text-slate-300">Teclado</div>
+        </div>
+        <div id="st-cpu" class="station p-3 md:p-5 text-center">
+          <div class="text-[10px] font-mono text-violet-300 tracking-widest">PROCESAMIENTO</div>
+          <div class="text-3xl md:text-5xl mt-2">🧠</div>
+          <div class="text-xs md:text-sm font-semibold mt-2 text-slate-300">CPU (UC + ALU)</div>
+        </div>
+        <div id="st-out" class="station p-3 md:p-5 text-center">
+          <div class="text-[10px] font-mono text-lime-300 tracking-widest">SALIDA</div>
+          <div id="st-out-emoji" class="text-3xl md:text-5xl mt-2">🖥️</div>
+          <div id="st-out-name" class="text-xs md:text-sm font-semibold mt-2 text-slate-300">Monitor</div>
+        </div>
+      </div>
+      <div class="flex justify-center mt-4">
+        <div id="st-disk" class="station px-4 py-2 text-sm font-semibold text-slate-300">💾 Almacenamiento</div>
+      </div>
+    </div>
+
+    <div id="sim-console" class="mt-5 font-mono text-xs md:text-sm bg-black/50 rounded-xl p-4 min-h-[110px] border border-white/10 space-y-1.5 overflow-hidden"></div>
+    <div id="sim-result" class="hidden mt-4 rounded-xl border border-lime-400/50 bg-lime-400/10 text-lime-200 p-4 font-semibold pop"></div>
+  </div>
+
+  <div class="mt-12" id="quiz-1"></div>
+
+  <div class="mt-10 flex justify-end">
+    <button class="btn-ghost" data-goto="2">Siguiente módulo: Arquitectura ➜</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     📌 PESTAÑA 2 · ARQUITECTURA Y COMPONENTES
+     ============================================================ -->
+<section class="panel" id="panel-2">
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="glass rounded-3xl overflow-hidden reveal">
+      <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/152d030a7-73ae-48e9-ade8-037f41eeba4a.png"
+           alt="CPU sobre una placa madre con circuitos brillantes y pila CMOS" class="w-full h-64 md:h-72 object-cover">
+      <div class="p-6">
+        <span class="chip chip-violet">El cerebro</span>
+        <h2 class="font-display text-2xl font-bold mt-2">La CPU: microprocesador</h2>
+        <p class="text-sm text-slate-400 mt-2">Es el chip principal: ejecuta instrucciones, hace cálculos y coordina a todos los demás componentes. Su velocidad se mide en <b class="text-white">GHz</b> (miles de millones de ciclos por segundo).</p>
+      </div>
+    </div>
+
+    <div class="glass rounded-3xl p-6 reveal">
+      <span class="chip chip-violet">Radiografía</span>
+      <h3 class="font-display text-2xl font-bold mt-2">¿Qué hay DENTRO de la CPU?</h3>
+      <p class="text-sm text-slate-400 mt-1">Tocá cada unidad para conocerla: <span class="text-amber-300">⭐ +5 XP c/u</span></p>
+      <div class="mt-4 rounded-2xl border-2 border-dashed border-violet-400/40 p-4 bg-violet-500/5">
+        <div class="text-center font-mono text-[10px] text-violet-300 tracking-widest mb-3">CPU · UNIDAD CENTRAL DE PROCESAMIENTO</div>
+        <div class="grid grid-cols-2 gap-3">
+          <button id="btn-uc" class="cpu-part">🎼 UC<br><span class="text-[10px] font-normal text-violet-300">Unidad de Control</span></button>
+          <button id="btn-alu" class="cpu-part">➗ ALU<br><span class="text-[10px] font-normal text-violet-300">U. Aritmético-Lógica</span></button>
+        </div>
+        <div class="text-center mt-3 text-[11px] text-slate-400">🗃️ + <b>Registros</b>: memoria ultrarrápida para datos del instante</div>
+      </div>
+      <div id="cpu-detail" class="mt-3 rounded-xl bg-black/40 border border-white/10 p-4 text-sm text-slate-300 min-h-[92px]">👆 Tocá la <b>UC</b> o la <b>ALU</b> para ver su función.</div>
+    </div>
+  </div>
+
+  <div class="mt-8 grid md:grid-cols-2 gap-4 reveal">
+    <div class="glass rounded-3xl p-6 border-l-4 border-cyan-400">
+      <h3 class="font-display text-xl font-bold">🗂️ Memoria RAM</h3>
+      <p class="text-sm text-slate-400 mt-1"><b class="text-cyan-300">R</b>andom <b class="text-cyan-300">A</b>ccess <b class="text-cyan-300">M</b>emory · memoria de trabajo</p>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300">
+        <li>⚡ <b>Volátil</b>: al apagar la compu, se borra.</li>
+        <li>✍️ Se lee y escribe todo el tiempo.</li>
+        <li>🚀 Muy rápida: la CPU la usa como mesa de trabajo.</li>
+        <li>📏 Se mide en GB: hoy lo normal es 8 o 16 GB.</li>
+      </ul>
+    </div>
+    <div class="glass rounded-3xl p-6 border-l-4 border-amber-400">
+      <h3 class="font-display text-xl font-bold">📜 Memoria ROM</h3>
+      <p class="text-sm text-slate-400 mt-1"><b class="text-amber-300">R</b>ead <b class="text-amber-300">O</b>nly <b class="text-amber-300">M</b>emory · firmware / BIOS</p>
+      <ul class="mt-3 space-y-1.5 text-sm text-slate-300">
+        <li>🔒 <b>No volátil</b>: conserva los datos sin energía.</li>
+        <li>📖 Principalmente de solo lectura.</li>
+        <li>🚼 Guarda la <b>BIOS/UEFI</b> que arranca la compu.</li>
+        <li>🐢 Más lenta, pero siempre firme.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 🗺️ MAPA INTERACTIVO de la placa madre -->
+  <div class="mt-10 glass rounded-3xl p-6 md:p-8 reveal">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <div>
+        <h3 class="font-display text-2xl font-bold">🗺️ Mapa interactivo: la Placa Madre</h3>
+        <p class="text-slate-400 text-sm mt-1">Es la gran placa que <b class="text-white">interconecta todo</b>. 🔍 Pasá el cursor y hacé clic en los componentes numerados. <span class="text-amber-300">⭐ +5 XP por componente descubierto.</span></p>
+      </div>
+      <span class="chip chip-lime">13 componentes</span>
+    </div>
+
+    <div class="overflow-x-auto mt-5 rounded-2xl border border-white/10 bg-black/30 p-2">
+      <svg id="mobo" viewBox="0 0 920 620" class="w-full min-w-[780px]" role="group" aria-label="Mapa interactivo de la placa madre">
+        <defs>
+          <linearGradient id="gBoard" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0e3b2b"/><stop offset="1" stop-color="#071e16"/>
+          </linearGradient>
+          <linearGradient id="gCpu" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0b1220"/>
+          </linearGradient>
+        </defs>
+        <rect x="18" y="18" width="884" height="584" rx="22" fill="url(#gBoard)" stroke="#1b5e43" stroke-width="2"/>
+        <g stroke="#34d399" stroke-opacity=".16" stroke-width="2" fill="none">
+          <path d="M330 160 H452"/><path d="M250 240 V430"/><path d="M330 120 H452"/>
+          <path d="M580 160 H636"/><path d="M515 300 V390"/><path d="M250 200 H170"/>
+          <path d="M700 221 V292"/><path d="M560 435 H636"/><path d="M726 550 H800 V430 H410"/>
+        </g>
+        <g fill="#05130d" stroke="#2d7a5c" stroke-width="1.5">
+          <circle cx="44" cy="44" r="7"/><circle cx="876" cy="44" r="7"/><circle cx="44" cy="576" r="7"/><circle cx="876" cy="576" r="7"/>
+        </g>
+        <rect x="28" y="80" width="60" height="290" rx="8" fill="#0b1120" stroke="#1e293b"/>
+        <rect x="600" y="430" width="180" height="18" rx="4" fill="#0f172a" stroke="#334155" stroke-dasharray="4 3"/>
+        <text x="690" y="425" text-anchor="middle" font-size="9" fill="#475569">M.2 (SSD rápido)</text>
+
+        <g class="hotspot" data-comp="cpu" tabindex="0" role="button" aria-label="CPU o microprocesador">
+          <title>CPU (Microprocesador)</title>
+          <rect class="hs" x="170" y="80" width="160" height="160" rx="12" fill="url(#gCpu)" stroke-width="1.5"/>
+          <rect x="190" y="100" width="120" height="120" rx="8" fill="none" stroke="#38bdf8" stroke-opacity=".45" stroke-width="1.5"/>
+          <text x="250" y="168" text-anchor="middle" font-size="24" font-weight="800" fill="#7dd3fc">CPU</text>
+          <g><circle class="hs-badge" cx="318" cy="92" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="318" y="96" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">1</text></g>
+        </g>
+        <g class="hotspot" data-comp="ram" tabindex="0" role="button" aria-label="Memoria RAM">
+          <title>Memoria RAM</title>
+          <rect class="hs" x="452" y="56" width="128" height="210" rx="10" fill="rgba(255,255,255,.02)" stroke-width="1.5"/>
+          <g fill="#1e293b" stroke="#475569">
+            <rect x="466" y="70" width="16" height="182" rx="3"/><rect x="494" y="70" width="16" height="182" rx="3"/>
+            <rect x="522" y="70" width="16" height="182" rx="3"/><rect x="550" y="70" width="16" height="182" rx="3"/>
+          </g>
+          <g><circle class="hs-badge" cx="568" cy="68" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="568" y="72" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">2</text></g>
+        </g>
+        <g class="hotspot" data-comp="chipset" tabindex="0" role="button" aria-label="Chipset">
+          <title>Chipset</title>
+          <rect class="hs" x="470" y="390" width="90" height="90" rx="12" fill="#0f172a" stroke-width="1.5"/>
+          <text x="515" y="440" text-anchor="middle" font-size="10" fill="#64748b" letter-spacing="2">CHIPSET</text>
+          <g><circle class="hs-badge" cx="548" cy="402" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="548" y="406" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">3</text></g>
+        </g>
+        <g class="hotspot" data-comp="rom" tabindex="0" role="button" aria-label="Memoria ROM, BIOS">
+          <title>Memoria ROM · BIOS</title>
+          <rect class="hs" x="640" y="104" width="84" height="36" rx="5" fill="#101a2c" stroke-width="1.5"/>
+          <text x="682" y="127" text-anchor="middle" font-size="11" fill="#94a3b8">BIOS</text>
+          <g><circle class="hs-badge" cx="716" cy="112" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="716" y="116" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">4</text></g>
+        </g>
+        <g class="hotspot" data-comp="battery" tabindex="0" role="button" aria-label="Pila CMOS">
+          <title>Pila CMOS (CR2032)</title>
+          <circle class="hs" cx="700" cy="200" r="21" fill="#1f2937" stroke-width="1.5"/>
+          <text x="700" y="206" text-anchor="middle" font-size="14" fill="#94a3b8">+</text>
+          <g><circle class="hs-badge" cx="724" cy="184" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="724" y="188" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">5</text></g>
+        </g>
+        <g class="hotspot" data-comp="pcie_video" tabindex="0" role="button" aria-label="Ranura PCIe x16 para tarjeta de video">
+          <title>PCIe x16 · Tarjeta de Video</title>
+          <rect class="hs" x="80" y="432" width="330" height="20" rx="5" fill="#0f172a" stroke-width="1.5"/>
+          <rect x="300" y="432" width="5" height="20" fill="#0e3b2b"/>
+          <g><circle class="hs-badge" cx="396" cy="442" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="396" y="446" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">6</text></g>
+        </g>
+        <g class="hotspot" data-comp="pcie_audio" tabindex="0" role="button" aria-label="Ranuras de expansión PCIe x1">
+          <title>PCIe x1 · Expansión (audio, red…)</title>
+          <rect class="hs" x="80" y="478" width="210" height="16" rx="5" fill="#0f172a" stroke-width="1.5"/>
+          <g><circle class="hs-badge" cx="278" cy="486" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="278" y="490" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">7</text></g>
+        </g>
+        <g class="hotspot" data-comp="audio" tabindex="0" role="button" aria-label="Puertos de audio">
+          <title>Puertos de Audio (jack 3,5 mm)</title>
+          <rect class="hs" x="36" y="94" width="46" height="92" rx="8" fill="rgba(255,255,255,.02)" stroke-width="1.5"/>
+          <circle cx="59" cy="112" r="9" fill="#4ade80"/><circle cx="59" cy="140" r="9" fill="#f472b6"/><circle cx="59" cy="168" r="9" fill="#60a5fa"/>
+          <g><circle class="hs-badge" cx="90" cy="98" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="90" y="102" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">8</text></g>
+        </g>
+        <g class="hotspot" data-comp="usb" tabindex="0" role="button" aria-label="Puertos USB">
+          <title>Puertos USB</title>
+          <rect class="hs" x="36" y="216" width="46" height="62" rx="8" fill="rgba(255,255,255,.02)" stroke-width="1.5"/>
+          <rect x="44" y="228" width="30" height="13" rx="2" fill="#1e293b" stroke="#475569"/>
+          <rect x="44" y="252" width="30" height="13" rx="2" fill="#1e293b" stroke="#475569"/>
+          <g><circle class="hs-badge" cx="90" cy="224" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="90" y="228" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">9</text></g>
+        </g>
+        <g class="hotspot" data-comp="eth" tabindex="0" role="button" aria-label="Puerto de red RJ-45">
+          <title>Puerto de Red (RJ-45)</title>
+          <rect class="hs" x="36" y="292" width="46" height="46" rx="8" fill="rgba(255,255,255,.02)" stroke-width="1.5"/>
+          <rect x="42" y="300" width="34" height="30" rx="3" fill="#1e293b" stroke="#475569"/>
+          <rect x="48" y="306" width="22" height="12" fill="#0ea5e9" opacity=".55"/>
+          <g><circle class="hs-badge" cx="90" cy="300" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="90" y="304" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">10</text></g>
+        </g>
+        <g class="hotspot" data-comp="sata" tabindex="0" role="button" aria-label="Conectores SATA">
+          <title>Conectores SATA</title>
+          <rect class="hs" x="628" y="292" width="52" height="86" rx="8" fill="rgba(255,255,255,.02)" stroke-width="1.5"/>
+          <g fill="#111827" stroke="#475569">
+            <rect x="636" y="302" width="34" height="14" rx="2"/><rect x="636" y="328" width="34" height="14" rx="2"/><rect x="636" y="354" width="34" height="14" rx="2"/>
+          </g>
+          <g><circle class="hs-badge" cx="676" cy="300" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="676" y="304" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">11</text></g>
+        </g>
+        <g class="hotspot" data-comp="sd" tabindex="0" role="button" aria-label="Lector de tarjetas SD">
+          <title>Lector de tarjetas SD</title>
+          <rect class="hs" x="636" y="540" width="90" height="20" rx="4" fill="#111827" stroke-width="1.5"/>
+          <rect x="652" y="546" width="30" height="8" rx="2" fill="#1e293b"/>
+          <g><circle class="hs-badge" cx="718" cy="548" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="718" y="552" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">12</text></g>
+        </g>
+        <g class="hotspot" data-comp="power" tabindex="0" role="button" aria-label="Conector de energía ATX">
+          <title>Conector ATX de energía</title>
+          <rect class="hs" x="836" y="150" width="38" height="172" rx="7" fill="#111827" stroke-width="1.5"/>
+          <g fill="#334155">
+            <circle cx="847" cy="163" r="4"/><circle cx="863" cy="163" r="4"/><circle cx="847" cy="179" r="4"/><circle cx="863" cy="179" r="4"/>
+            <circle cx="847" cy="196" r="4"/><circle cx="863" cy="196" r="4"/><circle cx="847" cy="212" r="4"/><circle cx="863" cy="212" r="4"/>
+            <circle cx="847" cy="229" r="4"/><circle cx="863" cy="229" r="4"/><circle cx="847" cy="245" r="4"/><circle cx="863" cy="245" r="4"/>
+            <circle cx="847" cy="261" r="4"/><circle cx="863" cy="261" r="4"/><circle cx="847" cy="278" r="4"/><circle cx="863" cy="278" r="4"/>
+            <circle cx="847" cy="294" r="4"/><circle cx="863" cy="294" r="4"/><circle cx="847" cy="310" r="4"/><circle cx="863" cy="310" r="4"/>
+          </g>
+          <g><circle class="hs-badge" cx="857" cy="140" r="11" fill="#0c4a6e" stroke="#22d3ee" stroke-width="1.5"/><text x="857" y="144" text-anchor="middle" font-size="11" font-weight="800" fill="#a5f3fc">13</text></g>
+        </g>
+      </svg>
+    </div>
+
+    <div id="mobo-legend" class="flex flex-wrap gap-2 mt-4"></div>
+    <p class="text-xs text-slate-500 mt-3">⌨️ Tip accesible: también podés recorrer los componentes con <b>TAB</b> y abrirlos con <b>ENTER</b>.</p>
+  </div>
+
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+    <div class="glass rounded-2xl p-5 hover:border-cyan-400/50 transition">
+      <div class="text-2xl">🔌</div><h4 class="font-display font-bold mt-1">Puertos USB</h4>
+      <p class="text-xs text-slate-400 mt-1">Conexión universal: teclado, pendrive, celu… y encima dan energía.</p>
+    </div>
+    <div class="glass rounded-2xl p-5 hover:border-cyan-400/50 transition">
+      <div class="text-2xl">💳</div><h4 class="font-display font-bold mt-1">Puerto SD</h4>
+      <p class="text-xs text-slate-400 mt-1">Lee tarjetas de cámaras y celulares: el puente para tus fotos.</p>
+    </div>
+    <div class="glass rounded-2xl p-5 hover:border-cyan-400/50 transition">
+      <div class="text-2xl">🎧</div><h4 class="font-display font-bold mt-1">Tarjeta de Audio</h4>
+      <p class="text-xs text-slate-400 mt-1">Convierte datos digitales en sonido (y tu voz en datos).</p>
+    </div>
+    <div class="glass rounded-2xl p-5 hover:border-cyan-400/50 transition">
+      <div class="text-2xl">🎮</div><h4 class="font-display font-bold mt-1">Tarjeta de Video</h4>
+      <p class="text-xs text-slate-400 mt-1">Su GPU dibuja todo lo que ves: juegos, videos, diseño.</p>
+    </div>
+  </div>
+
+  <div class="mt-12" id="quiz-2"></div>
+
+  <div class="mt-10 flex justify-between">
+    <button class="btn-ghost" data-goto="1">⬅ Módulo anterior</button>
+    <button class="btn-ghost" data-goto="3">Siguiente: Periféricos ➜</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     📌 PESTAÑA 3 · CARACTERÍSTICAS Y PERIFÉRICOS
+     ============================================================ -->
+<section class="panel" id="panel-3">
+
+  <div class="grid lg:grid-cols-5 gap-6 items-stretch">
+    <div class="lg:col-span-3 space-y-6">
+      <div class="glass rounded-3xl p-6 reveal">
+        <span class="chip chip-violet">Característica 1</span>
+        <h3 class="font-display text-2xl font-bold mt-2">⚡ Velocidad de procesamiento</h3>
+        <p class="text-sm text-slate-400 mt-2"><b class="text-white">GHz</b> = miles de millones de ciclos por segundo (el "latido" del chip). <b class="text-white">Núcleos</b> = cerebros independientes que trabajan en paralelo. <span class="text-amber-300">⭐ +5 XP al mover los deslizadores.</span></p>
+        <div class="grid sm:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label class="text-xs text-slate-400 flex justify-between"><span>Velocidad</span><b id="ghz-out" class="text-cyan-300 font-mono">3 GHz</b></label>
+            <input id="ghz-range" type="range" min="1" max="5" step="0.5" value="3" class="w-full mt-1">
+            <p id="ciclos-out" class="font-mono text-[11px] text-slate-500 mt-1"></p>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 flex justify-between"><span>Núcleos</span><b id="cores-out" class="text-violet-300 font-mono">4</b></label>
+            <input id="cores-range" type="range" min="1" max="16" step="1" value="4" class="w-full mt-1">
+            <div id="cores-dots" class="flex flex-wrap gap-1 mt-2"></div>
+          </div>
+        </div>
+        <div id="dev-analogy" class="mt-4 rounded-xl bg-black/40 border border-white/10 p-3 text-sm font-semibold text-slate-200"></div>
+      </div>
+      <div class="glass rounded-3xl p-6 reveal">
+        <span class="chip chip-amber">Característica 2</span>
+        <h3 class="font-display text-2xl font-bold mt-2">💾 Capacidad de almacenamiento</h3>
+        <p class="text-sm text-slate-400 mt-2">Se mide en GB y TB (ver pestaña 5). Compará velocidades de lectura:</p>
+        <div class="space-y-3 mt-4">
+          <div><div class="flex justify-between text-xs mb-1"><span>🗄️ HDD mecánico</span><span class="font-mono text-amber-300">~150 MB/s</span></div>
+            <div class="h-3 rounded-full bg-white/10"><div class="grow-bar h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-400" style="--w:12%"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span>⚡ SSD SATA</span><span class="font-mono text-cyan-300">~550 MB/s</span></div>
+            <div class="h-3 rounded-full bg-white/10"><div class="grow-bar h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-400" style="--w:42%"></div></div></div>
+          <div><div class="flex justify-between text-xs mb-1"><span>🚀 SSD NVMe</span><span class="font-mono text-lime-300">~7000 MB/s</span></div>
+            <div class="h-3 rounded-full bg-white/10"><div class="grow-bar h-full rounded-full bg-gradient-to-r from-lime-500 to-emerald-400" style="--w:100%"></div></div></div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3">El SSD no tiene partes móviles: arranca en segundos, no hace ruido y aguanta mejor los golpes. 💪</p>
+      </div>
+    </div>
+    <div class="lg:col-span-2 reveal">
+      <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/1eb11e246-42be-4ea6-af92-ca9379dcac2f.png"
+           alt="Collage de periféricos: parlantes, micrófono, escáner, monitor, teclado, mouse, impresora, disco, pendrive y router"
+           class="w-full h-full min-h-[280px] object-cover rounded-3xl ring-1 ring-white/10">
+    </div>
+  </div>
+
+  <div class="mt-10 reveal">
+    <h3 class="font-display text-2xl md:text-3xl font-bold">🔌 Clasificación de Periféricos</h3>
+    <p class="text-slate-400 mt-1">Los <b class="text-white">periféricos</b> son los dispositivos que conectamos a la unidad central. Se agrupan según el sentido del viaje del dato:</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+      <div class="glass rounded-2xl p-4 border-t-4 border-cyan-400"><h4 class="font-display font-bold">📥 De ENTRADA</h4><p class="text-xs text-slate-400 mt-1">Mandan datos <b>hacia</b> la compu.</p><p class="font-mono text-[10px] text-slate-500 mt-2">teclado · mouse · mic · escáner</p></div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-lime-400"><h4 class="font-display font-bold">📤 De SALIDA</h4><p class="text-xs text-slate-400 mt-1">Muestran resultados <b>al usuario</b>.</p><p class="font-mono text-[10px] text-slate-500 mt-2">monitor · impresora · parlantes</p></div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-amber-400"><h4 class="font-display font-bold">💾 ALMACENAMIENTO</h4><p class="text-xs text-slate-400 mt-1">Guardan grandes volúmenes de datos.</p><p class="font-mono text-[10px] text-slate-500 mt-2">HDD · SSD · pendrive</p></div>
+      <div class="glass rounded-2xl p-4 border-t-4 border-violet-400"><h4 class="font-display font-bold">🌐 CONECTIVIDAD</h4><p class="text-xs text-slate-400 mt-1">Comunican la compu con redes y otros equipos.</p><p class="font-mono text-[10px] text-slate-500 mt-2">placa de red · Wi-Fi · bluetooth · router</p></div>
+    </div>
+  </div>
+
+  <!-- 🎮 JUEGO de clasificación -->
+  <div class="mt-10 glass rounded-3xl p-6 md:p-8 reveal border-lime-400/20">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h3 class="font-display text-2xl font-bold">🎮 Juego: ¡clasificá los periféricos!</h3>
+        <p class="text-slate-400 text-sm mt-1">Arrastrá cada dispositivo a su categoría (o tocalo y luego tocá el casillero). <span class="text-amber-300">⭐ +10 XP por acierto · bono por completar y por juego perfecto.</span></p>
+      </div>
+      <button id="game-reset" class="btn-ghost">🔄 Reiniciar</button>
+    </div>
+
+    <div class="flex items-center gap-4 mt-4 text-sm font-mono">
+      <span class="text-lime-300">✔ Aciertos: <b id="hud-aciertos">0</b></span>
+      <span class="text-red-300">✘ Errores: <b id="hud-errores">0</b></span>
+      <div class="flex-1 h-2 rounded-full bg-white/10 overflow-hidden"><div id="hud-bar" class="h-full bg-gradient-to-r from-cyan-400 to-lime-400 transition-all" style="width:0%"></div></div>
+    </div>
+
+    <div id="pool" class="flex flex-wrap gap-2 min-h-[76px] rounded-2xl border border-dashed border-white/15 p-4 mt-4"></div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+      <div class="bin" data-cat="entrada"><div class="font-display font-bold text-cyan-300">📥 Entrada</div><div class="bin-items flex flex-wrap gap-1.5 mt-2"></div></div>
+      <div class="bin" data-cat="salida"><div class="font-display font-bold text-lime-300">📤 Salida</div><div class="bin-items flex flex-wrap gap-1.5 mt-2"></div></div>
+      <div class="bin" data-cat="almacenamiento"><div class="font-display font-bold text-amber-300">💾 Almacenamiento</div><div class="bin-items flex flex-wrap gap-1.5 mt-2"></div></div>
+      <div class="bin" data-cat="conectividad"><div class="font-display font-bold text-violet-300">🌐 Conectividad</div><div class="bin-items flex flex-wrap gap-1.5 mt-2"></div></div>
+    </div>
+
+    <div id="game-msg" class="mt-3 text-sm min-h-[1.4rem]"></div>
+    <div id="game-end" class="hidden mt-4 rounded-2xl border border-lime-400/50 bg-lime-400/10 p-5 text-center pop"></div>
+  </div>
+
+  <div class="mt-12" id="quiz-3"></div>
+
+  <div class="mt-10 flex justify-between">
+    <button class="btn-ghost" data-goto="2">⬅ Módulo anterior</button>
+    <button class="btn-ghost" data-goto="4">Siguiente: Binario ➜</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     📌 PESTAÑA 4 · SISTEMA BINARIO Y DIGITALIZACIÓN
+     ============================================================ -->
+<section class="panel" id="panel-4">
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="glass rounded-3xl p-6 md:p-8 reveal">
+      <span class="chip">Idea central</span>
+      <h2 class="font-display text-3xl font-bold mt-3">🔢 ¿Qué es el Sistema Binario?</h2>
+      <p class="mt-3 text-slate-300 text-sm leading-relaxed">
+        Nuestro sistema decimal usa 10 dígitos (0-9). El <b class="text-cyan-300">binario</b> usa solo <b class="text-white">dos: el 0 y el 1</b>. Cada dígito se llama <b class="text-white">bit</b>. ¿Por qué? Porque por dentro la compu tiene millones de interruptores microscópicos (transistores) con <b class="text-white">dos estados eléctricos</b>: con corriente (1) o sin corriente (0). 💡
+      </p>
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div class="rounded-xl bg-black/40 border border-white/10 p-3 text-center"><div class="font-mono text-2xl text-cyan-300 font-bold">1 bit</div><div class="text-[11px] text-slate-400">= un 0 ó un 1</div></div>
+        <div class="rounded-xl bg-black/40 border border-white/10 p-3 text-center"><div class="font-mono text-2xl text-violet-300 font-bold">1 byte</div><div class="text-[11px] text-slate-400">= 8 bits = 256 combinaciones</div></div>
+      </div>
+      <p class="text-xs text-slate-400 mt-4">Combinando bits, la compu representa números, letras, colores y sonidos. Ejemplo del código <b>ASCII</b>:</p>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <span class="font-mono text-xs bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5">A = 65</span>
+        <span class="font-mono text-xs bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5">B = 66</span>
+        <span class="font-mono text-xs bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5">a = 97</span>
+        <span class="font-mono text-xs bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5">0 = 48</span>
+        <span class="font-mono text-xs bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5">! = 33</span>
+      </div>
+      <div class="mt-5">
+        <label class="text-xs text-slate-400">✍️ Probá: escribí tu nombre y mirá cuánto "pesa": <span class="text-amber-300">⭐ +5 XP</span></label>
+        <input id="name-input" class="field mt-1" placeholder="Ej: Valentina">
+        <p id="name-bytes" class="font-mono text-xs text-cyan-300 mt-2 min-h-[1rem]"></p>
+        <p class="text-[10px] text-slate-500 mt-1">(Aproximación ASCII básico: con acentos o emojis cada carácter puede ocupar más bytes.)</p>
+      </div>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden reveal">
+      <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/159bee990-e307-4b82-8e50-8c613a661f82.png"
+           alt="Señal analógica transformándose en dígitos binarios y píxeles" class="w-full h-56 object-cover">
+      <div class="p-6">
+        <span class="chip chip-pink">Del mundo real al 0 y 1</span>
+        <h3 class="font-display text-2xl font-bold mt-2">🎛️ Digitalización</h3>
+        <p class="text-sm text-slate-400 mt-2">El mundo real es <b class="text-white">analógico</b>: continuo (la voz, la luz, el movimiento). <b class="text-white">Digitalizar</b> es convertir esas señales en números binarios mediante tres pasos:</p>
+        <ol class="mt-3 space-y-2 text-sm">
+          <li class="flex gap-2"><span class="font-mono text-cyan-300 font-bold">1.</span><span><b>Muestrear</b>: medir la señal miles de veces por segundo. 📸</span></li>
+          <li class="flex gap-2"><span class="font-mono text-violet-300 font-bold">2.</span><span><b>Cuantificar</b>: asignar un número a cada medición. 🔢</span></li>
+          <li class="flex gap-2"><span class="font-mono text-lime-300 font-bold">3.</span><span><b>Codificar</b>: escribir esos números en binario. 💾</span></li>
+        </ol>
+        <p class="text-xs text-slate-500 mt-3">Así tu canción favorita, una selfie o este mismo texto son, en el fondo, ¡millones de ceros y unos! ✨</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🎚️ MÁQUINA DE BITS -->
+  <div class="mt-10 glass rounded-3xl p-6 md:p-8 reveal border-cyan-400/20">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h3 class="font-display text-2xl font-bold">🎚️ La Máquina de Bits</h3>
+        <p class="text-slate-400 text-sm mt-1">Encendé (1) o apagá (0) los 8 interruptores y mirá el resultado en tiempo real. <span class="text-amber-300">⭐ +5 XP al usarla.</span></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs text-slate-400">Decimal:</label>
+        <input id="bin-dec-input" type="number" min="0" max="255" value="0" class="w-24 rounded-xl bg-black/40 border border-white/15 px-3 py-2 font-mono text-sm outline-none focus:border-cyan-400">
+      </div>
+    </div>
+
+    <div id="bit-panel" class="grid grid-cols-8 gap-1.5 md:gap-3 mt-6 max-w-2xl mx-auto"></div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 text-center">
+      <div class="rounded-2xl bg-black/40 border border-white/10 p-4"><div class="text-[10px] font-mono text-slate-500 tracking-widest">BINARIO</div><div id="bin-out" class="font-mono text-lg md:text-xl text-cyan-300 font-bold mt-1">0000 0000</div></div>
+      <div class="rounded-2xl bg-black/40 border border-white/10 p-4"><div class="text-[10px] font-mono text-slate-500 tracking-widest">DECIMAL</div><div id="dec-out" class="font-mono text-lg md:text-xl text-violet-300 font-bold mt-1">0</div></div>
+      <div class="rounded-2xl bg-black/40 border border-white/10 p-4"><div class="text-[10px] font-mono text-slate-500 tracking-widest">HEX</div><div id="hex-out" class="font-mono text-lg md:text-xl text-amber-300 font-bold mt-1">0x00</div></div>
+      <div class="rounded-2xl bg-black/40 border border-lime-400/40 p-4"><div class="text-[10px] font-mono text-slate-500 tracking-widest">CARÁCTER ASCII</div><div id="asc-out" class="font-mono text-lg md:text-xl text-lime-300 font-bold mt-1">—</div></div>
+    </div>
+    <p id="asc-note" class="text-center text-xs text-slate-500 mt-3"></p>
+
+    <div class="flex flex-wrap justify-center gap-2 mt-5">
+      <button class="btn-ghost bit-preset" data-val="65">🅰️ Letra A</button>
+      <button class="btn-ghost bit-preset" data-val="90">🆉 Letra Z</button>
+      <button class="btn-ghost bit-preset" data-val="48">0️⃣ Cero</button>
+      <button class="btn-ghost bit-preset" data-val="255">🔥 Todo en 1</button>
+      <button class="btn-ghost bit-preset" data-val="rand">🎲 Sorprendeme</button>
+      <button class="btn-ghost bit-preset" data-val="0">🌙 Apagar todo</button>
+    </div>
+  </div>
+
+  <div class="mt-12" id="quiz-4"></div>
+
+  <div class="mt-10 flex justify-between">
+    <button class="btn-ghost" data-goto="3">⬅ Módulo anterior</button>
+    <button class="btn-ghost" data-goto="5">Siguiente: Unidades ➜</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     📌 PESTAÑA 5 · UNIDADES DE MEDIDA DE LA INFORMACIÓN
+     ============================================================ -->
+<section class="panel" id="panel-5">
+
+  <div class="glass rounded-3xl p-6 md:p-8 reveal">
+    <span class="chip chip-amber">La escalera</span>
+    <h2 class="font-display text-3xl font-bold mt-3">📐 De bit a Yottabyte</h2>
+    <p class="text-slate-400 text-sm mt-2">Cada escalón multiplica al anterior por <b class="text-white">1024</b> (2¹⁰, criterio de base 2):</p>
+    <div class="mt-5 space-y-1.5">
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-cyan-400/10 border border-cyan-400/20"><span class="font-display font-bold text-cyan-300 w-14">bit</span><span class="text-xs text-slate-400 flex-1">Un 0 ó un 1 · 2 valores posibles</span><span class="font-mono text-[10px] text-slate-500">origen</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-cyan-400/10 border border-cyan-400/20 md:ml-6"><span class="font-display font-bold text-cyan-300 w-14">B</span><span class="text-xs text-slate-400 flex-1">Byte = 8 bits · una letra</span><span class="font-mono text-[10px] text-slate-500">×8 bits</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-violet-400/10 border border-violet-400/20 md:ml-12"><span class="font-display font-bold text-violet-300 w-14">KB</span><span class="text-xs text-slate-400 flex-1">Kilobyte</span><span class="font-mono text-[10px] text-slate-500">×1024 B</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-violet-400/10 border border-violet-400/20 md:ml-[72px]"><span class="font-display font-bold text-violet-300 w-14">MB</span><span class="text-xs text-slate-400 flex-1">Megabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 KB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-lime-400/10 border border-lime-400/20 md:ml-24"><span class="font-display font-bold text-lime-300 w-14">GB</span><span class="text-xs text-slate-400 flex-1">Gigabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 MB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-lime-400/10 border border-lime-400/20 md:ml-[120px]"><span class="font-display font-bold text-lime-300 w-14">TB</span><span class="text-xs text-slate-400 flex-1">Terabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 GB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-amber-400/10 border border-amber-400/20 md:ml-32"><span class="font-display font-bold text-amber-300 w-14">PB</span><span class="text-xs text-slate-400 flex-1">Petabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 TB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-amber-400/10 border border-amber-400/20 md:ml-[168px]"><span class="font-display font-bold text-amber-300 w-14">EB</span><span class="text-xs text-slate-400 flex-1">Exabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 PB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-pink-400/10 border border-pink-400/20 md:ml-44"><span class="font-display font-bold text-pink-300 w-14">ZB</span><span class="text-xs text-slate-400 flex-1">Zettabyte</span><span class="font-mono text-[10px] text-slate-500">×1024 EB</span></div>
+      <div class="flex items-center gap-3 rounded-xl px-4 py-2.5 bg-pink-400/10 border border-pink-400/20 md:ml-[216px]"><span class="font-display font-bold text-pink-300 w-14">YB</span><span class="text-xs text-slate-400 flex-1">Yottabyte 🚀</span><span class="font-mono text-[10px] text-slate-500">×1024 ZB</span></div>
+    </div>
+    <div class="mt-5 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4 text-xs text-slate-300">
+      🤔 <b>¿1024 o 1000?</b> En informática se usa <b>1024</b> (potencia de 2). Los fabricantes de discos suelen usar 1000: por eso un disco "1 TB" muestra unos <b>931 GB</b> en Windows. ¡No te estafaron, es una diferencia de criterio! (Para ser precisos existen los nombres KiB, MiB, GiB…).
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6 mt-8">
+    <div class="glass rounded-3xl p-6 md:p-8 reveal">
+      <h3 class="font-display text-2xl font-bold">🎚️ La escala con analogías</h3>
+      <p class="text-slate-400 text-sm mt-1">Mové el deslizador y compará cada unidad con algo de tu vida. <span class="text-amber-300">⭐ +5 XP</span></p>
+      <input id="unit-range" type="range" min="0" max="9" step="1" value="3" class="w-full mt-5">
+      <div id="unit-ticks" class="flex justify-between font-mono text-[9px] md:text-[10px] text-slate-500 mt-1"></div>
+      <div id="unit-card" class="mt-5 rounded-2xl p-6 text-center bg-gradient-to-br from-cyan-500/10 to-violet-500/10 border border-cyan-400/30 min-h-[220px] flex flex-col justify-center"></div>
+    </div>
+
+    <div class="glass rounded-3xl p-6 md:p-8 reveal">
+      <h3 class="font-display text-2xl font-bold">🧮 Conversor de unidades</h3>
+      <p class="text-slate-400 text-sm mt-1">Ingresá un valor y mirá todas las equivalencias al instante (base 1024). <span class="text-amber-300">⭐ +5 XP</span></p>
+      <div class="flex gap-3 mt-4">
+        <input id="conv-val" type="number" min="0" step="any" value="1" class="flex-1 rounded-xl bg-black/40 border border-white/15 px-4 py-2.5 font-mono outline-none focus:border-cyan-400">
+        <select id="conv-unit" class="rounded-xl bg-black/40 border border-white/15 px-3 py-2.5 font-mono outline-none focus:border-cyan-400"></select>
+      </div>
+      <div id="conv-out" class="mt-4 space-y-1.5 font-mono text-xs md:text-sm"></div>
+    </div>
+  </div>
+
+  <img src="https://image.qwenlm.ai/public_source/76d509de-9d7d-4504-9bfc-349641526379/128cca556-44cc-4036-83f4-c3172f537bcd.png"
+       alt="Evolución del almacenamiento: disquette, CD, pendrive, HDD, SSD y servidores en la nube"
+       class="w-full h-56 md:h-72 object-cover rounded-3xl ring-1 ring-white/10 mt-8 reveal">
+
+  <div class="mt-12" id="quiz-5"></div>
+
+  <div class="mt-10 flex justify-between">
+    <button class="btn-ghost" data-goto="4">⬅ Módulo anterior</button>
+    <button class="btn-ghost" data-goto="6">Ir a la Evaluación Final 🎓 ➜</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     📌 PESTAÑA 6 · EVALUACIÓN FINAL INTEGRADORA (15 preguntas)
+     ============================================================ -->
+<section class="panel" id="panel-6">
+  <div class="glass rounded-3xl p-6 md:p-8 reveal border-pink-400/20">
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <span class="chip chip-pink">Instancia integradora</span>
+        <h2 class="font-display text-3xl font-bold mt-3">🎓 Evaluación Final · Todas las unidades</h2>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">15 preguntas que integran los 5 módulos. Respondé todo y presioná <b class="text-white">Entregar</b>: vas a ver la corrección pregunta por pregunta con su explicación.</p>
+      </div>
+      <div class="text-right">
+        <div class="text-xs text-slate-500 uppercase tracking-widest">Aprobación</div>
+        <div class="font-display text-2xl font-bold text-lime-300">60% <span class="text-sm text-slate-400 font-body">(9/15)</span></div>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-3 mt-5 text-xs text-slate-400">
+      <div class="rounded-xl bg-black/30 border border-white/10 p-3">🧩 Cubre las unidades 1 a 5</div>
+      <div class="rounded-xl bg-black/30 border border-white/10 p-3">⭐ +25 XP por respuesta correcta · +100 al entregar · +100 extra si aprobás</div>
+      <div class="rounded-xl bg-black/30 border border-white/10 p-3">🏅 Otorga la insignia 🎓 y se suma a tu <b class="text-white">Reporte</b></div>
+    </div>
+
+    <div class="h-2 rounded-full bg-white/10 mt-5 overflow-hidden"><div id="final-bar" class="h-full bg-gradient-to-r from-pink-400 to-amber-400 transition-all" style="width:0%"></div></div>
+
+    <div id="final-list" class="space-y-4 mt-5"></div>
+
+    <div class="sticky bottom-4 z-20 mt-6">
+      <div class="glass rounded-2xl p-4 flex justify-between items-center gap-3 bg-[#0c1322]/95 backdrop-blur">
+        <span id="final-count" class="font-mono text-sm text-slate-300">Respondidas: 0/15</span>
+        <button id="final-submit" class="btn-primary">📨 Entregar evaluación</button>
+      </div>
+    </div>
+
+    <div id="final-result" class="hidden mt-6"></div>
+  </div>
+
+  <div class="mt-10 flex justify-between">
+    <button class="btn-ghost" data-goto="5">⬅ Volver a Unidades</button>
+    <button class="btn-ghost" id="btn-reporte-2">📄 Generar mi Reporte</button>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     🦶 PIE
+     ============================================================ -->
+<footer class="max-w-6xl mx-auto px-4 py-10 text-center text-sm text-slate-500 border-t border-white/5 mt-6">
+  <p>📚 Material didáctico interactivo — <b class="text-slate-400">NTiCx · «Hardware y Fundamentos del Computador»</b> — 4.º año, Escuela Secundaria (Argentina).</p>
+  <p class="mt-1 text-xs">Tu progreso (XP, insignias y respuestas) se guarda solo en este navegador.</p>
+  <button id="reset-prog" class="mt-3 text-xs underline hover:text-slate-300 transition">Borrar todo mi progreso (insignias, XP y respuestas)</button>
+</footer>
+
+</div><!-- /app-wrap -->
+
+<!-- ============================================================
+     🪟 MODAL de componentes (Pestaña 2)
+     ============================================================ -->
+<div id="modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="cerrarModales()"></div>
+  <div class="relative glass rounded-3xl max-w-lg w-full p-6 md:p-7 bg-[#0c1322] pop max-h-[85vh] overflow-y-auto">
+    <button onclick="cerrarModales()" class="absolute top-4 right-4 w-9 h-9 rounded-full border border-white/15 text-slate-400 hover:text-white hover:border-red-400 transition" aria-label="Cerrar">✕</button>
+    <div class="flex items-center gap-4">
+      <div id="m-icon" class="text-4xl">🧠</div>
+      <div><h3 id="m-name" class="font-display text-xl font-bold"></h3><span id="m-cat" class="chip chip-violet mt-1"></span></div>
+    </div>
+    <div class="mt-4"><h4 class="text-xs font-bold tracking-widest text-cyan-300">¿QUÉ HACE?</h4><p id="m-func" class="text-sm text-slate-300 mt-1"></p></div>
+    <div class="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/5 p-4"><h4 class="text-xs font-bold tracking-widest text-amber-300">🎯 ANALOGÍA</h4><p id="m-ana" class="text-sm text-slate-300 mt-1"></p></div>
+    <div class="mt-4"><h4 class="text-xs font-bold tracking-widest text-lime-300">CARACTERÍSTICAS</h4><ul id="m-datos" class="text-sm text-slate-300 mt-1 space-y-1"></ul></div>
+    <div class="mt-4 rounded-xl bg-black/40 border border-white/10 p-4 text-xs text-slate-400">💡 <b class="text-slate-300">Dato curioso:</b> <span id="m-curio"></span></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     📄 MODAL "MI REPORTE" (datos del alumno + trivias acumuladas)
+     ============================================================ -->
+<div id="reporte-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="cerrarModales()"></div>
+  <div class="relative glass rounded-3xl max-w-4xl w-full p-6 md:p-7 bg-[#0c1322] pop max-h-[92vh] overflow-y-auto">
+    <button onclick="cerrarModales()" class="absolute top-4 right-4 w-9 h-9 rounded-full border border-white/15 text-slate-400 hover:text-white hover:border-red-400 transition z-10" aria-label="Cerrar">✕</button>
+    <h3 class="font-display text-2xl font-bold">📄 Mi Reporte de Aprendizaje</h3>
+    <p class="text-sm text-slate-400 mt-1">Completá tus datos. El reporte incluye el <b class="text-white">detalle de TODAS las preguntas y respuestas</b> de cada módulo (con la respuesta correcta y su explicación), tu XP y tus insignias.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mt-4">
+      <div><label class="text-xs text-slate-400">Nombre y apellido</label><input id="rp-nombre" class="field mt-1" placeholder="Ej: Juana Pérez"></div>
+      <div><label class="text-xs text-slate-400">Escuela</label><input id="rp-escuela" class="field mt-1" placeholder="Ej: E.E.S.T. N.º 1"></div>
+      <div><label class="text-xs text-slate-400">Curso</label><input id="rp-curso" class="field mt-1" placeholder="Ej: 4.º año"></div>
+      <div><label class="text-xs text-slate-400">División</label><input id="rp-div" class="field mt-1" placeholder="Ej: 2.ª"></div>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button id="rp-generar" class="btn-primary">🔄 Generar reporte</button>
+      <button id="rp-imprimir" class="btn-ghost">🖨️ Imprimir reporte (A4)</button>
+    </div>
+    <!-- Vista previa con el MISMO formato del documento impreso -->
+    <div id="rp-preview" class="doc mt-5 rounded-2xl bg-white p-5 md:p-8 overflow-auto" style="max-height:55vh"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     📖 MODAL "GLOSARIO"
+     ============================================================ -->
+<div id="glosario-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="cerrarModales()"></div>
+  <div class="relative glass rounded-3xl max-w-3xl w-full p-6 md:p-7 bg-[#0c1322] pop max-h-[90vh] overflow-hidden flex flex-col">
+    <button onclick="cerrarModales()" class="absolute top-4 right-4 w-9 h-9 rounded-full border border-white/15 text-slate-400 hover:text-white hover:border-red-400 transition z-10" aria-label="Cerrar">✕</button>
+    <h3 class="font-display text-2xl font-bold">📖 Glosario de Hardware</h3>
+    <p class="text-sm text-slate-400 mt-1"><span id="glo-count"></span> términos con definiciones detalladas. Buscá o filtrá por categoría:</p>
+    <input id="glo-search" class="field mt-3" placeholder="🔎 Buscar término… (ej: RAM, bit, router)">
+    <div id="glo-chips" class="flex flex-wrap gap-2 mt-3"></div>
+    <div id="glo-list" class="mt-4 space-y-2 overflow-y-auto pr-1" style="max-height:56vh"></div>
+  </div>
+</div>
+
+<!-- ⭐ Toast de puntos -->
+<div id="xp-toast" class="no-print"></div>
+
+<!-- ============================================================
+     🖨️ ÁREA IMPRIMIBLE 1 · REPORTE DEL ALUMNO (A4)
+     🔧 Con clase .doc en el contenedor: nunca hereda la interfaz.
+     ============================================================ -->
+<div id="print-reporte" class="doc"></div>
+
+<!-- ============================================================
+     🖨️ ÁREA IMPRIMIBLE 2 · TEORÍA COMPLETA (A4)
+     ============================================================ -->
+<div id="print-teoria" class="doc">
+  <h1>Hardware y Fundamentos del Computador — Teoría completa</h1>
+  <p><b>NTiCx</b> · Nuevas Tecnologías de la Información y la Conectividad — 4.º Año · Escuela Secundaria (Argentina)</p>
+  <p class="fill">Nombre y apellido: ____________________________________ &nbsp; Escuela: ____________________________________ &nbsp; Curso: _______ &nbsp; División: _______ &nbsp; Fecha: ____ / ____ / ________</p>
+
+  <h2>Módulo 1 · Sistema Informático y Proceso Computacional</h2>
+  <p><b>Sistema Informático:</b> conjunto de elementos que trabajan en equipo para recibir, procesar, almacenar y entregar información. Está formado por tres componentes inseparables:</p>
+  <table>
+    <tr><th style="width:22%">Componente</th><th style="width:40%">¿Qué es?</th><th>Ejemplos</th></tr>
+    <tr><td><b>Hardware 🔩</b></td><td>La parte física y tangible del sistema.</td><td>CPU, RAM, teclado, monitor, cables, SSD.</td></tr>
+    <tr><td><b>Software 🧠</b></td><td>Los programas e instrucciones (lógica, no se toca).</td><td>Sistema operativo, WhatsApp, juegos, navegador.</td></tr>
+    <tr><td><b>Humanware 👤</b></td><td>Las personas que usan, programan, mantienen o reparan el sistema.</td><td>Usuarios, técnicos, programadores.</td></tr>
+  </table>
+  <h3>El Proceso Computacional</h3>
+  <p>Toda tarea repite un ciclo de etapas:</p>
+  <table>
+    <tr><th style="width:22%">Etapa</th><th style="width:44%">Descripción</th><th>Dispositivos típicos</th></tr>
+    <tr><td>1. ENTRADA 📥</td><td>Los datos ingresan al sistema.</td><td>Teclado, mouse, micrófono, cámara, escáner.</td></tr>
+    <tr><td>2. PROCESAMIENTO ⚙️</td><td>La CPU interpreta, transforma y calcula.</td><td>CPU (UC + ALU).</td></tr>
+    <tr><td>3. SALIDA 📤</td><td>El resultado se entrega al usuario.</td><td>Monitor, parlantes, impresora.</td></tr>
+    <tr><td>ALMACENAMIENTO 💾</td><td>Etapa paralela: guarda datos para el futuro y también los aporta.</td><td>HDD, SSD, pendrive, nube.</td></tr>
+  </table>
+
+  <div class="mod">
+  <h2>Módulo 2 · Arquitectura y Componentes de la Computadora</h2>
+  <h3>La CPU (Unidad Central de Procesamiento)</h3>
+  <p>Es el "cerebro" del sistema: ejecuta instrucciones, realiza cálculos y coordina los demás componentes. Su velocidad se mide en <b>GHz</b> y su capacidad de trabajo paralelo, en <b>núcleos</b>. Internamente se divide en:</p>
+  <ul>
+    <li><b>UC (Unidad de Control):</b> "directora de orquesta". Busca las instrucciones en la memoria, las interpreta y ordena su ejecución. No calcula: coordina.</li>
+    <li><b>ALU (Unidad Aritmético-Lógica):</b> realiza las operaciones matemáticas (+, −, comparaciones) y lógicas (AND, OR, NOT).</li>
+    <li><b>Registros:</b> memoria ultrarrápida interna que guarda los datos que se están usando en el instante.</li>
+  </ul>
+  <h3>Memorias RAM y ROM</h3>
+  <table>
+    <tr><th>Característica</th><th>RAM (Random Access Memory)</th><th>ROM (Read Only Memory)</th></tr>
+    <tr><td>Volatilidad</td><td>Volátil: se borra al apagar.</td><td>No volátil: conserva datos sin energía.</td></tr>
+    <tr><td>Uso</td><td>Lectura y escritura constantes.</td><td>Principalmente lectura.</td></tr>
+    <tr><td>Función</td><td>Mesa de trabajo temporal de la CPU.</td><td>Guarda el firmware (BIOS/UEFI) de arranque.</td></tr>
+    <tr><td>Velocidad</td><td>Muy rápida.</td><td>Más lenta, pero permanente.</td></tr>
+    <tr><td>Capacidad típica</td><td>8 a 32 GB.</td><td>Pocos MB.</td></tr>
+  </table>
+  <h3>La Placa Madre (Motherboard)</h3>
+  <p>Es la placa de circuitos principal: <b>interconecta y comunica</b> todos los componentes (CPU, memorias, discos, puertos y tarjetas de expansión) y distribuye la energía.</p>
+  <table>
+    <tr><th>N.º</th><th>Componente</th><th>Función</th><th>Analogía</th></tr>
+    <tbody id="teoria-mobo"></tbody>
+  </table>
+  </div>
+
+  <div class="mod">
+  <h2>Módulo 3 · Características del Computador y Periféricos</h2>
+  <h3>Velocidad de procesamiento</h3>
+  <ul>
+    <li><b>GHz (gigahertz):</b> miles de millones de ciclos de reloj por segundo. 3 GHz ≈ 3.000 millones de ciclos/s. En cada ciclo el procesador puede avanzar en una tarea.</li>
+    <li><b>Núcleos (cores):</b> unidades de procesamiento independientes dentro del CPU. Más núcleos = más tareas en paralelo.</li>
+  </ul>
+  <h3>Capacidad de almacenamiento</h3>
+  <table>
+    <tr><th>Tecnología</th><th>Velocidad aprox.</th><th>Partes móviles</th><th>Ventajas / desventajas</th></tr>
+    <tr><td>HDD (disco rígido)</td><td>~150 MB/s</td><td>Sí (platos magnéticos)</td><td>Barato y de gran capacidad; lento y sensible a golpes.</td></tr>
+    <tr><td>SSD SATA</td><td>~550 MB/s</td><td>No (memoria flash)</td><td>Rápido, silencioso y resistente; más caro por GB.</td></tr>
+    <tr><td>SSD NVMe (M.2)</td><td>hasta ~7.000 MB/s</td><td>No</td><td>El más veloz; se conecta directo a la placa madre.</td></tr>
+  </table>
+  <h3>Clasificación de periféricos</h3>
+  <table>
+    <tr><th>Categoría</th><th>Función</th><th>Ejemplos</th></tr>
+    <tr><td>📥 Entrada</td><td>Envían información hacia la computadora.</td><td>Teclado, mouse, micrófono, escáner, cámara web.</td></tr>
+    <tr><td>📤 Salida</td><td>Entregan el resultado al usuario.</td><td>Monitor, impresora, parlantes, auriculares.</td></tr>
+    <tr><td>💾 Almacenamiento masivo</td><td>Guardan grandes volúmenes de datos.</td><td>HDD, SSD, pendrive, tarjeta SD, nube.</td></tr>
+    <tr><td>🌐 Conectividad</td><td>Comunican con redes y otros dispositivos.</td><td>Tarjeta de red, Wi-Fi, Bluetooth, router.</td></tr>
+  </table>
+  </div>
+
+  <div class="mod">
+  <h2>Módulo 4 · Sistema Binario y Digitalización</h2>
+  <p><b>Sistema binario:</b> sistema de numeración en base 2 que usa solo dos dígitos: <b>0 y 1</b>. Cada dígito se llama <b>bit</b>. Las computadoras lo usan porque sus transistores tienen dos estados eléctricos estables: con corriente (1) y sin corriente (0).</p>
+  <ul>
+    <li><b>1 bit</b> = un 0 ó un 1.</li>
+    <li><b>1 byte</b> = 8 bits = 256 combinaciones posibles (2⁸). Alcanza para representar un carácter.</li>
+  </ul>
+  <h3>Conversión binario → decimal (ejemplo con 8 bits)</h3>
+  <table>
+    <tr><th>Peso del bit</th><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+    <tr><th>Bits</th><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+  </table>
+  <p>01000001₂ = 64 + 1 = <b>65</b> en decimal = letra <b>«A»</b> en código <b>ASCII</b> (tabla que asigna un número a cada carácter: A=65, a=97, 0=48…).</p>
+  <h3>Digitalización</h3>
+  <p>Convertir señales <b>analógicas</b> (continuas: voz, luz, movimiento) en valores numéricos <b>binarios</b>. Pasos: <b>1)</b> Muestrear (medir muchas veces por segundo) → <b>2)</b> Cuantificar (asignar un número a cada muestra) → <b>3)</b> Codificar (expresarlo en binario). Así se digitalizan audios, fotos y textos.</p>
+
+  <h2>Módulo 5 · Unidades de Medida de la Información</h2>
+  <p>Se multiplica de a <b>1024</b> (2¹⁰) en cada escalón:</p>
+  <table>
+    <tr><th>Unidad</th><th>Símbolo</th><th>Equivale a</th><th>Analogía cotidiana</th></tr>
+    <tr><td>Bit</td><td>b</td><td>0 ó 1</td><td>Un interruptor prendido/apagado.</td></tr>
+    <tr><td>Byte</td><td>B</td><td>8 bits</td><td>Una letra («A»).</td></tr>
+    <tr><td>Kilobyte</td><td>KB</td><td>1.024 B</td><td>Media página de texto.</td></tr>
+    <tr><td>Megabyte</td><td>MB</td><td>1.024 KB</td><td>Una canción MP3 (3–5 MB) o una foto.</td></tr>
+    <tr><td>Gigabyte</td><td>GB</td><td>1.024 MB</td><td>Una película HD (~4 GB); ~256 canciones.</td></tr>
+    <tr><td>Terabyte</td><td>TB</td><td>1.024 GB</td><td>Miles de películas; discos de consolas.</td></tr>
+    <tr><td>Petabyte</td><td>PB</td><td>1.024 TB</td><td>Lo que maneja un servicio de streaming.</td></tr>
+    <tr><td>Exabyte</td><td>EB</td><td>1.024 PB</td><td>Miles de bibliotecas digitalizadas.</td></tr>
+    <tr><td>Zettabyte</td><td>ZB</td><td>1.024 EB</td><td>Datos que genera la humanidad en un año (~120 ZB).</td></tr>
+    <tr><td>Yottabyte</td><td>YB</td><td>1.024 ZB</td><td>Aún teórico: nada llega ni cerca.</td></tr>
+  </table>
+  <div class="box"><b>¿1024 o 1000?</b> La informática usa 1024 (base 2). Los fabricantes de discos usan 1000: por eso un disco de «1 TB» muestra ~931 GB en el sistema operativo. Los nombres precisos en base 2 son KiB, MiB, GiB, etc.</div>
+  </div>
+
+  <div class="mod">
+  <h2>Anexo · Glosario completo</h2>
+  <div id="teoria-glosario"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   🎓 SCRIPT PRINCIPAL — todo el comportamiento interactivo del aula
+   ================================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+/* ---------------- 🧭 NAVEGACIÓN POR PESTAÑAS ---------------- */
+function showTab(n, push = true){
+  $$('.tab-btn').forEach(t => { const on = t.dataset.tab == n; t.classList.toggle('active', on); t.setAttribute('aria-selected', on); });
+  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + n));
+  if (push) history.replaceState(null, '', '#tab' + n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => $('#panel-' + n).querySelectorAll('.reveal').forEach(el => el.classList.add('vis')), 60);
+}
+$$('.tab-btn').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+$$('[data-goto]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.goto)));
+
+/* ---------------- 👀 Revelado al hacer scroll ---------------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); } }), { threshold: .12 });
+$$('.reveal').forEach(el => io.observe(el));
+
+/* ================================================================
+   ⭐ SISTEMA DE PUNTAJE (XP) POR INTERACCIÓN
+   ================================================================ */
+const NIVELES = [[0,'🐣 Novato/a'],[150,'🔍 Explorador/a'],[400,'🛠️ Técnico/a Jr'],[750,'💻 Hacker Ético/a'],[1150,'🏆 Maestro/a del Hardware']];
+function loadXPLog(){ try { return JSON.parse(localStorage.getItem('nticx_xplog')) || {}; } catch(e){ return {}; } }
+function saveXPLog(l){ localStorage.setItem('nticx_xplog', JSON.stringify(l)); }
+function totalXP(){ return Object.values(loadXPLog()).reduce((a,b) => a + b, 0); }
+function nivelDe(x){ let n = NIVELES[0][1]; NIVELES.forEach(([m,t]) => { if (x >= m) n = t; }); return n; }
+function updateXPUI(){ const x = totalXP(); $('#xp-total').textContent = x.toLocaleString('es-AR'); $('#xp-level').textContent = nivelDe(x); }
+let toastTimer = null;
+function xpToast(msg){
+  const t = $('#xp-toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2300);
+}
+function awardXP(key, pts, label){
+  const log = loadXPLog();
+  if (log[key]) return false;
+  log[key] = pts; saveXPLog(log); updateXPUI();
+  xpToast('⭐ +' + pts + ' XP · ' + label);
+  return true;
+}
+updateXPUI();
+
+/* ================================================================
+   🏅 INSIGNIAS (localStorage)
+   ================================================================ */
+function loadBadges(){
+  try { const b = JSON.parse(localStorage.getItem('nticx_badges'));
+    if (Array.isArray(b)) { while (b.length < 6) b.push(false); return b.slice(0,6); }
+  } catch(e){}
+  return [false,false,false,false,false,false];
+}
+function paintBadges(){
+  const b = loadBadges(); let c = 0;
+  b.forEach((v,i) => { const el = $('#badge-' + (i+1)); if (el) el.classList.toggle('unlocked', v); if (v) c++; });
+  $('#badge-count').textContent = c + '/6 módulos completados';
+}
+function awardBadge(n){
+  const b = loadBadges();
+  if (!b[n-1]){ b[n-1] = true; localStorage.setItem('nticx_badges', JSON.stringify(b)); const el = $('#badge-' + n); if (el) el.classList.add('unlocked','pop'); }
+  paintBadges();
+}
+$('#reset-prog').addEventListener('click', () => {
+  if (!confirm('¿Seguro? Se borrarán tus insignias, tu XP y todas las respuestas registradas.')) return;
+  ['nticx_badges','nticx_xplog','nticx_respuestas'].forEach(k => localStorage.removeItem(k));
+  paintBadges(); updateXPUI(); xpToast('🧹 Progreso reiniciado');
+});
+paintBadges();
+
+/* ================================================================
+   🧾 REGISTRO ACUMULATIVO DE RESPUESTAS (para el Reporte)
+   ================================================================ */
+function loadResp(){ try { return JSON.parse(localStorage.getItem('nticx_respuestas')) || {}; } catch(e){ return {}; } }
+function logAnswer(mod, qi, chosen, ok){
+  const r = loadResp();
+  if (!r[mod]) r[mod] = [];
+  r[mod].push({ qi, chosen, ok, f: Date.now() });
+  localStorage.setItem('nticx_respuestas', JSON.stringify(r));
+}
+
+/* ================================================================
+   🎯 MOTOR DE QUIZ (mini-tests de los 5 módulos)
+   ================================================================ */
+const QUIZZES = {
+ 1: [
+  { q:'¿Cuáles son los tres elementos que forman un Sistema Informático?', ops:['Monitor, teclado y mouse','Hardware, Software y Humanware','CPU, RAM y ROM','Internet, datos y programas'], a:1, exp:'Hardware = lo físico, Software = programas, Humanware = las personas.' },
+  { q:'¿Cuál es el orden correcto del proceso computacional?', ops:['Entrada → Salida → Procesamiento','Salida → Procesamiento → Entrada','Entrada → Procesamiento → Salida','Procesamiento → Entrada → Salida'], a:2, exp:'Los datos ENTRAN, la CPU los PROCESA y el resultado SALE (y puede guardarse).' },
+  { q:'Cuando presionás una tecla, el teclado cumple la función de…', ops:['Salida','Almacenamiento','Entrada','Procesamiento'], a:2, exp:'El teclado ENVÍA datos hacia la compu: es un periférico de entrada.' },
+  { q:'El «Humanware» se refiere a…', ops:['Los robots industriales','Las personas que usan, programan o mantienen el sistema','Los videojuegos','El Wi-Fi del colegio'], a:1, exp:'Sin personas no hay sistema informático: ¡vos sos parte del sistema!' }
+ ],
+ 2: [
+  { q:'¿Qué pasa con la información de la memoria RAM cuando apagás la computadora?', ops:['Se guarda para siempre','Se borra','Se imprime sola','Pasa a la ROM'], a:1, exp:'La RAM es VOLÁTIL: es su mesa de trabajo temporal.' },
+  { q:'La CPU se divide principalmente en…', ops:['ALU y UC','RAM y ROM','USB y HDMI','HDD y SSD'], a:0, exp:'ALU calcula y compara; UC dirige y coordina.' },
+  { q:'La BIOS que arranca la compu está guardada en…', ops:['La RAM','El pendrive','La ROM','La placa de video'], a:2, exp:'La ROM conserva el firmware aunque no haya energía.' },
+  { q:'La función principal de la placa madre es…', ops:['Enfriar el procesador','Conectar y comunicar todos los componentes','Mostrar las imágenes','Fabricar electricidad'], a:1, exp:'Es la gran placa de interconexión: CPU, RAM, discos y puertos hablan a través de ella.' }
+ ],
+ 3: [
+  { q:'El micrófono es un periférico de…', ops:['Salida','Entrada','Almacenamiento','Conectividad'], a:1, exp:'Envía tu voz HACIA la compu: entrada.' },
+  { q:'¿Cuál de estos es un periférico de almacenamiento masivo?', ops:['Monitor','Disco SSD','Router','Impresora'], a:1, exp:'El SSD guarda grandes volúmenes de datos de forma permanente.' },
+  { q:'Los GHz de un procesador indican…', ops:['El tamaño del chip','La cantidad de ciclos por segundo (velocidad)','Los colores de la pantalla','La memoria disponible'], a:1, exp:'3 GHz = 3.000 millones de ciclos por segundo.' },
+  { q:'Un router, una placa de red y el Bluetooth son periféricos de…', ops:['Conectividad','Salida','Entrada','Almacenamiento'], a:0, exp:'Comunican la compu con redes y otros dispositivos.' }
+ ],
+ 4: [
+  { q:'¿Qué valores puede tomar un bit?', ops:['0 ó 1','Del 0 al 9','De la A a la Z','-1 y +1'], a:0, exp:'Bit = binary digit: dos estados, como un interruptor.' },
+  { q:'Un byte equivale a…', ops:['4 bits','8 bits','16 bits','1024 bits'], a:1, exp:'8 bits = 256 combinaciones: alcanza para una letra.' },
+  { q:'¿Por qué las computadoras usan sistema binario?', ops:['Porque es más fácil representar 2 estados eléctricos','Porque es más divertido','Para gastar menos tinta','Porque no conocen otros números'], a:0, exp:'Con corriente = 1, sin corriente = 0: simple y confiable.' },
+  { q:'El número binario 00001010 equivale en decimal a…', ops:['8','10','12','20'], a:1, exp:'8 + 2 = 10. ¡Sumá los valores de las posiciones con 1!' }
+ ],
+ 5: [
+  { q:'Ordená de MENOR a MAYOR:', ops:['Byte, Bit, KB, MB','Bit, Byte, KB, MB, GB','KB, MB, GB, Byte','GB, MB, KB, Bit'], a:1, exp:'Bit < Byte < KB < MB < GB… cada escalón ×1024.' },
+  { q:'1 GB equivale aproximadamente a…', ops:['100 KB','1024 KB','1024 MB','8 bits'], a:2, exp:'1 GB = 1024 MB = 1.048.576 KB.' },
+  { q:'Si una canción ocupa 4 MB, en 1 GB entran aproximadamente…', ops:['4','25','256','1 millón'], a:2, exp:'1024 ÷ 4 = 256 canciones. ¡Todo un álbum y más!' },
+  { q:'La unidad más grande de esta lista es…', ops:['Terabyte','Petabyte','Exabyte','Yottabyte'], a:3, exp:'El YB es el escalón más alto definido hasta hoy.' }
+ ]
+};
+
+function initQuiz(n){
+  const box = $('#quiz-' + n); const qs = QUIZZES[n];
+  let i = 0, score = 0, answered = false;
+  function render(){
+    answered = false;
+    const q = qs[i]; const pct = (i / qs.length) * 100;
+    box.innerHTML =
+      '<div class="glass rounded-3xl p-6 md:p-8 border border-violet-400/20">' +
+        '<div class="flex items-center justify-between flex-wrap gap-2">' +
+          '<h3 class="font-display text-2xl font-bold">🎯 Mini-test · Módulo ' + n + '</h3>' +
+          '<span class="chip chip-violet">Pregunta ' + (i+1) + '/' + qs.length + '</span>' +
+        '</div>' +
+        '<div class="h-2 rounded-full bg-white/10 mt-4 overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-400 to-violet-400 transition-all" style="width:' + pct + '%"></div></div>' +
+        '<p class="mt-5 text-lg font-semibold text-slate-100">' + q.q + '</p>' +
+        '<div class="grid md:grid-cols-2 gap-2.5 mt-4">' +
+          q.ops.map((op,k) => '<button class="opt" data-k="' + k + '"><span class="opt-letter">' + String.fromCharCode(65+k) + '</span><span>' + op + '</span></button>').join('') +
+        '</div>' +
+        '<div id="feed-' + n + '" class="hidden mt-4 rounded-xl p-4 text-sm"></div>' +
+        '<div class="mt-4 flex justify-end"><button id="next-' + n + '" class="btn-primary hidden">' + (i === qs.length-1 ? 'Ver mi resultado 🏁' : 'Siguiente ➜') + '</button></div>' +
+      '</div>';
+    box.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => choose(+b.dataset.k)));
+    box.querySelector('#next-' + n).addEventListener('click', next);
+  }
+  function choose(k){
+    if (answered) return; answered = true;
+    const q = qs[i]; const opts = box.querySelectorAll('.opt');
+    opts.forEach((o,idx) => { o.disabled = true; if (idx === q.a) o.classList.add('opt-correct'); });
+    if (k === q.a){ score++; awardXP('q'+n+'-'+i, 20, 'respuesta correcta (módulo '+n+')'); }
+    else opts[k].classList.add('opt-wrong');
+    logAnswer(String(n), i, k, k === q.a); // 🧾 se acumula para el reporte
+    const feed = box.querySelector('#feed-' + n);
+    feed.classList.remove('hidden');
+    feed.className = 'mt-4 rounded-xl p-4 text-sm ' + (k === q.a ? 'bg-lime-400/10 border border-lime-400/40 text-lime-200' : 'bg-red-400/10 border border-red-400/40 text-red-200');
+    feed.innerHTML = (k === q.a ? '✅ ¡Correcto! +20 XP · ' : '❌ No exactamente. ') + q.exp;
+    box.querySelector('#next-' + n).classList.remove('hidden');
+  }
+  function next(){ if (i < qs.length - 1){ i++; render(); } else finish(); }
+  function finish(){
+    const pct = Math.round(score / qs.length * 100);
+    let msg, emo;
+    if (pct === 100){ msg = '¡Sos un genio del hardware! Dominás el tema.'; emo = '🏆'; }
+    else if (pct >= 70){ msg = '¡Muy bien! Ya tenés casi todo claro.'; emo = '🚀'; }
+    else if (pct >= 50){ msg = '¡Buen intento! Repasá las tarjetas y volvé a probar.'; emo = '💪'; }
+    else { msg = '¡No pasa nada! Volvé a leer el módulo y probá de nuevo.'; emo = '📚'; }
+    awardXP('quiz'+n+'-done', 50, 'completaste el mini-test '+n);
+    awardBadge(n);
+    box.innerHTML =
+      '<div class="glass rounded-3xl p-8 text-center border border-lime-400/30 pop">' +
+        '<div class="text-5xl">' + emo + '</div>' +
+        '<h3 class="font-display text-2xl font-bold mt-3">Resultado: ' + score + '/' + qs.length + ' (' + pct + '%)</h3>' +
+        '<p class="text-slate-300 mt-2">' + msg + '</p>' +
+        '<p class="text-xs text-lime-300 mt-2 font-mono">🏅 ¡Insignia del módulo ' + n + ' desbloqueada! · Tus respuestas quedaron registradas en «Mi Reporte» 📄</p>' +
+        '<button id="retry-' + n + '" class="btn-ghost mt-5">🔄 Reintentar</button>' +
+      '</div>';
+    box.querySelector('#retry-' + n).addEventListener('click', () => { i = 0; score = 0; render(); });
+  }
+  render();
+}
+[1,2,3,4,5].forEach(initQuiz);
+
+/* ================================================================
+   🧪 PESTAÑA 1 · SIMULADOR DEL RECORRIDO DEL DATO
+   ================================================================ */
+const ACCIONES = [
+ { icon:'⌨️', nombre:'Presionar la tecla «A»', entrada:{e:'⌨️',n:'Teclado'}, dato:'Se genera un código eléctrico único para la tecla «A».', proceso:'La UC recibe el código, lo interpreta y ordena mostrar la letra.', salida:{e:'🖥️',n:'Monitor'}, resultado:'¡La letra «A» aparece en tu pantalla!', guarda:false },
+ { icon:'📸', nombre:'Sacar una foto con la webcam', entrada:{e:'📸',n:'Cámara web'}, dato:'El sensor captura la luz y la convierte en píxeles.', proceso:'La CPU digitaliza la imagen y la comprime (formato JPEG).', salida:{e:'🖥️',n:'Monitor'}, resultado:'Ves la foto en pantalla… ¡y queda guardada!', guarda:true },
+ { icon:'🎤', nombre:'Grabar un audio para el profe', entrada:{e:'🎤',n:'Micrófono'}, dato:'Las ondas de tu voz se transforman en señales eléctricas.', proceso:'La CPU muestrea el sonido y lo convierte en números binarios.', salida:{e:'📂',n:'Archivo de audio'}, resultado:'El audio queda listo para enviar. 🎙️', guarda:true },
+ { icon:'🖱️', nombre:'Doble clic para abrir una carpeta', entrada:{e:'🖱️',n:'Mouse'}, dato:'El mouse envía las coordenadas del clic y el botón usado.', proceso:'La CPU identifica el icono en esa posición y lo busca en el disco.', salida:{e:'🖥️',n:'Monitor'}, resultado:'¡La carpeta se abre en la pantalla!', guarda:false },
+ { icon:'🎵', nombre:'Reproducir tu canción favorita', entrada:{e:'💾',n:'Almacenamiento'}, dato:'El archivo MP3 se lee del disco como ceros y unos.', proceso:'La CPU decodifica el MP3 y lo convierte en señales de sonido.', salida:{e:'🔊',n:'Parlantes'}, resultado:'¡La música suena en los parlantes! 🎶', guarda:false },
+ { icon:'🧮', nombre:'Calcular 12 + 7', entrada:{e:'⌨️',n:'Teclado'}, dato:'Ingresás los números y el símbolo «+».', proceso:'La UC organiza la tarea y la ALU resuelve: 12 + 7 = 19.', salida:{e:'🖥️',n:'Monitor'}, resultado:'El resultado 19 aparece en pantalla.', guarda:false }
+];
+let accIdx = 0, simRunning = false;
+
+function buildAccChips(){
+  $('#acc-chips').innerHTML = ACCIONES.map((a,k) =>
+    '<button class="g-chip acc-chip' + (k===0?' sel':'') + '" data-k="' + k + '">' + a.icon + ' ' + a.nombre + '</button>').join('');
+  $$('.acc-chip').forEach(c => c.addEventListener('click', () => { if (!simRunning) setAccion(+c.dataset.k); }));
+}
+function setAccion(k){
+  accIdx = k; const a = ACCIONES[k];
+  $$('.acc-chip').forEach(c => c.classList.toggle('sel', +c.dataset.k === k));
+  $('#st-in-emoji').textContent = a.entrada.e; $('#st-in-name').textContent = a.entrada.n;
+  $('#st-out-emoji').textContent = a.salida.e; $('#st-out-name').textContent = a.salida.n;
+  ['st-in','st-cpu','st-out'].forEach(id => $('#' + id).classList.remove('station-active','station-done'));
+  $('#st-disk').classList.remove('on');
+  $('#flow-dot').style.left = '0%';
+  $('#sim-result').classList.add('hidden');
+  $('#sim-console').innerHTML = '<div class="text-slate-500">&gt; Esperando acción… presioná ▶ para ver el recorrido.</div>';
+}
+function log(msg, color){
+  const el = document.createElement('div');
+  el.className = 'log-line log-' + color;
+  el.innerHTML = '&gt; ' + msg;
+  const c = $('#sim-console'); c.appendChild(el);
+  while (c.children.length > 6) c.removeChild(c.firstChild);
+}
+async function runSim(){
+  if (simRunning) return; simRunning = true;
+  $('#sim-run').disabled = true;
+  const a = ACCIONES[accIdx];
+  awardXP('sim-' + accIdx, 10, 'exploraste el recorrido: ' + a.nombre);
+  setAccion(accIdx);
+  await wait(200);
+  $('#st-in').classList.add('station-active');
+  $('#flow-dot').style.left = '0%';
+  log('📥 [ENTRADA] ' + a.entrada.e + ' ' + a.entrada.n + ': ' + a.dato, 'cyan');
+  await wait(1600);
+  $('#st-in').classList.remove('station-active'); $('#st-in').classList.add('station-done');
+  $('#flow-dot').style.left = '50%';
+  await wait(500);
+  $('#st-cpu').classList.add('station-active');
+  log('⚙️ [PROCESAMIENTO] 🧠 CPU: ' + a.proceso, 'violet');
+  await wait(1800);
+  if (a.guarda){
+    $('#st-disk').classList.add('on');
+    log('💾 [ALMACENAMIENTO] Los datos quedan guardados para usarse después.', 'amber');
+    await wait(1300);
+  }
+  $('#st-cpu').classList.remove('station-active'); $('#st-cpu').classList.add('station-done');
+  $('#flow-dot').style.left = '100%';
+  await wait(600);
+  $('#st-out').classList.add('station-active');
+  log('📤 [SALIDA] ' + a.salida.e + ' ' + a.salida.n + ': ' + a.resultado, 'lime');
+  await wait(1200);
+  $('#st-out').classList.remove('station-active'); $('#st-out').classList.add('station-done');
+  const r = $('#sim-result');
+  r.classList.remove('hidden');
+  r.innerHTML = '✨ ' + a.icon + ' <b>' + a.nombre + '</b> → ' + a.resultado + (a.guarda ? ' (y quedó en 💾 almacenamiento)' : '');
+  simRunning = false; $('#sim-run').disabled = false;
+}
+buildAccChips(); setAccion(0);
+$('#sim-run').addEventListener('click', runSim);
+
+/* ================================================================
+   🛠️ PESTAÑA 2 · CPU (UC/ALU) + MAPA DE PLACA MADRE + MODAL
+   ================================================================ */
+const CPU_PARTS = {
+  uc: '🎼 <b>UC — Unidad de Control:</b> es la "directora de orquesta". Busca las instrucciones en la memoria, las interpreta y da las órdenes para que el resto del sistema las cumpla. No calcula: <b>coordina</b>.',
+  alu: '➗ <b>ALU — Unidad Aritmético-Lógica:</b> es la calculadora. Hace las operaciones matemáticas (+, −, comparaciones) y las lógicas (AND, OR, NOT). Todos los cálculos pasan por acá.'
+};
+$('#btn-uc').addEventListener('click', () => { $('#cpu-detail').innerHTML = CPU_PARTS.uc; $('#btn-uc').classList.add('sel'); $('#btn-alu').classList.remove('sel'); awardXP('cpu-uc', 5, 'descubriste la Unidad de Control'); });
+$('#btn-alu').addEventListener('click', () => { $('#cpu-detail').innerHTML = CPU_PARTS.alu; $('#btn-alu').classList.add('sel'); $('#btn-uc').classList.remove('sel'); awardXP('cpu-alu', 5, 'descubriste la ALU'); });
+
+const COMPONENTES = {
+ cpu:{num:1, e:'🧠', n:'CPU · Microprocesador', cat:'Procesamiento', f:'Es el cerebro de la computadora: ejecuta las instrucciones de los programas, realiza cálculos y toma decisiones a velocidad increíble.', a:'Un chef ultra rápido: lee el pedido (instrucción), cocina (procesa) y entrega el plato (resultado).', d:['Su velocidad se mide en GHz: miles de millones de ciclos por segundo','Tiene varios "núcleos" para hacer muchas tareas a la vez','Por dentro se divide en UC (control) y ALU (cálculo)','Ejemplos: Intel Core i5, AMD Ryzen 7'], c:'Un procesador moderno tiene miles de millones de transistores más pequeños que un virus… ¡y necesita cooler porque calienta como una plancha!'},
+ ram:{num:2, e:'🗂️', n:'Memoria RAM', cat:'Memoria', f:'Es la mesa de trabajo: guarda TEMPORALMENTE los datos y programas que la CPU está usando en este momento, con acceso ultra rápido.', a:'La mesada de la cocina: tenés a mano los ingredientes de la receta del momento. Al cerrar el local (apagar), se limpia.', d:['Es volátil: al apagar la compu se borra todo','Se puede leer y escribir constantemente','Se mide en GB: hoy lo normal es 8 o 16 GB','Tipos actuales: DDR4 y DDR5'], c:'Si abrís muchas pestañas del navegador y todo se pone lento, casi seguro la RAM está al límite.'},
+ chipset:{num:3, e:'🚦', n:'Chipset', cat:'Placa madre', f:'Es el coordinador de tránsito de la placa madre: organiza el paso de datos entre la CPU, la RAM y los periféricos.', a:'El recepcionista de un edificio: decide por dónde y hacia dónde va cada visita (dato).', d:['Comunica la CPU con USB, SATA, audio y más','Define qué procesadores y memorias soporta la placa','Va soldado a la placa madre','En placas modernas es un solo chip'], c:'Sin chipset, cada componente hablaría por su cuenta: sería un caos de datos.'},
+ rom:{num:4, e:'📜', n:'Memoria ROM · BIOS', cat:'Memoria', f:'Guarda instrucciones de fábrica que NO se borran al apagar, como la BIOS/UEFI: el primer programa que arranca la computadora.', a:'El recetario de la abuela: siempre está en el local, no se borra, y contiene las instrucciones básicas para empezar.', d:['No volátil: conserva los datos sin energía','Principalmente de solo lectura','Contiene el firmware BIOS/UEFI','Se actualiza muy pocas veces'], c:'Cuando prendés la compu, antes de que aparezca Windows trabaja la BIOS: chequea que todo el hardware esté en orden.'},
+ battery:{num:5, e:'🔋', n:'Pila CMOS (CR2032)', cat:'Energía', f:'Mantiene el reloj interno y la configuración de la BIOS aunque la compu esté apagada y desenchufada.', a:'La pila del reloj pulsera de la placa madre: chiquita, pero siempre trabajando.', d:['Es una pila de litio tipo moneda','Dura varios años','Guarda fecha, hora y ajustes de arranque','Si se agota, la hora se desconfigura'], c:'Si tu compu arranca con "CMOS checksum error"… ¡casi seguro hay que cambiarle la pila!'},
+ pcie_video:{num:6, e:'🎮', n:'Ranura PCIe x16 · Tarjeta de Video', cat:'Tarjetas', f:'Es la ranura más rápida: ahí se conecta la tarjeta gráfica, que procesa todo lo que se ve en pantalla (juegos, videos, diseño).', a:'El estudio del artista digital: traduce números a imágenes y las manda al monitor.', d:['La GPU (chip gráfico) vive en la tarjeta de video','Tiene su propia memoria: la VRAM','Imprescindible para gaming y edición','Marcas: NVIDIA GeForce, AMD Radeon, Intel Arc'], c:'Una placa gamer puede consumir más energía que toda una compu de oficina junta.'},
+ pcie_audio:{num:7, e:'🎚️', n:'Ranuras PCIe x1 · Expansión', cat:'Tarjetas', f:'Ranuras para sumar tarjetas extra: una tarjeta de audio profesional, una placa de red nueva, capturadoras, etc.', a:'El slot de accesorios: como agregarle módulos extra a tu personaje favorito.', d:['PCIe viene en tamaños: x1, x4, x8, x16','Una tarjeta de audio mejora la calidad de sonido','También sirven para placas Wi-Fi/Bluetooth','Se agregan sin cambiar la placa madre'], c:'Aunque muchas placas ya traen audio integrado, los músicos siguen usando tarjetas dedicadas.'},
+ audio:{num:8, e:'🎧', n:'Puertos de Audio (jack 3,5 mm)', cat:'Puertos', f:'Conectan parlantes, auriculares y micrófono. Suelen venir por colores para no confundirte.', a:'Son la boca y el oído de la compu: por unos sale el sonido, por otros entra tu voz.', d:['Verde → parlantes / auriculares','Rosa → micrófono','Azul → entrada de línea','Hoy también se usa USB o Bluetooth'], c:'El conector jack 3,5 mm tiene casi 70 años y sigue vigente en casi todas las computadoras.'},
+ usb:{num:9, e:'🔌', n:'Puertos USB', cat:'Puertos', f:'La conexión universal: teclado, mouse, pendrive, impresora, celu… casi todo se conecta por USB.', a:'La puerta grande de la casa: por ahí entra y sale de todo, y encima les da energía a los visitantes.', d:['USB-A es el clásico rectangular; USB-C el nuevo reversible','Velocidades: USB 2.0, 3.0, 3.2 y más','También entregan electricidad para cargar','USB = Universal Serial Bus'], c:'El ícono del USB parece un tridente: representa justamente la universalidad del estándar.'},
+ eth:{num:10, e:'🌐', n:'Puerto de Red (RJ-45)', cat:'Conectividad', f:'Conecta la computadora a una red o a Internet mediante cable, con máxima estabilidad.', a:'La autopista con cable: datos a toda velocidad y sin interferencias.', d:['El conector se llama RJ-45','Velocidades típicas: 1 Gbps y más','Más estable que el Wi-Fi para jugar o streaming','Va directo al router o switch'], c:'El "click" que hace la ficha al entrar es su seguro: se llama traba RJ.'},
+ sata:{num:11, e:'🗄️', n:'Conectores SATA', cat:'Almacenamiento', f:'Unen los discos rígidos (HDD), SSD y lectoras con la placa madre para transferir datos.', a:'El puente de carga entre el depósito (disco) y la fábrica (CPU).', d:['SATA III alcanza 6 Gb/s','Usan dos cables: datos y energía','Los SSD SATA tienen forma de cajita de 2,5"','Hoy conviven con los M.2, más rápidos'], c:'SATA reemplazó a los viejos cables anchos IDE que parecían cintas de tela.'},
+ sd:{num:12, e:'💳', n:'Lector de tarjetas SD', cat:'Puertos', f:'Lee las tarjetas de memoria de cámaras, celulares y consolas, para pasar fotos, videos y archivos.', a:'El puente entre tu cámara de fotos y la compu.', d:['Formatos: SD, miniSD y microSD','Muy usado en fotografía y video','Velocidades según clase (10, UHS…)','Algunas notebooks ya no lo traen'], c:'Las tarjetas SD nacieron en 1999 y siguen siendo las reinas de las cámaras.'},
+ power:{num:13, e:'⚡', n:'Conector ATX de energía', cat:'Energía', f:'Recibe la electricidad de la fuente de alimentación y la reparte por toda la placa madre.', a:'El enchufe principal: sin él, nada se enciende.', d:['El clásico es de 24 pines','Hay conectores extra para la CPU (4/8 pines)','La fuente convierte 220 V a voltajes bajos','La energía debe ser estable para no dañar nada'], c:'Antes de tocar componentes conviene descargar la estática: ¡una chispita puede dañar un chip!'}
+};
+$('#mobo-legend').innerHTML = Object.entries(COMPONENTES).sort((a,b) => a[1].num - b[1].num)
+  .map(([k,c]) => '<button class="legend-chip" data-comp="' + k + '"><span class="font-mono text-[10px] text-cyan-300 w-4">' + c.num + '</span>' + c.e + ' ' + c.n.split('·')[0].trim() + '</button>').join('');
+
+function openComp(k){
+  const c = COMPONENTES[k]; if (!c) return;
+  awardXP('mobo-' + k, 5, 'descubriste: ' + c.n);
+  $('#m-icon').textContent = c.e; $('#m-name').textContent = c.n; $('#m-cat').textContent = c.cat;
+  $('#m-func').textContent = c.f; $('#m-ana').textContent = c.a; $('#m-curio').textContent = c.c;
+  $('#m-datos').innerHTML = c.d.map(x => '<li>▸ ' + x + '</li>').join('');
+  const m = $('#modal'); m.classList.remove('hidden'); m.classList.add('flex');
+}
+function cerrarModales(){
+  ['#modal','#reporte-modal','#glosario-modal'].forEach(id => { const m = $(id); m.classList.add('hidden'); m.classList.remove('flex'); });
+}
+$$('#mobo .hotspot').forEach(h => {
+  h.addEventListener('click', () => openComp(h.dataset.comp));
+  h.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openComp(h.dataset.comp); } });
+});
+$$('#mobo-legend .legend-chip').forEach(b => b.addEventListener('click', () => openComp(b.dataset.comp)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModales(); });
+
+/* ================================================================
+   🕹️ PESTAÑA 3 · SLIDERS DE VELOCIDAD + JUEGO DE CLASIFICACIÓN
+   ================================================================ */
+function updateSpeed(){
+  const g = parseFloat($('#ghz-range').value), c = parseInt($('#cores-range').value);
+  $('#ghz-out').textContent = g.toLocaleString('es-AR') + ' GHz';
+  $('#cores-out').textContent = c;
+  $('#ciclos-out').textContent = '≈ ' + (g * 1000).toLocaleString('es-AR') + ' millones de ciclos/segundo';
+  $('#cores-dots').innerHTML = Array.from({length:c}, () => '<span class="core-dot"></span>').join('');
+  let t;
+  if (g < 2 && c <= 2) t = '📱 Rendimiento de un celular básico.';
+  else if (c >= 8 && g >= 3.5) t = '🎮 ¡Nivel PC gamer / edición de video!';
+  else if (c >= 6) t = '🖥️ PC de escritorio potente.';
+  else if (g >= 3) t = '💻 Notebook moderna de gama media.';
+  else t = '💻 Similar a una notebook de oficina.';
+  $('#dev-analogy').innerHTML = t + ' <span class="text-slate-500 text-xs">Más GHz = más rápido cada núcleo; más núcleos = más tareas a la vez.</span>';
+}
+$('#ghz-range').addEventListener('input', () => { updateSpeed(); awardXP('speed-ghz', 5, 'probaste el slider de GHz'); });
+$('#cores-range').addEventListener('input', () => { updateSpeed(); awardXP('speed-cores', 5, 'probaste el slider de núcleos'); });
+updateSpeed();
+
+const PERIF = [
+ {n:'Teclado', e:'⌨️', c:'entrada'}, {n:'Mouse', e:'🖱️', c:'entrada'}, {n:'Micrófono', e:'🎤', c:'entrada'}, {n:'Escáner', e:'📠', c:'entrada'},
+ {n:'Monitor', e:'🖥️', c:'salida'}, {n:'Impresora', e:'🖨️', c:'salida'}, {n:'Parlantes', e:'🔊', c:'salida'},
+ {n:'Disco HDD', e:'💽', c:'almacenamiento'}, {n:'Disco SSD', e:'⚡', c:'almacenamiento'}, {n:'Pendrive', e:'💾', c:'almacenamiento'},
+ {n:'Placa de red', e:'🌐', c:'conectividad'}, {n:'Adaptador Wi-Fi', e:'📶', c:'conectividad'}, {n:'Bluetooth', e:'🔵', c:'conectividad'}, {n:'Router', e:'📡', c:'conectividad'}
+];
+const HINTS = {
+ entrada:'los de ENTRADA mandan datos hacia la compu (como el teclado).',
+ salida:'los de SALIDA muestran resultados al usuario (como el monitor).',
+ almacenamiento:'los de ALMACENAMIENTO guardan datos (como el pendrive).',
+ conectividad:'los de CONECTIVIDAD comunican con redes (como el router).'
+};
+let placed = 0, aciertos = 0, errores = 0, selectedId = null;
+const shuffle = a => a.map(x => [Math.random(), x]).sort((p,q) => p[0]-q[0]).map(p => p[1]);
+
+function initGame(){
+  placed = 0; aciertos = 0; errores = 0; selectedId = null;
+  $('#game-end').classList.add('hidden'); $('#game-msg').textContent = '';
+  $$('.bin-items').forEach(b => b.innerHTML = '');
+  const orden = shuffle(PERIF.map((p,i) => i));
+  $('#pool').innerHTML = orden.map(i =>
+    '<button class="g-chip" draggable="true" data-id="' + i + '">' + PERIF[i].e + ' ' + PERIF[i].n + '</button>').join('');
+  updateHud();
+  bindChips();
+}
+function bindChips(){
+  $$('#pool .g-chip').forEach(ch => {
+    ch.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', ch.dataset.id); });
+    ch.addEventListener('click', () => {
+      selectedId = (selectedId === ch.dataset.id) ? null : ch.dataset.id;
+      $$('#pool .g-chip').forEach(x => x.classList.toggle('sel', x.dataset.id === selectedId));
+      $('#game-msg').innerHTML = selectedId !== null ? '👆 Ahora tocá la categoría donde va <b>' + PERIF[+selectedId].n + '</b>.' : '';
+    });
+  });
+}
+function updateHud(){
+  $('#hud-aciertos').textContent = aciertos;
+  $('#hud-errores').textContent = errores;
+  $('#hud-bar').style.width = (placed / PERIF.length * 100) + '%';
+}
+function tryPlace(id, cat, binEl){
+  const item = PERIF[+id];
+  const chip = $('#pool').querySelector('[data-id="' + id + '"]');
+  if (!item || !chip) return;
+  if (item.c === cat){
+    chip.remove(); selectedId = null;
+    const moved = document.createElement('span');
+    moved.className = 'g-chip placed pop';
+    moved.innerHTML = item.e + ' ' + item.n;
+    binEl.querySelector('.bin-items').appendChild(moved);
+    aciertos++; placed++;
+    awardXP('game-' + id, 10, 'clasificaste: ' + item.n);
+    $('#game-msg').innerHTML = '<span class="text-lime-300">✅ ¡Bien! ' + item.n + ' es un periférico de ' + cat + '. +10 XP</span>';
+    if (placed === PERIF.length) endGame();
+  } else {
+    errores++;
+    chip.classList.add('shake'); setTimeout(() => chip.classList.remove('shake'), 450);
+    binEl.classList.add('flash-bad'); setTimeout(() => binEl.classList.remove('flash-bad'), 550);
+    $('#game-msg').innerHTML = '<span class="text-red-300">🔎 ' + item.n + ' no va ahí. Pista: ' + HINTS[item.c] + '</span>';
+  }
+  updateHud();
+}
+function endGame(){
+  const medal = errores === 0 ? ['🥇','¡PERFECTO! Sin ningún error.'] : errores <= 3 ? ['🥈','¡Excelente trabajo!'] : ['🥉','¡Completado! Seguí practicando.'];
+  awardXP('game-done', 30, 'completaste el juego de clasificación');
+  if (errores === 0) awardXP('game-perfect', 50, '¡juego perfecto sin errores!');
+  $('#game-end').classList.remove('hidden');
+  $('#game-end').innerHTML = '<div class="text-4xl">' + medal[0] + '</div><h4 class="font-display text-xl font-bold mt-2">' + medal[1] + '</h4>' +
+    '<p class="text-sm text-slate-300 mt-1">Aciertos: <b class="text-lime-300">' + aciertos + '</b> · Errores: <b class="text-red-300">' + errores + '</b> · ⭐ Bono: +30 XP' + (errores===0?' (+50 por juego perfecto)':'') + '</p>';
+}
+$$('.bin').forEach(bin => {
+  bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('bin-over'); });
+  bin.addEventListener('dragleave', () => bin.classList.remove('bin-over'));
+  bin.addEventListener('drop', e => { e.preventDefault(); bin.classList.remove('bin-over'); tryPlace(e.dataTransfer.getData('text/plain'), bin.dataset.cat, bin); });
+  bin.addEventListener('click', () => { if (selectedId !== null){ tryPlace(selectedId, bin.dataset.cat, bin); selectedId = null; $$('#pool .g-chip').forEach(x => x.classList.remove('sel')); } });
+});
+$('#game-reset').addEventListener('click', initGame);
+initGame();
+
+/* ================================================================
+   🔢 PESTAÑA 4 · MÁQUINA DE BITS
+   ================================================================ */
+const POW = [128,64,32,16,8,4,2,1];
+const SUP = ['⁷','⁶','⁵','⁴','³','²','¹','⁰'];
+let bits = [0,0,0,0,0,0,0,0];
+
+function buildBits(){
+  $('#bit-panel').innerHTML = bits.map((b,i) =>
+    '<div class="flex flex-col items-center gap-1.5">' +
+      '<span class="font-mono text-[10px] md:text-xs text-slate-400">' + POW[i] + '</span>' +
+      '<button class="bitkey" data-i="' + i + '" aria-label="Bit de valor ' + POW[i] + '">0</button>' +
+      '<span class="font-mono text-[10px] text-slate-500">2' + SUP[i] + '</span>' +
+    '</div>').join('');
+  $$('.bitkey').forEach(k => k.addEventListener('click', () => { const i = +k.dataset.i; bits[i] = bits[i] ? 0 : 1; updateBits(); awardXP('bits-toggle', 5, 'usaste la máquina de bits'); }));
+}
+function updateBits(){
+  const dec = bits.reduce((s,b,i) => s + b * POW[i], 0);
+  const binStr = bits.join('');
+  $('#bin-out').textContent = binStr.slice(0,4) + ' ' + binStr.slice(4);
+  $('#dec-out').textContent = dec;
+  $('#hex-out').textContent = '0x' + dec.toString(16).toUpperCase().padStart(2,'0');
+  const printable = dec >= 32 && dec <= 126;
+  $('#asc-out').textContent = printable ? String.fromCharCode(dec) : '—';
+  $('#asc-note').textContent = printable ? 'El byte ' + dec + ' corresponde al carácter «' + String.fromCharCode(dec) + '» en la tabla ASCII.' : (dec === 0 ? 'El 0 no tiene carácter visible: es el punto de partida.' : 'Los códigos menores a 32 son de control: no se imprimen.');
+  $$('.bitkey').forEach((k,i) => { k.textContent = bits[i]; k.classList.toggle('on', !!bits[i]); });
+  $('#bin-dec-input').value = dec;
+}
+function setDec(v){
+  v = Math.max(0, Math.min(255, Math.floor(v) || 0));
+  bits = v.toString(2).padStart(8,'0').split('').map(Number);
+  updateBits();
+}
+$('#bin-dec-input').addEventListener('input', e => { setDec(+e.target.value); awardXP('bits-dec', 5, 'convertiste de decimal a binario'); });
+$$('.bit-preset').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.val;
+  setDec(v === 'rand' ? Math.floor(Math.random() * 256) : +v);
+  awardXP('bits-preset', 5, 'usaste un preset de la máquina de bits');
+}));
+buildBits(); updateBits();
+
+$('#name-input').addEventListener('input', e => {
+  const t = e.target.value; const n = [...t].length;
+  $('#name-bytes').textContent = n ? '«' + t + '» → ' + n + ' carácter' + (n !== 1 ? 'es' : '') + ' ≈ ' + n + ' byte' + (n !== 1 ? 's' : '') + ' = ' + (n*8) + ' bits' : '';
+  if (n) awardXP('name-demo', 5, 'mediste tu nombre en bytes');
+});
+
+/* ================================================================
+   📦 PESTAÑA 5 · SLIDER DE ANALOGÍAS + CONVERSOR
+   ================================================================ */
+const UNIDADES = [
+ {sym:'bit', nom:'Bit', emoji:'🔘', eq:'La unidad mínima: un 0 ó un 1', ana:'Como un interruptor de luz: prendido o apagado. O responder una pregunta con SÍ o NO.'},
+ {sym:'B', nom:'Byte', emoji:'🔤', eq:'1 Byte = 8 bits', ana:'Alcanza para guardar UNA letra: la «A» de tu nombre ocupa 1 byte.'},
+ {sym:'KB', nom:'Kilobyte', emoji:'📄', eq:'1 KB = 1.024 Bytes', ana:'Más o menos media página de texto: un mensaje largo o un trabajito muy corto.'},
+ {sym:'MB', nom:'Megabyte', emoji:'🎵', eq:'1 MB = 1.024 KB', ana:'Una canción en MP3 ocupa entre 3 y 5 MB; una foto del celu, unos 2 a 4 MB.'},
+ {sym:'GB', nom:'Gigabyte', emoji:'🎬', eq:'1 GB = 1.024 MB', ana:'Una película en HD ocupa unos 4 GB. En 1 GB entran unas 256 canciones.'},
+ {sym:'TB', nom:'Terabyte', emoji:'🗄️', eq:'1 TB = 1.024 GB', ana:'Miles de películas o millones de documentos: es la capacidad de los discos de hoy y de las consolas.'},
+ {sym:'PB', nom:'Petabyte', emoji:'🏢', eq:'1 PB = 1.024 TB', ana:'Lo que manejan los grandes servicios de streaming o un data center entero.'},
+ {sym:'EB', nom:'Exabyte', emoji:'🌍', eq:'1 EB = 1.024 PB', ana:'Escala planetaria: equivale a miles de bibliotecas nacionales digitalizadas.'},
+ {sym:'ZB', nom:'Zettabyte', emoji:'🌌', eq:'1 ZB = 1.024 EB', ana:'Se estima que la humanidad genera más de 120 ZB de datos por año. ¡Casi todo internet!'},
+ {sym:'YB', nom:'Yottabyte', emoji:'🚀', eq:'1 YB = 1.024 ZB', ana:'La unidad más grande definida. Todavía no existe ningún sistema que llegue ni cerca.'}
+];
+$('#unit-ticks').innerHTML = UNIDADES.map(u => '<span>' + u.sym + '</span>').join('');
+function updateUnit(){
+  const i = +$('#unit-range').value; const u = UNIDADES[i];
+  $('#unit-card').innerHTML =
+    '<div class="text-4xl">' + u.emoji + '</div>' +
+    '<h4 class="font-display text-2xl font-bold mt-2">' + u.nom + ' <span class="text-slate-500 text-lg">(' + u.sym + ')</span></h4>' +
+    '<p class="font-mono text-cyan-300 text-sm mt-1">' + u.eq + '</p>' +
+    '<p class="text-sm text-slate-300 mt-3">' + u.ana + '</p>';
+}
+$('#unit-range').addEventListener('input', () => { updateUnit(); awardXP('unit-slider', 5, 'exploraste la escala de unidades'); });
+updateUnit();
+
+$('#conv-unit').innerHTML = UNIDADES.map((u,i) => '<option value="' + i + '">' + u.sym + ' — ' + u.nom + '</option>').join('');
+function fmtNum(n){
+  if (!isFinite(n)) return '—';
+  if (n === 0) return '0';
+  const abs = Math.abs(n);
+  if (abs >= 1e15 || abs < 1e-3) return n.toExponential(2).replace('.',',').replace('e+',' ×10^');
+  const dec = abs < 1 ? 6 : abs < 1000 ? 2 : 0;
+  return n.toLocaleString('es-AR', { maximumFractionDigits: dec });
+}
+function convert(){
+  const v = parseFloat($('#conv-val').value) || 0;
+  const u = parseInt($('#conv-unit').value);
+  const bytes = (u === 0) ? v / 8 : v * Math.pow(1024, u - 1);
+  $('#conv-out').innerHTML = UNIDADES.map((x,j) => {
+    const out = (j === 0) ? bytes * 8 : bytes / Math.pow(1024, j - 1);
+    const sel = (j === u) ? ' border-cyan-400/60 bg-cyan-400/10' : ' border-white/10 bg-white/5';
+    return '<div class="flex justify-between items-center rounded-lg px-3 py-1.5 border' + sel + '"><span class="text-slate-400">' + x.sym + ' · ' + x.nom + '</span><span class="text-cyan-300">' + fmtNum(out) + '</span></div>';
+  }).join('');
+}
+$('#conv-val').addEventListener('input', () => { convert(); awardXP('conv', 5, 'usaste el conversor de unidades'); });
+$('#conv-unit').addEventListener('change', () => { convert(); awardXP('conv', 5, 'usaste el conversor de unidades'); });
+convert();
+
+/* ================================================================
+   🎓 PESTAÑA 6 · EVALUACIÓN FINAL INTEGRADORA (15 preguntas)
+   ================================================================ */
+const FINAL = [
+ {u:1,q:'Un sistema informático está formado por…', ops:['CPU, monitor y teclado','Hardware, software y humanware','RAM, ROM y disco','Internet, Wi-Fi y Bluetooth'], a:1, exp:'Los tres pilares: lo físico (hardware), los programas (software) y las personas (humanware).'},
+ {u:1,q:'El orden correcto del proceso computacional es:', ops:['Procesamiento → Entrada → Salida','Salida → Entrada → Procesamiento','Entrada → Procesamiento → Salida','Almacenamiento → Salida → Entrada'], a:2, exp:'El dato entra, la CPU lo procesa y el resultado sale (con el almacenamiento atravesando todo el ciclo).'},
+ {u:1,q:'Un técnico que repara tu computadora es un ejemplo de:', ops:['Hardware','Software','Humanware','Firmware'], a:2, exp:'Las personas que usan, programan o mantienen el sistema son el humanware.'},
+ {u:2,q:'La memoria RAM se caracteriza por ser:', ops:['No volátil y de solo lectura','Volátil y de lectura/escritura','La más lenta del sistema','Donde vive la BIOS'], a:1, exp:'Se borra al apagar y la CPU la usa como mesa de trabajo temporal.'},
+ {u:2,q:'¿Qué parte de la CPU realiza las sumas y las comparaciones?', ops:['La UC','La ALU','El chipset','La BIOS'], a:1, exp:'La ALU hace operaciones aritméticas y lógicas; la UC coordina.'},
+ {u:2,q:'La BIOS/UEFI que arranca el equipo está almacenada en:', ops:['La RAM','El disco rígido','La ROM','El mouse'], a:2, exp:'La ROM conserva el firmware sin necesidad de energía eléctrica.'},
+ {u:2,q:'La función principal de la placa madre es:', ops:['Generar electricidad','Interconectar y comunicar todos los componentes','Enfriar la CPU','Procesar los gráficos 3D'], a:1, exp:'Es la gran placa de interconexión del sistema.'},
+ {u:3,q:'El escáner es un periférico de:', ops:['Entrada','Salida','Almacenamiento','Conectividad'], a:0, exp:'Introduce documentos digitalizados hacia la computadora.'},
+ {u:3,q:'Un procesador de 3,5 GHz realiza aproximadamente:', ops:['3.500 ciclos por segundo','35 millones de ciclos por minuto','3.500 millones de ciclos por segundo','3,5 ciclos por hora'], a:2, exp:'Giga = mil millones: 3,5 GHz ≈ 3.500 millones de ciclos/segundo.'},
+ {u:3,q:'¿Cuál de estos NO es un periférico de almacenamiento?', ops:['Pendrive','Disco SSD','Router','Disco HDD'], a:2, exp:'El router es de conectividad: distribuye la red entre dispositivos.'},
+ {u:3,q:'Una ventaja del SSD frente al HDD es que:', ops:['Tiene partes móviles más rápidas','No tiene partes móviles: es más veloz y resistente a golpes','Usa discos magnéticos más grandes','Siempre es más barato por GB'], a:1, exp:'El SSD usa memoria flash: arranca más rápido, no hace ruido y resiste golpes.'},
+ {u:4,q:'El número binario 1011 equivale en decimal a:', ops:['13','11','9','7'], a:1, exp:'8 + 0 + 2 + 1 = 11.'},
+ {u:4,q:'8 bits forman:', ops:['1 bit','1 KB','1 byte','1 GB'], a:2, exp:'1 byte = 8 bits = 256 combinaciones posibles.'},
+ {u:4,q:'Digitalizar es:', ops:['Apagar la computadora','Convertir señales analógicas en valores numéricos binarios','Imprimir una fotografía','Conectar la compu al Wi-Fi'], a:1, exp:'Muestrear → cuantificar → codificar en binario.'},
+ {u:5,q:'Ordená las unidades de MENOR a MAYOR:', ops:['MB, KB, GB, TB','KB, MB, GB, TB','TB, GB, MB, KB','GB, MB, TB, KB'], a:1, exp:'KB < MB < GB < TB: cada escalón multiplica por 1024.'}
+];
+let finalEnviado = false;
+function renderFinal(){
+  finalEnviado = false;
+  $('#final-result').classList.add('hidden');
+  $('#final-submit').disabled = false;
+  $('#final-list').innerHTML = FINAL.map((fq,i) =>
+    '<div class="fq-card glass rounded-2xl p-4 md:p-5" data-i="' + i + '">' +
+      '<div class="flex gap-3 items-start"><span class="chip chip-violet flex-none">U' + fq.u + '</span>' +
+      '<p class="font-semibold"><span class="font-mono text-slate-500 mr-1">' + (i+1) + '.</span>' + fq.q + '</p></div>' +
+      '<div class="grid sm:grid-cols-2 gap-2 mt-3">' + fq.ops.map((op,k) =>
+        '<label class="fq-opt"><input type="radio" name="fq-' + i + '" value="' + k + '"><span class="opt-letter">' + String.fromCharCode(65+k) + '</span><span>' + op + '</span></label>').join('') +
+      '</div>' +
+      '<div class="fq-exp hidden mt-3 text-xs rounded-lg p-3"></div>' +
+    '</div>').join('');
+  updateFinalCount();
+  $$('#final-list input[type=radio]').forEach(r => r.addEventListener('change', updateFinalCount));
+}
+function updateFinalCount(){
+  const resp = FINAL.map((_,i) => { const c = $('#final-list').querySelector('input[name="fq-' + i + '"]:checked'); return c ? +c.value : null; });
+  const n = resp.filter(x => x !== null).length;
+  $('#final-count').textContent = 'Respondidas: ' + n + '/15';
+  $('#final-bar').style.width = (n/15*100) + '%';
+  return resp;
+}
+$('#final-submit').addEventListener('click', () => {
+  if (finalEnviado) return;
+  const resp = updateFinalCount();
+  const faltan = resp.filter(x => x === null).length;
+  if (faltan && !confirm('Te faltan ' + faltan + ' pregunta(s). ¿Querés entregar igual?')) return;
+  finalEnviado = true;
+  let ok = 0;
+  resp.forEach((ch, i) => {
+    const fq = FINAL[i]; const esOk = ch === fq.a; if (esOk) ok++;
+    logAnswer('final', i, ch === null ? -1 : ch, esOk); // 🧾 se acumula para el reporte
+    if (esOk) awardXP('final-' + i, 25, 'respuesta correcta (evaluación final)');
+    const card = $('#final-list').querySelector('[data-i="' + i + '"]');
+    card.classList.add(esOk ? 'correcta' : 'incorrecta');
+    card.querySelectorAll('input').forEach(r => r.disabled = true);
+    card.querySelectorAll('.fq-opt').forEach((l,k) => {
+      if (k === fq.a) l.classList.add('opt-correct');
+      else if (k === ch && ch !== fq.a) l.classList.add('opt-wrong');
+    });
+    const exp = card.querySelector('.fq-exp');
+    exp.classList.remove('hidden');
+    exp.className = 'fq-exp mt-3 text-xs rounded-lg p-3 border ' + (esOk ? 'border-lime-400/40 bg-lime-400/10 text-lime-200' : 'border-red-400/40 bg-red-400/10 text-red-200');
+    exp.innerHTML = (ch === null ? '⚠️ Sin responder. ' : '') + (esOk ? '✅ ' : '❌ ') + fq.exp;
+  });
+  const pct = Math.round(ok / 15 * 100); const apro = pct >= 60;
+  awardXP('final-done', 100, 'entregaste la evaluación final');
+  if (apro) awardXP('final-ok', 100, '¡evaluación final APROBADA!');
+  awardBadge(6);
+  $('#final-submit').disabled = true;
+  const res = $('#final-result'); res.classList.remove('hidden');
+  res.innerHTML =
+    '<div class="glass rounded-3xl p-8 text-center border ' + (apro ? 'border-lime-400/40' : 'border-red-400/40') + ' pop">' +
+      '<div class="text-5xl">' + (pct === 100 ? '🏆' : apro ? '🎉' : '📚') + '</div>' +
+      '<h3 class="font-display text-2xl font-bold mt-3">Nota final: ' + ok + '/15 (' + pct + '%) — ' + (apro ? '¡APROBADO!' : 'no alcanzó esta vez') + '</h3>' +
+      '<p class="text-slate-300 mt-2 text-sm">' + (apro ? '¡Felicitaciones! Integraste los 5 módulos. Revisá la corrección abajo y generá tu reporte imprimible. 📄' : 'Repasá los módulos con los mini-tests y volvé a intentarlo. ¡Vos podés! 💪') + '</p>' +
+      '<div class="flex justify-center gap-2 mt-5 flex-wrap">' +
+        '<button id="final-retry" class="btn-ghost">🔄 Volver a intentar</button>' +
+        '<button id="final-reporte" class="btn-primary">📄 Generar mi Reporte</button>' +
+      '</div>' +
+    '</div>';
+  $('#final-retry').addEventListener('click', renderFinal);
+  $('#final-reporte').addEventListener('click', abrirReporte);
+  res.scrollIntoView({ behavior:'smooth', block:'center' });
+});
+renderFinal();
+
+/* ================================================================
+   📖 GLOSARIO COMPLETO
+   ================================================================ */
+const GLOSARIO = [
+ {t:'ALU (Unidad Aritmético-Lógica)', c:'CPU y Placa', d:'Parte de la CPU encargada de realizar las operaciones matemáticas (suma, resta, comparaciones) y las operaciones lógicas (AND, OR, NOT). Todo cálculo del sistema pasa por la ALU.'},
+ {t:'ASCII', c:'Unidades y Binario', d:'Tabla estándar que asigna un número a cada carácter: la «A» vale 65, la «a» 97, el «0» 48. Permite que las computadoras representen texto usando números binarios.'},
+ {t:'BIOS / UEFI', c:'CPU y Placa', d:'Firmware guardado en la memoria ROM que se ejecuta apenas encendés la computadora: revisa que el hardware funcione y carga el sistema operativo. UEFI es su versión moderna, con interfaz gráfica.'},
+ {t:'Bit', c:'Unidades y Binario', d:'Contracción de "binary digit" (dígito binario). Es la unidad mínima de información: solo puede valer 0 o 1, como un interruptor. Ocho bits forman un byte.'},
+ {t:'Bluetooth', c:'Puertos y Redes', d:'Estándar de conectividad inalámbrica de corto alcance (unos 10 metros). Se usa para auriculares, parlantes, teclados y mouses sin cables.'},
+ {t:'Byte', c:'Unidades y Binario', d:'Conjunto de 8 bits. Alcanza para representar un carácter (una letra). Es la unidad base de la que derivan KB, MB, GB, TB, etc.'},
+ {t:'Cámara web (webcam)', c:'Periféricos', d:'Periférico de entrada que captura imágenes y video en tiempo real. Convierte la luz en píxeles digitales para videollamadas o fotos.'},
+ {t:'Chipset', c:'CPU y Placa', d:'Conjunto de chips de la placa madre que coordina el tráfico de datos entre la CPU, las memorias y los periféricos. Define qué componentes son compatibles con la placa.'},
+ {t:'CMOS / Pila CR2032', c:'CPU y Placa', d:'Pequeña memoria que guarda la configuración de la BIOS (fecha, hora, orden de arranque). Se mantiene viva gracias a una pila tipo moneda aunque la compu esté desenchufada.'},
+ {t:'CPU (Unidad Central de Procesamiento)', c:'CPU y Placa', d:'El "cerebro" del sistema: ejecuta las instrucciones de los programas, realiza cálculos y coordina los demás componentes. Se compone de UC, ALU y registros. Su velocidad se mide en GHz y su paralelismo en núcleos.'},
+ {t:'Ciclo de reloj / GHz', c:'CPU y Placa', d:'Cada "latido" del procesador. 1 GHz = 1.000 millones de ciclos por segundo. En cada ciclo la CPU puede avanzar en una tarea.'},
+ {t:'Cooler / Disipador', c:'CPU y Placa', d:'Sistema de refrigeración (ventilador + aletas metálicas) que evita que el procesador se sobrecaliente mientras trabaja a alta velocidad.'},
+ {t:'Digitalización', c:'Unidades y Binario', d:'Proceso de convertir información analógica (voz, luz, movimiento) en valores numéricos y finalmente en binario. Tres pasos: muestrear, cuantificar y codificar.'},
+ {t:'Disco rígido (HDD)', c:'Almacenamiento', d:'Dispositivo de almacenamiento masivo que guarda los datos en platos magnéticos giratorios leídos por un cabezal. Es económico y de gran capacidad, pero más lento y sensible a los golpes.'},
+ {t:'Disco de estado sólido (SSD)', c:'Almacenamiento', d:'Almacenamiento masivo basado en memoria flash, sin partes móviles. Es mucho más rápido, silencioso y resistente a golpes que el HDD.'},
+ {t:'Entrada (periférico de)', c:'Conceptos', d:'Dispositivo que ENVÍA información hacia la computadora: teclado, mouse, micrófono, escáner, cámara web.'},
+ {t:'Escáner', c:'Periféricos', d:'Periférico de entrada que digitaliza documentos o fotos: los ilumina y convierte la imagen en datos digitales.'},
+ {t:'Firmware', c:'Conceptos', d:'Software "fijo" guardado en chips de memoria no volátil que controla un dispositivo: la BIOS de la placa madre, el sistema del router o del pendrive.'},
+ {t:'Fuente de alimentación', c:'CPU y Placa', d:'Componente que recibe los 220 V del enchufe y los convierte en los voltajes bajos y estables (3,3 V, 5 V, 12 V) que necesitan los componentes.'},
+ {t:'GPU (Tarjeta de video)', c:'CPU y Placa', d:'Unidad de Procesamiento Gráfico. Calcula todo lo que se dibuja en la pantalla (juegos, videos, diseño). Tiene su propia memoria: la VRAM.'},
+ {t:'Hardware', c:'Conceptos', d:'Parte física y tangible de un sistema informático: chips, placas, cables, periféricos. Todo lo que se puede tocar.'},
+ {t:'HDD vs SSD', c:'Almacenamiento', d:'El HDD usa platos magnéticos (barato, lento, frágil); el SSD usa memoria flash (rápido, silencioso, resistente). Por eso los SSD arrancan el sistema en segundos.'},
+ {t:'Humanware', c:'Conceptos', d:'Las personas que forman parte del sistema informático: quienes lo usan, programan, mantienen o reparan. Sin humanware no hay sistema.'},
+ {t:'Impresora', c:'Periféricos', d:'Periférico de salida que plasma documentos e imágenes digitales sobre papel (inyección de tinta o láser).'},
+ {t:'Jack 3,5 mm', c:'Puertos y Redes', d:'Conector de audio estándar para parlantes, auriculares y micrófonos. En la PC suelen venir por colores: verde = salida de audio, rosa = micrófono, azul = entrada de línea.'},
+ {t:'Memoria caché', c:'Memorias', d:'Memoria ultrarrápida integrada en (o junto a) la CPU que guarda los datos de uso inmediato. Es más rápida y más pequeña que la RAM.'},
+ {t:'Micrófono', c:'Periféricos', d:'Periférico de entrada que convierte las ondas de sonido (tu voz) en señales eléctricas que luego se digitalizan.'},
+ {t:'Monitor', c:'Periféricos', d:'Periférico de salida principal: muestra en pantalla el resultado del procesamiento como imágenes formadas por píxeles.'},
+ {t:'Motherboard (Placa Madre)', c:'CPU y Placa', d:'Placa de circuitos principal que interconecta y comunica todos los componentes: CPU, RAM, almacenamiento, puertos y tarjetas de expansión. También distribuye la energía.'},
+ {t:'Mouse', c:'Periféricos', d:'Periférico de entrada señalador: envía coordenadas y clics para interactuar con la interfaz gráfica.'},
+ {t:'Muestreo', c:'Unidades y Binario', d:'Primer paso de la digitalización: medir una señal analógica a intervalos regulares (por ejemplo, el audio de un CD se muestrea 44.100 veces por segundo).'},
+ {t:'NVMe / M.2', c:'Almacenamiento', d:'Conexión ultrarrápida para SSD modernos que se enchufan directo en la placa madre. Puede superar los 7.000 MB/s, muy por encima del SATA.'},
+ {t:'Nube (almacenamiento en la nube)', c:'Almacenamiento', d:'Guardar archivos en servidores remotos accesibles por Internet (Drive, iCloud, OneDrive) en lugar del disco local.'},
+ {t:'Núcleo (core)', c:'CPU y Placa', d:'Cada unidad de procesamiento independiente dentro de la CPU. Más núcleos = más tareas ejecutándose en paralelo.'},
+ {t:'Parlantes', c:'Periféricos', d:'Periférico de salida que convierte los datos digitales de audio en ondas sonoras que podemos escuchar.'},
+ {t:'PCIe (PCI Express)', c:'CPU y Placa', d:'Estándar de ranuras de expansión de la placa madre. Viene en tamaños: x1 (tarjetas de audio o red) y x16 (tarjetas de video).'},
+ {t:'Pendrive', c:'Almacenamiento', d:'Memoria flash portátil que se conecta por USB. Ideal para transportar archivos en el bolsillo.'},
+ {t:'Periférico', c:'Conceptos', d:'Dispositivo que se conecta a la unidad central para entrar, salir o guardar información. Se clasifican en: entrada, salida, almacenamiento masivo y conectividad.'},
+ {t:'Petabyte / Exabyte / Zettabyte / Yottabyte', c:'Unidades y Binario', d:'Unidades gigantescas de información: 1 PB = 1.024 TB; 1 EB = 1.024 PB; 1 ZB = 1.024 EB; 1 YB = 1.024 ZB. La humanidad genera más de 120 ZB por año; el YB todavía es teórico.'},
+ {t:'Placa de red', c:'Puertos y Redes', d:'Componente que permite a la compu comunicarse con una red (LAN o Internet), por cable (RJ-45) o de forma inalámbrica (Wi-Fi).'},
+ {t:'Proceso computacional', c:'Conceptos', d:'Ciclo que repite toda tarea informática: ENTRADA de datos → PROCESAMIENTO en la CPU → SALIDA del resultado, con el ALMACENAMIENTO atravesando todas las etapas.'},
+ {t:'Puerto USB', c:'Puertos y Redes', d:'Universal Serial Bus: el puerto universal que conecta casi cualquier periférico y además le entrega energía. Variantes: USB-A (clásico) y USB-C (reversible).'},
+ {t:'RAM (Random Access Memory)', c:'Memorias', d:'Memoria de trabajo VOLÁTIL: guarda temporalmente los datos y programas en uso con acceso ultrarrápido. Al apagar la compu, se borra. Se mide en GB.'},
+ {t:'Registros', c:'Memorias', d:'Pequeñísimas memorias internas de la CPU que guardan el dato con el que se está operando en ese instante. Son las más rápidas de todo el sistema.'},
+ {t:'RJ-45', c:'Puertos y Redes', d:'Conector del cable de red ("ficha telefónica grande", de 8 pines). Su traba hace "click" al encastrar en el puerto Ethernet.'},
+ {t:'ROM (Read Only Memory)', c:'Memorias', d:'Memoria NO volátil de solo lectura que conserva instrucciones de fábrica, como la BIOS/UEFI. No se borra al apagar.'},
+ {t:'Router', c:'Puertos y Redes', d:'Dispositivo que recibe Internet del proveedor y lo distribuye entre tus equipos, por cable (Ethernet) o por Wi-Fi.'},
+ {t:'SATA', c:'Puertos y Redes', d:'Conector y cable que une discos HDD/SSD y lectoras con la placa madre. SATA III alcanza 6 Gb/s (unos 600 MB/s reales).'},
+ {t:'Sistema binario', c:'Unidades y Binario', d:'Sistema de numeración en base 2: usa solo los dígitos 0 y 1. Las computadoras lo usan porque sus transistores tienen dos estados eléctricos estables.'},
+ {t:'Sistema informático', c:'Conceptos', d:'Conjunto de elementos que trabajan en equipo para procesar información: hardware (físico) + software (lógico) + humanware (personas).'},
+ {t:'Software', c:'Conceptos', d:'Parte lógica del sistema: programas, aplicaciones e instrucciones que le dicen al hardware qué hacer. No se toca: se ejecuta.'},
+ {t:'Tarjeta de audio', c:'CPU y Placa', d:'Componente (integrado o en tarjeta de expansión) que convierte datos binarios en sonido y sonido en datos. Mejora la calidad respecto al audio básico integrado.'},
+ {t:'Tarjeta SD', c:'Almacenamiento', d:'Tarjeta de memoria flash usada en cámaras, celulares y consolas. Formatos: SD, miniSD y microSD.'},
+ {t:'Teclado', c:'Periféricos', d:'Periférico de entrada principal: cada tecla genera un código eléctrico que la CPU traduce en un carácter usando la tabla ASCII.'},
+ {t:'Transistor', c:'CPU y Placa', d:'Interruptor electrónico microscópico dentro de los chips: deja pasar corriente (1) o no (0). Un procesador actual tiene miles de millones.'},
+ {t:'UC (Unidad de Control)', c:'CPU y Placa', d:'Parte de la CPU que busca las instrucciones en la memoria, las interpreta y ordena su ejecución. Coordina sin calcular.'},
+ {t:'Volátil / No volátil', c:'Memorias', d:'Una memoria VOLÁTIL pierde su contenido al cortar la energía (RAM); una NO VOLÁTIL lo conserva (ROM, discos, pendrive).'},
+ {t:'Wi-Fi', c:'Puertos y Redes', d:'Estándar de red inalámbrica que conecta dispositivos a la red local e Internet mediante ondas de radio, sin cables.'}
+];
+const GLO_CATS = ['Todos', ...new Set(GLOSARIO.map(g => g.c))].sort((a,b) => a === 'Todos' ? -1 : b === 'Todos' ? 1 : a.localeCompare(b,'es'));
+let gloCat = 'Todos', gloQ = '';
+function renderGlosario(){
+  const q = norm(gloQ);
+  const items = GLOSARIO.filter(g =>
+    (gloCat === 'Todos' || g.c === gloCat) &&
+    (!q || norm(g.t).includes(q) || norm(g.d).includes(q))
+  ).sort((a,b) => a.t.localeCompare(b.t,'es'));
+  $('#glo-count').textContent = GLOSARIO.length;
+  $('#glo-chips').innerHTML = GLO_CATS.map(c =>
+    '<button class="legend-chip" data-cat="' + c + '"' + (c === gloCat ? ' style="border-color:#a3e635;color:#bef264"' : '') + '>' + c + '</button>').join('');
+  $('#glo-list').innerHTML = items.length ? items.map(g =>
+    '<div class="glo-item"><h4 class="font-display font-bold text-cyan-300 text-sm">' + g.t + ' <span class="text-[9px] font-mono text-slate-500 uppercase tracking-widest ml-1">' + g.c + '</span></h4>' +
+    '<p class="text-xs text-slate-300 mt-1 leading-relaxed">' + g.d + '</p></div>').join('')
+    : '<p class="text-sm text-slate-500 text-center py-6">No se encontraron términos con «' + gloQ + '» 😕</p>';
+  $$('#glo-chips .legend-chip').forEach(b => b.addEventListener('click', () => { gloCat = b.dataset.cat; renderGlosario(); }));
+}
+$('#glo-search').addEventListener('input', e => { gloQ = e.target.value; renderGlosario(); });
+$('#btn-glosario').addEventListener('click', () => { renderGlosario(); const m = $('#glosario-modal'); m.classList.remove('hidden'); m.classList.add('flex'); });
+
+/* ================================================================
+   📄 "MI REPORTE" — 🔧 VERSIÓN CORREGIDA
+   ✔ Ahora el detalle incluye TODAS las preguntas de TODOS los
+     módulos (respondidas o no), con: tu respuesta, fecha, nº de
+     intentos, resultado, respuesta correcta y explicación.
+   ✔ La impresión usa SOLO el documento .doc (fondo blanco,
+     texto negro): la interfaz, los modales y las decoraciones
+     quedan ocultos con @media print + clase .no-print.
+   ================================================================ */
+const MODNOMBRES = {1:'Sistema Informático y Proceso Computacional',2:'Arquitectura y Componentes',3:'Características y Periféricos',4:'Sistema Binario y Digitalización',5:'Unidades de Medida'};
+function getQS(m){ return m === 'final' ? FINAL : QUIZZES[+m]; }
+function modTitle(m){ return m === 'final' ? 'Evaluación Final Integradora 🎓' : 'Módulo ' + m + ' · ' + MODNOMBRES[m]; }
+function loadAlumno(){ try { return JSON.parse(localStorage.getItem('nticx_alumno')) || {}; } catch(e){ return {}; } }
+function saveAlumno(){
+  localStorage.setItem('nticx_alumno', JSON.stringify({
+    nombre: $('#rp-nombre').value, escuela: $('#rp-escuela').value,
+    curso: $('#rp-curso').value, division: $('#rp-div').value
+  }));
+}
+function buildReport(){
+  saveAlumno();
+  const al = loadAlumno();
+  const r = loadResp();
+  const mods = ['1','2','3','4','5','final'];
+  const x = totalXP();
+  const badges = loadBadges();
+  const ahora = new Date().toLocaleString('es-AR');
+  let resumen = '', detalle = '', totOk = 0, totPreg = 0, totResp = 0;
+
+  mods.forEach(m => {
+    const qs = getQS(m);
+    const logs = r[m] || [];
+    const last = {};           // último intento por pregunta
+    const intentos = {};       // cantidad de intentos por pregunta
+    logs.forEach(l => { last[l.qi] = l; intentos[l.qi] = (intentos[l.qi] || 0) + 1; });
+    const answered = Object.keys(last).length;
+    const correct = Object.values(last).filter(l => l.ok).length;
+    totOk += correct; totPreg += qs.length; totResp += answered;
+    const estado = answered === 0 ? '⬜ Pendiente' : (correct >= Math.ceil(qs.length*0.6) ? '✅ Logrado' : '🔶 En proceso');
+    resumen += '<tr><td>' + modTitle(m) + '</td><td style="text-align:center">' + qs.length + '</td><td style="text-align:center">' + answered + '</td><td style="text-align:center">' + correct + '</td><td style="text-align:center">' + (answered ? Math.round(correct/qs.length*100) + '%' : '—') + '</td><td style="text-align:center">' + estado + '</td></tr>';
+
+    /* 🔧 DETALLE COMPLETO: se listan TODAS las preguntas del módulo,
+       hayan sido respondidas o no, con respuesta del alumno, fecha,
+       intentos, resultado, respuesta correcta y explicación. */
+    let filas = '';
+    qs.forEach((qq,i) => {
+      const l = last[i];
+      const pref = m === 'final' ? '<small>[U' + qq.u + ']</small> ' : '';
+      const tu = l ? (l.chosen === -1 || l.chosen === null ? 'Sin responder' : '<b>' + String.fromCharCode(65 + l.chosen) + ')</b> ' + qq.ops[l.chosen]) : '<i>Sin intentar</i>';
+      let res;
+      if (!l) res = '<span class="dim">—</span>';
+      else if (l.ok) res = '<span class="ok">✔ Correcta</span>';
+      else res = '<span class="bad">✘ Incorrecta</span>';
+      const cuando = l ? new Date(l.f).toLocaleString('es-AR') : '';
+      const nInt = intentos[i] || 0;
+      filas += '<tr>' +
+        '<td>' + (i+1) + '. ' + pref + qq.q + '</td>' +
+        '<td>' + tu + (cuando ? '<br><small>' + cuando + (nInt > 1 ? ' · ' + nInt + ' intentos' : '') + '</small>' : '') + '</td>' +
+        '<td style="text-align:center">' + res + '</td>' +
+        '<td><b>' + String.fromCharCode(65 + qq.a) + ')</b> ' + qq.ops[qq.a] + '<br><small>💡 ' + qq.exp + '</small></td>' +
+      '</tr>';
+    });
+    detalle += '<h3>' + modTitle(m) + '</h3>' +
+      '<p class="dim">Preguntas: ' + qs.length + ' · Respondidas: ' + answered + ' · Correctas (último intento): ' + correct + ' · Intentos registrados: ' + logs.length + '</p>' +
+      '<table>' +
+        '<tr><th style="width:31%">Pregunta</th><th style="width:27%">Tu respuesta (último intento)</th><th style="width:11%">Resultado</th><th style="width:31%">Respuesta correcta y explicación</th></tr>' +
+        filas +
+      '</table>';
+  });
+
+  return '' +
+    '<h1>📄 Reporte de Aprendizaje — NTiCx</h1>' +
+    '<p><b>Hardware y Fundamentos del Computador</b> · Nuevas Tecnologías de la Información y la Conectividad · 4.º Año · Escuela Secundaria (Argentina)</p>' +
+    '<table><tr>' +
+      '<th style="width:16%">Alumno/a</th><td style="width:34%">' + (al.nombre || '(completar)') + '</td>' +
+      '<th style="width:16%">Escuela</th><td style="width:34%">' + (al.escuela || '(completar)') + '</td></tr><tr>' +
+      '<th>Curso</th><td>' + (al.curso || '(completar)') + '</td>' +
+      '<th>División</th><td>' + (al.division || '(completar)') + '</td></tr>' +
+      '<tr><th>Generado</th><td>' + ahora + '</td><th>Puntaje</th><td><b>' + x + ' XP</b> · Nivel: ' + nivelDe(x) + '</td></tr>' +
+      '<tr><th>Insignias</th><td colspan="3">' + badges.map((b,i) => (b ? '🏅' : '⬜') + ' ' + (i === 5 ? 'Final' : 'Mód. ' + (i+1))).join(' &nbsp;·&nbsp; ') + '</td></tr>' +
+    '</table>' +
+    '<div class="box"><b>Resumen global:</b> ' + totOk + ' de ' + totPreg + ' preguntas correctas (tomando el último intento de cada una) · ' + totResp + ' preguntas respondidas · Desempeño global: ' + Math.round(totOk/totPreg*100) + '%.</div>' +
+    '<h2>1 · Desempeño por módulo</h2>' +
+    '<table><tr><th>Módulo</th><th>Preguntas</th><th>Respondidas</th><th>Correctas</th><th>%</th><th>Estado</th></tr>' + resumen + '</table>' +
+    '<h2>2 · Detalle de preguntas y respuestas (acumulado)</h2>' +
+    '<p class="dim">Se listan TODAS las preguntas de cada módulo con el último intento registrado: tu respuesta, la fecha, el resultado y la respuesta correcta con su explicación.</p>' +
+    detalle +
+    '<p class="dim" style="margin-top:14pt">Reporte generado automáticamente por el aula interactiva NTiCx · ' + ahora + '. Los datos se guardan en este navegador.</p>';
+}
+function abrirReporte(){
+  const al = loadAlumno();
+  $('#rp-nombre').value = al.nombre || ''; $('#rp-escuela').value = al.escuela || '';
+  $('#rp-curso').value = al.curso || ''; $('#rp-div').value = al.division || '';
+  $('#rp-preview').innerHTML = buildReport();
+  const m = $('#reporte-modal'); m.classList.remove('hidden'); m.classList.add('flex');
+}
+$('#btn-reporte').addEventListener('click', abrirReporte);
+$('#btn-reporte-2').addEventListener('click', abrirReporte);
+$('#rp-generar').addEventListener('click', () => { $('#rp-preview').innerHTML = buildReport(); });
+
+/* 🔧 Impresión robusta: se agrega la clase, se espera un frame para
+   que el navegador recalcule estilos, y SOLO se imprime el documento. */
+function iniciarImpresion(clase){
+  document.body.classList.add(clase);
+  requestAnimationFrame(() => setTimeout(() => window.print(), 120));
+}
+$('#rp-imprimir').addEventListener('click', () => {
+  $('#print-reporte').innerHTML = buildReport();
+  iniciarImpresion('printing-reporte');
+});
+$('#btn-teoria').addEventListener('click', () => iniciarImpresion('printing-teoria'));
+window.addEventListener('afterprint', () => document.body.classList.remove('printing-reporte','printing-teoria'));
+
+/* ================================================================
+   🖨️ PREPARAR EL DOCUMENTO DE TEORÍA (tablas generadas desde datos)
+   ================================================================ */
+$('#teoria-mobo').innerHTML = Object.values(COMPONENTES).sort((a,b) => a.num - b.num)
+  .map(c => '<tr><td>' + c.num + '</td><td><b>' + c.n + '</b></td><td>' + c.f + '</td><td>' + c.a + '</td></tr>').join('');
+$('#teoria-glosario').innerHTML = GLOSARIO.slice().sort((a,b) => a.t.localeCompare(b.t,'es'))
+  .map(g => '<p style="margin:5pt 0"><b>' + g.t + '</b> <span style="color:#666">(' + g.c + '):</span> ' + g.d + '</p>').join('');
+
+/* 🚀 Arranque: si la URL tiene #tabN, abrir esa pestaña */
+(function(){
+  const m = location.hash.match(/tab([1-6])/);
+  if (m) showTab(m[1], false);
+  else $$('.reveal').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight) el.classList.add('vis'); });
+})();
+</script>
+</body>
+</html>
+
