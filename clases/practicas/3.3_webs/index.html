@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTiCx · Evolución de la Web | 4.º Año — Web 1.0 a Web 4.0</title>
+
+<!-- Tailwind CSS (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','sans-serif'] }
+      }
+    }
+  }
+</script>
+
+<!-- Tipografías Fontsource (CDN): Inter + Atkinson Hyperlegible (amigable para dislexia) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-400-normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-700-normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/latin-800-normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/atkinson-hyperlegible@latest/latin-400-normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/atkinson-hyperlegible@latest/latin-700-normal.min.css">
+
+<style>
+/* ============================================================
+   SISTEMA DE DISEÑO — SaaS EdTech Gamificado (NTiCx)
+   ============================================================ */
+:root{
+  --brand:#6C5CE7; --brand-2:#8B5CF6; --brand-deep:#4C3BB8;
+  --soft:#F3E8FF; --soft-2:#EDE4FF; --soft-3:#C9BEEF;
+  --ok:#16A34A; --ok-soft:#DCFCE7; --ok-ink:#14532D;
+  --warn:#EAB308; --warn-soft:#FEF9C3; --warn-ink:#713F12;
+  --bad:#DC2626; --bad-soft:#FEE2E2; --bad-ink:#7F1D1D;
+  --ink:#221A3A; --muted:#5F5A75; --line:#E6E0F5; --bg:#FAF8FF; --card:#FFFFFF;
+  --pri-bg:#6C5CE7; --pri-fg:#FFFFFF;
+  --btn-bg:#FFFFFF; --btn-fg:#4C3BB8; --btn-line:#E6E0F5;
+  --shadow:0 12px 30px -16px rgba(76,59,184,.45);
+  --radius:1.5rem;
+  --ff:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+/* MODO ALTO CONTRASTE */
+body.contraste{
+  --brand:#000000; --brand-2:#000000; --brand-deep:#000000;
+  --soft:#FFFFFF; --soft-2:#FFFFFF; --soft-3:#000000;
+  --ok:#0B5C22; --ok-soft:#FFFFFF; --ok-ink:#000000;
+  --warn:#6B4E00; --warn-soft:#FFE45C; --warn-ink:#000000;
+  --bad:#9B0000; --bad-soft:#FFFFFF; --bad-ink:#000000;
+  --ink:#000000; --muted:#000000; --line:#000000; --bg:#FFFFFF; --card:#FFFFFF;
+  --pri-bg:#000000; --pri-fg:#FFFFFF;
+  --btn-bg:#FFFFFF; --btn-fg:#000000; --btn-line:#000000;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ff);-webkit-font-smoothing:antialiased}
+body.dislexia{--ff:'Atkinson Hyperlegible','Inter',sans-serif}
+body.dislexia *{letter-spacing:.035em !important;word-spacing:.14em !important;line-height:1.85 !important}
+body.dislexia .tarjeta{border-width:3px}
+body.contraste .deco{display:none !important}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px;border-radius:.5rem}
+
+/* --- Componentes --- */
+.tarjeta{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-weight:800;font-size:.85rem;
+  padding:.6rem .95rem;border-radius:999px;border:2px solid var(--btn-line);background:var(--btn-bg);
+  color:var(--btn-fg);cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,background .2s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px -10px rgba(76,59,184,.6)}
+.btn:active{transform:translateY(0)}
+.btn-pri{background:var(--pri-bg);color:var(--pri-fg);border-color:var(--pri-bg)}
+.btn-soft{background:var(--soft);color:var(--brand-deep);border-color:transparent}
+body.contraste .btn-soft{border-color:#000}
+.btn-on{background:var(--warn);color:#000;border-color:#000}
+.btn-sm{padding:.4rem .7rem;font-size:.78rem}
+.chip{display:inline-flex;align-items:center;gap:.28rem;padding:.22rem .62rem;border-radius:999px;
+  background:var(--soft);color:var(--brand-deep);font-weight:700;font-size:.72rem;border:1.5px solid transparent;line-height:1.4}
+body.contraste .chip{border-color:#000;background:#fff;color:#000}
+.chip-ok{background:var(--ok-soft);color:var(--ok-ink)}
+.chip-warn{background:var(--warn-soft);color:var(--warn-ink)}
+.chip-bad{background:var(--bad-soft);color:var(--bad-ink)}
+.titulo-seccion{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin:0}
+.texto-suave{color:var(--muted)}
+.hr-soft{border:0;border-top:2px dashed var(--line);margin:1rem 0}
+
+/* --- Cabecera --- */
+.cabecera{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:2px solid var(--line);box-shadow:0 6px 20px -18px rgba(0,0,0,.6)}
+.logo-caja{display:flex;align-items:center;gap:.6rem}
+.logo-icono{width:42px;height:42px;border-radius:14px;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:1.25rem;flex:0 0 auto}
+body.contraste .logo-icono{background:#000;color:#fff;border:2px solid #000}
+.separador-acc{width:2px;height:28px;background:var(--line);border-radius:2px;flex:0 0 auto}
+body.contraste .separador-acc{background:#000}
+
+/* --- Pestañas --- */
+.tabs{display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 0;scrollbar-width:thin}
+.tab{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .9rem;border-radius:999px;border:2px solid var(--line);
+  background:var(--card);color:var(--muted);font-weight:800;font-size:.82rem;cursor:pointer;white-space:nowrap;transition:.18s}
+.tab:hover{border-color:var(--brand);color:var(--brand-deep)}
+.tab.activa{background:var(--brand);border-color:var(--brand);color:#fff}
+body.contraste .tab.activa{background:#000;border-color:#000;color:#fff}
+
+/* --- Paneles --- */
+.panel{display:none;animation:aparecer .35s ease}
+.panel.activa{display:block}
+@keyframes aparecer{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* --- Bento / Módulos --- */
+.bento{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:768px){.bento{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1100px){.bento-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mod-cab{display:flex;align-items:center;gap:.8rem;width:100%;padding:.9rem 1rem;background:transparent;border:0;cursor:pointer;text-align:left;color:var(--ink)}
+.mod-emoji{font-size:1.6rem;flex:0 0 auto}
+.mod-nombre{display:block;font-size:1.1rem;font-weight:800;letter-spacing:-.01em}
+.mod-lema{display:block;font-size:.78rem;color:var(--muted);font-weight:700}
+.mod-flecha{margin-left:auto;font-size:1.1rem;color:var(--brand);transition:transform .25s}
+.mod-cerrado .mod-flecha{transform:rotate(-90deg)}
+.mod-cuerpo{padding:0 1rem 1.1rem}
+.mod-cerrado .mod-cuerpo{display:none}
+.bloque{background:var(--soft);border-radius:1rem;padding:.75rem .9rem;margin-bottom:.6rem}
+body.contraste .bloque{border:2px solid #000;background:#fff}
+.bloque h4{margin:0 0 .25rem;font-size:.85rem;font-weight:800;color:var(--brand-deep)}
+body.contraste .bloque h4{color:#000}
+.bloque p{margin:0;font-size:.88rem;line-height:1.6;color:var(--ink)}
+.dato-clave{display:flex;gap:.5rem;font-size:.83rem;padding:.35rem 0;border-bottom:1.5px dashed var(--line)}
+.dato-clave b{min-width:104px;color:var(--brand-deep)}
+body.contraste .dato-clave b{color:#000}
+
+/* --- Trivia --- */
+.opcion{display:flex;gap:.65rem;align-items:flex-start;width:100%;text-align:left;padding:.7rem .85rem;margin-bottom:.45rem;
+  border-radius:1rem;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;
+  font-family:inherit;font-size:.88rem;line-height:1.55;transition:.18s}
+.opcion:hover:not(:disabled){border-color:var(--brand);background:var(--soft);transform:translateX(3px)}
+.opcion:disabled{cursor:default;opacity:1}
+.letra{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--brand-deep);
+  display:grid;place-items:center;font-weight:800;font-size:.75rem}
+body.contraste .letra{border:2px solid #000;background:#fff;color:#000}
+.opcion.correcta{border-color:var(--ok);background:var(--ok-soft);font-weight:700}
+.opcion.correcta .letra{background:var(--ok);color:#fff}
+.opcion.incorrecta{border-color:var(--bad);background:var(--bad-soft)}
+.opcion.incorrecta .letra{background:var(--bad);color:#fff}
+.marca{margin-left:auto;font-weight:800;flex:0 0 auto}
+.feedback{border-radius:1rem;padding:.65rem .8rem;font-size:.85rem;line-height:1.5;margin-top:.4rem;border:2px solid transparent}
+.feedback.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok-ink)}
+.feedback.mal{background:var(--bad-soft);border-color:var(--bad);color:var(--bad-ink)}
+body.contraste .feedback{color:#000}
+
+/* --- Simulador --- */
+.pista{display:flex;align-items:stretch;gap:0;margin:1rem 0}
+.nodo{flex:1 1 0;background:var(--card);border:2px solid var(--line);border-radius:1.2rem;padding:.8rem;text-align:center;transition:.3s;min-width:0}
+.nodo h5{margin:.3rem 0 .2rem;font-size:.9rem;font-weight:800}
+.nodo p{margin:0;font-size:.74rem;color:var(--muted);line-height:1.45}
+.nodo.activo{border-color:var(--brand);background:var(--soft);transform:translateY(-4px);box-shadow:var(--shadow)}
+.nodo.listo{border-color:var(--ok);background:var(--ok-soft)}
+.flecha{position:relative;flex:0 0 46px;min-height:44px}
+.flecha::before{content:'';position:absolute;left:2px;right:12px;top:50%;height:4px;margin-top:-2px;background:var(--line);border-radius:99px}
+.flecha::after{content:'';position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  border-left:10px solid var(--line);border-top:7px solid transparent;border-bottom:7px solid transparent}
+.flecha.activa::before{background:var(--brand)}
+.flecha.activa::after{border-left-color:var(--brand)}
+.punto{position:absolute;top:50%;left:0;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--warn);
+  box-shadow:0 0 0 3px var(--soft-2);opacity:0}
+.flecha.activa .punto{opacity:1;animation:viajar .75s linear infinite}
+@keyframes viajar{from{left:0}to{left:calc(100% - 16px)}}
+@media(max-width:767px){
+  .pista{flex-direction:column}
+  .flecha{flex:0 0 34px;min-height:34px;transform:rotate(90deg)}
+}
+.barra{height:9px;background:var(--soft-2);border-radius:99px;overflow:hidden;margin-top:.3rem}
+.barra span{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;transition:width .45s ease}
+body.contraste .barra{border:1.5px solid #000;background:#fff}
+.consola{background:#1B1430;color:#E9E4FF;border-radius:1rem;padding:.7rem .8rem;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.75rem;line-height:1.7;min-height:120px;max-height:190px;overflow:auto}
+body.contraste .consola{background:#fff;color:#000;border:2px solid #000}
+.consola .hora{color:#9BE37A}
+body.contraste .consola .hora{color:#000}
+
+/* --- Formularios --- */
+.campo{margin-bottom:.85rem}
+.campo label{display:block;font-size:.8rem;font-weight:800;margin-bottom:.3rem;color:var(--brand-deep)}
+body.contraste .campo label{color:#000}
+.campo input{width:100%;padding:.7rem .85rem;border-radius:.9rem;border:2px solid var(--line);background:var(--card);
+  color:var(--ink);font-family:inherit;font-size:.92rem}
+.campo input:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 4px var(--soft-2)}
+.campo .ayuda{font-size:.72rem;color:var(--muted);margin-top:.25rem}
+.aviso{border-radius:.9rem;padding:.6rem .8rem;font-size:.82rem;font-weight:700;margin-top:.5rem}
+.aviso.error{background:var(--bad-soft);color:var(--bad-ink);border:2px solid var(--bad)}
+.aviso.ok{background:var(--ok-soft);color:var(--ok-ink);border:2px solid var(--ok)}
+
+/* --- Hoja A4 (vista pantalla) --- */
+.hoja{background:#fff;border:2px solid var(--line);border-radius:.75rem;box-shadow:var(--shadow);padding:1.4rem;color:#111}
+@media(min-width:900px){.hoja{padding:2rem 2.4rem}}
+.hoja h2{font-size:1.05rem;margin:1.2rem 0 .4rem;color:#3B2F8C}
+.hoja h3{font-size:.95rem;margin:.9rem 0 .3rem}
+.hoja p,.hoja li{font-size:.86rem;line-height:1.6}
+body.contraste .hoja h2{color:#000}
+
+/* --- Glosario --- */
+.termino{border:2px solid var(--line);border-radius:1rem;background:var(--card);overflow:hidden}
+.termino button{width:100%;display:flex;align-items:center;gap:.5rem;padding:.65rem .8rem;background:transparent;border:0;
+  cursor:pointer;font-family:inherit;font-weight:800;font-size:.88rem;color:var(--ink);text-align:left}
+.termino .def{padding:0 .8rem .7rem;font-size:.83rem;line-height:1.55;color:var(--muted);display:none}
+.termino.abierto .def{display:block}
+.termino.abierto{border-color:var(--brand);background:var(--soft)}
+body.contraste .termino.abierto{background:#fff}
+
+/* --- Barras de progreso --- */
+.progreso{height:12px;background:var(--soft-2);border-radius:99px;overflow:hidden}
+.progreso span{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--ok));border-radius:99px;transition:width .5s ease}
+body.contraste .progreso{border:2px solid #000;background:#fff}
+body.contraste .progreso span{background:#000}
+
+/* ============================================================
+   IMPRESIÓN A4 (portrait) — escala de grises, limpio y compacto
+   ============================================================ */
+#printRoot{display:none}
+@media print{
+  @page{size:A4 portrait;margin:11mm}
+  html,body{background:#FFFFFF !important}
+  #app{display:none !important}
+  #printRoot{display:block !important;font-family:'Inter',Arial,Helvetica,sans-serif;color:#000;font-size:9.3pt;line-height:1.34}
+  .p-cab{border-bottom:1.4pt solid #000;padding-bottom:1.6mm;margin-bottom:2.6mm}
+  .p-titulo{font-size:14pt;font-weight:800;margin:0;letter-spacing:-.2px}
+  .p-sub{font-size:8.6pt;margin:.8mm 0 0;color:#000}
+  .p-caja{border:1pt solid #000;border-radius:2pt;padding:2.2mm 2.8mm;margin-bottom:2.6mm;break-inside:avoid}
+  .p-caja-titulo{font-size:9pt;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:1.4mm}
+  .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9mm 5mm}
+  .p-grid.una{grid-template-columns:1fr}
+  .p-dato{display:flex;gap:1.6mm;font-size:9pt;break-inside:avoid}
+  .p-dato b{min-width:21mm;font-weight:800}
+  .p-sect{font-size:10pt;font-weight:800;border-bottom:.8pt solid #000;padding-bottom:.7mm;margin:2.8mm 0 1.6mm;break-after:avoid}
+  .p-preg{margin:0 0 1.5mm;break-inside:avoid}
+  .p-preg .q{font-weight:700}
+  .p-preg .a{margin-left:4mm;font-size:8.8pt}
+  .p-preg .a .lab{font-weight:800}
+  .p-tabla{width:100%;border-collapse:collapse;font-size:8.2pt;margin-bottom:2.4mm;break-inside:avoid}
+  .p-tabla th,.p-tabla td{border:.6pt solid #000;padding:1mm 1.4mm;text-align:left;vertical-align:top}
+  .p-tabla th{background:#E8E8E8 !important;font-weight:800;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .p-txt{font-size:9pt;margin:0 0 1.6mm;text-align:justify}
+  .p-lista{margin:0 0 1.8mm;padding-left:4.2mm;font-size:9pt}
+  .p-lista li{margin-bottom:.7mm}
+  .p-pie{margin-top:3mm;padding-top:1.4mm;border-top:.6pt solid #000;font-size:7.8pt}
+  .p-salto{break-before:page}
+  .p-cert{border:3pt double #000;padding:9mm 7mm;text-align:center}
+  .p-cert .c1{font-size:9pt;letter-spacing:3px;text-transform:uppercase;font-weight:800}
+  .p-cert .c2{font-size:23pt;font-weight:800;margin:3mm 0 1mm;letter-spacing:-.5px}
+  .p-cert .c3{font-size:10pt;margin-bottom:6mm}
+  .p-cert .c4{font-size:15pt;font-weight:800;border-bottom:.8pt solid #000;border-top:.8pt solid #000;padding:3mm 0;margin:0 auto 6mm;max-width:120mm}
+  .p-cert .c5{font-size:9.5pt;line-height:1.6;margin-bottom:9mm}
+  .p-firmas{display:flex;gap:12mm;justify-content:center;margin-top:12mm}
+  .p-firma{flex:1;max-width:62mm;border-top:.8pt solid #000;padding-top:1.2mm;font-size:8.4pt;font-weight:700}
+  .p-nota{font-size:8.4pt;border:.8pt solid #000;padding:2mm;margin-top:3mm}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     CONTENEDOR PRINCIPAL DE LA APP (no se imprime)
+     ============================================================ -->
+<div id="app">
+
+  <!-- ACCIONES SUPERIORES: Mi Reporte · Teoría · Glosario + Dislexia · Contraste -->
+  <header class="cabecera">
+    <div class="max-w-6xl mx-auto px-3 pt-2.5">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div class="logo-caja">
+          <div class="logo-icono" aria-hidden="true">🌐</div>
+          <div>
+            <div class="text-[15px] font-extrabold leading-tight">NTiCx · Evolución de la Web</div>
+            <div class="text-[11px] font-bold texto-suave leading-tight">4.º Año · Secundaria · Argentina</div>
+          </div>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- Botones obligatorios arriba y juntos -->
+        <div class="flex flex-wrap items-center gap-1.5" role="toolbar" aria-label="Acciones principales y accesibilidad">
+          <button class="btn btn-soft" id="btnReporte" data-accion="ir" data-panel="reporte" aria-label="Ir a Mi Reporte">📄 Mi Reporte</button>
+          <button class="btn btn-soft" id="btnTeoria"  data-accion="ir" data-panel="teoria"  aria-label="Ir a Teoría">📖 Teoría</button>
+          <button class="btn btn-soft" id="btnGlosario" data-accion="ir" data-panel="glosario" aria-label="Ir a Glosario">🔤 Glosario</button>
+          <div class="separador-acc" aria-hidden="true"></div>
+          <button class="btn" id="btnDislexia" data-accion="dislexia" aria-pressed="false" title="Activar tipografía amigable para dislexia">🅰️ Dislexia</button>
+          <button class="btn" id="btnContraste" data-accion="contraste" aria-pressed="false" title="Activar modo de alto contraste">◐ Contraste</button>
+        </div>
+      </div>
+
+      <!-- Pestañas de contenidos -->
+      <nav class="tabs" aria-label="Secciones del contenido">
+        <button class="tab activa" data-accion="ir" data-panel="home"   data-tab="home">🌐 Evolución de la Web</button>
+        <button class="tab" data-accion="ir" data-panel="sim"   data-tab="sim">🧪 Simulador de datos</button>
+        <button class="tab" data-accion="ir" data-panel="examen" data-tab="examen">🏆 Evaluación Final</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-3 py-4">
+
+    <!-- ===================== PESTAÑA PRINCIPAL ===================== -->
+    <section id="panel-home" class="panel activa" aria-label="Evolución de la Web">
+
+      <!-- HERO -->
+      <div class="tarjeta p-4 md:p-6 mb-4" style="background:linear-gradient(120deg,var(--soft) 0%,var(--card) 60%)">
+        <div class="flex flex-col md:flex-row gap-4 items-start">
+          <div class="flex-1">
+            <span class="chip chip-warn mb-2">🚀 Unidad: La Web y sus generaciones</span>
+            <h1 class="titulo-seccion text-2xl md:text-3xl mb-1">De la red pasiva a la red inteligente</h1>
+            <p class="texto-suave text-sm md:text-base mb-3" style="max-width:62ch">
+              Un viaje en 4 estaciones: <b>Web 1.0</b> (solo leer), <b>Web 2.0</b> (participar y colaborar),
+              <b>Web 3.0</b> (datos con significado) y <b>Web 4.0</b> (inteligencia artificial).
+              Leé la teoría, jugá el simulador, superá las mini-trivias y después rendí la evaluación final.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn btn-pri" data-accion="ir" data-panel="sim">🧪 Probar el simulador</button>
+              <button class="btn" data-accion="ir" data-panel="examen">🏆 Ir a la evaluación</button>
+              <button class="btn btn-soft" data-accion="ir" data-panel="glosario">🔤 Glosario</button>
+            </div>
+          </div>
+          <div class="w-full md:w-[290px] flex-none">
+            <div class="tarjeta p-3">
+              <div class="text-xs font-extrabold uppercase tracking-wide texto-suave mb-2">Tu progreso</div>
+              <div id="progMini" class="text-sm font-extrabold mb-1">Mini-trivias: 0 / 4</div>
+              <div class="progreso mb-3"><span id="progMiniBar" style="width:0%"></span></div>
+              <div id="progExamen" class="text-sm font-extrabold mb-1">Evaluación final: pendiente</div>
+              <div class="progreso"><span id="progExamenBar" style="width:0%"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BENTO: 4 MÓDULOS -->
+      <div id="contModulos" class="bento"></div>
+
+      <!-- TABLA COMPARATIVA -->
+      <div class="tarjeta p-4 md:p-5 mt-4">
+        <h3 class="titulo-seccion text-lg mb-1">🧩 Comparativa rápida: las 4 generaciones</h3>
+        <p class="texto-suave text-sm mb-3">Guardá esta tabla: es el resumen perfecto para repasar antes de la evaluación.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-[13px]" style="border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--soft)">
+                <th class="p-2 font-extrabold" style="border:1.5px solid var(--line)">Etapa</th>
+                <th class="p-2 font-extrabold" style="border:1.5px solid var(--line)">Rol del usuario</th>
+                <th class="p-2 font-extrabold" style="border:1.5px solid var(--line)">Comunicación</th>
+                <th class="p-2 font-extrabold" style="border:1.5px solid var(--line)">Tecnología clave</th>
+                <th class="p-2 font-extrabold" style="border:1.5px solid var(--line)">Ejemplo cotidiano</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTabla"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FLUJO DE DATOS (teoría breve) -->
+      <div class="tarjeta p-4 md:p-5 mt-4">
+        <h3 class="titulo-seccion text-lg mb-1">⚙️ El flujo de datos: Entrada → Procesamiento → Salida</h3>
+        <p class="texto-suave text-sm mb-3" style="max-width:78ch">
+          Toda actividad en la web sigue el mismo camino. Vos escribís o tocás algo (<b>entrada</b>), la computadora y el
+          servidor trabajan con esos datos usando la <b>CPU</b> (calcula) y la <b>memoria RAM</b> (guarda lo que está en uso),
+          y finalmente ves el resultado en pantalla (<b>salida</b>). Lo que queda guardado para siempre va al
+          <b>almacenamiento</b> (disco, SSD o nube).
+        </p>
+        <div class="grid gap-2 md:grid-cols-4 text-[13px]">
+          <div class="bloque"><h4>📥 Entrada</h4><p>Teclado, mouse, micrófono, cámara o un clic en un enlace.</p></div>
+          <div class="bloque"><h4>🧠 Procesamiento</h4><p>CPU + memoria RAM: ejecutan instrucciones y transforman los datos.</p></div>
+          <div class="bloque"><h4>📤 Salida</h4><p>Pantalla, parlantes, impresora: el resultado que percibís.</p></div>
+          <div class="bloque"><h4>💾 Almacenamiento</h4><p>Disco, SSD, pendrive o nube: la información persiste.</p></div>
+        </div>
+        <button class="btn btn-pri mt-3" data-accion="ir" data-panel="sim">🧪 Ver el simulador en acción</button>
+      </div>
+    </section>
+
+    <!-- ===================== SIMULADOR ===================== -->
+    <section id="panel-sim" class="panel" aria-label="Simulador del flujo de datos">
+      <div class="tarjeta p-4 md:p-5">
+        <h2 class="titulo-section titulo-seccion text-xl md:text-2xl mb-1">🧪 Simulador del flujo de datos en la Web</h2>
+        <p class="texto-suave text-sm mb-3" style="max-width:80ch">
+          Elegí una generación de la Web y enviá una solicitud. Vas a ver cómo viaja la información desde la
+          <b>entrada</b>, pasa por el <b>procesamiento (CPU + memoria)</b> y termina en la <b>salida</b>.
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-1" id="selVersiones" role="group" aria-label="Elegir generación de la Web"></div>
+
+        <div class="pista" id="pista">
+          <div class="nodo" id="nodoEntrada">
+            <div style="font-size:1.5rem">📥</div>
+            <h5>Entrada</h5>
+            <p id="txtEntrada">Elegí una versión y presioná “Enviar solicitud”.</p>
+          </div>
+          <div class="flecha" id="flecha1"><span class="punto"></span></div>
+          <div class="nodo" id="nodoProceso">
+            <div style="font-size:1.5rem">🧠</div>
+            <h5>Procesamiento</h5>
+            <p class="text-left">CPU <span class="font-extrabold" id="cpuVal">0%</span></p>
+            <div class="barra"><span id="barCpu"></span></div>
+            <p class="text-left mt-1.5">Memoria RAM <span class="font-extrabold" id="ramVal">0%</span></p>
+            <div class="barra"><span id="barRam"></span></div>
+          </div>
+          <div class="flecha" id="flecha2"><span class="punto"></span></div>
+          <div class="nodo" id="nodoSalida">
+            <div style="font-size:1.5rem">📤</div>
+            <h5>Salida</h5>
+            <p id="txtSalida">Acá aparece el resultado.</p>
+          </div>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2 mt-3">
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wide texto-suave mb-1.5">🖥️ Consola de red</div>
+            <div class="consola" id="consola" aria-live="polite"><div><span class="hora">[sistema]</span> Simulador listo. Esperando solicitud…</div></div>
+          </div>
+          <div>
+            <div class="text-xs font-extrabold uppercase tracking-wide texto-suave mb-1.5">💾 Almacenamiento de la sesión</div>
+            <div class="tarjeta p-3 text-[13px]">
+              <div class="dato-clave"><b>Caché</b><span id="stCache">0 KB</span></div>
+              <div class="dato-clave"><b>Cookies</b><span id="stCookies">0</span></div>
+              <div class="dato-clave"><b>Datos del usuario</b><span id="stDatos">—</span></div>
+              <div class="dato-clave" style="border:0"><b>Dónde queda guardado</b><span id="stDonde">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-3">
+          <button class="btn btn-pri" id="btnSimRun" data-accion="sim-run">▶ Enviar solicitud</button>
+          <button class="btn" data-accion="sim-reset">↺ Reiniciar simulador</button>
+          <span class="chip chip-ok self-center" id="chipSim">🧪 Logro: pendiente</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EVALUACIÓN FINAL ===================== -->
+    <section id="panel-examen" class="panel" aria-label="Evaluación final">
+      <div class="tarjeta p-4 md:p-5 mb-4">
+        <h2 class="titulo-seccion text-xl md:text-2xl mb-1">🏆 Evaluación Final Integradora</h2>
+        <p class="texto-suave text-sm mb-3">15 preguntas de opción múltiple sobre Web 1.0, 2.0, 3.0 y 4.0 + flujo de datos. Se aprueba con el 60% (9 respuestas correctas).</p>
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex-1 min-w-[180px]">
+            <div class="text-xs font-extrabold uppercase tracking-wide texto-suave mb-1">Respondidas: <span id="exCont">0</span> / 15</div>
+            <div class="progreso"><span id="exBar" style="width:0%"></span></div>
+          </div>
+          <button class="btn btn-pri" data-accion="examen-fin">✅ Finalizar examen</button>
+          <button class="btn" data-accion="examen-reset">↺ Reiniciar</button>
+        </div>
+        <div id="exAviso" aria-live="polite"></div>
+      </div>
+
+      <div id="resultadoExamen" class="hidden"></div>
+      <div id="contExamen" class="grid gap-3"></div>
+    </section>
+
+    <!-- ===================== MI REPORTE ===================== -->
+    <section id="panel-reporte" class="panel" aria-label="Mi reporte">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="tarjeta p-4 md:p-5">
+          <h2 class="titulo-seccion text-xl mb-1">📄 Mi Reporte</h2>
+          <p class="texto-suave text-sm mb-3">Completá tus datos <b>a mano</b> (no se cargan solos) y después imprimí el informe en A4 con tus trivias y sus respuestas.</p>
+
+          <div class="campo">
+            <label for="fNombre">Nombre y apellido *</label>
+            <input id="fNombre" type="text" autocomplete="off" placeholder="Ej.: Juana Pérez">
+          </div>
+          <div class="campo">
+            <label for="fEscuela">Escuela *</label>
+            <input id="fEscuela" type="text" autocomplete="off" placeholder="Ej.: E.E.S. N.º 12 “Manuel Belgrano”">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="campo">
+              <label for="fAnio">Año *</label>
+              <input id="fAnio" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Escribilo vos">
+              <div class="ayuda">Ingreso 100% manual.</div>
+            </div>
+            <div class="campo">
+              <label for="fDivision">División *</label>
+              <input id="fDivision" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Escribila vos">
+              <div class="ayuda">Ingreso 100% manual.</div>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="fDocente">Docente (opcional)</label>
+            <input id="fDocente" type="text" autocomplete="off" placeholder="Ej.: Prof. Martínez">
+          </div>
+
+          <button class="btn btn-pri w-full" data-accion="guardar-datos">💾 Guardar mis datos</button>
+          <div id="avisoReporte" aria-live="polite"></div>
+
+          <hr class="hr-soft">
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-pri" data-accion="imprimir-reporte">🖨️ Imprimir Reporte (A4)</button>
+            <button class="btn" data-accion="imprimir-certificado">🎓 Imprimir Certificado (A4)</button>
+          </div>
+          <p class="texto-suave text-xs mt-2">El reporte impreso muestra <b>únicamente</b> tus datos y los resultados de las trivias (preguntas y respuestas), en formato compacto para no gastar hojas de más.</p>
+        </div>
+
+        <div>
+          <div class="tarjeta p-4 md:p-5 mb-3">
+            <h3 class="font-extrabold text-lg mb-2">👀 Vista previa de tus datos</h3>
+            <div id="prevDatos" class="text-sm"></div>
+          </div>
+          <div class="tarjeta p-4 md:p-5">
+            <h3 class="font-extrabold text-lg mb-2">🎯 Logros y trivias</h3>
+            <div id="prevLogros" class="text-sm mb-3"></div>
+            <div id="prevTrivias" class="text-sm"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TEORÍA (vista A4) ===================== -->
+    <section id="panel-teoria" class="panel" aria-label="Teoría">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <h2 class="titulo-seccion text-xl md:text-2xl">📖 Teoría completa · Vista de impresión A4</h2>
+        <div class="flex-1"></div>
+        <button class="btn btn-pri" data-accion="imprimir-teoria">🖨️ Imprimir Teoría (A4)</button>
+      </div>
+      <div class="hoja" id="hojaTeoria"></div>
+    </section>
+
+    <!-- ===================== GLOSARIO ===================== -->
+    <section id="panel-glosario" class="panel" aria-label="Glosario">
+      <div class="tarjeta p-4 md:p-5 mb-4">
+        <h2 class="titulo-seccion text-xl md:text-2xl mb-1">🔤 Glosario NTiCx</h2>
+        <p class="texto-suave text-sm mb-3">Diccionario digital interactivo: buscá un término técnico o filtrá por generación de la Web.</p>
+        <input id="buscador" type="search" autocomplete="off" placeholder="🔎 Buscá un término… (ej.: nube, prompt, blockchain)"
+               class="w-full p-3 text-sm" style="border-radius:1rem;border:2px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit">
+        <div class="flex flex-wrap gap-1.5 mt-3" id="filtros"></div>
+      </div>
+      <div class="text-sm font-extrabold texto-suave mb-2" id="contTerminos"></div>
+      <div id="listaTerminos" class="grid gap-2 md:grid-cols-2"></div>
+    </section>
+
+    <footer class="mt-6 mb-3 text-center text-xs texto-suave">
+      <p class="font-bold">NTiCx · Nuevas Tecnologías de la Información y la Conectividad — 4.º Año</p>
+      <p>Aplicación educativa de una sola página · Web 1.0 → Web 4.0 · Imprimible en A4 vertical</p>
+    </footer>
+  </main>
+</div>
+
+<!-- Contenedor exclusivo de impresión -->
+<div id="printRoot" aria-hidden="true"></div>
+
+<script>
+/* ============================================================
+   DATOS DE CONTENIDO — NTiCx · Evolución de la Web
+   ============================================================ */
+const SVG = {
+  web10:`<svg class="deco" viewBox="0 0 120 90" width="118" height="88" role="img" aria-label="Monitor CRT de la Web 1.0"><rect x="8" y="6" width="104" height="64" rx="9" fill="#EDE4FF" stroke="#6C5CE7" stroke-width="3"/><rect x="18" y="16" width="84" height="44" rx="4" fill="#fff"/><rect x="26" y="23" width="44" height="6" rx="3" fill="#6C5CE7"/><rect x="26" y="35" width="66" height="4" rx="2" fill="#C9BEEF"/><rect x="26" y="44" width="56" height="4" rx="2" fill="#C9BEEF"/><rect x="26" y="53" width="36" height="4" rx="2" fill="#22C55E"/><path d="M48 70h24l7 12H41z" fill="#6C5CE7"/><rect x="33" y="83" width="54" height="5" rx="2.5" fill="#EAB308"/></svg>`,
+  web20:`<svg class="deco" viewBox="0 0 120 90" width="118" height="88" role="img" aria-label="Personas colaborando en la nube, Web 2.0"><path d="M34 40a13 13 0 0113-13 18 18 0 0134 5 12 12 0 01-3 23H45a12 12 0 01-11-15z" fill="#F3E8FF" stroke="#6C5CE7" stroke-width="3"/><circle cx="24" cy="63" r="7" fill="#6C5CE7"/><path d="M13 84c0-6 5-11 11-11s11 5 11 11z" fill="#6C5CE7"/><circle cx="60" cy="68" r="7" fill="#EAB308"/><path d="M49 89c0-6 5-11 11-11s11 5 11 11z" fill="#EAB308"/><circle cx="96" cy="63" r="7" fill="#22C55E"/><path d="M85 84c0-6 5-11 11-11s11 5 11 11z" fill="#22C55E"/><path d="M78 18h12M84 12l6 6-6 6" stroke="#8B5CF6" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  web30:`<svg class="deco" viewBox="0 0 120 90" width="118" height="88" role="img" aria-label="Red semántica global, Web 3.0"><circle cx="60" cy="45" r="30" fill="#F3E8FF" stroke="#6C5CE7" stroke-width="3"/><ellipse cx="60" cy="45" rx="14" ry="30" fill="none" stroke="#8B5CF6" stroke-width="2"/><path d="M30 45h60M36 27h48M36 63h48" stroke="#8B5CF6" stroke-width="2"/><path d="M40 26l40-2M86 62l-6-38" stroke="#6C5CE7" stroke-width="1.6" stroke-dasharray="3 3"/><circle cx="40" cy="26" r="5" fill="#22C55E"/><circle cx="80" cy="24" r="5" fill="#6C5CE7"/><circle cx="86" cy="62" r="5" fill="#EAB308"/></svg>`,
+  web40:`<svg class="deco" viewBox="0 0 120 90" width="118" height="88" role="img" aria-label="Robot con inteligencia artificial, Web 4.0"><rect x="32" y="26" width="56" height="44" rx="14" fill="#F3E8FF" stroke="#6C5CE7" stroke-width="3"/><circle cx="48" cy="46" r="6" fill="#6C5CE7"/><circle cx="72" cy="46" r="6" fill="#22C55E"/><rect x="48" y="58" width="24" height="5" rx="2.5" fill="#EAB308"/><path d="M60 26V15" stroke="#6C5CE7" stroke-width="3"/><circle cx="60" cy="10" r="5" fill="#EAB308"/><path d="M18 40h14M88 40h14" stroke="#8B5CF6" stroke-width="4" stroke-linecap="round"/><path d="M14 76c6 6 14 6 20 0M86 76c6 6 14 6 20 0" stroke="#22C55E" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`
+};
+
+const MODULOS = [
+{
+  id:'web10', emoji:'📼', nombre:'Web 1.0', lema:'La red pasiva', periodo:'1991 – 2004', svg:SVG.web10,
+  intro:'La web de “solo lectura”: páginas estáticas que se miraban como una enciclopedia de papel.',
+  bloques:[
+    {t:'¿De qué se trata?', p:'La Web 1.0 fue la primera etapa de la World Wide Web. Las páginas eran <b>estáticas</b>: estaban escritas en HTML y guardadas como archivos en un servidor. El contenido no cambiaba y no había bases de datos ni interacción. El usuario era un simple <b>espectador</b> que leía información publicada por otros.'},
+    {t:'¿Cómo se usaba?', p:'Escribías una dirección (URL) en el navegador o buscabas en un <b>directorio</b> como Yahoo!, que ordenaba los sitios por categorías. No existían los comentarios, los “me gusta” ni los perfiles. Para conseguir información había que navegar de enlace en enlace.'},
+    {t:'Tecnologías clave', p:'<b>HTML</b> (estructura del texto), <b>HTTP</b> (protocolo de transferencia), <b>URL</b> (direcciones), <b>FTP</b> (subida de archivos), hipervínculos y los primeros navegadores como Mosaic y Netscape.'},
+    {t:'En Argentina', p:'Las primeras páginas eran de universidades, bancos, diarios y del Estado. En las escuelas se usaban enciclopedias en <b>CD-ROM</b> (Encarta) y las “salas de computación” con conexión telefónica por módem: internet se pagaba por minuto y la línea se cortaba cuando alguien atendía el teléfono.'}
+  ],
+  datos:[
+    ['Rol del usuario','Consumidor pasivo: solo lee.'],
+    ['Comunicación','Unidireccional, de uno a muchos.'],
+    ['Contenido','Estático, creado por el dueño del sitio.'],
+    ['Interacción','Casi nula: enlaces y formularios básicos.'],
+    ['Ejemplos','Página del CERN, diarios online, GeoCities, CD-ROM.']
+  ],
+  tech:['HTML','HTTP','FTP','URL','Módem dial-up','Directorios web'],
+  riesgo:'Limitación principal: no podías crear ni responder. La información era “de arriba hacia abajo” y quedaba desactualizada rápido.',
+  trivia:[
+    {p:'¿Cuál era la característica principal de la Web 1.0?',
+     o:[['Era una red pasiva y de solo lectura: las páginas eran estáticas y el usuario únicamente podía consultar la información que otros publicaban.',true],
+        ['Era totalmente colaborativa y social.',false],
+        ['Funcionaba con inteligencia artificial.',false],
+        ['Estaba descentralizada con blockchain.',false]],
+     e:'La Web 1.0 se conoce como “red pasiva” porque el usuario solo consumía contenido: no podía publicar, comentar ni modificar nada.'},
+    {p:'¿Con qué lenguaje se creaban las páginas de la Web 1.0?',
+     o:[['Con HTML, un lenguaje de marcado que permitía estructurar textos, imágenes e hipervínculos, pero sin interactividad ni bases de datos dinámicas.',true],
+        ['Con Python.',false],
+        ['Con Excel.',false],
+        ['Con CSS Grid.',false]],
+     e:'HTML (HyperText Markup Language) es la base de la web desde 1991 y define la estructura de cada página.'},
+    {p:'En la Web 1.0, la comunicación era…',
+     o:[['Unidireccional y de uno a muchos: un emisor publicaba el contenido y una audiencia masiva lo recibía sin posibilidad de responder ni modificarlo.',true],
+        ['Bidireccional de muchos a muchos.',false],
+        ['Solo entre dispositivos inteligentes.',false],
+        ['Por videollamada en tiempo real.',false]],
+     e:'Como en la televisión o el diario papel: hay un emisor y muchos receptores que no pueden intervenir.'}
+  ]
+},
+{
+  id:'web20', emoji:'💬', nombre:'Web 2.0', lema:'La red participativa y colaborativa', periodo:'2004 – actualidad', svg:SVG.web20,
+  intro:'El usuario pasa de espectador a protagonista: publica, comenta, comparte y crea junto con otros.',
+  bloques:[
+    {t:'¿De qué se trata?', p:'El término lo popularizó <b>Tim O’Reilly en 2004</b>. La Web 2.0 no es una tecnología nueva sino una <b>forma de usar la web</b>: las plataformas permiten que cualquier persona produzca contenido. El usuario se convierte en <b>prosumidor</b> (produce + consume).'},
+    {t:'¿Cómo se usa?', p:'Tenés un <b>perfil</b>, subís fotos y videos, comentás, compartís, le das “me gusta” y trabajás en documentos al mismo tiempo que otras personas. Todo se guarda en <b>la nube</b>, así que podés seguir desde el celular o la notebook.'},
+    {t:'Tecnologías clave', p:'<b>AJAX</b> y <b>JavaScript</b> (páginas que se actualizan sin recargar), <b>APIs</b>, <b>RSS</b>, <b>cloud computing</b>, etiquetas y <b>folksonomía</b> (hashtags), contenidos generados por usuarios (<b>UGC</b>).'},
+    {t:'En Argentina', p:'Facebook, Instagram, YouTube, TikTok y WhatsApp organizan la vida social y escolar: por ahí se comparten las tareas del grupo, los videos de un tema y los avisos del curso. También aparecen riesgos reales: ciberacoso, noticias falsas y exposición de la vida privada.'}
+  ],
+  datos:[
+    ['Rol del usuario','Prosumidor: consume y produce.'],
+    ['Comunicación','Bidireccional, de muchos a muchos.'],
+    ['Contenido','Dinámico y generado por los usuarios (UGC).'],
+    ['Interacción','Alta: comentarios, likes, chats, colaboración.'],
+    ['Ejemplos','Wikipedia, YouTube, Instagram, TikTok, Google Docs.']
+  ],
+  tech:['AJAX','APIs','Cloud','RSS','Hashtags','Streaming','Redes sociales'],
+  riesgo:'Riesgos: huella digital, fake news, ciberacoso, pérdida de privacidad y “burbuja de filtros” (solo ves lo que el algoritmo cree que te gusta).',
+  trivia:[
+    {p:'¿Qué significa que el usuario sea un “prosumidor” en la Web 2.0?',
+     o:[['Que deja de ser un simple espectador y pasa a producir y consumir contenido al mismo tiempo: publica, comenta, comparte y crea junto con otras personas.',true],
+        ['Que solamente mira publicidad.',false],
+        ['Que debe pagar para navegar.',false],
+        ['Que administra los servidores.',false]],
+     e:'“Prosumidor” = productor + consumidor. Es el corazón de la Web 2.0: todos pueden aportar contenido.'},
+    {p:'¿Cuál es un ejemplo típico de la Web 2.0?',
+     o:[['Wikipedia, porque es una enciclopedia colaborativa en la que cualquier persona puede editar, corregir y mejorar los artículos de manera colectiva.',true],
+        ['Un CD-ROM de Encarta.',false],
+        ['Una página estática del CERN.',false],
+        ['Un directorio de Yahoo! de 1995.',false]],
+     e:'Wikipedia es el símbolo del trabajo colaborativo: el contenido lo construyen miles de usuarios, no una sola editorial.'},
+    {p:'¿Qué riesgo aparece con fuerza en la Web 2.0?',
+     o:[['La huella digital y la desinformación: todo lo que publicás queda registrado para siempre y las noticias falsas se viralizan muy rápido por las redes sociales.',true],
+        ['El exceso de papel impreso.',false],
+        ['La falta de hipervínculos.',false],
+        ['El consumo energético del blockchain.',false]],
+     e:'Al participar todos, también crecen los riesgos: lo que subís deja rastro y las fake news circulan a gran velocidad.'}
+  ]
+},
+{
+  id:'web30', emoji:'🕸️', nombre:'Web 3.0', lema:'La red global semántica', periodo:'2010 – actualidad', svg:SVG.web30,
+  intro:'Las máquinas empiezan a entender el significado de los datos y la red se vuelve global y descentralizada.',
+  bloques:[
+    {t:'¿De qué se trata?', p:'La idea de <b>Web Semántica</b> la propuso Tim Berners-Lee en 2001: una web donde los datos están <b>descriptos y conectados</b> para que las máquinas comprendan su <b>significado</b> (semántica) y su contexto, no solo palabras sueltas. Así el buscador entiende la intención de tu pregunta.'},
+    {t:'¿Cómo se usa?', p:'Cuando buscás “capitales de provincias argentinas con más de 500.000 habitantes”, el motor no busca palabras: <b>relaciona datos</b> de distintas fuentes y te arma una respuesta con fichas, mapas y cuadros (Knowledge Graph). La red es <b>global</b>: los datos se enlazan sin fronteras.'},
+    {t:'Tecnologías clave', p:'<b>Metadatos</b>, <b>ontologías</b>, <b>RDF</b>, <b>OWL</b>, <b>SPARQL</b>, <b>Linked Data</b> (datos enlazados), schema.org/JSON-LD. Se suma la <b>descentralización</b> con <b>blockchain</b>, criptomonedas, contratos inteligentes e identidad digital propia.'},
+    {t:'En Argentina', p:'Lo ves en las búsquedas inteligentes de Google, en los asistentes de voz, en los datos abiertos del Estado (datos.gob.ar) y en billeteras virtuales o cripto. Sigue siendo una etapa en construcción y plantea debates por el consumo energético y la brecha digital.'}
+  ],
+  datos:[
+    ['Rol del usuario','Dueño de sus datos y de su identidad digital.'],
+    ['Comunicación','Entre personas Y entre máquinas (datos que se entienden).'],
+    ['Contenido','Semántico, enlazado y verificable.'],
+    ['Interacción','Búsquedas por significado, contexto e intención.'],
+    ['Ejemplos','Knowledge Graph, datos abiertos, blockchain, asistentes de voz.']
+  ],
+  tech:['Metadatos','Ontologías','RDF','SPARQL','Linked Data','Blockchain','Smart contracts'],
+  riesgo:'Desafíos: alto consumo energético de algunas redes, estafas con criptoactivos, volatilidad y brecha digital (no todos acceden).',
+  trivia:[
+    {p:'¿Qué aporta la “semántica” a la Web 3.0?',
+     o:[['Permite que las máquinas comprendan el significado y el contexto de los datos, no solo palabras sueltas, y así puedan relacionar información de distintas fuentes.',true],
+        ['Hace que las páginas tengan más colores.',false],
+        ['Aumenta la velocidad del módem.',false],
+        ['Elimina la necesidad de servidores.',false]],
+     e:'“Semántica” = significado. La Web 3.0 busca que las máquinas entiendan de qué hablan los datos.'},
+    {p:'¿Qué tecnologías son clave en la Web 3.0?',
+     o:[['Los metadatos y las ontologías (RDF, OWL, SPARQL y Linked Data), que describen los datos para que puedan ser interpretados y conectados entre sí automáticamente.',true],
+        ['El disquete de 3½ pulgadas.',false],
+        ['El fax y el télex.',false],
+        ['El HTML 1.0 solamente.',false]],
+     e:'Los metadatos son “datos sobre datos”: explican qué es cada cosa y cómo se relaciona con las demás.'},
+    {p:'¿Qué implica la descentralización en la Web 3.0?',
+     o:[['Que los datos dejan de estar guardados en un único servidor central y se distribuyen en redes como blockchain, lo que le da al usuario mucho más control sobre su propia información.',true],
+        ['Que todo se guarda en una sola nube.',false],
+        ['Que solo las empresas pueden publicar.',false],
+        ['Que se vuelve a usar soporte en papel.',false]],
+     e:'En vez de depender de una única empresa, la información se reparte entre muchos nodos y se valida en red.'}
+  ]
+},
+{
+  id:'web40', emoji:'🤖', nombre:'Web 4.0', lema:'La red basada en inteligencia artificial', periodo:'Emergente · hoy', svg:SVG.web40,
+  intro:'Una web proactiva y ubicua: la IA genera respuestas, aprende de vos y anticipa lo que necesitás.',
+  bloques:[
+    {t:'¿De qué se trata?', p:'Es la etapa en desarrollo, también llamada <b>“web total”, “web ubicua” o “web simbiótica”</b>. El motor ya no es solo buscar o compartir: es la <b>inteligencia artificial</b>, que <b>genera</b> contenido nuevo, <b>aprende</b> de los datos y <b>anticipa</b> necesidades.'},
+    {t:'¿Cómo se usa?', p:'Le escribís una consigna (<b>prompt</b>) a un asistente como ChatGPT, Gemini o Copilot y te responde con textos, imágenes, resúmenes o código. Además, la IA está detrás de las recomendaciones de tus redes, del traductor, del reconocimiento facial y de los dispositivos inteligentes del hogar.'},
+    {t:'Tecnologías clave', p:'<b>Inteligencia Artificial</b>, <b>Machine Learning</b> y <b>Deep Learning</b>, <b>LLM</b> (modelos grandes de lenguaje), <b>Big Data</b>, <b>IoT</b> (internet de las cosas), <b>5G</b>, computación en el borde, gemelos digitales, metaverso y asistentes de voz.'},
+    {t:'Uso responsable en la escuela', p:'La IA es una herramienta, no un reemplazo del estudio: usala para entender, comparar y organizar ideas; <b>verificá</b> siempre la información en otras fuentes porque puede “<b>alucinar</b>” (inventar datos que parecen ciertos) y <b>mencioná</b> que la usaste. Copiar y pegar sin leer es plagio y además no aprendés nada.'}
+  ],
+  datos:[
+    ['Rol del usuario','Colabora con agentes inteligentes y debe ser crítico.'],
+    ['Comunicación','Persona ↔ máquina, en lenguaje natural.'],
+    ['Contenido','Generado y personalizado por IA.'],
+    ['Interacción','Proactiva, predictiva y ubicua (en todo lugar).'],
+    ['Ejemplos','ChatGPT, Gemini, Copilot, asistentes de voz, casas inteligentes.']
+  ],
+  tech:['IA generativa','LLM','Machine Learning','IoT','Big Data','5G','Gemelos digitales'],
+  riesgo:'Riesgos: alucinaciones de la IA, sesgos algorítmicos, deepfakes, pérdida de empleos, dependencia tecnológica y problemas de privacidad.',
+  trivia:[
+    {p:'¿Qué tecnología define a la Web 4.0?',
+     o:[['La inteligencia artificial, sobre todo los modelos de lenguaje y el aprendizaje automático, que generan respuestas, aprenden de los datos y anticipan lo que el usuario necesita.',true],
+        ['El HTML estático.',false],
+        ['Los directorios web.',false],
+        ['El telégrafo.',false]],
+     e:'En la Web 4.0 la red deja de ser reactiva y se vuelve proactiva gracias a la IA.'},
+    {p:'¿Qué es un “prompt”?',
+     o:[['Es la instrucción o consigna escrita que le damos a una inteligencia artificial generativa para que produzca un texto, una imagen, un código o una respuesta.',true],
+        ['Es un virus informático.',false],
+        ['Es un tipo de cable de red.',false],
+        ['Es el nombre del primer navegador.',false]],
+     e:'Un buen prompt (claro, con contexto y con el formato pedido) mejora muchísimo la respuesta de la IA.'},
+    {p:'¿Cuál es un uso responsable de la IA en la escuela?',
+     o:[['Usarla como apoyo para aprender, verificar la información en otras fuentes confiables y aclarar que se utilizó, en lugar de copiar y pegar sin entender el contenido.',true],
+        ['Copiar y pegar sin leer nada.',false],
+        ['Usarla para hacer trampa.',false],
+        ['Crear deepfakes de compañeros.',false]],
+     e:'La IA puede equivocarse o inventar datos (“alucinar”): por eso siempre hay que contrastar y citar.'}
+  ]
+}
+];
+
+/* ---------- Examen final: 15 preguntas ---------- */
+const EXAMEN = [
+ {p:'¿Cuál es el orden histórico correcto de las generaciones de la Web?',
+  o:[['Web 1.0 (red pasiva) → Web 2.0 (participativa-colaborativa) → Web 3.0 (global semántica) → Web 4.0 (basada en inteligencia artificial).',true],
+     ['Web 4.0 → Web 1.0 → Web 3.0 → Web 2.0.',false],
+     ['Web 2.0 → Web 1.0 → Web 4.0 → Web 3.0.',false],
+     ['Web 1.0 → Web 3.0 → Web 2.0 → Web 4.0.',false]],
+  e:'Cada etapa suma una capacidad nueva: leer → participar → comprender datos → generar con IA.'},
+ {p:'¿Quién creó la World Wide Web?',
+  o:[['Tim Berners-Lee en el CERN, alrededor de 1989-1991, cuando propuso un sistema de documentos enlazados por hipervínculos y accesibles a través de internet.',true],
+     ['Bill Gates.',false],['Steve Jobs.',false],['Mark Zuckerberg.',false]],
+  e:'Berners-Lee inventó la web y más tarde propuso la Web Semántica (3.0).'},
+ {p:'En el flujo de datos, ¿qué cumple la función de “Procesamiento”?',
+  o:[['La CPU junto con la memoria RAM: la CPU ejecuta las instrucciones y realiza los cálculos, mientras la RAM guarda temporalmente los datos que se están usando.',true],
+     ['El monitor.',false],['El teclado.',false],['La impresora.',false]],
+  e:'Monitor, teclado e impresora son periféricos de salida o de entrada, no de procesamiento.'},
+ {p:'¿Qué es una URL?',
+  o:[['Es la dirección única que identifica a un recurso en la web, como https://www.ejemplo.com.ar/pagina.html, y permite que el navegador lo encuentre y lo muestre.',true],
+     ['Es un tipo de virus informático.',false],['Es el nombre de un navegador.',false],['Es una red social.',false]],
+  e:'URL = Uniform Resource Locator, el “domicilio” de cada recurso en internet.'},
+ {p:'El término “Web 2.0” se popularizó gracias a…',
+  o:[['Tim O’Reilly en 2004, que lo utilizó para describir una nueva generación de servicios basados en la participación y la colaboración de los usuarios.',true],
+     ['El CERN en 1991.',false],['La ONU en 2010.',false],['El Ministerio de Educación.',false]],
+  e:'O’Reilly lo usó tras la “burbuja punto com” para marcar el cambio de modelo.'},
+ {p:'¿Cuál es un ejemplo de almacenamiento en la nube?',
+  o:[['Google Drive, porque los archivos no se guardan en la computadora sino en servidores remotos a los que se accede desde cualquier dispositivo con internet.',true],
+     ['Un disquete.',false],['Un pendrive desconectado.',false],['Un CD-ROM.',false]],
+  e:'La nube es almacenamiento externo accesible por red; los otros son soportes locales.'},
+ {p:'¿Qué significa “semántica” aplicado a la web?',
+  o:[['Que los datos tienen un significado comprensible para las máquinas, con contexto y relaciones entre ellos, y no solamente texto plano o palabras aisladas.',true],
+     ['Que las páginas cargan más rápido.',false],['Que la web usa colores más vivos.',false],['Que la web es gratuita.',false]],
+  e:'Semántica = significado. Es el corazón de la Web 3.0.'},
+ {p:'¿Qué es una ontología en la Web 3.0?',
+  o:[['Es un modelo formal que define los conceptos de un área del conocimiento y las relaciones entre ellos, para que las máquinas puedan interpretar la información de la misma manera.',true],
+     ['Es un cable de fibra óptica.',false],['Es una red social nueva.',false],['Es un programa antivirus.',false]],
+  e:'Las ontologías ordenan el conocimiento: “Buenos Aires es capital de Argentina”.'},
+ {p:'La tecnología blockchain se caracteriza por ser…',
+  o:[['Un registro descentralizado, distribuido y muy difícil de modificar, en el que las transacciones se validan entre muchos nodos sin necesidad de una autoridad central.',true],
+     ['Una base de datos centralizada en una sola empresa.',false],['Un navegador web de los años noventa.',false],['Un lenguaje de marcado.',false]],
+  e:'Es la base de la descentralización de la Web 3.0 y de las criptomonedas.'},
+ {p:'¿Qué es un LLM (Large Language Model)?',
+  o:[['Es un modelo de inteligencia artificial entrenado con enormes cantidades de texto que puede comprender y generar lenguaje natural, como ChatGPT o Gemini.',true],
+     ['Es una licencia de software.',false],['Es una memoria RAM de gran tamaño.',false],['Es un protocolo de red.',false]],
+  e:'Los LLM son el motor de la IA generativa de la Web 4.0.'},
+ {p:'Una “alucinación” de la inteligencia artificial es…',
+  o:[['Cuando el modelo genera una respuesta que parece válida y está bien escrita pero que es falsa o inventada, por lo que siempre hay que verificarla con otras fuentes.',true],
+     ['Cuando la computadora se sobrecalienta.',false],['Cuando se cae la conexión a internet.',false],['Cuando el usuario olvida su contraseña.',false]],
+  e:'Por eso la IA se usa como apoyo, nunca como única fuente de información.'},
+ {p:'¿Cuál es un riesgo propio de la Web 4.0?',
+  o:[['Los sesgos algorítmicos y los deepfakes, ya que la IA aprende de datos humanos que pueden ser discriminatorios y permite crear contenidos falsos muy realistas.',true],
+     ['El exceso de hipervínculos.',false],['La falta de correo electrónico.',false],['El aumento del uso de papel.',false]],
+  e:'A mayor poder de generación, mayor responsabilidad de verificación.'},
+ {p:'¿Qué diferencia principal hay entre un cliente y un servidor?',
+  o:[['El cliente es quien solicita el recurso (el navegador o la app) y el servidor es quien lo aloja, lo procesa y entrega la respuesta a través de la red.',true],
+     ['Son exactamente lo mismo.',false],['El servidor pide y el cliente entrega.',false],['El cliente es una red social.',false]],
+  e:'Es el modelo cliente-servidor, la base de todo intercambio en la web.'},
+ {p:'La “brecha digital” se refiere a…',
+  o:[['A la desigualdad entre las personas que tienen acceso a internet y dispositivos con las habilidades para usarlos, y las que no; es una realidad muy presente en Argentina.',true],
+     ['A la distancia física entre dos servidores.',false],['A un error del navegador.',false],['Al ancho de banda de una red.',false]],
+  e:'Incluye acceso, calidad de conexión y saberes digitales (alfabetización).'},
+ {p:'¿Cuál de estas opciones NO es un principio de la Web 2.0?',
+  o:[['Que el usuario sea únicamente un lector pasivo de páginas estáticas, ya que eso corresponde a la Web 1.0 y no al espíritu colaborativo y participativo de la 2.0.',true],
+     ['La participación del usuario.',false],['El contenido generado por los usuarios.',false],['El trabajo colaborativo en la nube.',false]],
+  e:'La lectura pasiva es la marca de la Web 1.0; la 2.0 se basa en participar.'}
+];
+
+/* ---------- Glosario ---------- */
+const GLOSARIO = [
+['HTML','Lenguaje de marcado con el que se estructura una página web: títulos, párrafos, imágenes y enlaces.','Infraestructura'],
+['HTTP','Protocolo de transferencia de hipertexto: las reglas que usan el navegador y el servidor para pedirse y enviarse información.','Infraestructura'],
+['URL','Dirección única de un recurso en la web (por ejemplo, https://www.educar.gob.ar).','Infraestructura'],
+['Hipervínculo','Enlace que conecta una página con otra o con un recurso: es la “costura” que une toda la web.','Web 1.0'],
+['Navegador','Programa que muestra las páginas web: Chrome, Firefox, Edge, Safari.','Infraestructura'],
+['Página estática','Página escrita en HTML que siempre muestra el mismo contenido y no cambia según el usuario.','Web 1.0'],
+['Directorio web','Catálogo de sitios ordenados por categorías, como el Yahoo! de los años 90, anterior a los buscadores.','Web 1.0'],
+['Web 1.0','Primera etapa de la web: red pasiva y de solo lectura, con páginas estáticas (1991-2004).','Web 1.0'],
+['Servidor','Computadora que aloja sitios y datos, y responde los pedidos de los clientes a través de la red.','Infraestructura'],
+['Cliente','Programa o dispositivo que solicita un recurso al servidor (navegador, app del celular).','Infraestructura'],
+['Ancho de banda','Cantidad de datos que puede viajar por tu conexión en un tiempo dado. Se mide en Mbps.','Infraestructura'],
+['Latencia','Tiempo que tarda un dato en ir y volver por la red (el “ping”). Alta latencia = retraso.','Infraestructura'],
+['Hosting','Servicio de alojamiento que guarda los archivos de un sitio para que esté disponible en internet.','Infraestructura'],
+['Dominio','Nombre que identifica a un sitio (ej.: .ar, .com.ar, .edu.ar) y que se traduce a una dirección IP.','Infraestructura'],
+['CPU','Procesador: el “cerebro” que ejecuta las instrucciones y hace los cálculos.','Infraestructura'],
+['Memoria RAM','Memoria temporal y rápida donde se guardan los datos que se están usando en el momento.','Infraestructura'],
+['Almacenamiento','Soporte donde la información queda guardada de forma permanente: disco, SSD, pendrive o nube.','Infraestructura'],
+['Nube (Cloud)','Guardar archivos y ejecutar programas en servidores remotos a los que se accede por internet.','Web 2.0'],
+['Web 2.0','Etapa participativa y colaborativa de la web: el usuario produce contenido y trabaja con otros.','Web 2.0'],
+['Prosumidor','Usuario que produce y consume contenido al mismo tiempo, típico de la Web 2.0.','Web 2.0'],
+['UGC','Contenido generado por el usuario: fotos, videos, reseñas y publicaciones creadas por personas, no por empresas.','Web 2.0'],
+['Red social','Plataforma donde las personas crean perfiles, se conectan y comparten contenido (Instagram, TikTok, X).','Web 2.0'],
+['Blog','Sitio con entradas o artículos publicados en orden cronológico, generalmente personal.','Web 2.0'],
+['Wiki','Sitio colaborativo donde muchas personas pueden crear y editar páginas, como Wikipedia.','Web 2.0'],
+['Podcast','Programa de audio por episodios que se puede escuchar en línea o descargar.','Web 2.0'],
+['API','Interfaz que permite que dos aplicaciones se comuniquen y compartan funciones o datos.','Web 2.0'],
+['Hashtag / Folksonomía','Etiqueta con # que agrupa contenidos por tema; la clasificación la hacen los propios usuarios.','Web 2.0'],
+['Feed','Flujo continuo de publicaciones que te muestra una plataforma según tus intereses.','Web 2.0'],
+['Streaming','Reproducción de audio o video en tiempo real sin descargar el archivo completo.','Web 2.0'],
+['Web 3.0','Red global semántica: los datos tienen significado y las máquinas pueden relacionarlos.','Web 3.0'],
+['Web semántica','Propuesta de Tim Berners-Lee para que la web sea comprensible para las máquinas.','Web 3.0'],
+['Metadatos','“Datos sobre datos”: información que describe un recurso (autor, fecha, tema, formato).','Web 3.0'],
+['Ontología','Modelo formal que define conceptos y sus relaciones dentro de un área del conocimiento.','Web 3.0'],
+['Linked Data','Datos enlazados: publicar información de modo que se conecte automáticamente con otras fuentes.','Web 3.0'],
+['RDF / SPARQL','Lenguaje para describir datos (RDF) y lenguaje de consultas para buscar en esos datos (SPARQL).','Web 3.0'],
+['Blockchain','Registro descentralizado y muy difícil de alterar, validado por muchos nodos de la red.','Web 3.0'],
+['Descentralización','Distribuir la información y el control entre muchos participantes en lugar de una sola empresa.','Web 3.0'],
+['Smart contract','Contrato inteligente: programa que se ejecuta solo cuando se cumplen las condiciones pactadas.','Web 3.0'],
+['Criptomoneda','Dinero digital que funciona sobre blockchain, como Bitcoin, sin banco central que lo emita.','Web 3.0'],
+['Web 4.0','Red basada en inteligencia artificial: proactiva, predictiva, ubicua y personalizada.','Web 4.0'],
+['Inteligencia Artificial','Rama de la informática que crea sistemas capaces de realizar tareas que requieren inteligencia humana.','Web 4.0'],
+['Machine Learning','Aprendizaje automático: la máquina mejora su rendimiento aprendiendo de los datos, sin ser programada paso a paso.','Web 4.0'],
+['LLM','Modelo grande de lenguaje entrenado con enormes volúmenes de texto para comprender y generar lenguaje natural.','Web 4.0'],
+['Prompt','Consigna o instrucción que se le da a una IA generativa para obtener una respuesta.','Web 4.0'],
+['Alucinación (IA)','Error en el que la IA inventa información que parece verdadera pero es falsa.','Web 4.0'],
+['Sesgo algorítmico','Prejuicio que aparece en las respuestas de un sistema porque aprendió de datos discriminatorios.','Web 4.0'],
+['Deepfake','Video, audio o imagen falsa generada con IA que parece totalmente real.','Web 4.0'],
+['IoT','Internet de las cosas: objetos cotidianos conectados a la red (relojes, heladeras, sensores).','Web 4.0'],
+['Big Data','Conjuntos de datos tan grandes y variados que requieren herramientas especiales para procesarlos.','Web 4.0'],
+['Ubicuidad','Que la tecnología está disponible en todas partes y en todo momento.','Web 4.0'],
+['5G','Quinta generación de redes móviles: mucha más velocidad y menor latencia.','Web 4.0'],
+['Gemelo digital','Copia virtual de un objeto o proceso real que se simula y analiza con datos.','Web 4.0'],
+['Huella digital','Rastro que dejan tus acciones en internet: publicaciones, búsquedas, likes y datos personales.','Ciudadanía Digital'],
+['Fake news / Desinformación','Noticias falsas creadas para engañar, que se difunden muy rápido por las redes.','Ciudadanía Digital'],
+['Ciberacoso','Acoso, hostigamiento o humillación entre personas a través de medios digitales.','Ciudadanía Digital'],
+['Grooming','Acción de un adulto que busca ganar la confianza de un chico o chica por internet con fines de abuso. Se denuncia al 137 o en Grooming Argentina.','Ciudadanía Digital'],
+['Phishing','Estafa que suplanta a una empresa o banco para robar contraseñas y datos.','Ciudadanía Digital'],
+['Netiqueta','Conjunto de normas de buen comportamiento y respeto en la comunicación digital.','Ciudadanía Digital'],
+['Ciudadanía digital','Uso responsable, crítico y seguro de las tecnologías, con derechos y deberes.','Ciudadanía Digital'],
+['Brecha digital','Desigualdad entre quienes tienen acceso y habilidades digitales y quienes no.','Ciudadanía Digital'],
+['Verificación de fuentes','Comprobar quién publica, cuándo, con qué evidencia y qué dicen otras fuentes confiables.','Ciudadanía Digital']
+];
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const estado = {
+  panel:'home',
+  usuario:{nombre:'',escuela:'',anio:'',division:'',docente:'',guardado:false},
+  trivias:{},          // id -> {nombre, preguntas:[{p,e,orden,elegida,ok}]}
+  examen:null,
+  simUsado:false, simVersion:'web10',
+  glosarioFiltro:'Todos', glosarioBusqueda:''
+};
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const printRoot = document.getElementById('printRoot');
+
+function mezclar(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function letras(i){return ['A','B','C','D','E'][i]||'·';}
+function esperar(ms){return new Promise(r=>setTimeout(r,ms));}
+function fechaHoy(){
+  const m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const d=new Date();
+  return `${d.getDate()} de ${m[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+/* ============================================================
+   MÓDULOS + MINI-TRIVIAS (3 preguntas por módulo)
+   ============================================================ */
+function initTrivia(id){
+  if(estado.trivias[id]) return estado.trivias[id];
+  const m = MODULOS.find(x=>x.id===id);
+  estado.trivias[id] = {
+    nombre:m.nombre,
+    preguntas:m.trivia.map(q=>({p:q.p, e:q.e, orden:mezclar(q.o), elegida:null, ok:null}))
+  };
+  return estado.trivias[id];
+}
+
+function renderModulos(){
+  const cont = document.getElementById('contModulos');
+  cont.innerHTML = MODULOS.map(m=>{
+    initTrivia(m.id);
+    const t = estado.trivias[m.id];
+    return `
+    <article class="tarjeta modulo" id="mod-${m.id}">
+      <button class="mod-cab" data-accion="toggle-modulo" data-id="${m.id}" aria-expanded="true" aria-controls="cue-${m.id}">
+        <span class="mod-emoji" aria-hidden="true">${m.emoji}</span>
+        <span>
+          <span class="mod-nombre">${m.nombre} · ${m.lema}</span>
+          <span class="mod-lema">🗓️ ${m.periodo}</span>
+        </span>
+        <span class="mod-flecha" aria-hidden="true">▾</span>
+      </button>
+      <div class="mod-cuerpo" id="cue-${m.id}">
+        <div class="flex flex-col sm:flex-row gap-3 items-start mb-3">
+          <div class="flex-1">
+            <p class="text-sm font-bold mb-2" style="color:var(--brand-deep)">${m.intro}</p>
+            <div class="flex flex-wrap gap-1.5">${m.tech.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+          </div>
+          ${m.svg}
+        </div>
+        ${m.bloques.map(b=>`<div class="bloque"><h4>${b.t}</h4><p>${b.p}</p></div>`).join('')}
+        <div class="tarjeta p-3 mt-2 mb-2" style="border-style:dashed">
+          <div class="text-xs font-extrabold uppercase tracking-wide texto-suave mb-1.5">📌 Datos clave</div>
+          ${m.datos.map(d=>`<div class="dato-clave"><b>${d[0]}</b><span>${d[1]}</span></div>`).join('')}
+        </div>
+        <div class="bloque" style="background:var(--warn-soft)">
+          <h4 style="color:var(--warn-ink)">⚠️ ${m.riesgo.split(':')[0]}</h4>
+          <p style="color:var(--warn-ink)">${m.riesgo.split(':').slice(1).join(':').trim()}</p>
+        </div>
+
+        <!-- MINI-TRIVIA MODULAR -->
+        <div class="mt-3 pt-3" style="border-top:2px dashed var(--line)">
+          <div class="flex items-center gap-2 flex-wrap mb-2">
+            <h4 class="font-extrabold text-base">🎮 Mini-trivia: ${m.nombre}</h4>
+            <span class="chip chip-ok" id="chip-${m.id}">Puntaje: 0/3</span>
+            <div class="flex-1"></div>
+            <button class="btn btn-sm" data-accion="reiniciar-trivia" data-id="${m.id}">↺ Reintentar</button>
+          </div>
+          <div id="trivia-${m.id}">${renderTrivia(m.id)}</div>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+  renderTablaComparativa();
+  actualizarProgreso();
+}
+
+function renderTrivia(id){
+  const t = estado.trivias[id];
+  return t.preguntas.map((q,qi)=>{
+    const respondida = q.elegida !== null;
+    const opts = q.orden.map((op,oi)=>{
+      let cls = 'opcion';
+      let marca = '';
+      if(respondida){
+        if(op[1]){ cls += ' correcta'; marca = '<span class="marca">✔</span>'; }
+        else if(oi===q.elegida){ cls += ' incorrecta'; marca = '<span class="marca">✘</span>'; }
+      }
+      return `<button class="${cls}" data-accion="opt-trivia" data-id="${id}" data-p="${qi}" data-o="${oi}" ${respondida?'disabled':''}>
+                <span class="letra">${letras(oi)}</span><span>${op[0]}</span>${marca}
+              </button>`;
+    }).join('');
+    let fb = '';
+    if(respondida){
+      fb = q.ok
+        ? `<div class="feedback ok">✅ <b>¡Correcto!</b> ${q.e}</div>`
+        : `<div class="feedback mal">❌ <b>Incorrecto.</b> ${q.e}</div>`;
+    }
+    return `<div class="mb-3">
+      <p class="font-extrabold text-sm mb-1.5">${qi+1}. ${q.p}</p>
+      ${opts}${fb}
+    </div>`;
+  }).join('');
+}
+
+function actualizarChipTrivia(id){
+  const t = estado.trivias[id];
+  const chip = document.getElementById('chip-'+id);
+  if(!chip) return;
+  const ok = t.preguntas.filter(p=>p.ok).length;
+  const resp = t.preguntas.filter(p=>p.elegida!==null).length;
+  chip.textContent = `Puntaje: ${ok}/${t.preguntas.length}` + (resp<t.preguntas.length?` · ${resp} respondidas`:' · completada ✔');
+}
+
+function responderTrivia(id,qi,oi){
+  const t = estado.trivias[id];
+  const q = t.preguntas[qi];
+  if(q.elegida!==null) return;
+  q.elegida = oi;
+  q.ok = q.orden[oi][1] === true;
+  q.elegidaTexto = q.orden[oi][0];
+  q.correctaTexto = q.orden.find(o=>o[1])[0];
+  const caja = document.getElementById('trivia-'+id);
+  if(caja) caja.innerHTML = renderTrivia(id);
+  actualizarChipTrivia(id);
+  actualizarProgreso();
+  actualizarPreviewReporte();
+}
+
+function reiniciarTrivia(id){
+  delete estado.trivias[id];
+  initTrivia(id);
+  const caja = document.getElementById('trivia-'+id);
+  if(caja) caja.innerHTML = renderTrivia(id);
+  actualizarChipTrivia(id);
+  actualizarProgreso();
+  actualizarPreviewReporte();
+}
+
+function renderTablaComparativa(){
+  const filas = [
+    ['Web 1.0','Espectador pasivo','Uno a muchos (unidireccional)','HTML, HTTP, FTP','Página institucional, CD-ROM'],
+    ['Web 2.0','Prosumidor','Muchos a muchos (bidireccional)','AJAX, APIs, nube, redes sociales','Instagram, Wikipedia, YouTube'],
+    ['Web 3.0','Dueño de sus datos','Personas + máquinas (semántica)','Metadatos, RDF, Linked Data, blockchain','Knowledge Graph, datos abiertos'],
+    ['Web 4.0','Colabora con la IA','Persona ↔ máquina en lenguaje natural','IA, LLM, IoT, Big Data, 5G','ChatGPT, asistentes de voz, casa inteligente']
+  ];
+  document.getElementById('cuerpoTabla').innerHTML = filas.map(f=>
+    `<tr>${f.map((c,i)=>`<td class="p-2 ${i===0?'font-extrabold':''}" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>`
+  ).join('');
+}
+
+function toggleModulo(id){
+  const art = document.getElementById('mod-'+id);
+  const btn = art.querySelector('.mod-cab');
+  const abierto = !art.classList.contains('mod-cerrado');
+  art.classList.toggle('mod-cerrado', abierto);
+  btn.setAttribute('aria-expanded', String(!abierto));
+}
+
+/* ============================================================
+   PROGRESO
+   ============================================================ */
+function triviasCompletas(){
+  return MODULOS.filter(m=>{
+    const t = estado.trivias[m.id];
+    return t && t.preguntas.every(p=>p.elegida!==null);
+  }).length;
+}
+function actualizarProgreso(){
+  const total = triviasCompletas();
+  const pc = Math.round(total/MODULOS.length*100);
+  const el = document.getElementById('progMini'); if(el) el.textContent = `Mini-trivias completas: ${total} / ${MODULOS.length}`;
+  const bar = document.getElementById('progMiniBar'); if(bar) bar.style.width = pc+'%';
+  const ex = estado.examen;
+  const txt = document.getElementById('progExamen');
+  const bar2 = document.getElementById('progExamenBar');
+  if(ex && ex.finalizado){
+    const pct = Math.round(ex.puntaje/ex.preguntas.length*100);
+    txt.textContent = `Evaluación final: ${ex.puntaje}/15 (${pct}%) · ${pct>=60?'APROBADO 🏆':'a reforzar 📚'}`;
+    bar2.style.width = pct+'%';
+  }else{
+    const r = ex ? ex.respuestas.filter(x=>x!==null).length : 0;
+    txt.textContent = `Evaluación final: ${r}/15 respondidas`;
+    bar2.style.width = Math.round(r/15*100)+'%';
+  }
+}
+
+/* ============================================================
+   SIMULADOR DEL FLUJO DE DATOS
+   ============================================================ */
+const SIM = {
+  web10:{label:'📼 Web 1.0', entrada:'Escribís una URL en el navegador y hacés clic en un enlace.',
+    proc:['Petición HTTP GET enviada al servidor','El servidor busca el archivo HTML estático en el disco','Se carga en memoria RAM y se envía sin procesar datos del usuario'],
+    salida:'Recibís una página fija que solo podés LEER. No podés comentar ni cambiar nada.',
+    cache:'12 KB',cookies:'0',datos:'Ninguno (no hace falta perfil)',donde:'Solo en el servidor (archivo .html)'},
+  web20:{label:'💬 Web 2.0', entrada:'Escribís un comentario y tocás “Publicar” en una red social.',
+    proc:['Petición HTTP POST con tu contenido','El servidor usa la CPU para validar la sesión y guardar en la base de datos','La respuesta se envía a todos los clientes conectados (AJAX)'],
+    salida:'Tu comentario aparece al instante y otros pueden responderlo, darle “me gusta” y compartirlo.',
+    cache:'480 KB',cookies:'12',datos:'Perfil, gustos, contactos y publicaciones',donde:'En la nube de la plataforma (servidores de la empresa)'},
+  web30:{label:'🕸️ Web 3.0', entrada:'Preguntás: “Museos de Buenos Aires abiertos los lunes”.',
+    proc:['El motor analiza el SIGNIFICADO de la consulta (semántica)','Consulta datos enlazados de varias fuentes con SPARQL','Verifica metadatos y firma digital de los datos en la red descentralizada'],
+    salida:'Obtenés una ficha con resultados relacionados, mapas y horarios verificados, no solo una lista de enlaces.',
+    cache:'1,2 MB',cookies:'4 (mínimas)',datos:'Identidad digital propia, controlada por el usuario',donde:'Distribuido en la red (nodos / blockchain)'},
+  web40:{label:'🤖 Web 4.0', entrada:'Le pedís a un asistente: “Explicame la Web 3.0 con un ejemplo”.',
+    proc:['El prompt se envía al modelo de IA (LLM)','La IA usa GPU/CPU para generar una respuesta nueva token por token','Aprende del contexto y adapta el nivel de explicación a 4.º año'],
+    salida:'La IA genera una respuesta personalizada, te sugiere el siguiente paso y puede crear imágenes o resúmenes.',
+    cache:'3,6 MB',cookies:'2 + huella de uso',datos:'Historial de conversaciones y preferencias (¡ojo con la privacidad!)',donde:'En servidores de IA + caché local del dispositivo'}
+};
+
+function renderSelVersiones(){
+  const cont = document.getElementById('selVersiones');
+  cont.innerHTML = Object.keys(SIM).map(k=>
+    `<button class="btn ${k===estado.simVersion?'btn-on':'btn-soft'} btn-sm" data-accion="sim-version" data-v="${k}">${SIM[k].label}</button>`
+  ).join('');
+}
+
+function logSim(msg){
+  const c = document.getElementById('consola');
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+  const div = document.createElement('div');
+  div.innerHTML = `<span class="hora">[${hh}]</span> ${msg}`;
+  c.appendChild(div);
+  c.scrollTop = c.scrollHeight;
+}
+
+function setBarra(idBar,idVal,pct){
+  document.getElementById(idBar).style.width = pct+'%';
+  document.getElementById(idVal).textContent = pct+'%';
+}
+
+let simCorriendo = false;
+async function ejecutarSim(){
+  if(simCorriendo) return;
+  simCorriendo = true;
+  const btn = document.getElementById('btnSimRun');
+  btn.disabled = true; btn.style.opacity = '.6';
+  resetSim(false);
+  const v = SIM[estado.simVersion];
+  const n1=document.getElementById('nodoEntrada'), n2=document.getElementById('nodoProceso'), n3=document.getElementById('nodoSalida');
+  const f1=document.getElementById('flecha1'), f2=document.getElementById('flecha2');
+
+  // 1) ENTRADA
+  n1.classList.add('activo');
+  document.getElementById('txtEntrada').textContent = v.entrada;
+  logSim('📥 ENTRADA → '+v.entrada);
+  await esperar(1100);
+  n1.classList.remove('activo'); n1.classList.add('listo');
+  f1.classList.add('activa');
+  await esperar(700);
+  f1.classList.remove('activa');
+
+  // 2) PROCESAMIENTO
+  n2.classList.add('activo');
+  logSim('🧠 PROCESAMIENTO → CPU + memoria RAM en acción…');
+  for(let p=0;p<=100;p+=20){
+    setBarra('barCpu','cpuVal',Math.min(100,p+20));
+    setBarra('barRam','ramVal',Math.min(100,p+10));
+    await esperar(220);
+  }
+  for(const paso of v.proc){ logSim('&nbsp;&nbsp;• '+paso); await esperar(520); }
+  n2.classList.remove('activo'); n2.classList.add('listo');
+  f2.classList.add('activa');
+  await esperar(700);
+  f2.classList.remove('activa');
+
+  // 3) SALIDA
+  n3.classList.add('activo');
+  document.getElementById('txtSalida').textContent = v.salida;
+  logSim('📤 SALIDA → '+v.salida);
+  document.getElementById('stCache').textContent = v.cache;
+  document.getElementById('stCookies').textContent = v.cookies;
+  document.getElementById('stDatos').textContent = v.datos;
+  document.getElementById('stDonde').textContent = v.donde;
+  await esperar(900);
+  n3.classList.remove('activo'); n3.classList.add('listo');
+  logSim('✅ Flujo completado ('+v.label+'). Almacenamiento actualizado.');
+
+  if(!estado.simUsado){
+    estado.simUsado = true;
+    document.getElementById('chipSim').textContent = '🧪 Logro: ¡Simulador recorrido!';
+    actualizarPreviewReporte();
+  }
+  btn.disabled = false; btn.style.opacity = '1';
+  simCorriendo = false;
+}
+
+function resetSim(limpiarLog=true){
+  ['nodoEntrada','nodoProceso','nodoSalida'].forEach(id=>{
+    const n=document.getElementById(id); n.classList.remove('activo','listo');
+  });
+  ['flecha1','flecha2'].forEach(id=>document.getElementById(id).classList.remove('activa'));
+  setBarra('barCpu','cpuVal',0); setBarra('barRam','ramVal',0);
+  document.getElementById('txtEntrada').textContent = 'Elegí una versión y presioná “Enviar solicitud”.';
+  document.getElementById('txtSalida').textContent = 'Acá aparece el resultado.';
+  ['stCache','stCookies'].forEach((id,i)=>document.getElementById(id).textContent = i===0?'0 KB':'0');
+  document.getElementById('stDatos').textContent='—';
+  document.getElementById('stDonde').textContent='—';
+  if(limpiarLog) document.getElementById('consola').innerHTML = '<div><span class="hora">[sistema]</span> Simulador reiniciado. Esperando solicitud…</div>';
+}
+
+/* ============================================================
+   EXAMEN FINAL (15 preguntas)
+   ============================================================ */
+function initExamen(){
+  estado.examen = {
+    preguntas: EXAMEN.map(q=>({p:q.p, e:q.e, orden:mezclar(q.o)})),
+    respuestas: new Array(EXAMEN.length).fill(null),
+    puntaje:0, finalizado:false
+  };
+  renderExamen();
+}
+
+function renderExamen(){
+  const ex = estado.examen;
+  const cont = document.getElementById('contExamen');
+  cont.innerHTML = ex.preguntas.map((q,i)=>{
+    const resp = ex.respuestas[i];
+    return `<article class="tarjeta p-3 md:p-4">
+      <div class="flex items-start gap-2 mb-2">
+        <span class="chip chip-warn">Pregunta ${i+1}</span>
+        <p class="font-extrabold text-sm md:text-[15px] flex-1">${i+1}. ${q.p}</p>
+      </div>
+      <div>${q.orden.map((op,j)=>{
+        let cls='opcion', marca='';
+        if(ex.finalizado){
+          if(op[1]){cls+=' correcta';marca='<span class="marca">✔</span>';}
+          else if(j===resp){cls+=' incorrecta';marca='<span class="marca">✘</span>';}
+        }else if(j===resp){cls+=' correcta';marca='<span class="marca">●</span>';}
+        return `<button class="${cls}" data-accion="opt-examen" data-i="${i}" data-j="${j}" ${ex.finalizado?'disabled':''}>
+          <span class="letra">${letras(j)}</span><span>${op[0]}</span>${marca}</button>`;
+      }).join('')}</div>
+      ${ex.finalizado?`<div class="feedback ${resp!==null&&ex.preguntas[i].orden[resp][1]?'ok':'mal'}">
+        ${resp!==null&&q.orden[resp][1]?'✅ Correcto.':'❌ '+((resp===null)?'Sin responder.':'Incorrecto.')} ${q.e}</div>`:''}
+    </article>`;
+  }).join('');
+  actualizarContExamen();
+}
+
+function actualizarContExamen(){
+  const ex = estado.examen;
+  const r = ex.respuestas.filter(x=>x!==null).length;
+  document.getElementById('exCont').textContent = r;
+  document.getElementById('exBar').style.width = Math.round(r/15*100)+'%';
+  actualizarProgreso();
+}
+
+function elegirExamen(i,j){
+  const ex = estado.examen;
+  if(ex.finalizado) return;
+  ex.respuestas[i]=j;
+  renderExamen();
+}
+
+function finalizarExamen(){
+  const ex = estado.examen;
+  const aviso = document.getElementById('exAviso');
+  const sinResponder = ex.respuestas.filter(x=>x===null).length;
+  if(sinResponder>0 && !ex.pedirConfirmacion){
+    aviso.innerHTML = `<div class="aviso error">⚠️ Te faltan ${sinResponder} pregunta${sinResponder>1?'s':''}. Podés finalizar igual, se contarán como incorrectas.</div>`;
+    ex.pedirConfirmacion = true;
+    return;
+  }
+  ex.pedirConfirmacion = false;
+  ex.puntaje = ex.preguntas.reduce((acc,q,i)=> acc + (ex.respuestas[i]!==null && q.orden[ex.respuestas[i]][1] ? 1 : 0), 0);
+  ex.porcentaje = Math.round(ex.puntaje/15*100);
+  ex.aprobado = ex.porcentaje >= 60;
+  ex.fecha = fechaHoy();
+  ex.finalizado = true;
+  aviso.innerHTML = '';
+  renderExamen();
+  renderResultadoExamen();
+  actualizarProgreso();
+  actualizarPreviewReporte();
+  document.getElementById('resultadoExamen').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function renderResultadoExamen(){
+  const ex = estado.examen;
+  const caja = document.getElementById('resultadoExamen');
+  if(!ex.finalizado){ caja.classList.add('hidden'); caja.innerHTML=''; return; }
+  caja.classList.remove('hidden');
+  caja.innerHTML = `
+  <div class="tarjeta p-4 md:p-5 mb-4" style="border-color:${ex.aprobado?'var(--ok)':'var(--warn)'}">
+    <div class="flex flex-wrap items-center gap-3">
+      <div style="font-size:2.4rem">${ex.aprobado?'🏆':'📚'}</div>
+      <div class="flex-1">
+        <div class="text-xl font-extrabold">${ex.aprobado?'¡Aprobaste la evaluación final!':'Seguí practicando, vos podés'}</div>
+        <div class="text-sm texto-suave font-bold">Puntaje: ${ex.puntaje}/15 (${ex.porcentaje}%) · ${ex.fecha}</div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        ${ex.aprobado?`<button class="btn btn-pri" data-accion="imprimir-certificado">🎓 Imprimir certificado A4</button>`:''}
+        <button class="btn" data-accion="imprimir-reporte">📄 Mi reporte A4</button>
+        <button class="btn btn-soft" data-accion="examen-reset">↺ Volver a intentar</button>
+      </div>
+    </div>
+    <div class="progreso mt-3"><span style="width:${ex.porcentaje}%"></span></div>
+  </div>`;
+}
+
+/* ============================================================
+   GLOSARIO INTERACTIVO
+   ============================================================ */
+const CATS = ['Todos','Web 1.0','Web 2.0','Web 3.0','Web 4.0','Infraestructura','Ciudadanía Digital'];
+function renderFiltros(){
+  document.getElementById('filtros').innerHTML = CATS.map(c=>
+    `<button class="btn btn-sm ${c===estado.glosarioFiltro?'btn-on':'btn-soft'}" data-accion="glosario-cat" data-c="${c}">${c}</button>`
+  ).join('');
+}
+function normalizar(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function renderGlosario(){
+  const q = normalizar(estado.glosarioBusqueda.trim());
+  const lista = GLOSARIO.map((g,i)=>({t:g[0],d:g[1],c:g[2],i}))
+    .filter(g=> (estado.glosarioFiltro==='Todos' || g.c===estado.glosarioFiltro) &&
+                (q==='' || normalizar(g.t).includes(q) || normalizar(g.d).includes(q)));
+  document.getElementById('contTerminos').textContent = `${lista.length} término${lista.length===1?'':'s'} encontrado${lista.length===1?'':'s'}`;
+  const cont = document.getElementById('listaTerminos');
+  if(lista.length===0){
+    cont.innerHTML = `<div class="tarjeta p-4 text-sm texto-suave">😕 No encontramos ese término. Probá con otra palabra (por ejemplo: “nube”, “prompt”, “HTML”).</div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(g=>`
+    <div class="termino" id="term-${g.i}">
+      <button data-accion="glosario-open" data-i="${g.i}" aria-expanded="false">
+        <span>📌 ${g.t}</span><span class="chip ml-auto">${g.c}</span>
+      </button>
+      <div class="def">${g.d}</div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   TEORÍA — hoja estilo A4 (pantalla e impresión)
+   ============================================================ */
+function htmlTeoriaDocumento(compacto){
+  const mod = MODULOS.map((m,idx)=>{
+    const datos = `<table class="${compacto?'p-tabla':'w-full text-left text-[13px] mb-2'}" ${compacto?'':'style="border-collapse:collapse"'}>
+      <thead><tr>${['Criterio','Característica'].map(h=>compacto?`<th>${h}</th>`:`<th class="p-2 font-extrabold" style="border:1.5px solid var(--line);background:var(--soft)">${h}</th>`).join('')}</tr></thead>
+      <tbody>${m.datos.map(d=>`<tr>${d.map(c=>compacto?`<td>${c}</td>`:`<td class="p-2" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>`;
+    return `
+    ${compacto?'':`<h2>Módulo ${idx+1} · ${m.nombre} — ${m.lema}</h2>`}
+    ${compacto?`<div class="p-sect">Módulo ${idx+1} · ${m.nombre} — ${m.lema} (${m.periodo})</div>`:`<div class="text-xs font-extrabold texto-suave mb-1">🗓️ ${m.periodo}</div>`}
+    ${compacto?`<p class="p-txt"><b>${m.intro}</b></p>`:`<p class="text-sm font-bold mb-2" style="color:var(--brand-deep)">${m.intro}</p>`}
+    ${m.bloques.map(b=>compacto
+        ? `<p class="p-txt"><b>${b.t}</b> ${b.p.replace(/<[^>]+>/g,'')}</p>`
+        : `<h3>${b.t}</h3><p>${b.p}</p>`).join('')}
+    ${compacto?`<p class="p-txt"><b>Tecnologías clave:</b> ${m.tech.join(', ')}.</p><p class="p-txt"><b>Riesgos / límites:</b> ${m.riesgo}.</p>${datos}`
+             :`<div class="mb-2">${m.tech.map(t=>`<span class="chip">${t}</span>`).join(' ')}</div>
+               <div class="bloque mb-2" style="background:var(--warn-soft)"><p style="color:var(--warn-ink)"><b>⚠️ ${m.riesgo}</b></p></div>
+               ${datos}`}
+  `}).join('');
+
+  const tablaComp = `<table class="${compacto?'p-tabla':'w-full text-left text-[12.5px]'}" ${compacto?'':'style="border-collapse:collapse"'}>
+    <thead><tr>${['Etapa','Rol del usuario','Comunicación','Tecnología clave','Ejemplo'].map(h=>compacto?`<th>${h}</th>`:`<th class="p-2 font-extrabold" style="border:1.5px solid var(--line);background:var(--soft)">${h}</th>`).join('')}</tr></thead>
+    <tbody>
+      <tr>${['Web 1.0','Espectador pasivo','Uno a muchos','HTML, HTTP, FTP','Página institucional, CD-ROM'].map(c=>compacto?`<td>${c}</td>`:`<td class="p-2" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>
+      <tr>${['Web 2.0','Prosumidor','Muchos a muchos','AJAX, APIs, nube, redes','Instagram, Wikipedia, YouTube'].map(c=>compacto?`<td>${c}</td>`:`<td class="p-2" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>
+      <tr>${['Web 3.0','Dueño de sus datos','Personas + máquinas','Metadatos, RDF, blockchain','Knowledge Graph, datos abiertos'].map(c=>compacto?`<td>${c}</td>`:`<td class="p-2" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>
+      <tr>${['Web 4.0','Colabora con la IA','Persona ↔ máquina','IA, LLM, IoT, Big Data, 5G','ChatGPT, asistentes, casa inteligente'].map(c=>compacto?`<td>${c}</td>`:`<td class="p-2" style="border:1.5px solid var(--line)">${c}</td>`).join('')}</tr>
+    </tbody></table>`;
+
+  const flujo = compacto ? `
+    <div class="p-sect">El flujo de datos: Entrada → Procesamiento → Salida</div>
+    <p class="p-txt"><b>Entrada:</b> los datos ingresan por un periférico (teclado, mouse, micrófono, cámara) o por una acción como un clic o un prompt.</p>
+    <p class="p-txt"><b>Procesamiento:</b> la CPU ejecuta las instrucciones y realiza los cálculos, mientras la memoria RAM guarda temporalmente los datos en uso. Aquí intervienen también el servidor y las bases de datos.</p>
+    <p class="p-txt"><b>Salida:</b> el resultado se muestra por pantalla, parlantes o impresora.</p>
+    <p class="p-txt"><b>Almacenamiento:</b> lo que debe conservarse se guarda en disco, SSD, pendrive o en la nube.</p>`
+    : `
+    <h2>El flujo de datos: Entrada → Procesamiento → Salida</h2>
+    <ul>
+      <li><b>📥 Entrada:</b> los datos ingresan por un periférico (teclado, mouse, micrófono, cámara) o por una acción como un clic o un prompt.</li>
+      <li><b>🧠 Procesamiento:</b> la CPU ejecuta las instrucciones y hace los cálculos; la memoria RAM guarda temporalmente lo que está en uso. También participan el servidor y las bases de datos.</li>
+      <li><b>📤 Salida:</b> el resultado aparece por pantalla, parlantes o impresora.</li>
+      <li><b>💾 Almacenamiento:</b> lo que debe conservarse queda en disco, SSD, pendrive o en la nube.</li>
+    </ul>`;
+
+  if(compacto){
+    return `<div class="p-cab"><div class="p-titulo">📖 NTiCx · Evolución de la Web — Teoría completa</div>
+      <div class="p-sub">Web 1.0 (red pasiva) · Web 2.0 (red participativa-colaborativa) · Web 3.0 (red global semántica) · Web 4.0 (red basada en inteligencia artificial) — 4.º Año, Nivel Secundario (Argentina)</div></div>
+      ${mod}${`<div class="p-sect">Cuadro comparativo de las 4 generaciones</div>`}${tablaComp}${flujo}
+      <div class="p-pie">Material teórico de la unidad “Evolución de la Web” · NTiCx · Impreso en A4 vertical.</div>`;
+  }
+  return `
+    <div class="mb-3">
+      <span class="chip chip-warn mb-1">📖 Material teórico completo · listo para imprimir en A4</span>
+      <h2 class="text-2xl font-extrabold mt-1" style="margin:0">Evolución de la Web</h2>
+      <p class="text-sm texto-suave">Web 1.0 · Web 2.0 · Web 3.0 · Web 4.0 — NTiCx, 4.º Año (Argentina)</p>
+    </div>
+    ${mod}
+    <h2>Cuadro comparativo de las 4 generaciones</h2>
+    ${tablaComp}
+    ${flujo}
+    <h2>Idea final para llevarse</h2>
+    <p>La web no cambió “de golpe”: cada generación sumó una capacidad. Pasamos de <b>leer</b> (1.0) a <b>participar</b> (2.0), después a que las máquinas <b>comprendan</b> los datos (3.0) y hoy a que la inteligencia artificial <b>genere y anticipe</b> (4.0). Cuanto más inteligente es la red, más importante es tu mirada crítica: verificar fuentes, cuidar tus datos y usar la tecnología para aprender mejor.</p>
+  `;
+}
+
+/* ============================================================
+   IMPRESIÓN A4 — REPORTE / TEORÍA / CERTIFICADO
+   ============================================================ */
+function logros(){
+  const lista = [];
+  MODULOS.forEach(m=>{
+    const t = estado.trivias[m.id];
+    if(!t) return;
+    const resp = t.preguntas.filter(p=>p.elegida!==null).length;
+    const ok = t.preguntas.filter(p=>p.ok).length;
+    if(resp===t.preguntas.length){
+      if(ok===t.preguntas.length) lista.push(`🏅 ${m.nombre} dominada (${ok}/3)`);
+      else if(ok>=2) lista.push(`⭐ ${m.nombre} explorada (${ok}/3)`);
+      else lista.push(`📚 ${m.nombre} en repaso (${ok}/3)`);
+    }
+  });
+  if(estado.simUsado) lista.push('🧪 Simulador de flujo de datos recorrido');
+  const ex = estado.examen;
+  if(ex && ex.finalizado) lista.push(ex.aprobado?`🏆 Evaluación final aprobada (${ex.puntaje}/15)`:`📚 Evaluación final rendida (${ex.puntaje}/15)`);
+  return lista;
+}
+
+function triviasParaInforme(){
+  const out = [];
+  MODULOS.forEach(m=>{
+    const t = estado.trivias[m.id];
+    if(!t) return;
+    const respondidas = t.preguntas.filter(p=>p.elegida!==null);
+    if(respondidas.length===0) return;
+    const ok = t.preguntas.filter(p=>p.ok).length;
+    out.push({titulo:`Mini-trivia · ${m.nombre} — ${m.lema}`, puntaje:`${ok}/${t.preguntas.length}`, preguntas:t.preguntas});
+  });
+  const ex = estado.examen;
+  if(ex && ex.finalizado){
+    out.push({titulo:`Evaluación Final Integradora (${ex.fecha})`, puntaje:`${ex.puntaje}/15 · ${ex.porcentaje}% · ${ex.aprobado?'APROBADO':'NO APROBADO'}`, preguntas:ex.preguntas.map((q,i)=>({p:q.p, elegida:ex.respuestas[i]===null?null:ex.respuestas[i], elegidaTexto:ex.respuestas[i]===null?'Sin responder':q.orden[ex.respuestas[i]][0], ok:ex.respuestas[i]!==null && q.orden[ex.respuestas[i]][1], correctaTexto:q.orden.find(o=>o[1])[0]}))});
+  }
+  return out;
+}
+
+function htmlReporte(){
+  const u = estado.usuario;
+  const lg = logros();
+  const tr = triviasParaInforme();
+  let cuerpo = '';
+  if(tr.length===0){
+    cuerpo = `<div class="p-caja"><div class="p-caja-titulo">Resultados de trivias</div>
+      <p class="p-txt">Todavía no completaste ninguna trivia. Resolvé las mini-trivias de los módulos y la evaluación final, y volvé a imprimir el reporte.</p></div>`;
+  }else{
+    cuerpo = tr.map(bloque=>`
+      <div class="p-sect">${bloque.titulo} · Puntaje: ${bloque.puntaje}</div>
+      ${bloque.preguntas.map((q,i)=>{
+        const ok = q.ok;
+        const eleg = q.elegidaTexto || 'Sin responder';
+        const corr = q.correctaTexto;
+        return `<div class="p-preg">
+          <div class="q">${i+1}. ${q.p}</div>
+          <div class="a"><span class="lab">Respuesta del estudiante:</span> ${esc(eleg)} ${ok?'✔':'✘'}</div>
+          ${ok?'':`<div class="a"><span class="lab">Respuesta correcta:</span> ${esc(corr)}</div>`}
+        </div>`;
+      }).join('')}
+    `).join('');
+  }
+  return `
+  <div class="p-cab">
+    <div class="p-titulo">📄 Reporte de Aprendizaje — NTiCx</div>
+    <div class="p-sub">Unidad “Evolución de la Web: de la red pasiva a la red basada en IA” · 4.º Año · Nivel Secundario (Argentina)</div>
+  </div>
+  <div class="p-caja">
+    <div class="p-caja-titulo">Datos del estudiante</div>
+    <div class="p-grid">
+      <div class="p-dato"><b>Nombre:</b><span>${esc(u.nombre)||'—'}</span></div>
+      <div class="p-dato"><b>Escuela:</b><span>${esc(u.escuela)||'—'}</span></div>
+      <div class="p-dato"><b>Año:</b><span>${esc(u.anio)||'—'}</span></div>
+      <div class="p-dato"><b>División:</b><span>${esc(u.division)||'—'}</span></div>
+      <div class="p-dato"><b>Docente:</b><span>${esc(u.docente)||'—'}</span></div>
+      <div class="p-dato"><b>Fecha:</b><span>${fechaHoy()}</span></div>
+    </div>
+    ${lg.length?`<div class="p-dato" style="margin-top:1.4mm"><b>Logros:</b><span>${lg.map(esc).join(' · ')}</span></div>`:''}
+  </div>
+  ${cuerpo}
+  <div class="p-pie">Informe generado por la aplicación educativa NTiCx · Evolución de la Web. Formato A4 vertical optimizado.</div>`;
+}
+
+function htmlCertificado(){
+  const u = estado.usuario;
+  const ex = estado.examen;
+  if(!ex || !ex.finalizado || !ex.aprobado){
+    return `<div class="p-cab"><div class="p-titulo">🎓 Certificado</div>
+      <div class="p-sub">Todavía no está disponible.</div></div>
+      <div class="p-caja"><p class="p-txt">Para imprimir el certificado necesitás completar y aprobar la Evaluación Final (60% o más, es decir 9 de 15 respuestas correctas).</p>
+      <p class="p-txt">Estado actual: ${ex&&ex.finalizado?`rendida con ${ex.puntaje}/15 (${ex.porcentaje}%)`:'sin rendir'}.</p></div>`;
+  }
+  return `<div class="p-cert">
+    <div class="c1">NTiCx · Nuevas Tecnologías de la Información y la Conectividad</div>
+    <div class="c2">Certificado de Logro</div>
+    <div class="c3">Unidad: Evolución de la Web — Web 1.0 · Web 2.0 · Web 3.0 · Web 4.0</div>
+    <div class="c4">${esc(u.nombre)||'Estudiante'}</div>
+    <div class="c5">
+      de la escuela <b>${esc(u.escuela)||'—'}</b>, curso <b>${esc(u.anio)||'—'}</b>, división <b>${esc(u.division)||'—'}</b>,<br>
+      aprobó la <b>Evaluación Final Integradora</b> con un puntaje de <b>${ex.puntaje} sobre 15 (${ex.porcentaje}%)</b>,<br>
+      demostrando dominio de los conceptos, procesos y almacenamiento de datos en las cuatro generaciones de la Web.
+    </div>
+    <div class="c5" style="margin-bottom:0">Fecha de emisión: ${ex.fecha}</div>
+    <div class="p-firmas">
+      <div class="p-firma">Firma del estudiante</div>
+      <div class="p-firma">Firma y sello docente</div>
+    </div>
+  </div>
+  <div class="p-nota">Detalle de la evaluación: ${ex.preguntas.map((q,i)=>`${i+1}${(ex.respuestas[i]!==null&&q.orden[ex.respuestas[i]][1])?'✔':'✘'}`).join(' · ')}</div>`;
+}
+
+function imprimir(html){
+  printRoot.innerHTML = html;
+  window.print();
+}
+
+/* ============================================================
+   REPORTE — FORMULARIO Y PREVIEW
+   ============================================================ */
+function leerFormulario(){
+  return {
+    nombre: $('#fNombre').value.trim(),
+    escuela: $('#fEscuela').value.trim(),
+    anio: $('#fAnio').value.trim(),
+    division: $('#fDivision').value.trim(),
+    docente: $('#fDocente').value.trim()
+  };
+}
+function validarDatos(d){
+  const faltan = [];
+  if(!d.nombre) faltan('Nombre y apellido');
+  if(!d.escuela) faltan('Escuela');
+  if(!d.anio) faltan('Año');
+  if(!d.division) faltan('División');
+  return faltan;
+}
+function guardarDatos(mostrarAviso){
+  const d = leerFormulario();
+  const faltan = validarDatos(d);
+  const aviso = document.getElementById('avisoReporte');
+  if(faltan.length){
+    estado.usuario.guardado = false;
+    aviso.innerHTML = `<div class="aviso error">⚠️ Completá a mano: ${faltan.join(', ')}. El año y la división no se cargan automáticamente.</div>`;
+    return false;
+  }
+  Object.assign(estado.usuario, d, {guardado:true});
+  if(mostrarAviso) aviso.innerHTML = `<div class="aviso ok">✅ ¡Datos guardados! Ya podés imprimir tu reporte en A4.</div>`;
+  actualizarPreviewReporte();
+  return true;
+}
+function actualizarPreviewReporte(){
+  const d = leerFormulario();
+  Object.assign(estado.usuario, d);
+  const prev = document.getElementById('prevDatos');
+  if(prev){
+    prev.innerHTML = `
+      <div class="dato-clave"><b>Nombre</b><span>${esc(d.nombre)||'— (completalo arriba)'}</span></div>
+      <div class="dato-clave"><b>Escuela</b><span>${esc(d.escuela)||'—'}</span></div>
+      <div class="dato-clave"><b>Año</b><span>${esc(d.anio)||'— (manual)'}</span></div>
+      <div class="dato-clave"><b>División</b><span>${esc(d.division)||'— (manual)'}</span></div>
+      <div class="dato-clave" style="border:0"><b>Docente</b><span>${esc(d.docente)||'—'}</span></div>`;
+  }
+  const lg = logros();
+  const pl = document.getElementById('prevLogros');
+  if(pl){
+    pl.innerHTML = lg.length ? lg.map(x=>`<span class="chip chip-ok mb-1 mr-1">${x}</span>`).join(' ') :
+      `<span class="texto-suave">Todavía no hay logros. Resolvé las mini-trivias y el simulador para empezar a juntarlos.</span>`;
+  }
+  const tr = triviasParaInforme();
+  const pt = document.getElementById('prevTrivias');
+  if(pt){
+    pt.innerHTML = tr.length ? tr.map(b=>`<div class="dato-clave"><b>${b.titulo.split(' — ')[0]}</b><span>${b.puntaje}</span></div>`).join('')
+      : `<span class="texto-suave">Sin trivias completadas todavía.</span>`;
+  }
+}
+
+/* ============================================================
+   NAVEGACIÓN Y ACCESIBILIDAD
+   ============================================================ */
+function irPanel(nombre){
+  estado.panel = nombre;
+  $$('.panel').forEach(p=>p.classList.toggle('activa', p.id === 'panel-'+nombre));
+  $$('.tab').forEach(t=>t.classList.toggle('activa', t.dataset.tab === nombre));
+  const mapa = {reporte:'#btnReporte', teoria:'#btnTeoria', glosario:'#btnGlosario'};
+  ['#btnReporte','#btnTeoria','#btnGlosario'].forEach(sel=>{
+    const b = document.querySelector(sel);
+    b.classList.toggle('btn-on', mapa[nombre]===sel);
+    b.classList.toggle('btn-soft', mapa[nombre]!==sel);
+  });
+  if(nombre==='teoria') document.getElementById('hojaTeoria').innerHTML = htmlTeoriaDocumento(false);
+  if(nombre==='reporte') actualizarPreviewReporte();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function alternarDislexia(){
+  const on = document.body.classList.toggle('dislexia');
+  const b = document.getElementById('btnDislexia');
+  b.classList.toggle('btn-on', on);
+  b.setAttribute('aria-pressed', String(on));
+  b.textContent = on ? '🅰️ Dislexia: ON' : '🅰️ Dislexia';
+}
+function alternarContraste(){
+  const on = document.body.classList.toggle('contraste');
+  const b = document.getElementById('btnContraste');
+  b.classList.toggle('btn-on', on);
+  b.setAttribute('aria-pressed', String(on));
+  b.textContent = on ? '◑ Contraste: ON' : '◐ Contraste';
+}
+
+/* ============================================================
+   MANEJADOR GLOBAL DE EVENTOS
+   ============================================================ */
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-accion]');
+  if(!el) return;
+  const a = el.dataset.accion;
+  switch(a){
+    case 'ir': irPanel(el.dataset.panel); break;
+    case 'dislexia': alternarDislexia(); break;
+    case 'contraste': alternarContraste(); break;
+    case 'toggle-modulo': toggleModulo(el.dataset.id); break;
+    case 'opt-trivia': responderTrivia(el.dataset.id, +el.dataset.p, +el.dataset.o); break;
+    case 'reiniciar-trivia': reiniciarTrivia(el.dataset.id); break;
+    case 'opt-examen': elegirExamen(+el.dataset.i, +el.dataset.j); break;
+    case 'examen-fin': finalizarExamen(); break;
+    case 'examen-reset': initExamen(); renderResultadoExamen(); document.getElementById('exAviso').innerHTML=''; break;
+    case 'sim-version':
+      estado.simVersion = el.dataset.v; renderSelVersiones(); resetSim(true);
+      logSim('🔁 Generación seleccionada: '+SIM[estado.simVersion].label); break;
+    case 'sim-run': ejecutarSim(); break;
+    case 'sim-reset': resetSim(true); break;
+    case 'guardar-datos': guardarDatos(true); break;
+    case 'imprimir-reporte':
+      if(!guardarDatos(true)) break;
+      imprimir(htmlReporte()); break;
+    case 'imprimir-teoria': imprimir(htmlTeoriaDocumento(true)); break;
+    case 'imprimir-certificado':
+      if(!guardarDatos(true)) { irPanel('reporte'); break; }
+      imprimir(htmlCertificado()); break;
+    case 'glosario-cat': estado.glosarioFiltro = el.dataset.c; renderFiltros(); renderGlosario(); break;
+    case 'glosario-open': {
+      const t = document.getElementById('term-'+el.dataset.i);
+      const abierto = t.classList.toggle('abierto');
+      el.setAttribute('aria-expanded', String(abierto));
+      break;
+    }
+  }
+});
+
+document.addEventListener('input', e=>{
+  if(e.target.id === 'buscador'){ estado.glosarioBusqueda = e.target.value; renderGlosario(); }
+  if(['fNombre','fEscuela','fAnio','fDivision','fDocente'].includes(e.target.id)){
+    const aviso = document.getElementById('avisoReporte');
+    if(aviso && aviso.innerHTML.includes('error')) aviso.innerHTML = '';
+    actualizarPreviewReporte();
+  }
+});
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+renderModulos();
+renderSelVersiones();
+resetSim(true);
+initExamen();
+renderResultadoExamen();
+renderFiltros();
+renderGlosario();
+actualizarPreviewReporte();
+actualizarProgreso();
+irPanel('home');
+</script>
+</body>
+</html>
+
