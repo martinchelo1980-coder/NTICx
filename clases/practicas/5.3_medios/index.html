@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTiCx · 4° Año · Web Pedagógica Interactiva</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'serif'],
+      },
+      colors: {
+        ink: { 50:'#fafaf9', 100:'#f5f5f4', 200:'#e7e5e4', 300:'#d6d3d1', 400:'#a8a29e', 500:'#78716c', 600:'#57534e', 700:'#44403c', 800:'#292524', 900:'#1c1917', 950:'#0c0a09' },
+        lime: { 400:'#a3e635', 500:'#84cc16' },
+        coral: { 400:'#fb7185', 500:'#f43f5e' },
+      },
+      animation: {
+        'fade-in': 'fadeIn .6s cubic-bezier(.22,1,.36,1)',
+        'fade-up': 'fadeUp .7s cubic-bezier(.22,1,.36,1)',
+        'float': 'float 8s ease-in-out infinite',
+        'shimmer': 'shimmer 3s linear infinite',
+      },
+      keyframes: {
+        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+        fadeUp: { '0%': { opacity: 0, transform: 'translateY(16px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } },
+        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+      }
+    }
+  }
+}
+</script>
+<style>
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .4s ease, color .4s ease;
+}
+
+/* Mesh gradient background */
+.mesh-bg {
+  background-image:
+    radial-gradient(at 10% 10%, rgba(132, 204, 22, .15) 0, transparent 40%),
+    radial-gradient(at 90% 10%, rgba(251, 113, 133, .12) 0, transparent 40%),
+    radial-gradient(at 50% 90%, rgba(99, 102, 241, .10) 0, transparent 40%);
+}
+.dark .mesh-bg {
+  background-image:
+    radial-gradient(at 10% 10%, rgba(132, 204, 22, .08) 0, transparent 40%),
+    radial-gradient(at 90% 10%, rgba(251, 113, 133, .06) 0, transparent 40%),
+    radial-gradient(at 50% 90%, rgba(99, 102, 241, .08) 0, transparent 40%);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, .65);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, .5);
+}
+.dark .glass {
+  background: rgba(28, 25, 23, .65);
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+
+/* Noise texture overlay */
+.noise::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .025;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Selection */
+::selection { background: #84cc16; color: #0c0a09; }
+.dark ::selection { background: #a3e635; color: #0c0a09; }
+
+/* Tab pills */
+.tab-pill {
+  position: relative;
+  padding: .55rem 1.15rem;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 500;
+  letter-spacing: -.01em;
+  color: #78716c;
+  transition: all .3s cubic-bezier(.22,1,.36,1);
+  white-space: nowrap;
+}
+.dark .tab-pill { color: #a8a29e; }
+.tab-pill:hover { color: #1c1917; background: rgba(0,0,0,.04); }
+.dark .tab-pill:hover { color: #fafaf9; background: rgba(255,255,255,.05); }
+.tab-pill.active {
+  color: #0c0a09;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.04);
+}
+.dark .tab-pill.active {
+  color: #0c0a09;
+  background: #f5f5f4;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.tab-pill.active::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #84cc16;
+  margin-right: 8px;
+  vertical-align: middle;
+  box-shadow: 0 0 8px #84cc16;
+}
+
+/* Tab panels */
+.tab-panel { display: none; animation: fadeUp .5s cubic-bezier(.22,1,.36,1); }
+.tab-panel.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section heading with serif display */
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  letter-spacing: -.03em;
+  line-height: 1.05;
+}
+.section-title em {
+  font-style: italic;
+  color: #84cc16;
+}
+.dark .section-title em { color: #a3e635; }
+
+/* Card base */
+.card {
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 20px;
+  transition: all .4s cubic-bezier(.22,1,.36,1);
+}
+.dark .card {
+  background: rgba(28, 25, 23, .5);
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -20px rgba(0,0,0,.1);
+}
+.dark .card:hover {
+  box-shadow: 0 20px 40px -20px rgba(0,0,0,.5);
+}
+
+/* Flip card */
+.flip-card { perspective: 1200px; height: 280px; }
+.flip-inner { position: relative; width: 100%; height: 100%; transition: transform .8s cubic-bezier(.22,1,.36,1); transform-style: preserve-3d; }
+.flip-card:hover .flip-inner, .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 20px;
+  padding: 1.75rem;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.flip-back { transform: rotateY(180deg); }
+
+/* Accordion */
+.acc-body { max-height: 0; overflow: hidden; transition: max-height .5s cubic-bezier(.22,1,.36,1); }
+.acc-body.open { max-height: 800px; }
+.acc-arrow { transition: transform .4s cubic-bezier(.22,1,.36,1); }
+.acc-arrow.open { transform: rotate(180deg); }
+
+/* Tag chip */
+.chip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .3rem .75rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 500;
+  background: rgba(0,0,0,.04);
+  color: #44403c;
+  border: 1px solid rgba(0,0,0,.04);
+}
+.dark .chip { background: rgba(255,255,255,.06); color: #d6d3d1; border-color: rgba(255,255,255,.06); }
+.chip.lime { background: rgba(132,204,22,.12); color: #3f6212; border-color: rgba(132,204,22,.2); }
+.dark .chip.lime { background: rgba(163,230,53,.1); color: #a3e635; }
+.chip.coral { background: rgba(244,63,94,.1); color: #9f1239; border-color: rgba(244,63,94,.2); }
+.dark .chip.coral { background: rgba(251,113,133,.1); color: #fb7185; }
+
+/* Timeline */
+.tl-line {
+  position: absolute; left: 11px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(132,204,22,.5), rgba(251,113,133,.5), rgba(99,102,241,.5));
+}
+.tl-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; border: 2px solid #84cc16;
+  position: absolute; left: 0; top: 8px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 4px rgba(132,204,22,.12);
+}
+.dark .tl-dot { background: #0c0a09; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 9px; }
+.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+
+/* Gradient text */
+.grad-text {
+  background: linear-gradient(135deg, #84cc16 0%, #fb7185 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Glow hover */
+.glow-hover { position: relative; isolation: isolate; }
+.glow-hover::after {
+  content: ''; position: absolute; inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(132,204,22,.3), rgba(251,113,133,.3));
+  opacity: 0; z-index: -1;
+  transition: opacity .4s;
+  filter: blur(20px);
+}
+.glow-hover:hover::after { opacity: 1; }
+
+/* Comparison table */
+.comp-row { transition: background .3s; }
+.comp-row:hover { background: rgba(132,204,22,.04); }
+.dark .comp-row:hover { background: rgba(163,230,53,.04); }
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(20px); transition: all .8s cubic-bezier(.22,1,.36,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Button */
+.btn-modern {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .65rem 1.25rem;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 500;
+  background: #1c1917;
+  color: #fafaf9;
+  transition: all .3s;
+}
+.dark .btn-modern { background: #f5f5f4; color: #0c0a09; }
+.btn-modern:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.2); }
+
+/* Print */
+@media print {
+  @page { size: A4; margin: 1.8cm; }
+  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+  .no-print, nav, .tab-bar, #theme-toggle, #back-to-top, .noise::before { display: none !important; }
+  .mesh-bg { background: #fff !important; }
+  .tab-panel { display: block !important; page-break-inside: avoid; margin-bottom: 1cm; }
+  .tab-panel h2 { font-size: 22pt; margin-bottom: 8pt; border-bottom: 2px solid #000; padding-bottom: 6pt; }
+  .tab-panel h3 { font-size: 14pt; margin-top: 12pt; color: #000; }
+  .card { background: #fff !important; border: 1px solid #000 !important; box-shadow: none !important; }
+  .flip-card { height: auto !important; perspective: none !important; page-break-inside: avoid; }
+  .flip-inner { transform: none !important; transform-style: flat !important; }
+  .flip-face { position: relative !important; transform: none !important; border: 1px solid #ccc !important; margin-bottom: 6px; }
+  .acc-body { max-height: none !important; overflow: visible !important; padding: .5rem 0 !important; }
+  .chip { border: 1px solid #000 !important; background: transparent !important; }
+  .grad-text { -webkit-text-fill-color: #000 !important; color: #000 !important; }
+  .dark * { color: #000 !important; background: transparent !important; }
+  a { color: #000; text-decoration: underline; }
+  .print-title { display: block !important; text-align: center; font-family: 'Instrument Serif', serif; font-size: 26pt; font-weight: 400; margin-bottom: .2cm; }
+  .print-sub { display: block !important; text-align: center; font-size: 11pt; margin-bottom: 1cm; color: #555; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+.print-title, .print-sub { display: none; }
+
+/* Floating label */
+.label-float {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .25rem .7rem;
+  border-radius: 999px;
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: #0c0a09;
+  color: #fafaf9;
+}
+.dark .label-float { background: #f5f5f4; color: #0c0a09; }
+</style>
+</head>
+
+<body class="bg-ink-50 text-ink-900 dark:bg-ink-950 dark:text-ink-100 mesh-bg min-h-screen relative">
+<div class="noise"></div>
+
+<div class="print-title">NTiCx · Nuevas Tecnologías de la Información y la Conectividad</div>
+<div class="print-sub">4° Año · Escuela Secundaria · Dossier Pedagógico</div>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="no-print sticky top-0 z-40 px-4 pt-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="glass rounded-2xl px-5 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-ink-900 dark:bg-ink-50 flex items-center justify-center">
+          <span class="text-ink-50 dark:text-ink-900 font-bold text-sm tracking-tight">NT</span>
+        </div>
+        <div class="leading-tight">
+          <div class="text-[13px] font-semibold tracking-tight">NTiCx</div>
+          <div class="text-[10px] text-ink-500 dark:text-ink-400 uppercase tracking-wider">4° año · Secundaria</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden md:inline-flex chip lime">
+          <span class="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
+          Diseño Curricular PBA
+        </span>
+        <button id="theme-toggle" aria-label="Tema" class="w-9 h-9 rounded-full hover:bg-ink-900/5 dark:hover:bg-ink-50/10 flex items-center justify-center transition">
+          <svg id="icon-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg id="icon-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab pills -->
+    <nav class="tab-bar glass mt-3 rounded-2xl px-2 py-1.5 flex gap-1 overflow-x-auto shadow-sm" role="tablist">
+      <button class="tab-pill active" data-tab="tab1" role="tab">Periodismo Digital</button>
+      <button class="tab-pill" data-tab="tab2" role="tab">Webquest</button>
+      <button class="tab-pill" data-tab="tab3" role="tab">Medios Colaborativos Sociales</button>
+      <button class="tab-pill" data-tab="tab4" role="tab">Entornos Virtuales de Aprendizaje (EVA)</button>
+      <button class="tab-pill" data-tab="tab5" role="tab">Herramientas Colectivas de Comunicación</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="max-w-6xl mx-auto px-4 py-12 relative z-10">
+
+<!-- ╔═══════════════════════════════════════════╗ -->
+<!-- ║  PERIODISMO DIGITAL                       ║ -->
+<!-- ╚═══════════════════════════════════════════╝ -->
+<section id="tab1" class="tab-panel active" role="tabpanel">
+
+  <div class="mb-12">
+    <span class="label-float">01 · Unidad</span>
+    <h2 class="section-title text-5xl md:text-7xl mt-5 mb-5">
+      Periodismo <em>Digital</em><br>del papel al <em>pixel</em>
+    </h2>
+    <p class="text-ink-600 dark:text-ink-400 max-w-2xl text-lg leading-relaxed">
+      Cómo la revolución digital transformó la manera de informarnos. De los diarios porteños del siglo XIX a las coberturas en vivo con inteligencia artificial.
+    </p>
+  </div>
+
+  <!-- Bento grid -->
+  <div class="grid md:grid-cols-3 gap-4 mb-12">
+    <div class="card p-7 md:col-span-2 glow-hover">
+      <div class="chip lime mb-4">Concepto</div>
+      <h3 class="text-2xl font-semibold mb-3 tracking-tight">¿Qué es?</h3>
+      <p class="text-ink-600 dark:text-ink-400 leading-relaxed">
+        Es la práctica periodística que utiliza internet como medio principal de producción, distribución y consumo de noticias. A diferencia del periodismo tradicional —papel, radio, TV— el digital aprovecha la <strong class="text-ink-900 dark:text-ink-100">hipertextualidad</strong>, la <strong class="text-ink-900 dark:text-ink-100">multimedialidad</strong>, la <strong class="text-ink-900 dark:text-ink-100">interactividad</strong> y la <strong class="text-ink-900 dark:text-ink-100">actualización continua</strong> para ofrecer experiencias informativas más ricas y participativas.
+      </p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <span class="chip">Clarín.com</span>
+        <span class="chip">LaNacion.com.ar</span>
+        <span class="chip">Infobae</span>
+        <span class="chip">ElDiarioAR</span>
+        <span class="chip">Chequeado.com</span>
+      </div>
+    </div>
+    <div class="card p-7 glow-hover bg-gradient-to-br from-ink-900 to-ink-800 dark:from-lime-500/20 dark:to-ink-800 text-ink-50 dark:text-ink-50">
+      <div class="chip mb-4" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.1)">Dato</div>
+      <p class="text-3xl font-light leading-tight font-display italic">"El lector dejó de ser un receptor pasivo y se convirtió en <span class="grad-text font-normal not-italic">prosumidor</span>."</p>
+      <p class="text-xs text-ink-400 mt-6 uppercase tracking-wider">Web 2.0 · 2004</p>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="mb-16">
+    <h3 class="text-3xl font-semibold mb-8 tracking-tight">Línea de <span class="grad-text">evolución</span></h3>
+    <div class="relative pl-10 space-y-7">
+      <div class="tl-line"></div>
+
+      <div class="relative">
+        <div class="tl-dot"><span class="w-1.5 h-1.5 rounded-full bg-lime-500"></span></div>
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-mono text-ink-500">1450 — 1990</span>
+            <span class="chip">Era del papel</span>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">De Gutenberg a los grandes diarios argentinos</h4>
+          <p class="text-sm text-ink-600 dark:text-ink-400">Información unidireccional con cierre de edición diario. <em>La Prensa</em> (1869), <em>La Nación</em> (1870), <em>Clarín</em> (1945). Distribución física y lectura lineal.</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="tl-dot" style="border-color:#fb7185;box-shadow:0 0 0 4px rgba(251,113,133,.12)"><span class="w-1.5 h-1.5 rounded-full bg-coral-500"></span></div>
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-mono text-ink-500">1994 — 2004</span>
+            <span class="chip coral">Trasvase digital</span>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Primeras ediciones web</h4>
+          <p class="text-sm text-ink-600 dark:text-ink-400">Clarín.com (1996) y LaNacion.com.ar (1996) replican el contenido del papel en HTML estático. El digital es un espejo del impreso.</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="tl-dot" style="border-color:#6366f1;box-shadow:0 0 0 4px rgba(99,102,241,.12)"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span></div>
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-mono text-ink-500">2005 — 2015</span>
+            <span class="chip" style="background:rgba(99,102,241,.12);color:#3730a3;border-color:rgba(99,102,241,.2)">Web 2.0</span>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Periodismo participativo</h4>
+          <p class="text-sm text-ink-600 dark:text-ink-400">Comentarios, blogs, videos embebidos, redes sociales. Nacen nativos digitales como <em>Infobae</em> y <em>Minuto Uno</em>. El lector se vuelve prosumidor.</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="tl-dot" style="border-color:#84cc16;box-shadow:0 0 0 4px rgba(132,204,22,.12)"><span class="w-1.5 h-1.5 rounded-full bg-lime-500"></span></div>
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs font-mono text-ink-500">2016 — Hoy</span>
+            <span class="chip lime">Era algorítmica</span>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Datos, IA y multiplataforma</h4>
+          <p class="text-sm text-ink-600 dark:text-ink-400">Visualizaciones interactivas, podcasts, newsletters, <em>fact-checking</em> (Chequeado), coberturas en vivo, IA en redacción. <em>ElDiarioAR</em> (2020) nace 100% digital.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 características flip -->
+  <div class="mb-10">
+    <h3 class="text-3xl font-semibold mb-2 tracking-tight">Las 4 <span class="grad-text">características</span> fundamentales</h3>
+    <p class="text-ink-500 dark:text-ink-400 mb-8">Pasa el cursor (o toca) cada tarjeta para descubrir la definición y un ejemplo argentino.</p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-face bg-gradient-to-br from-lime-400 to-lime-500 text-ink-900">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-4xl">🔗</span>
+              <span class="text-xs font-mono opacity-70">01</span>
+            </div>
+            <h4 class="text-2xl font-semibold mb-2 font-display">Hipertextualidad</h4>
+            <p class="text-sm opacity-80">Noticias enlazadas en red. Navegación no lineal.</p>
+            <span class="mt-auto text-xs opacity-70">↻ Toca para ver más</span>
+          </div>
+          <div class="flip-back card">
+            <h4 class="font-semibold text-lg mb-2">Hipertextualidad</h4>
+            <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3">La noticia se conecta con otras mediante enlaces. Permite profundizar sin límites lineales.</p>
+            <div class="p-3 rounded-lg bg-ink-900/5 dark:bg-ink-50/5 text-xs">
+              <strong>Ej. argentino:</strong> una nota en Infobae sobre inflación enlaza al INDEC, a notas anteriores y a un glosario.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-face bg-gradient-to-br from-coral-400 to-coral-500 text-white">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-4xl">🎬</span>
+              <span class="text-xs font-mono opacity-70">02</span>
+            </div>
+            <h4 class="text-2xl font-semibold mb-2 font-display">Multimedialidad</h4>
+            <p class="text-sm opacity-80">Texto + imagen + audio + video en una misma pieza.</p>
+            <span class="mt-auto text-xs opacity-70">↻ Toca para ver más</span>
+          </div>
+          <div class="flip-back card">
+            <h4 class="font-semibold text-lg mb-2">Multimedialidad</h4>
+            <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3">Integración de múltiples formatos en una misma producción informativa.</p>
+            <div class="p-3 rounded-lg bg-ink-900/5 dark:bg-ink-50/5 text-xs">
+              <strong>Ej. argentino:</strong> La Nación Data publica investigaciones con mapas interactivos, videos y bases descargables.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-face bg-gradient-to-br from-indigo-500 to-indigo-600 text-white">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-4xl">🖱️</span>
+              <span class="text-xs font-mono opacity-70">03</span>
+            </div>
+            <h4 class="text-2xl font-semibold mb-2 font-display">Interactividad</h4>
+            <p class="text-sm opacity-80">El lector comenta, comparte, vota y aporta datos.</p>
+            <span class="mt-auto text-xs opacity-70">↻ Toca para ver más</span>
+          </div>
+          <div class="flip-back card">
+            <h4 class="font-semibold text-lg mb-2">Interactividad</h4>
+            <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3">El usuario participa activamente en la experiencia informativa.</p>
+            <div class="p-3 rounded-lg bg-ink-900/5 dark:bg-ink-50/5 text-xs">
+              <strong>Ej. argentino:</strong> en Clarín.com podés comentar notas, participar de encuestas y suscribirte a newsletters.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-face bg-gradient-to-br from-ink-800 to-ink-900 text-ink-50">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-4xl">⚡</span>
+              <span class="text-xs font-mono opacity-70">04</span>
+            </div>
+            <h4 class="text-2xl font-semibold mb-2 font-display">Tiempo real</h4>
+            <p class="text-sm opacity-80">Actualización continua. No hay cierre de edición.</p>
+            <span class="mt-auto text-xs opacity-70">↻ Toca para ver más</span>
+          </div>
+          <div class="flip-back card">
+            <h4 class="font-semibold text-lg mb-2">Tiempo real</h4>
+            <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3">La noticia se publica y corrige al instante. El "minuto a minuto" es el formato estrella.</p>
+            <div class="p-3 rounded-lg bg-ink-900/5 dark:bg-ink-50/5 text-xs">
+              <strong>Ej. argentino:</strong> durante un partido de la Selección, los medios actualizan cada jugada en vivo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Actividad -->
+  <div class="card p-8 border-l-4 border-lime-500">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-lime-500/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-lg">✏️</span>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-lg mb-2">Actividad para el cuaderno</h4>
+        <ol class="text-sm text-ink-600 dark:text-ink-400 space-y-1.5 list-decimal list-inside">
+          <li>Elegí una noticia reciente de un medio digital argentino.</li>
+          <li>Identificá al menos un ejemplo de cada una de las 4 características.</li>
+          <li>Compará: ¿cómo habría sido esa misma noticia en un diario de papel de 1990?</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔═══════════════════════════════════════════╗ -->
+<!-- ║  WEBQUEST                                  ║ -->
+<!-- ╚═══════════════════════════════════════════╝ -->
+<section id="tab2" class="tab-panel" role="tabpanel">
+
+  <div class="mb-12">
+    <span class="label-float">02 · Unidad</span>
+    <h2 class="section-title text-5xl md:text-7xl mt-5 mb-5">
+      Webquest<br>investigación <em>guiada</em>
+    </h2>
+    <p class="text-ink-600 dark:text-ink-400 max-w-2xl text-lg leading-relaxed">
+      Una estrategia didáctica que convierte la búsqueda en internet en una aventura estructurada de aprendizaje. Propuesta por Bernie Dodge (1995).
+    </p>
+  </div>
+
+  <!-- Definición destacada -->
+  <div class="card p-10 mb-12 bg-gradient-to-br from-ink-900 to-ink-800 dark:from-lime-500/10 dark:to-coral-500/5 text-ink-50">
+    <div class="chip mb-5" style="background:rgba(163,230,53,.2);color:#a3e635;border-color:rgba(163,230,53,.3)">Definición</div>
+    <p class="text-2xl md:text-3xl font-light leading-relaxed font-display">
+      Una <em class="grad-text font-normal not-italic">Webquest</em> es una actividad de investigación orientada en la que la mayor parte de la información proviene de <em class="grad-text font-normal not-italic">recursos web preseleccionados</em> por el docente.
+    </p>
+    <p class="text-sm text-ink-400 mt-6 leading-relaxed">
+      Su objetivo es desarrollar pensamiento crítico, colaboración y competencia digital, evitando que el alumno "navegue a la deriva" por la web.
+    </p>
+  </div>
+
+  <!-- Estructura 6 partes -->
+  <div class="mb-12">
+    <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
+      <h3 class="text-3xl font-semibold tracking-tight">Estructura <span class="grad-text">clásica</span></h3>
+      <p class="text-sm text-ink-500">Toca cada paso para desplegar la descripción</p>
+    </div>
+
+    <div class="space-y-3" id="wq-list">
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq1">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-lime-500/15 text-lime-600 dark:text-lime-400 flex items-center justify-center font-display text-2xl">1</div>
+            <div>
+              <h4 class="font-semibold text-lg">Introducción</h4>
+              <p class="text-xs text-ink-500 mt-0.5">Engancha al estudiante con un escenario atractivo</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq1" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Presenta el tema y el escenario de forma atractiva, conectando con los intereses del estudiante.
+            <em class="block mt-2 text-ink-500">Ej. argentino: "Son periodistas de un medio digital de Mar del Plata y deben investigar el impacto del turismo en la costa bonaerense."</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq2">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-coral-500/15 text-coral-500 flex items-center justify-center font-display text-2xl">2</div>
+            <div>
+              <h4 class="font-semibold text-lg">Tarea</h4>
+              <p class="text-xs text-ink-500 mt-0.5">Define el producto final que se debe elaborar</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq2" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Describe el producto final: informe, presentación, podcast, video, debate, etc. Debe ir más allá de "copiar y pegar".
+            <em class="block mt-2 text-ink-500">Ej.: "Producir una nota multimedia con texto, infografía y audio de 2 minutos."</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq3">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-display text-2xl">3</div>
+            <div>
+              <h4 class="font-semibold text-lg">Proceso</h4>
+              <p class="text-xs text-ink-500 mt-0.5">La hoja de ruta paso a paso</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq3" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Detalla las actividades paso a paso. Incluye roles si es grupal (investigador, redactor, diseñador, etc.). Es la hoja de ruta que guía la investigación y evita la dispersión.
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq4">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-display text-2xl">4</div>
+            <div>
+              <h4 class="font-semibold text-lg">Recursos</h4>
+              <p class="text-xs text-ink-500 mt-0.5">Lista curada de fuentes preseleccionadas</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq4" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Lista de enlaces web, videos, documentos y fuentes que el docente preseleccionó. Esto es lo que diferencia una Webquest de una búsqueda libre en Google.
+            <em class="block mt-2 text-ink-500">Ej.: datos del INDEC, artículos de Chequeado, videos de Educ.ar.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq5">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center font-display text-2xl">5</div>
+            <div>
+              <h4 class="font-semibold text-lg">Evaluación</h4>
+              <p class="text-xs text-ink-500 mt-0.5">Rúbrica clara y transparente</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq5" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Rúbrica que los alumnos conocen desde el inicio. Se evalúan: calidad de la información, trabajo en equipo, uso de fuentes, creatividad y competencia digital. Puede incluir autoevaluación y coevaluación.
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <button class="acc-trigger w-full flex items-center justify-between p-5 text-left" data-target="wq6">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-display text-2xl">6</div>
+            <div>
+              <h4 class="font-semibold text-lg">Conclusión</h4>
+              <p class="text-xs text-ink-500 mt-0.5">Reflexión final sobre lo aprendido</p>
+            </div>
+          </div>
+          <svg class="acc-arrow w-5 h-5 text-ink-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="wq6" class="acc-body px-5 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-5 pt-1 border-t border-ink-900/5 dark:border-ink-50/5">
+            Cierra la actividad con una reflexión. El docente resume los conceptos clave y propone preguntas para seguir investigando.
+            <em class="block mt-2 text-ink-500">"¿Qué aprendieron sobre el manejo de fuentes digitales? ¿Cómo pueden aplicar esto en otras materias?"</em>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Tipos -->
+  <div class="grid md:grid-cols-2 gap-4 mb-10">
+    <div class="card p-6 glow-hover">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="chip lime">Corto plazo</span>
+        <span class="text-xs font-mono text-ink-500">1 – 3 clases</span>
+      </div>
+      <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">Adquisición e integración de conocimientos. Ideal para introducir un tema nuevo.</p>
+    </div>
+    <div class="card p-6 glow-hover">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="chip coral">Largo plazo</span>
+        <span class="text-xs font-mono text-ink-500">1 semana – 1 mes</span>
+      </div>
+      <p class="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">Extensión y refinamiento del conocimiento. Producto final más complejo: sitio web, documental, campaña.</p>
+    </div>
+  </div>
+
+  <div class="card p-8 border-l-4 border-coral-500">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-coral-500/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-lg">✏️</span>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-lg mb-2">Actividad práctica</h4>
+        <p class="text-sm text-ink-600 dark:text-ink-400">En grupos de 3 o 4, diseñen el esqueleto de una Webquest sobre un tema de NTiCx (por ejemplo: "Fake news en Argentina"). Deben redactar la Introducción, la Tarea y una lista de 5 Recursos reales con enlace.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔═══════════════════════════════════════════╗ -->
+<!-- ║  MEDIOS COLABORATIVOS SOCIALES            ║ -->
+<!-- ╚═══════════════════════════════════════════╝ -->
+<section id="tab3" class="tab-panel" role="tabpanel">
+
+  <div class="mb-12">
+    <span class="label-float">03 · Unidad</span>
+    <h2 class="section-title text-5xl md:text-7xl mt-5 mb-5">
+      Medios <em>Colaborativos</em><br>Sociales
+    </h2>
+    <p class="text-ink-600 dark:text-ink-400 max-w-2xl text-lg leading-relaxed">
+      La web como espacio de construcción colectiva: de la lectura pasiva a la escritura compartida. La era de la <em class="grad-text font-semibold not-italic">inteligencia colectiva</em>.
+    </p>
+  </div>
+
+  <!-- Cultura colaborativa -->
+  <div class="grid md:grid-cols-5 gap-4 mb-14">
+    <div class="card p-7 md:col-span-3">
+      <div class="chip lime mb-4">Cultura colaborativa</div>
+      <h3 class="text-2xl font-semibold mb-3 tracking-tight">Web 2.0: el usuario como co-creador</h3>
+      <p class="text-ink-600 dark:text-ink-400 leading-relaxed mb-3">
+        La <strong>Web 2.0</strong> (término acuñado por Tim O'Reilly en 2004) transformó a los usuarios de consumidores en <strong class="text-ink-900 dark:text-ink-100">productores y co-creadores</strong>. La cultura colaborativa se basa en apertura, participación, inteligencia colectiva y construcción compartida del conocimiento.
+      </p>
+      <div class="p-4 rounded-xl bg-ink-900/5 dark:bg-ink-50/5 text-sm">
+        <strong>🇦🇷 Ejemplo argentino:</strong> las plataformas <em>Conectar Igualdad</em> y <em>Juana Manso</em> promueven la creación colaborativa de contenidos educativos entre docentes y estudiantes de todo el país.
+      </div>
+    </div>
+    <div class="card p-7 md:col-span-2 bg-gradient-to-br from-coral-400 to-rose-500 text-white flex flex-col justify-between">
+      <div>
+        <p class="text-5xl font-display italic font-light leading-none mb-4">"</p>
+        <p class="text-lg leading-snug">Ninguno de nosotros sabe más que todos nosotros juntos.</p>
+      </div>
+      <p class="text-xs uppercase tracking-widest opacity-80 mt-6">— Pierre Lévy · Inteligencia colectiva</p>
+    </div>
+  </div>
+
+  <!-- Glosario 8 conceptos -->
+  <div class="mb-14">
+    <div class="flex items-end justify-between mb-6 flex-wrap gap-4">
+      <h3 class="text-3xl font-semibold tracking-tight">Glosa de <span class="grad-text">conceptos</span> clave</h3>
+      <p class="text-sm text-ink-500">Pasa el cursor para ver la definición completa</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">📝</span>
+          <span class="text-xs font-mono text-ink-400">01</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Weblogs (Blogs)</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Sitio web personal con entradas cronológicas inversas. Primer medio de publicación masiva accesible sin conocimientos técnicos.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">📖</span>
+          <span class="text-xs font-mono text-ink-400">02</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Wikis</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Escritura colaborativa en la web. Varios usuarios editan el mismo contenido. Ejemplo máximo: Wikipedia.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">🎓</span>
+          <span class="text-xs font-mono text-ink-400">03</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Edublog</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Blog utilizado con fines pedagógicos. El docente publica actividades; los alumnos responden con sus producciones.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">🌐</span>
+          <span class="text-xs font-mono text-ink-400">04</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Blogosfera</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          El universo total de blogs interconectados mediante enlaces y referencias cruzadas. Red social descentralizada.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">🧑‍✈️</span>
+          <span class="text-xs font-mono text-ink-400">05</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Blogonauta</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Término metafórico para el usuario que "navega" por la blogosfera: lee, comenta, enlaza y participa.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">✍️</span>
+          <span class="text-xs font-mono text-ink-400">06</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Blogging</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          La práctica de crear y mantener un blog. Una forma de alfabetización digital activa.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">💼</span>
+          <span class="text-xs font-mono text-ink-400">07</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Blogofolio</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Fusión de blog + portfolio. Portafolio digital para mostrar producciones académicas o profesionales.
+        </p>
+      </div>
+
+      <div class="card p-5 group cursor-default glow-hover">
+        <div class="flex items-start justify-between mb-3">
+          <span class="text-2xl">📸</span>
+          <span class="text-xs font-mono text-ink-400">08</span>
+        </div>
+        <h4 class="font-semibold mb-1.5">Fotolog <span class="chip coral ml-1">hito</span></h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed opacity-80 group-hover:opacity-100 transition">
+          Blog fotográfico masivo en Argentina entre 2005-2010 entre adolescentes. Precursor cultural de Instagram. Cerró en 2016.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Redes sociales -->
+  <div class="mb-10">
+    <h3 class="text-3xl font-semibold mb-6 tracking-tight">Redes Sociales <span class="grad-text">Digitales</span></h3>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card p-7">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-lime-500/15 flex items-center justify-center text-lg">↔️</div>
+          <div>
+            <h4 class="font-semibold text-lg">Horizontales</h4>
+            <p class="text-xs text-ink-500">Generalistas · por vínculos sociales</p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 dark:text-ink-400 mb-4 leading-relaxed">
+          No tienen temática específica; los usuarios se conectan por amistad, familia o intereses variados.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip">Facebook</span>
+          <span class="chip">X (Twitter)</span>
+          <span class="chip">Instagram</span>
+          <span class="chip">TikTok</span>
+        </div>
+        <p class="text-xs text-ink-500 mt-4 italic">Instagram y TikTok: las más usadas por adolescentes argentinos según UNICEF.</p>
+      </div>
+
+      <div class="card p-7">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-coral-500/15 flex items-center justify-center text-lg">↕️</div>
+          <div>
+            <h4 class="font-semibold text-lg">Verticales</h4>
+            <p class="text-xs text-ink-500">Temáticas · por interés o profesión</p>
+          </div>
+        </div>
+        <p class="text-sm text-ink-600 dark:text-ink-400 mb-4 leading-relaxed">
+          Se organizan alrededor de un interés, profesión o actividad específica.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip">LinkedIn</span>
+          <span class="chip">GitHub</span>
+          <span class="chip">Goodreads</span>
+          <span class="chip">Strava</span>
+        </div>
+        <p class="text-xs text-ink-500 mt-4 italic">La red de docentes en Juana Manso funciona como una red vertical de práctica profesional.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-8 border-l-4 border-indigo-500">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-lg">✏️</span>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-lg mb-2">Actividad de reflexión</h4>
+        <p class="text-sm text-ink-600 dark:text-ink-400">¿Usaste alguna vez Fotolog o conocés a alguien que lo haya usado? Investigá cómo era la experiencia y comparala con Instagram. ¿Qué cambió y qué se mantuvo? Escribí un párrafo de 5 líneas.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔═══════════════════════════════════════════╗ -->
+<!-- ║  ENTORNOS VIRTUALES DE APRENDIZAJE (EVA)  ║ -->
+<!-- ╚═══════════════════════════════════════════╝ -->
+<section id="tab4" class="tab-panel" role="tabpanel">
+
+  <div class="mb-12">
+    <span class="label-float">04 · Unidad</span>
+    <h2 class="section-title text-5xl md:text-7xl mt-5 mb-5">
+      Entornos <em>Virtuales</em><br>de Aprendizaje
+    </h2>
+    <p class="text-ink-600 dark:text-ink-400 max-w-2xl text-lg leading-relaxed">
+      Las aulas sin paredes: plataformas que permiten enseñar y aprender más allá del tiempo y del espacio físico. También llamados <strong>LMS</strong> o <strong>campus virtuales</strong>.
+    </p>
+  </div>
+
+  <!-- Definición -->
+  <div class="card p-8 mb-12 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent">
+    <div class="chip mb-4" style="background:rgba(99,102,241,.12);color:#3730a3;border-color:rgba(99,102,241,.2);">EVA / LMS</div>
+    <h3 class="text-2xl font-semibold mb-3 tracking-tight">¿Qué es un EVA?</h3>
+    <p class="text-ink-600 dark:text-ink-400 leading-relaxed">
+      Un <strong class="text-ink-900 dark:text-ink-100">Entorno Virtual de Aprendizaje</strong> (también llamado <strong class="text-ink-900 dark:text-ink-100">LMS</strong> — Learning Management System) es una plataforma digital diseñada para facilitar la gestión, distribución y seguimiento de actividades educativas. Permite al docente publicar contenidos, asignar tareas, evaluar, comunicarse con los estudiantes y registrar el progreso.
+    </p>
+  </div>
+
+  <!-- Plataformas -->
+  <div class="mb-14">
+    <h3 class="text-3xl font-semibold mb-6 tracking-tight">Plataformas <span class="grad-text">principales</span></h3>
+    <p class="text-sm text-ink-500 mb-6">Toca cada tarjeta para ver más detalles.</p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+
+      <div class="card overflow-hidden group">
+        <div class="acc-trigger-card p-6 cursor-pointer" data-target="card-moodle">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-2xl font-bold">M</div>
+            <svg class="acc-arrow w-5 h-5 text-ink-400 group-hover:translate-y-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Moodle</h4>
+          <p class="text-xs text-ink-500 mb-3">Software libre · estándar académico</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="chip text-[10px]">UBA</span>
+            <span class="chip text-[10px]">UNLP</span>
+            <span class="chip text-[10px]">UNC</span>
+          </div>
+        </div>
+        <div id="card-moodle" class="acc-body px-6 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-6 pt-2 border-t border-ink-900/5 dark:border-ink-50/5">
+            <p class="mb-2"><strong>Características:</strong> foros, tareas, cuestionarios, wikis, glosarios, seguimiento de calificaciones, badges.</p>
+            <p><strong>🇦🇷 Dato argentino:</strong> durante la pandemia (2020), miles de escuelas bonaerenses adoptaron Moodle a través del programa Continuar Estudiando.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden group">
+        <div class="acc-trigger-card p-6 cursor-pointer" data-target="card-classroom">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-2xl font-bold">C</div>
+            <svg class="acc-arrow w-5 h-5 text-ink-400 group-hover:translate-y-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Google Classroom</h4>
+          <p class="text-xs text-ink-500 mb-3">Ecosistema Google · gratuito</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="chip text-[10px]">Drive</span>
+            <span class="chip text-[10px]">Meet</span>
+            <span class="chip text-[10px]">Forms</span>
+          </div>
+        </div>
+        <div id="card-classroom" class="acc-body px-6 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-6 pt-2 border-t border-ink-900/5 dark:border-ink-50/5">
+            <p class="mb-2"><strong>Características:</strong> flujo de clase, asignación con Drive, integración con Meet y Forms, calificaciones simples.</p>
+            <p><strong>🇦🇷 Dato argentino:</strong> muy usado en secundarias de la PBA por ser gratuito y funcionar bien en netbooks con pocos recursos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden group">
+        <div class="acc-trigger-card p-6 cursor-pointer" data-target="card-juana">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center text-white text-2xl">🇦🇷</div>
+            <svg class="acc-arrow w-5 h-5 text-ink-400 group-hover:translate-y-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <h4 class="font-semibold text-lg mb-1">Juana Manso</h4>
+          <p class="text-xs text-ink-500 mb-3">Federal · Estado argentino</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="chip text-[10px]">Conectar Igualdad</span>
+          </div>
+        </div>
+        <div id="card-juana" class="acc-body px-6 text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+          <div class="pb-6 pt-2 border-t border-ink-900/5 dark:border-ink-50/5">
+            <p class="mb-2"><strong>Características:</strong> aulas virtuales, biblioteca digital, repositorio de recursos, escritorio para netbooks, aplicación de mensajería.</p>
+            <p><strong>🇦🇷 Dato argentino:</strong> nombrada en honor a la educadora Juana Manso (1819-1875). Plataforma oficial del programa Conectar Igualdad, disponible en todas las escuelas públicas.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Ventajas -->
+  <div class="mb-10">
+    <h3 class="text-3xl font-semibold mb-6 tracking-tight">Ventajas de la <span class="grad-text">asincronía</span></h3>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-lime-500/15 flex items-center justify-center mb-3 text-lg">⏰</div>
+        <h4 class="font-semibold mb-1">Flexibilidad temporal</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">Cada estudiante accede al material cuando puede, respetando sus ritmos y contextos.</p>
+      </div>
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-coral-500/15 flex items-center justify-center mb-3 text-lg">📊</div>
+        <h4 class="font-semibold mb-1">Seguimiento detallado</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">El docente ve quién entró, qué leyó, cuánto tardó y dónde tuvo dificultades.</p>
+      </div>
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-indigo-500/15 flex items-center justify-center mb-3 text-lg">📁</div>
+        <h4 class="font-semibold mb-1">Centralización</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">Todo el material, entregas y devoluciones en un solo lugar, organizado por clase.</p>
+      </div>
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-amber-500/15 flex items-center justify-center mb-3 text-lg">🔄</div>
+        <h4 class="font-semibold mb-1">Retroalimentación escrita</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">Las devoluciones quedan registradas y pueden releerse cuantas veces se necesite.</p>
+      </div>
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-sky-500/15 flex items-center justify-center mb-3 text-lg">🌍</div>
+        <h4 class="font-semibold mb-1">Acceso universal</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">Solo se necesita internet (o descargar para offline, como permite Juana Manso).</p>
+      </div>
+
+      <div class="card p-5 glow-hover">
+        <div class="w-9 h-9 rounded-lg bg-rose-500/15 flex items-center justify-center mb-3 text-lg">🧠</div>
+        <h4 class="font-semibold mb-1">Aprendizaje autorregulado</h4>
+        <p class="text-xs text-ink-500 dark:text-ink-400 leading-relaxed">Fomenta la autonomía: el estudiante planifica, ejecuta y evalúa su propio proceso.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card p-8 border-l-4 border-sky-500">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-sky-500/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-lg">✏️</span>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-lg mb-2">Actividad comparativa</h4>
+        <p class="text-sm text-ink-600 dark:text-ink-400">Ingresá a la plataforma que uses en tu escuela (Classroom, Moodle o Juana Manso) y anotá: ¿qué herramientas tiene? ¿Cuáles usás más? ¿Cuáles no conocías? Compartí tus hallazgos.</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔═══════════════════════════════════════════╗ -->
+<!-- ║  HERRAMIENTAS COLECTIVAS DE COMUNICACIÓN  ║ -->
+<!-- ╚═══════════════════════════════════════════╝ -->
+<section id="tab5" class="tab-panel" role="tabpanel">
+
+  <div class="mb-12">
+    <span class="label-float">05 · Unidad</span>
+    <h2 class="section-title text-5xl md:text-7xl mt-5 mb-5">
+      Herramientas<br><em>Colectivas</em> de<br>Comunicación
+    </h2>
+    <p class="text-ink-600 dark:text-ink-400 max-w-2xl text-lg leading-relaxed">
+      Sincrónicas vs. asincrónicas: cuándo importa el "ahora" y cuándo el "cuando puedas". Una clasificación según la temporalidad de la interacción.
+    </p>
+  </div>
+
+  <!-- Concepto clave -->
+  <div class="grid md:grid-cols-2 gap-4 mb-12">
+    <div class="card p-7">
+      <div class="chip lime mb-3">Concepto clave</div>
+      <p class="text-ink-600 dark:text-ink-400 leading-relaxed">
+        Las herramientas de comunicación digital se clasifican según la <strong class="text-ink-900 dark:text-ink-100">temporalidad</strong> de la interacción. Las <strong class="text-ink-900 dark:text-ink-100">sincrónicas</strong> requieren que los participantes estén conectados al mismo tiempo (en vivo). Las <strong class="text-ink-900 dark:text-ink-100">asincrónicas</strong> permiten que cada uno participe en momentos diferentes.
+      </p>
+    </div>
+    <div class="card p-7 bg-gradient-to-br from-ink-900 to-ink-800 dark:from-lime-500/10 dark:to-coral-500/5 text-ink-50">
+      <p class="font-display italic text-2xl leading-snug">La diferencia no está en <em class="grad-text font-normal not-italic">qué</em> se dice, sino en <em class="grad-text font-normal not-italic">cuándo</em> se recibe.</p>
+    </div>
+  </div>
+
+  <!-- Cuadro comparativo -->
+  <div class="mb-14">
+    <div class="flex items-end justify-between mb-6 flex-wrap gap-4">
+      <h3 class="text-3xl font-semibold tracking-tight">Cuadro <span class="grad-text">comparativo</span></h3>
+      <p class="text-sm text-ink-500">Toca cada fila para ver la descripción ampliada</p>
+    </div>
+
+    <div class="card overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-ink-900/10 dark:border-ink-50/10">
+            <th class="text-left p-5 font-semibold text-ink-500 text-xs uppercase tracking-wider">Criterio</th>
+            <th class="text-left p-5 font-semibold text-lime-600 dark:text-lime-400 text-xs uppercase tracking-wider">⚡ Sincrónicas</th>
+            <th class="text-left p-5 font-semibold text-coral-500 text-xs uppercase tracking-wider">📬 Asincrónicas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="comp-row cursor-pointer border-b border-ink-900/5 dark:border-ink-50/5" data-detail="d1">
+            <td class="p-5 font-semibold">Definición</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Comunicación en tiempo real, simultánea.</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Comunicación diferida, en tiempos distintos.</td>
+          </tr>
+          <tr id="d1" class="detail-row hidden">
+            <td colspan="3" class="p-5 bg-ink-900/[.03] dark:bg-ink-50/[.03] text-sm text-ink-600 dark:text-ink-400 leading-relaxed border-b border-ink-900/5 dark:border-ink-50/5">
+              <strong>Sincrónica:</strong> como una conversación telefónica: ambos deben estar presentes. <strong>Asincrónica:</strong> como una carta o un email: el otro responde cuando puede.
+            </td>
+          </tr>
+
+          <tr class="comp-row cursor-pointer border-b border-ink-900/5 dark:border-ink-50/5" data-detail="d2">
+            <td class="p-5 font-semibold">Ejemplos</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Chat, IRC, mensajería instantánea, mundos virtuales.</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Listas de distribución y foros de discusión.</td>
+          </tr>
+          <tr id="d2" class="detail-row hidden">
+            <td colspan="3" class="p-5 bg-ink-900/[.03] dark:bg-ink-50/[.03] text-sm text-ink-600 dark:text-ink-400 leading-relaxed border-b border-ink-900/5 dark:border-ink-50/5">
+              <strong>IRC (Internet Relay Chat):</strong> uno de los primeros sistemas de chat grupal (1988). <strong>Mundos virtuales:</strong> espacios 3D como Second Life o entornos de metaverso. <strong>Listas de distribución:</strong> un email enviado a una dirección se replica a todos los suscriptores. <strong>Foros:</strong> espacios temáticos con hilos organizados.
+            </td>
+          </tr>
+
+          <tr class="comp-row cursor-pointer border-b border-ink-900/5 dark:border-ink-50/5" data-detail="d3">
+            <td class="p-5 font-semibold">Ventaja principal</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Inmediatez, sensación de presencia, resolución rápida.</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Reflexión profunda, flexibilidad horaria, registro permanente.</td>
+          </tr>
+          <tr id="d3" class="detail-row hidden">
+            <td colspan="3" class="p-5 bg-ink-900/[.03] dark:bg-ink-50/[.03] text-sm text-ink-600 dark:text-ink-400 leading-relaxed border-b border-ink-900/5 dark:border-ink-50/5">
+              En un <strong>chat</strong> resolvés una duda en segundos, pero la conversación se pierde. En un <strong>foro</strong>, podés pensar tu respuesta durante horas, citar fuentes y construir un hilo que queda disponible para futuros estudiantes.
+            </td>
+          </tr>
+
+          <tr class="comp-row cursor-pointer border-b border-ink-900/5 dark:border-ink-50/5" data-detail="d4">
+            <td class="p-5 font-semibold">Desventaja</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Requiere coincidencia horaria; ansiedad por respuesta inmediata.</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">La demora puede desmotivar; requiere autodisciplina.</td>
+          </tr>
+          <tr id="d4" class="detail-row hidden">
+            <td colspan="3" class="p-5 bg-ink-900/[.03] dark:bg-ink-50/[.03] text-sm text-ink-600 dark:text-ink-400 leading-relaxed border-b border-ink-900/5 dark:border-ink-50/5">
+              <strong>🇦🇷 Contexto argentino:</strong> durante las clases virtuales de 2020, muchos docentes reportaron "fatiga de Zoom" (exceso de sincronicidad). Las escuelas que combinaron clases en vivo con foros asincrónicos lograron mayor inclusión de estudiantes con conectividad intermitente.
+            </td>
+          </tr>
+
+          <tr class="comp-row cursor-pointer" data-detail="d5">
+            <td class="p-5 font-semibold">Uso educativo ideal</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Tutorías, debates, trabajo grupal urgente, clases virtuales.</td>
+            <td class="p-5 text-ink-600 dark:text-ink-400">Debates reflexivos, entregas, consultas extendidas, construcción colectiva.</td>
+          </tr>
+          <tr id="d5" class="detail-row hidden">
+            <td colspan="3" class="p-5 bg-ink-900/[.03] dark:bg-ink-50/[.03] text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
+              <strong>Mejor práctica:</strong> combinar ambas. Por ejemplo: usar un foro de Moodle para debatir un tema durante la semana (asincrónico) y cerrar con una videollamada de 20 minutos (sincrónico). Esto se llama <strong>diseño híbrido o blended</strong>.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Diagrama visual -->
+  <div class="card p-8 mb-10">
+    <h3 class="text-2xl font-semibold mb-6 tracking-tight">Representación <span class="grad-text">temporal</span></h3>
+
+    <div class="space-y-8">
+      <div>
+        <p class="text-xs font-semibold text-lime-600 dark:text-lime-400 mb-3 uppercase tracking-wider">Sincrónica · Todos al mismo tiempo</p>
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex-1 min-w-[120px] h-12 bg-lime-500/15 border border-lime-500/20 rounded-xl flex items-center justify-center text-sm font-medium">Persona A 💬</div>
+          <svg class="w-5 h-5 text-lime-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3l7 7-7 7V3z"/></svg>
+          <div class="flex-1 min-w-[120px] h-12 bg-lime-500/15 border border-lime-500/20 rounded-xl flex items-center justify-center text-sm font-medium">Persona B 💬</div>
+          <span class="text-xs text-ink-500 font-mono">⏱️ mismo momento</span>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold text-coral-500 mb-3 uppercase tracking-wider">Asincrónica · Cada uno en su momento</p>
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex-1 min-w-[120px] h-12 bg-coral-500/15 border border-coral-500/20 rounded-xl flex items-center justify-center text-sm font-medium">Persona A ✉️ lun</div>
+          <svg class="w-5 h-5 text-coral-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3l7 7-7 7V3z"/></svg>
+          <div class="flex-1 min-w-[120px] h-12 bg-coral-500/15 border border-coral-500/20 rounded-xl flex items-center justify-center text-sm font-medium">Persona B ✉️ mié</div>
+          <svg class="w-5 h-5 text-coral-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3l7 7-7 7V3z"/></svg>
+          <div class="flex-1 min-w-[120px] h-12 bg-coral-500/15 border border-coral-500/20 rounded-xl flex items-center justify-center text-sm font-medium">Persona A ✉️ jue</div>
+          <span class="text-xs text-ink-500 font-mono">📅 diferentes momentos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-8 border-l-4 border-coral-500">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-coral-500/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-lg">✏️</span>
+      </div>
+      <div class="flex-1">
+        <h4 class="font-semibold text-lg mb-2">Actividad de clasificación</h4>
+        <p class="text-sm text-ink-600 dark:text-ink-400 mb-3">Clasificá las siguientes herramientas como sincrónicas (S) o asincrónicas (A):</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="chip">WhatsApp</span>
+          <span class="chip">Foro de Moodle</span>
+          <span class="chip">Zoom</span>
+          <span class="chip">Email</span>
+          <span class="chip">IRC</span>
+          <span class="chip">Lista de distribución</span>
+          <span class="chip">Google Meet</span>
+          <span class="chip">Comentarios en un blog</span>
+        </div>
+        <p class="text-xs text-ink-500 mt-4 italic">💡 Pista: algunas herramientas pueden ser ambas según cómo se usen. ¡Justificá tu respuesta!</p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="no-print max-w-6xl mx-auto px-4 pb-12 pt-6 relative z-10">
+  <div class="border-t border-ink-900/10 dark:border-ink-50/10 pt-8 flex flex-wrap justify-between items-center gap-4 text-xs text-ink-500">
+    <div>
+      <p class="font-medium text-ink-700 dark:text-ink-300">NTiCx · 4° Año · Escuela Secundaria</p>
+      <p class="mt-1">Diseño Curricular Provincia de Buenos Aires · Recurso pedagógico interactivo</p>
+    </div>
+    <button onclick="window.print()" class="btn-modern">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+      Imprimir dossier (A4)
+    </button>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="back-to-top" class="no-print fixed bottom-6 right-6 w-12 h-12 rounded-full bg-ink-900 dark:bg-ink-50 text-ink-50 dark:text-ink-900 shadow-xl flex items-center justify-center opacity-0 pointer-events-none transition-all hover:scale-110 z-50" aria-label="Volver arriba">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg>
+</button>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* Theme toggle */
+  const html = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  const stored = localStorage.getItem('theme');
+  if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    html.classList.add('dark');
+  }
+  toggle?.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  /* Tab switching */
+  const tabBtns = document.querySelectorAll('.tab-pill');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const target = document.getElementById(btn.dataset.tab);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
+
+  /* Webquest accordions */
+  document.querySelectorAll('.acc-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const body = document.getElementById(trigger.dataset.target);
+      const arrow = trigger.querySelector('.acc-arrow');
+      if (!body) return;
+      const isOpen = body.classList.contains('open');
+      // Close siblings
+      const parent = trigger.closest('#wq-list');
+      if (parent) {
+        parent.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+        parent.querySelectorAll('.acc-arrow').forEach(a => a.classList.remove('open'));
+      }
+      if (!isOpen) {
+        body.classList.add('open');
+        if (arrow) arrow.classList.add('open');
+      }
+    });
+  });
+
+  /* Card accordions (EVA) */
+  document.querySelectorAll('.acc-trigger-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const body = document.getElementById(card.dataset.target);
+      const arrow = card.querySelector('.acc-arrow');
+      if (body) {
+        body.classList.toggle('open');
+        if (arrow) arrow.classList.toggle('open');
+      }
+    });
+  });
+
+  /* Comparison table rows */
+  document.querySelectorAll('.comp-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const detailId = row.dataset.detail;
+      const detail = document.getElementById(detailId);
+      if (detail) detail.classList.toggle('hidden');
+    });
+  });
+
+  /* Flip cards on touch */
+  document.querySelectorAll('.flip-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if ('ontouchstart' in window || window.innerWidth <= 900) {
+        card.classList.toggle('flipped');
+      }
+    });
+  });
+
+  /* Back to top */
+  const backBtn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 500) {
+      backBtn.style.opacity = '1';
+      backBtn.style.pointerEvents = 'auto';
+    } else {
+      backBtn.style.opacity = '0';
+      backBtn.style.pointerEvents = 'none';
+    }
+  });
+  backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* Keyboard nav for tabs */
+  const tabList = document.querySelector('[role="tablist"]');
+  if (tabList) {
+    tabList.addEventListener('keydown', (e) => {
+      const tabs = [...tabList.querySelectorAll('[role="tab"]')];
+      const idx = tabs.indexOf(document.activeElement);
+      if (idx === -1) return;
+      let newIdx;
+      if (e.key === 'ArrowRight') newIdx = (idx + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') newIdx = (idx - 1 + tabs.length) % tabs.length;
+      else return;
+      e.preventDefault();
+      tabs[newIdx].focus();
+      tabs[newIdx].click();
+    });
+  }
+
+});
+</script>
+</body>
+</html>
