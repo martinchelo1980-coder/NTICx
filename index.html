@@ -3,611 +3,603 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel General de Clases - NTICx</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@latest/latin-400-normal.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/space-grotesk@latest/latin-700-normal.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-400-normal.min.css">
+<title>NTICx · Panel General de Clases</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/orbitron@latest/latin-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/orbitron@latest/latin-700-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/orbitron@latest/latin-900-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/share-tech-mono@latest/latin-400-normal.css">
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+:root{
+  --bg:#04070d;
+  --panel:#0a1220;
+  --panel2:#0d1a2b;
+  --cyan:#00e5ff;
+  --teal:#0affc7;
+  --blue:#3b82f6;
+  --amber:#ffb347;
+  --line:#12314a;
+  --txt:#cfe8f5;
+  --dim:#5f7f96;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Share Tech Mono',monospace;
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
 
-    :root {
-        --bg: #060a14;
-        --panel: rgba(15, 23, 42, 0.55);
-        --border: rgba(94, 234, 255, 0.14);
-        --cyan: #22d3ee;
-        --violet: #a78bfa;
-        --green: #34d399;
-        --text: #e2e8f0;
-        --muted: #7c8aa5;
-    }
+/* ---------- FONDO HARDWARE ANIMADO ---------- */
+#circuitCanvas{position:fixed;inset:0;z-index:0;opacity:.85}
+.grid-overlay{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 30%,transparent 80%);
+}
+.scanlines{
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.25) 2px 4px);
+}
+.vignette{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.75) 100%);
+}
+#mouseGlow{
+  position:fixed;width:520px;height:520px;z-index:1;pointer-events:none;
+  background:radial-gradient(circle,rgba(0,229,255,.07) 0%,transparent 65%);
+  transform:translate(-50%,-50%);left:50%;top:30%;
+  transition:left .4s ease-out,top .4s ease-out;
+}
 
-    html { scroll-behavior: smooth; }
+/* ---------- CONTENEDOR ---------- */
+.shell{position:relative;z-index:5;max-width:1180px;margin:0 auto;padding:34px 22px 70px}
 
-    body {
-        font-family: 'Space Grotesk', sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        overflow-x: hidden;
-        position: relative;
-    }
+/* ---------- HEADER ---------- */
+header{display:flex;align-items:center;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.chip-logo{
+  width:74px;height:74px;flex:0 0 auto;position:relative;
+  background:linear-gradient(145deg,#0e1c30,#081120);
+  border:1px solid #1d4560;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 22px rgba(0,229,255,.25),inset 0 0 14px rgba(0,229,255,.12);
+  animation:chipPulse 3s ease-in-out infinite;
+}
+@keyframes chipPulse{
+  0%,100%{box-shadow:0 0 18px rgba(0,229,255,.22),inset 0 0 12px rgba(0,229,255,.10)}
+  50%{box-shadow:0 0 34px rgba(0,229,255,.45),inset 0 0 20px rgba(0,229,255,.22)}
+}
+.chip-logo svg{width:44px;height:44px}
+.chip-logo::before,.chip-logo::after{
+  content:"";position:absolute;left:8px;right:8px;height:6px;
+  background:repeating-linear-gradient(90deg,var(--cyan) 0 3px,transparent 3px 9px);
+  opacity:.6;
+}
+.chip-logo::before{top:-5px}
+.chip-logo::after{bottom:-5px}
+.head-txt h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(24px,4vw,40px);
+  letter-spacing:3px;color:#eaf9ff;text-transform:uppercase;
+  text-shadow:0 0 18px rgba(0,229,255,.55);
+}
+.head-txt h1 span{color:var(--cyan)}
+.head-txt p{color:var(--dim);letter-spacing:2px;font-size:13px;margin-top:4px}
+.status-bar{
+  margin:18px 0 30px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  padding:10px 16px;border:1px solid var(--line);border-radius:8px;
+  background:linear-gradient(90deg,rgba(10,18,32,.9),rgba(10,18,32,.55));
+  font-size:12px;letter-spacing:1.5px;color:var(--dim);
+}
+.led{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+.led.green{background:var(--teal);box-shadow:0 0 8px var(--teal);animation:blink 1.6s infinite}
+.led.cyan{background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 2.4s .4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-    /* ---------- Fondo animado ---------- */
-    #particles {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-    }
+/* ---------- BREADCRUMB ---------- */
+.breadcrumb{
+  display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  font-size:13px;letter-spacing:2px;color:var(--dim);min-height:24px;
+}
+.breadcrumb b{color:var(--cyan);font-weight:400}
+.btn-back{
+  background:none;border:1px solid var(--line);color:var(--cyan);
+  font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:2px;
+  padding:8px 16px;border-radius:6px;cursor:pointer;transition:.25s;
+  display:none;align-items:center;gap:8px;
+}
+.btn-back:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,229,255,.35);background:rgba(0,229,255,.07)}
+.btn-back.visible{display:inline-flex}
 
-    .bg-grid {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        background-image:
-            linear-gradient(rgba(94,234,255,0.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(94,234,255,0.045) 1px, transparent 1px);
-        background-size: 44px 44px;
-        mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
-        -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
-    }
+/* ---------- VISTAS ---------- */
+.view{transition:opacity .45s ease,transform .45s ease}
+.view.hidden{opacity:0;pointer-events:none;position:absolute;visibility:hidden;transform:scale(.96)}
+.view.entering{animation:viewIn .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes viewIn{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
 
-    .glow {
-        position: fixed;
-        border-radius: 50%;
-        filter: blur(120px);
-        opacity: 0.25;
-        z-index: 0;
-        pointer-events: none;
-    }
-    .glow-1 { width: 500px; height: 500px; background: #0e7490; top: -150px; left: -100px; animation: float1 14s ease-in-out infinite alternate; }
-    .glow-2 { width: 420px; height: 420px; background: #6d28d9; bottom: -120px; right: -80px; animation: float2 18s ease-in-out infinite alternate; }
+/* ---------- GRID DE MÓDULOS (CHIPS) ---------- */
+.section-title{
+  font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--dim);
+  text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:14px;
+}
+.section-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.module-card{
+  position:relative;background:linear-gradient(150deg,var(--panel2),var(--panel) 60%,#08101d);
+  border:1px solid #1b3a55;border-radius:12px;padding:26px 22px 22px;cursor:pointer;
+  overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;
+  animation:cardIn .6s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.module-card:hover{
+  transform:translateY(-7px);border-color:var(--accent,#00e5ff);
+  box-shadow:0 14px 40px rgba(0,0,0,.6),0 0 26px var(--glow,rgba(0,229,255,.35));
+}
+/* pines del chip */
+.module-card::before,.module-card::after{
+  content:"";position:absolute;top:16px;bottom:16px;width:7px;
+  background:repeating-linear-gradient(180deg,#2c5a7d 0 6px,transparent 6px 14px);
+  opacity:.85;transition:opacity .3s;
+}
+.module-card::before{left:-4px}
+.module-card::after{right:-4px}
+.module-card:hover::before,.module-card:hover::after{
+  background:repeating-linear-gradient(180deg,var(--accent,#00e5ff) 0 6px,transparent 6px 14px);
+  filter:drop-shadow(0 0 4px var(--accent,#00e5ff));
+}
+/* traza animada superior */
+.trace-line{position:absolute;top:0;left:0;height:2px;width:100%;background:linear-gradient(90deg,transparent,var(--accent,#00e5ff),transparent);transform:translateX(-100%)}
+.module-card:hover .trace-line{animation:traceRun 1.1s linear infinite}
+@keyframes traceRun{to{transform:translateX(100%)}}
+.card-code{font-size:11px;letter-spacing:3px;color:var(--dim);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.card-code .led{margin-right:0}
+.card-icon{
+  width:52px;height:52px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin-bottom:16px;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.08),rgba(0,0,0,.35));
+  border:1px solid var(--accent,#00e5ff);
+  box-shadow:0 0 14px var(--glow,rgba(0,229,255,.3)),inset 0 0 10px var(--glow,rgba(0,229,255,.15));
+}
+.card-title{
+  font-family:'Orbitron',sans-serif;font-weight:700;font-size:17px;letter-spacing:2px;
+  color:#eaf9ff;line-height:1.45;margin-bottom:14px;text-transform:uppercase;
+}
+.card-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);letter-spacing:1.5px}
+.card-meta .go{color:var(--accent,#00e5ff);transition:.25s}
+.module-card:hover .card-meta .go{letter-spacing:3px}
+.corner{position:absolute;width:14px;height:14px;border-color:var(--accent,#00e5ff);border-style:solid;opacity:.7}
+.corner.tl{top:8px;left:8px;border-width:2px 0 0 2px;border-radius:3px 0 0 0}
+.corner.br{bottom:8px;right:8px;border-width:0 2px 2px 0;border-radius:0 0 3px 0}
 
-    @keyframes float1 { to { transform: translate(80px, 60px); } }
-    @keyframes float2 { to { transform: translate(-70px, -50px); } }
+/* ---------- VISTA DE MÓDULO (SUBMENÚ) ---------- */
+.module-head{
+  display:flex;align-items:center;gap:18px;margin-bottom:8px;flex-wrap:wrap;
+  padding:20px 24px;border:1px solid var(--line);border-radius:12px;
+  background:linear-gradient(120deg,rgba(13,26,43,.92),rgba(8,16,29,.8));
+  position:relative;overflow:hidden;
+}
+.module-head .m-icon{
+  width:58px;height:58px;border-radius:10px;font-size:28px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--accent,#00e5ff);
+  box-shadow:0 0 16px var(--glow,rgba(0,229,255,.35)),inset 0 0 12px var(--glow,rgba(0,229,255,.18));
+}
+.module-head h2{
+  font-family:'Orbitron',sans-serif;font-size:clamp(18px,3vw,26px);letter-spacing:3px;
+  color:#eaf9ff;text-transform:uppercase;text-shadow:0 0 14px var(--glow,rgba(0,229,255,.5));
+}
+.module-head .sub{font-size:12px;color:var(--dim);letter-spacing:2px;margin-top:5px}
+.module-head .sweep{position:absolute;top:0;left:-60%;width:50%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(0,229,255,.06),transparent);
+  animation:sweep 3.4s linear infinite}
+@keyframes sweep{to{left:130%}}
 
-    /* ---------- Contenedor ---------- */
-    .wrap {
-        position: relative;
-        z-index: 2;
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: 40px 20px 60px;
-    }
+/* secuencia de arranque */
+.boot{padding:26px 8px;font-size:13.5px;line-height:2;letter-spacing:1px;color:var(--teal);min-height:120px}
+.boot .line{opacity:0;animation:bootLine .3s forwards}
+@keyframes bootLine{to{opacity:1}}
+.boot .cursor{display:inline-block;width:9px;height:15px;background:var(--teal);vertical-align:-2px;animation:blink .8s steps(1) infinite}
 
-    /* ---------- Header ---------- */
-    header {
-        text-align: center;
-        padding: 46px 20px 36px;
-        animation: fadeDown .8s ease both;
-    }
+/* lista de nodos */
+.nodes{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.node{
+  display:flex;align-items:center;gap:16px;text-decoration:none;
+  padding:16px 20px;border-radius:9px;position:relative;overflow:hidden;
+  background:linear-gradient(90deg,rgba(10,18,32,.92),rgba(10,18,32,.7));
+  border:1px solid var(--line);color:var(--txt);
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+  opacity:0;transform:translateX(-26px);
+}
+.node.reveal{animation:nodeIn .5s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes nodeIn{to{opacity:1;transform:none}}
+.node:hover{
+  transform:translateX(9px);border-color:var(--accent,#00e5ff);
+  box-shadow:0 0 20px var(--glow,rgba(0,229,255,.3));
+  background:linear-gradient(90deg,rgba(0,229,255,.09),rgba(10,18,32,.85));
+}
+.node .n-led{
+  width:11px;height:11px;border-radius:50%;flex:0 0 auto;
+  background:var(--accent,#00e5ff);box-shadow:0 0 9px var(--accent,#00e5ff);
+  animation:blink 2s infinite;
+}
+.node .n-idx{font-size:11px;letter-spacing:2px;color:var(--dim);flex:0 0 auto;width:62px}
+.node .n-label{flex:1;font-size:15.5px;letter-spacing:.6px}
+.node:hover .n-label{color:#fff}
+.node .n-go{font-size:12px;letter-spacing:2px;color:var(--accent,#00e5ff);opacity:0;transform:translateX(-8px);transition:.25s;flex:0 0 auto}
+.node:hover .n-go{opacity:1;transform:none}
+.node .wire{position:absolute;left:0;top:50%;width:3px;height:0;background:var(--accent,#00e5ff);transform:translateY(-50%);transition:height .3s;box-shadow:0 0 8px var(--accent,#00e5ff)}
+.node:hover .wire{height:70%}
 
-    @keyframes fadeDown { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: none; } }
+/* ---------- FOOTER ---------- */
+footer{
+  margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  font-size:12px;letter-spacing:2px;color:var(--dim);
+}
+footer b{color:var(--cyan);font-weight:400}
 
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: var(--cyan);
-        border: 1px solid rgba(34,211,238,0.35);
-        background: rgba(34,211,238,0.07);
-        padding: 7px 16px;
-        border-radius: 999px;
-        margin-bottom: 22px;
-    }
-    .badge .dot {
-        width: 8px; height: 8px; border-radius: 50%;
-        background: var(--green);
-        box-shadow: 0 0 10px var(--green);
-        animation: pulse 1.6s infinite;
-    }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    h1 {
-        font-size: clamp(2rem, 5vw, 3.2rem);
-        font-weight: 700;
-        line-height: 1.15;
-        background: linear-gradient(100deg, #ffffff 20%, var(--cyan) 55%, var(--violet) 90%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 14px;
-    }
-
-    .subtitle {
-        color: var(--muted);
-        max-width: 560px;
-        margin: 0 auto;
-        font-size: 1.02rem;
-    }
-
-    /* ---------- Buscador ---------- */
-    .search-box {
-        max-width: 520px;
-        margin: 34px auto 0;
-        position: relative;
-    }
-    .search-box svg {
-        position: absolute;
-        left: 18px; top: 50%;
-        transform: translateY(-50%);
-        width: 18px; height: 18px;
-        stroke: var(--muted);
-        pointer-events: none;
-    }
-    #searchInput {
-        width: 100%;
-        padding: 15px 18px 15px 48px;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        color: var(--text);
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.92rem;
-        outline: none;
-        backdrop-filter: blur(12px);
-        transition: border-color .3s, box-shadow .3s;
-    }
-    #searchInput::placeholder { color: var(--muted); }
-    #searchInput:focus {
-        border-color: var(--cyan);
-        box-shadow: 0 0 0 3px rgba(34,211,238,0.15), 0 0 24px rgba(34,211,238,0.12);
-    }
-
-    /* ---------- Secciones ---------- */
-    .category {
-        margin-top: 46px;
-        animation: fadeUp .7s ease both;
-    }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-
-    .cat-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 20px;
-    }
-    .cat-icon {
-        width: 44px; height: 44px;
-        display: grid; place-items: center;
-        font-size: 1.3rem;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        backdrop-filter: blur(8px);
-        flex-shrink: 0;
-    }
-    .cat-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-    }
-    .cat-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, var(--border), transparent);
-    }
-    .cat-count {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.72rem;
-        color: var(--muted);
-        border: 1px solid var(--border);
-        padding: 3px 10px;
-        border-radius: 999px;
-    }
-
-    /* ---------- Grid de tarjetas ---------- */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 16px;
-    }
-
-    .card {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 18px 20px;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        color: var(--text);
-        text-decoration: none;
-        backdrop-filter: blur(12px);
-        overflow: hidden;
-        transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
-    }
-
-    .card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(120deg, transparent 30%, rgba(34,211,238,0.08) 60%, transparent 80%);
-        transform: translateX(-100%);
-        transition: transform .6s ease;
-    }
-    .card:hover::before { transform: translateX(100%); }
-
-    .card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(34,211,238,0.45);
-        box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(34,211,238,0.12);
-    }
-
-    .card-num {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.72rem;
-        color: var(--cyan);
-        background: rgba(34,211,238,0.09);
-        border: 1px solid rgba(34,211,238,0.25);
-        padding: 4px 9px;
-        border-radius: 8px;
-        flex-shrink: 0;
-        white-space: nowrap;
-    }
-
-    .card-text {
-        flex: 1;
-        font-weight: 500;
-        font-size: 0.95rem;
-        line-height: 1.35;
-    }
-
-    .card-arrow {
-        color: var(--muted);
-        font-size: 1.1rem;
-        transition: transform .3s, color .3s;
-        flex-shrink: 0;
-    }
-    .card:hover .card-arrow { transform: translateX(5px); color: var(--cyan); }
-
-    /* Acentos por categoría */
-    .cat-ofimatica .cat-icon { border-color: rgba(52,211,153,0.3); }
-    .cat-ofimatica .card-num { color: var(--green); background: rgba(52,211,153,0.09); border-color: rgba(52,211,153,0.25); }
-    .cat-ofimatica .card:hover { border-color: rgba(52,211,153,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(52,211,153,0.1); }
-    .cat-ofimatica .card:hover .card-arrow { color: var(--green); }
-
-    .cat-lab .cat-icon { border-color: rgba(251,146,60,0.3); }
-    .cat-lab .card-num { color: #fb923c; background: rgba(251,146,60,0.09); border-color: rgba(251,146,60,0.25); }
-    .cat-lab .card:hover { border-color: rgba(251,146,60,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(251,146,60,0.1); }
-    .cat-lab .card:hover .card-arrow { color: #fb923c; }
-
-    .cat-diag .cat-icon { border-color: rgba(244,114,182,0.3); }
-    .cat-diag .card-num { color: #f472b6; background: rgba(244,114,182,0.09); border-color: rgba(244,114,182,0.25); }
-    .cat-diag .card:hover { border-color: rgba(244,114,182,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(244,114,182,0.1); }
-    .cat-diag .card:hover .card-arrow { color: #f472b6; }
-
-    .cat-cruci .cat-icon { border-color: rgba(250,204,21,0.3); }
-    .cat-cruci .card-num { color: #facc15; background: rgba(250,204,21,0.07); border-color: rgba(250,204,21,0.25); }
-    .cat-cruci .card:hover { border-color: rgba(250,204,21,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(250,204,21,0.1); }
-    .cat-cruci .card:hover .card-arrow { color: #facc15; }
-
-    .cat-mod .cat-icon { border-color: rgba(167,139,250,0.3); }
-    .cat-mod .card-num { color: var(--violet); background: rgba(167,139,250,0.09); border-color: rgba(167,139,250,0.25); }
-    .cat-mod .card:hover { border-color: rgba(167,139,250,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(167,139,250,0.12); }
-    .cat-mod .card:hover .card-arrow { color: var(--violet); }
-
-    .cat-plan .cat-icon { border-color: rgba(96,165,250,0.3); }
-    .cat-plan .card-num { color: #60a5fa; background: rgba(96,165,250,0.09); border-color: rgba(96,165,250,0.25); }
-    .cat-plan .card:hover { border-color: rgba(96,165,250,0.45); box-shadow: 0 12px 32px rgba(2,6,23,0.6), 0 0 20px rgba(96,165,250,0.1); }
-    .cat-plan .card:hover .card-arrow { color: #60a5fa; }
-
-    /* ---------- Sin resultados ---------- */
-    #noResults {
-        display: none;
-        text-align: center;
-        color: var(--muted);
-        padding: 60px 20px;
-        font-family: 'JetBrains Mono', monospace;
-    }
-    #noResults .big { font-size: 2.5rem; margin-bottom: 12px; }
-
-    /* ---------- Footer ---------- */
-    footer {
-        margin-top: 70px;
-        padding-top: 26px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        justify-content: space-between;
-        align-items: center;
-        color: var(--muted);
-        font-size: 0.88rem;
-    }
-    footer .prof {
-        font-weight: 700;
-        color: var(--text);
-    }
-    footer .mono {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.75rem;
-    }
-
-    .hidden-cat { display: none; }
-    .hidden-card { display: none; }
-
-    @media (max-width: 560px) {
-        .grid { grid-template-columns: 1fr; }
-        header { padding: 30px 10px 24px; }
-    }
+@media (max-width:560px){
+  .modules-grid{grid-template-columns:1fr}
+  .node .n-idx{display:none}
+  .shell{padding:24px 14px 50px}
+}
 </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
-<div class="bg-grid"></div>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
+<canvas id="circuitCanvas"></canvas>
+<div class="grid-overlay"></div>
+<div id="mouseGlow"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
 
-<div class="wrap">
+<div class="shell">
 
-    <header>
-        <div class="badge"><span class="dot"></span> Sistema activo · Recursos interactivos</div>
-        <h1>🏛️ Panel General de Clases<br>NTICx</h1>
-        <p class="subtitle">Bienvenido al espacio de recursos interactivos. Buscá un tema o elegí una categoría para ingresar a la clase.</p>
-
-        <div class="search-box">
-            <svg fill="none" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="searchInput" placeholder="&gt; buscar clase, tema o categoría..." autocomplete="off">
-        </div>
-    </header>
-
-    <!-- TEORÍA INTERACTIVA -->
-    <section class="category cat-teoria" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">🌐</div>
-            <div class="cat-title">Teoría Interactiva</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./clases/practicas/1.1_tecnologias/"><span class="card-num">1.1</span><span class="card-text">Tecnologías</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/1.2_hardware/"><span class="card-num">1.2</span><span class="card-text">Hardware</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/1.3_software/"><span class="card-num">1.3</span><span class="card-text">Software</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/2.1_Reder/"><span class="card-num">2.1</span><span class="card-text">Redes</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/2.2_organizacion/"><span class="card-num">2.2</span><span class="card-text">Organización de Redes</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/2.3_interner/"><span class="card-num">2.3</span><span class="card-text">Internet</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/3.1_digitalizacionfacil/"><span class="card-num">3.1</span><span class="card-text">Digitalización (Fácil)</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/3.1_digitalizacionmedio/"><span class="card-num">3.1</span><span class="card-text">Digitalización (Medio)</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/3.3_webs/"><span class="card-num">3.3</span><span class="card-text">Webs</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/3.3_websfacil/"><span class="card-num">3.3</span><span class="card-text">Webs (Facil)</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/5.1_comunicacion/"><span class="card-num">5.1</span><span class="card-text">Comunicación Digital</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/5.2_tercerentorno/"><span class="card-num">5.2</span><span class="card-text">Tercer Entorno</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/practicas/5.3_medios/"><span class="card-num">5.3</span><span class="card-text">Medios Colaborativos</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- OFIMÁTICA -->
-    <section class="category cat-ofimatica" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">📊</div>
-            <div class="cat-title">Prácticas de Ofimática</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./clases/ofimatica/1.2_excelfacil/"><span class="card-num">1.2</span><span class="card-text">Excel (Fácil)</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- LABORATORIOS -->
-    <section class="category cat-lab" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">🔬</div>
-            <div class="cat-title">Laboratorios</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./clases/laboratorios/1.puntoacceso/"><span class="card-num">LAB 1</span><span class="card-text">Punto de Acceso</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- DIAGNÓSTICOS -->
-    <section class="category cat-diag" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">🩺</div>
-            <div class="cat-title">Diagnósticos</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./diagnoticos/huelladigital/"><span class="card-num">DIAG</span><span class="card-text">Huella Digital</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- CRUCIGRAMAS -->
-    <section class="category cat-cruci" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">🧩</div>
-            <div class="cat-title">Crucigramas</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./clases/crucigramas/1.hardsoft/"><span class="card-num">CR 1</span><span class="card-text">Hardware y Software</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./clases/crucigramas/2.redes/"><span class="card-num">CR 2</span><span class="card-text">Redes</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- MÓDULOS DIDÁCTICOS -->
-    <section class="category cat-mod" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">📚</div>
-            <div class="cat-title">Módulos Didácticos</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./modulosdidacticos/alfabetizacion/"><span class="card-num">MOD</span><span class="card-text">Alfabetización Digital</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./modulosdidacticos/convivencia/"><span class="card-num">MOD</span><span class="card-text">Convivencia Digital</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./modulosdidacticos/ema/"><span class="card-num">MOD</span><span class="card-text">Guía EMA</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./modulosdidacticos/ia/"><span class="card-num">MOD</span><span class="card-text">IA y Ciudadanía Digital Crítica</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./modulosdidacticos/inclusiontec/"><span class="card-num">MOD</span><span class="card-text">Innovación con TIC y Contenidos Accesibles</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./modulosdidacticos/interculturidad/"><span class="card-num">MOD</span><span class="card-text">Interculturalidad en Entornos Digitales</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <!-- PLANIFICACIONES -->
-    <section class="category cat-plan" data-cat>
-        <div class="cat-header">
-            <div class="cat-icon">🗂️</div>
-            <div class="cat-title">Planificaciones · Teoría</div>
-            <div class="cat-line"></div>
-            <div class="cat-count"></div>
-        </div>
-        <div class="grid">
-            <a class="card" href="./planificacion/1.nticxcompleto/"><span class="card-num">PLAN 1</span><span class="card-text">Planificación por Diseño Curricular</span><span class="card-arrow">→</span></a>
-            <a class="card" href="./planificacion/2.clasesanual/"><span class="card-num">PLAN 2</span><span class="card-text">Planificación Anual</span><span class="card-arrow">→</span></a>
-        </div>
-    </section>
-
-    <div id="noResults">
-        <div class="big">🔍</div>
-        <div>// Sin resultados para la búsqueda</div>
+  <header>
+    <div class="chip-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.4">
+        <rect x="7" y="7" width="10" height="10" rx="1.5" fill="rgba(0,229,255,.12)"/>
+        <rect x="10.5" y="10.5" width="3" height="3" fill="#00e5ff" stroke="none"/>
+        <path d="M9 7V4M12 7V3M15 7V4M9 17v3M12 17v4M15 17v3M7 9H4M7 12H3M7 15H4M17 9h3M17 12h4M17 15h3"/>
+      </svg>
     </div>
+    <div class="head-txt">
+      <h1>NTIC<span>X</span> · PANEL GENERAL</h1>
+      <p>PLACA BASE DE RECURSOS INTERACTIVOS // SELECCIONA UN MÓDULO PARA INGRESAR</p>
+    </div>
+  </header>
 
-    <footer>
-        <div>Prof. <span class="prof">Martín Espinosa</span></div>
-        <div class="mono">NTICx © <span id="year"></span> · panel v2.0</div>
-    </footer>
+  <div class="status-bar">
+    <span><span class="led green"></span>SISTEMA EN LÍNEA</span>
+    <span><span class="led cyan"></span>BUS DE DATOS ACTIVO</span>
+    <span id="clock">--:--:--</span>
+    <span style="margin-left:auto">PROF. MARTÍN ESPINOSA</span>
+  </div>
+
+  <div class="breadcrumb">
+    <button class="btn-back" id="btnBack">◄ VOLVER AL PANEL</button>
+    <span id="crumb"><b>PANEL PRINCIPAL</b></span>
+  </div>
+
+  <!-- ============ VISTA PRINCIPAL ============ -->
+  <main class="view" id="homeView">
+    <div class="section-title">MÓDULOS INSTALADOS · SELECCIONE UNO PARA INGRESAR</div>
+    <div class="modules-grid" id="modulesGrid"></div>
+  </main>
+
+  <!-- ============ VISTA DE MÓDULO ============ -->
+  <main class="view hidden" id="moduleView">
+    <div class="module-head" id="moduleHead">
+      <div class="sweep"></div>
+      <div class="m-icon" id="mIcon">🌐</div>
+      <div>
+        <h2 id="mTitle">TÍTULO</h2>
+        <div class="sub" id="mSub"></div>
+      </div>
+    </div>
+    <div class="boot" id="bootLog"></div>
+    <div class="nodes" id="nodesList"></div>
+  </main>
+
+  <footer>
+    <span>NTICx // HARDWARE EDITION v2.0</span>
+    <span>PROF. <b>MARTÍN ESPINOSA</b></span>
+  </footer>
 </div>
 
 <script>
-    // ---------- Año dinámico ----------
-    document.getElementById('year').textContent = new Date().getFullYear();
+/* ================= DATOS ================= */
+const MODULES = [
+  {
+    id:'teoria', code:'MOD-01', icon:'🌐', title:'Teoría Interactiva',
+    accent:'#00e5ff', glow:'rgba(0,229,255,.35)',
+    items:[
+      {t:'Clase 1.1 · Tecnologías', h:'./clases/practicas/1.1_tecnologias/'},
+      {t:'Clase 1.2 · Hardware', h:'./clases/practicas/1.2_hardware/'},
+      {t:'Clase 1.3 · Software', h:'./clases/practicas/1.3_software/'},
+      {t:'Clase 2.1 · Redes', h:'./clases/practicas/2.1_Reder/'},
+      {t:'Clase 2.2 · Organización de Redes', h:'./clases/practicas/2.2_organizacion/'},
+      {t:'Clase 2.3 · Internet', h:'./clases/practicas/2.3_interner/'},
+      {t:'Clase 3.1 · Digitalización (Fácil)', h:'./clases/practicas/3.1_digitalizacionfacil/'},
+      {t:'Clase 3.1 · Digitalización (Medio)', h:'./clases/practicas/3.1_digitalizacionmedio/'},
+      {t:'Clase 3.3 · Webs', h:'./clases/practicas/3.3_webs/'},
+      {t:'Clase 3.3 · Webs (Facil)', h:'./clases/practicas/3.3_websfacil/'},
+      {t:'Clase 5.1 · Comunicación Digital', h:'./clases/practicas/5.1_comunicacion/'},
+      {t:'Clase 5.2 · Tercer Entorno', h:'./clases/practicas/5.2_tercerentorno/'},
+      {t:'Clase 5.3 · Medios Colaborativos', h:'./clases/practicas/5.3_medios/'}
+    ]
+  },
+  {
+    id:'ofimatica', code:'MOD-02', icon:'📊', title:'Prácticas de Ofimática',
+    accent:'#0affc7', glow:'rgba(10,255,199,.35)',
+    items:[
+      {t:'Ofimática · Excel (Fácil)', h:'./clases/ofimatica/1.2_excelfacil/'}
+    ]
+  },
+  {
+    id:'laboratorios', code:'MOD-03', icon:'🔬', title:'Laboratorios',
+    accent:'#ffb347', glow:'rgba(255,179,71,.35)',
+    items:[
+      {t:'Laboratorio · Punto de Acceso', h:'./clases/laboratorios/1.puntoacceso/'}
+    ]
+  },
+  {
+    id:'diagnosticos', code:'MOD-04', icon:'🧭', title:'Diagnósticos',
+    accent:'#c084fc', glow:'rgba(192,132,252,.35)',
+    items:[
+      {t:'Diagnóstico · Huella Digital', h:'./diagnoticos/huelladigital/'}
+    ]
+  },
+  {
+    id:'crucigramas', code:'MOD-05', icon:'🧩', title:'Crucigramas',
+    accent:'#f472b6', glow:'rgba(244,114,182,.35)',
+    items:[
+      {t:'Crucigrama · Hardware y Software', h:'./clases/crucigramas/1.hardsoft/'},
+      {t:'Crucigrama · Redes', h:'./clases/crucigramas/2.redes/'}
+    ]
+  },
+  {
+    id:'modulos', code:'MOD-06', icon:'📚', title:'Módulos Didácticos',
+    accent:'#60a5fa', glow:'rgba(96,165,250,.35)',
+    items:[
+      {t:'Alfabetización Digital', h:'./modulosdidacticos/alfabetizacion/'},
+      {t:'Convivencia Digital', h:'./modulosdidacticos/convivencia/'},
+      {t:'Guía EMA', h:'./modulosdidacticos/ema/'},
+      {t:'Alfabetización en IA y Ciudadanía Digital Crítica', h:'./modulosdidacticos/ia/'},
+      {t:'Innovación educativa con TIC y contenidos accesibles', h:'./modulosdidacticos/inclusiontec/'},
+      {t:'La interculturalidad en los entornos digitales', h:'./modulosdidacticos/interculturidad/'}
+    ]
+  },
+  {
+    id:'planificacion', code:'MOD-07', icon:'🗓️', title:'Planificaciones · Teoría',
+    accent:'#34d399', glow:'rgba(52,211,153,.35)',
+    items:[
+      {t:'Planificación por Diseño Curricular', h:'./planificacion/1.nticxcompleto/'},
+      {t:'Planificación Anual', h:'./planificacion/2.clasesanual/'}
+    ]
+  }
+];
 
-    // ---------- Contadores por categoría ----------
-    document.querySelectorAll('[data-cat]').forEach(function (catSection) {
-        var total = catSection.querySelectorAll('.card').length;
-        catSection.querySelector('.cat-count').textContent = total + (total === 1 ? ' recurso' : ' recursos');
+/* ================= NAVEGACIÓN ================= */
+const homeView = document.getElementById('homeView');
+const moduleView = document.getElementById('moduleView');
+const grid = document.getElementById('modulesGrid');
+const btnBack = document.getElementById('btnBack');
+const crumb = document.getElementById('crumb');
+let bootTimers = [];
+
+function buildHome(){
+  grid.innerHTML = '';
+  MODULES.forEach((mod, i)=>{
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.style.setProperty('--accent', mod.accent);
+    card.style.setProperty('--glow', mod.glow);
+    card.style.animationDelay = (i*0.08)+'s';
+    card.innerHTML = `
+      <div class="trace-line"></div>
+      <div class="corner tl"></div><div class="corner br"></div>
+      <div class="card-code"><span>${mod.code} · Z${String(i+1).padStart(2,'0')}</span><span class="led green" style="background:${mod.accent};box-shadow:0 0 8px ${mod.accent}"></span></div>
+      <div class="card-icon">${mod.icon}</div>
+      <div class="card-title">${mod.title}</div>
+      <div class="card-meta">
+        <span>${mod.items.length} NODO${mod.items.length!==1?'S':''} DISPONIBLE${mod.items.length!==1?'S':''}</span>
+        <span class="go">INGRESAR ►</span>
+      </div>`;
+    card.addEventListener('click', ()=>openModule(mod));
+    grid.appendChild(card);
+  });
+}
+
+function openModule(mod){
+  bootTimers.forEach(clearTimeout); bootTimers = [];
+  homeView.classList.add('hidden');
+  moduleView.classList.remove('hidden');
+  moduleView.classList.remove('entering'); void moduleView.offsetWidth;
+  moduleView.classList.add('entering');
+  btnBack.classList.add('visible');
+  crumb.innerHTML = `PANEL PRINCIPAL &nbsp;▸&nbsp; <b>${mod.title.toUpperCase()}</b>`;
+  moduleView.style.setProperty('--accent', mod.accent);
+  moduleView.style.setProperty('--glow', mod.glow);
+  document.getElementById('mIcon').textContent = mod.icon;
+  document.getElementById('mTitle').textContent = mod.title;
+  document.getElementById('mSub').textContent = `${mod.code} // ${mod.items.length} NODO${mod.items.length!==1?'S':''} DE ACCESO DETECTADO${mod.items.length!==1?'S':''}`;
+
+  const boot = document.getElementById('bootLog');
+  const list = document.getElementById('nodesList');
+  list.innerHTML = ''; boot.innerHTML = '';
+
+  const lines = [
+    `> MONTANDO BUS ${mod.code}... OK`,
+    `> VERIFICANDO INTEGRIDAD DE NODOS... ${mod.items.length}/${mod.items.length} OK`,
+    `> ACCEDIENDO AL MÓDULO "${mod.title.toUpperCase()}"...`,
+    `> INTERFAZ LISTA. SELECCIONE UN NODO PARA CONTINUAR.`
+  ];
+  lines.forEach((ln, i)=>{
+    bootTimers.push(setTimeout(()=>{
+      const d = document.createElement('div');
+      d.className = 'line'; d.textContent = ln;
+      boot.appendChild(d);
+      boot.scrollTop = boot.scrollHeight;
+    }, i*320));
+  });
+
+  bootTimers.push(setTimeout(()=>{
+    boot.innerHTML = `<div class="line">> CONEXIÓN ESTABLECIDA <span class="cursor"></span></div>`;
+    mod.items.forEach((it, i)=>{
+      const a = document.createElement('a');
+      a.className = 'node';
+      a.href = it.h;
+      a.style.animationDelay = '0s';
+      a.innerHTML = `
+        <span class="wire"></span>
+        <span class="n-led"></span>
+        <span class="n-idx">NODO-${String(i+1).padStart(2,'0')}</span>
+        <span class="n-label">${it.t}</span>
+        <span class="n-go">ACCEDER ►</span>`;
+      list.appendChild(a);
+      setTimeout(()=>a.classList.add('reveal'), i*90);
     });
+  }, lines.length*320 + 250));
 
-    // ---------- Buscador con filtro en vivo ----------
-    var searchField = document.getElementById('searchInput');
-    var emptyState = document.getElementById('noResults');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
 
-    function normalize(txt) {
-        return txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    }
+function goHome(){
+  bootTimers.forEach(clearTimeout); bootTimers = [];
+  moduleView.classList.add('hidden');
+  moduleView.classList.remove('entering');
+  homeView.classList.remove('hidden');
+  homeView.classList.remove('entering'); void homeView.offsetWidth;
+  homeView.classList.add('entering');
+  btnBack.classList.remove('visible');
+  crumb.innerHTML = `<b>PANEL PRINCIPAL</b>`;
+}
+btnBack.addEventListener('click', goHome);
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !moduleView.classList.contains('hidden')) goHome(); });
 
-    searchField.addEventListener('input', function () {
-        var query = normalize(searchField.value.trim());
-        var anyVisible = false;
+buildHome();
 
-        document.querySelectorAll('[data-cat]').forEach(function (catSection) {
-            var visibleInCat = 0;
-            catSection.querySelectorAll('.card').forEach(function (cardLink) {
-                var label = normalize(cardLink.textContent);
-                var catName = normalize(catSection.querySelector('.cat-title').textContent);
-                var match = query === '' || label.indexOf(query) !== -1 || catName.indexOf(query) !== -1;
-                cardLink.classList.toggle('hidden-card', !match);
-                if (match) visibleInCat++;
-            });
-            catSection.classList.toggle('hidden-cat', visibleInCat === 0);
-            if (visibleInCat > 0) anyVisible = true;
-        });
+/* ================= RELOJ ================= */
+setInterval(()=>{
+  const d = new Date();
+  document.getElementById('clock').textContent = 'SYS ' + d.toTimeString().slice(0,8);
+},1000);
 
-        emptyState.style.display = anyVisible ? 'none' : 'block';
-    });
+/* ================= BRILLO SIGUE AL MOUSE ================= */
+const mg = document.getElementById('mouseGlow');
+window.addEventListener('mousemove', e=>{ mg.style.left = e.clientX+'px'; mg.style.top = e.clientY+'px'; });
 
-    // ---------- Animación de entrada escalonada ----------
-    var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-                entry.target.style.animation = 'fadeUp .6s ease both';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.05 });
+/* ================= FONDO: CIRCUITO ANIMADO ================= */
+const cv = document.getElementById('circuitCanvas');
+const ctx = cv.getContext('2d');
+let W, H, traces = [], pulses = [], nodes = [];
+const CELL = 46;
 
-    document.querySelectorAll('.card').forEach(function (cardLink, idx) {
-        cardLink.style.opacity = '0';
-        cardLink.style.animationDelay = (idx % 12) * 0.05 + 's';
-        observer.observe(cardLink);
-    });
-
-    // ---------- Fondo de partículas (red de nodos) ----------
-    var canvasEl = document.getElementById('particles');
-    var ctx = canvasEl.getContext('2d');
-    var nodes = [];
-    var NODE_COUNT = 55;
-    var LINK_DIST = 130;
-
-    function resizeCanvas() {
-        canvasEl.width = window.innerWidth;
-        canvasEl.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    for (var i = 0; i < NODE_COUNT; i++) {
-        nodes.push({
-            x: Math.random() * canvasEl.width,
-            y: Math.random() * canvasEl.height,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: (Math.random() - 0.5) * 0.4,
-            r: Math.random() * 1.6 + 0.6
-        });
-    }
-
-    var pointer = { x: -9999, y: -9999 };
-    window.addEventListener('mousemove', function (ev) {
-        pointer.x = ev.clientX;
-        pointer.y = ev.clientY;
-    });
-    window.addEventListener('mouseout', function () {
-        pointer.x = -9999; pointer.y = -9999;
-    });
-
-    function drawLoop() {
-        ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
-        for (var a = 0; a < nodes.length; a++) {
-            var p = nodes[a];
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0 || p.x > canvasEl.width) p.vx *= -1;
-            if (p.y < 0 || p.y > canvasEl.height) p.vy *= -1;
-
-            for (var b = a + 1; b < nodes.length; b++) {
-                var q = nodes[b];
-                var dx = p.x - q.x, dy = p.y - q.y;
-                var dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < LINK_DIST) {
-                    ctx.strokeStyle = 'rgba(34, 211, 238,' + (0.14 * (1 - dist / LINK_DIST)) + ')';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(q.x, q.y);
-                    ctx.stroke();
-                }
-            }
-
-            var mdx = p.x - pointer.x, mdy = p.y - pointer.y;
-            var mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-            if (mDist < 160) {
-                ctx.strokeStyle = 'rgba(167, 139, 250,' + (0.25 * (1 - mDist / 160)) + ')';
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(pointer.x, pointer.y);
-                ctx.stroke();
-            }
-
-            ctx.fillStyle = 'rgba(94, 234, 255, 0.5)';
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fill();
+function buildCircuit(){
+  W = cv.width = window.innerWidth;
+  H = cv.height = window.innerHeight;
+  traces = []; nodes = []; pulses = [];
+  const cols = Math.ceil(W/CELL), rows = Math.ceil(H/CELL);
+  const used = new Set();
+  const total = Math.min(60, Math.floor((cols*rows)/6));
+  let guard = 0;
+  while(nodes.length < total && guard++ < total*20){
+    const c = 1 + Math.floor(Math.random()*(cols-2));
+    const r = 1 + Math.floor(Math.random()*(rows-2));
+    const key = c+','+r;
+    if(used.has(key)) continue;
+    used.add(key);
+    nodes.push({x:c*CELL, y:r*CELL, c, r});
+  }
+  nodes.forEach(n=>{
+    const dirs = [[1,0],[-1,0],[0,1],[0,-1]].sort(()=>Math.random()-.5);
+    const links = 1 + Math.floor(Math.random()*2);
+    for(let k=0;k<links;k++){
+      const [dc,dr] = dirs[k];
+      const len = 1 + Math.floor(Math.random()*4);
+      const pts = [{x:n.x,y:n.y}];
+      let cx = n.c, cy = n.r;
+      for(let s=0;s<len;s++){
+        cx += dc; cy += dr;
+        if(cx<1||cy<1||cx>cols-1||cy>rows-1){ cx-=dc; cy-=dr; break; }
+        pts.push({x:cx*CELL, y:cy*CELL});
+      }
+      if(pts.length > 1){
+        // pequeño quiebre en diagonal estilo PCB
+        traces.push({pts, w: Math.random()<.3 ? 1.6 : 1});
+        if(Math.random()<.55){
+          pulses.push({trace:traces.length-1, t:Math.random(), sp:(0.0016+Math.random()*0.0035)*(Math.random()<.5?1:-1)});
         }
-
-        requestAnimationFrame(drawLoop);
+      }
     }
-    drawLoop();
+  });
+}
+
+function pathPoint(tr, t){
+  const pts = tr.pts;
+  let totalLen = 0; const segs = [];
+  for(let i=0;i<pts.length-1;i++){
+    const dx = pts[i+1].x-pts[i].x, dy = pts[i+1].y-pts[i].y;
+    const l = Math.hypot(dx,dy); segs.push(l); totalLen += l;
+  }
+  let d = Math.max(0,Math.min(1,t))*totalLen, acc = 0;
+  for(let i=0;i<segs.length;i++){
+    if(acc+segs[i] >= d){
+      const f = (d-acc)/segs[i];
+      return {x: pts[i].x+(pts[i+1].x-pts[i].x)*f, y: pts[i].y+(pts[i+1].y-pts[i].y)*f};
+    }
+    acc += segs[i];
+  }
+  return pts[pts.length-1];
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // trazas
+  ctx.lineWidth = 1;
+  traces.forEach(tr=>{
+    ctx.strokeStyle = 'rgba(18,60,90,.55)';
+    ctx.lineWidth = tr.w;
+    ctx.beginPath();
+    ctx.moveTo(tr.pts[0].x, tr.pts[0].y);
+    for(let i=1;i<tr.pts.length;i++) ctx.lineTo(tr.pts[i].x, tr.pts[i].y);
+    ctx.stroke();
+  });
+  // nodos
+  nodes.forEach(n=>{
+    ctx.fillStyle = 'rgba(0,229,255,.22)';
+    ctx.beginPath(); ctx.arc(n.x, n.y, 2.6, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,229,255,.14)';
+    ctx.beginPath(); ctx.arc(n.x, n.y, 5, 0, Math.PI*2); ctx.stroke();
+  });
+  // pulsos de datos
+  pulses.forEach(p=>{
+    p.t += p.sp;
+    if(p.t > 1.08) p.t = -0.08;
+    if(p.t < -0.08) p.t = 1.08;
+    const tr = traces[p.trace]; if(!tr) return;
+    const pos = pathPoint(tr, p.t);
+    const grad = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,9);
+    grad.addColorStop(0,'rgba(0,229,255,.95)');
+    grad.addColorStop(1,'rgba(0,229,255,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(pos.x,pos.y,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#bff6ff';
+    ctx.beginPath(); ctx.arc(pos.x,pos.y,1.8,0,Math.PI*2); ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+
+buildCircuit();
+draw();
+let rzTimer;
+window.addEventListener('resize', ()=>{ clearTimeout(rzTimer); rzTimer = setTimeout(buildCircuit, 200); });
 </script>
 </body>
 </html>
