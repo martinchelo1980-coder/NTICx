@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTiCx 4° · Internet, Nube y Comunicación Web</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/latin-700.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { display: ['Sora','ui-sans-serif','system-ui'], sans: ['Inter','ui-sans-serif','system-ui'] }
+}}};
+</script>
+<style>
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:#f2f5fb;background-image:radial-gradient(#dbe3f0 1px,transparent 1px);background-size:22px 22px}
+  .font-display{font-family:'Sora',sans-serif}
+  .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
+  /* Tabs */
+  .tab-btn{display:inline-flex;align-items:center;gap:.45rem;white-space:nowrap;padding:.55rem .95rem;border-radius:.9rem;font-weight:700;font-size:.83rem;color:#334155;border:2px solid transparent;transition:all .2s;cursor:pointer}
+  .tab-btn:hover{background:#eef2f9}
+  .tab-active{background:var(--ac)!important;color:#fff!important;box-shadow:0 8px 18px -8px var(--ac)}
+  .done-dot{background:#10b981;color:#fff;border-radius:9999px;width:1.15rem;height:1.15rem;font-size:.68rem;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+  /* Animaciones */
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .floaty{animation:floaty 4s ease-in-out infinite}
+  @keyframes packetmove{0%{left:-14%}100%{left:104%}}
+  .packet{position:absolute;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;animation:packetmove 1.5s linear infinite}
+  @keyframes dashmove{to{stroke-dashoffset:-200}}
+  @keyframes beamfade{to{opacity:0}}
+  .beam{stroke:#7c3aed;stroke-width:3;stroke-linecap:round;stroke-dasharray:8 8;animation:dashmove 1s linear forwards,beamfade .3s ease .95s forwards}
+  @keyframes phoneboom{0%,100%{transform:translate(-50%,-50%) scale(1)}30%{transform:translate(-50%,-50%) scale(1.18)}60%{transform:translate(-50%,-50%) scale(1.06)}}
+  .phone-boom{animation:phoneboom 1s ease}
+  @keyframes pingdot{0%{box-shadow:0 0 0 0 rgba(244,63,94,.55)}70%{box-shadow:0 0 0 9px rgba(244,63,94,0)}100%{box-shadow:0 0 0 0 rgba(244,63,94,0)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .shake{animation:shake .4s}
+  @keyframes fall{to{transform:translateY(112vh) rotate(360deg)}}
+  .confetti{position:fixed;top:-40px;z-index:99;pointer-events:none;animation:fall 3.6s linear forwards}
+  /* Convergencia */
+  .conv-node{width:84px;height:84px;margin-left:-42px;margin-top:-42px;border-radius:9999px;background:#fff;border:2px solid #e2e8f0;box-shadow:0 6px 14px -6px rgba(15,23,42,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .25s;cursor:pointer;position:absolute;z-index:2}
+  .conv-node:hover{border-color:#7c3aed;transform:scale(1.08)}
+  .conv-sel{border-color:#7c3aed;box-shadow:0 0 0 5px rgba(124,58,237,.25)}
+  .conv-phone{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1}
+  /* Hotspots navegador */
+  .hot-badge{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:9999px;background:#f43f5e;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;animation:pingdot 1.8s infinite;z-index:6}
+  .hotspot{cursor:pointer;position:relative;border-radius:.6rem;transition:all .15s}
+  .hotspot:hover{outline:2px dashed #f43f5e;outline-offset:2px}
+  .hot-on{outline:3px solid #f43f5e!important;outline-offset:2px;background:rgba(244,63,94,.08)}
+  /* Matrioska */
+  .mtr-box{border-width:3px;cursor:pointer;transition:all .25s;border-radius:1.1rem}
+  .mtr-box:hover{filter:brightness(.97)}
+  .mtr-sel{box-shadow:0 0 0 5px rgba(15,23,42,.14)}
+  /* Quiz */
+  .opt-btn:disabled{cursor:not-allowed}
+  .opt-correct{background:#d1fae5!important;border-color:#10b981!important;color:#065f46!important}
+  .opt-wrong{background:#fee2e2!important;border-color:#ef4444!important;color:#7f1d1d!important}
+  /* URL */
+  .url-blk{color:#fff;font-family:ui-monospace,monospace;font-weight:700;padding:.55rem .8rem;border-radius:.7rem;transition:all .15s;cursor:pointer;box-shadow:0 3px 8px -3px rgba(15,23,42,.4)}
+  .url-blk:hover,.url-blk:focus{transform:translateY(-4px) scale(1.05)}
+  .arm-slot{min-height:52px;border-radius:.8rem;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;font-weight:700;font-size:.85rem;padding:.4rem .6rem;transition:all .2s;cursor:pointer}
+  .arm-empty{border:2px dashed #cbd5e1;color:#94a3b8;background:#f8fafc}
+  .arm-bad{border:3px solid #ef4444!important;background:#fee2e2!important;color:#7f1d1d!important}
+  .spin{border:3px solid #fff;border-top-color:transparent;border-radius:50%;width:18px;height:18px;animation:rot .7s linear infinite;display:inline-block;vertical-align:middle}
+  @keyframes rot{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body class="text-slate-800">
+
+<!-- ============ CABECERA ============ -->
+<header class="relative overflow-hidden bg-[#0b1230] text-white">
+  <div class="absolute inset-0 bg-cover bg-center opacity-50" style="background-image:url('https://image.qwenlm.ai/public_source/019ce851-7a64-4311-a3fd-e22bf2c95c35/102d2ff1c-5534-437a-8223-ac3a898edd93.png')"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-[#0b1230] via-[#0b1230]/85 to-[#0b1230]/30"></div>
+  <div class="relative max-w-6xl mx-auto px-4 py-10 md:py-14">
+    <div class="flex flex-wrap gap-2 mb-4">
+      <span class="text-[11px] font-extrabold uppercase tracking-widest bg-fuchsia-500/25 text-fuchsia-200 border border-fuchsia-400/40 px-3 py-1 rounded-full">NTiCx · 4° año</span>
+      <span class="text-[11px] font-extrabold uppercase tracking-widest bg-cyan-500/25 text-cyan-200 border border-cyan-400/40 px-3 py-1 rounded-full">Secundaria · Argentina 🇦🇷</span>
+    </div>
+    <h1 class="font-display text-3xl md:text-5xl font-extrabold leading-tight max-w-3xl">Internet, Convergencia Tecnológica, Nube y Comunicación Web</h1>
+    <p class="mt-3 max-w-2xl text-slate-300 text-sm md:text-base">Módulo interactivo de Nuevas Tecnologías de la Información y la Conectividad. Recorré las 6 pestañas, tocá los esquemas, jugá con los simuladores y superá las trivias para completar tu progreso. 🚀</p>
+    <div class="mt-6 max-w-md">
+      <p class="text-xs font-bold text-slate-300 mb-1.5">🎮 Progreso: <span id="prog-count" class="text-white">0</span>/6 módulos completados</p>
+      <div class="h-3 bg-white/15 rounded-full overflow-hidden"><div id="prog-bar" class="h-full bg-gradient-to-r from-fuchsia-400 to-cyan-400 transition-all duration-700" style="width:0%"></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ NAV TABS ============ -->
+<nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+  <div class="max-w-6xl mx-auto px-2 md:px-4">
+    <div class="flex gap-1 overflow-x-auto no-scrollbar py-2" role="tablist" aria-label="Módulos del curso">
+      <button class="tab-btn tab-active" data-tab="m1" style="--ac:#7c3aed" role="tab" aria-selected="true">📡 Internet y Convergencia <span class="done-dot hidden">✓</span></button>
+      <button class="tab-btn" data-tab="m2" style="--ac:#0ea5e9" role="tab" aria-selected="false">☁️ Web, Nube y Portable <span class="done-dot hidden">✓</span></button>
+      <button class="tab-btn" data-tab="m3" style="--ac:#f59e0b" role="tab" aria-selected="false">🪆 Página, Sitio y Portal <span class="done-dot hidden">✓</span></button>
+      <button class="tab-btn" data-tab="m4" style="--ac:#f43f5e" role="tab" aria-selected="false">🧭 Navegadores <span class="done-dot hidden">✓</span></button>
+      <button class="tab-btn" data-tab="m5" style="--ac:#10b981" role="tab" aria-selected="false">🔗 Anatomía de la URL <span class="done-dot hidden">✓</span></button>
+      <button class="tab-btn" data-tab="m6" style="--ac:#4f46e5" role="tab" aria-selected="false">✉️ Correo y Webmail <span class="done-dot hidden">✓</span></button>
+    </div>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-8 md:py-10">
+
+<!-- ================= MÓDULO 1 ================= -->
+<section class="tab-panel" data-panel="m1">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">📡</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-violet-600">Módulo 1</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Internet y Convergencia Tecnológica</h2>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-violet-700 mb-2">🔄 ¿Qué es la Convergencia Tecnológica?</h3>
+      <p class="text-sm leading-relaxed">Es la <b>integración de tecnologías que antes eran independientes</b> (telecomunicaciones, informática, medios audiovisuales y entretenimiento) en un <b>único dispositivo o plataforma digital</b>. Tu smartphone es el campeón de la convergencia: es cámara 📷, tele 📺, teléfono 📞, consola 🎮 y computadora 💻… todo junto.</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-violet-700 mb-2">🌐 Internet: el gran unificador</h3>
+      <p class="text-sm leading-relaxed mb-3">La infraestructura global de Internet logró que <b>la voz, los datos, la música y el video viajen por un mismo canal digital</b>. Antes cada servicio tenía su red propia; hoy todo se transforma en datos que circulan por la red de redes.</p>
+      <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+        <span class="bg-rose-100 text-rose-700 px-2.5 py-1 rounded-full">📞 Voz</span><span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">💾 Datos</span><span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">🎵 Música</span><span class="bg-sky-100 text-sky-700 px-2.5 py-1 rounded-full">🎬 Video</span>
+        <span class="text-slate-400">→</span><span class="bg-violet-600 text-white px-3 py-1 rounded-full">🌐 Internet</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Laboratorio: la máquina del tiempo tecnológica</h3>
+    <p class="text-sm text-slate-500 mb-4">Tocá cada dispositivo del pasado para ver en qué se convirtió hoy. Después apretá <b>“¡Convergencia YA!”</b> y mirá cómo todos viajan hacia tu celu.</p>
+    <div id="conv-stage" class="relative h-[430px] md:h-[470px] rounded-2xl bg-gradient-to-br from-violet-50 to-slate-100 border border-violet-100 overflow-hidden">
+      <svg id="conv-svg" class="absolute inset-0 w-full h-full pointer-events-none overflow-visible"></svg>
+      <div id="conv-phone" class="conv-phone text-center">
+        <div class="w-24 h-44 md:w-28 md:h-48 mx-auto rounded-[1.6rem] bg-slate-900 border-4 border-slate-700 shadow-2xl flex flex-col items-center justify-center gap-1">
+          <span class="text-4xl md:text-5xl">📱</span>
+          <span class="text-[10px] text-cyan-300 font-bold">+ Internet 🌐</span>
+        </div>
+        <p class="mt-2 text-xs font-extrabold text-violet-700">Tu celu: todo en uno</p>
+      </div>
+      <div id="conv-msg" class="hidden absolute left-1/2 -translate-x-1/2 bottom-3 bg-violet-600 text-white text-xs md:text-sm font-extrabold px-4 py-2 rounded-full shadow-lg z-10 whitespace-nowrap">✨ ¡Todo convergió en un solo dispositivo conectado!</div>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button id="btn-converge" class="bg-violet-600 hover:bg-violet-700 text-white font-extrabold text-sm px-5 py-2.5 rounded-xl shadow transition">🚀 ¡Convergencia YA!</button>
+      <button id="btn-conv-reset" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-sm px-5 py-2.5 rounded-xl transition">🔄 Reiniciar</button>
+    </div>
+    <div id="conv-info" class="mt-4 rounded-2xl bg-violet-50 border border-violet-200 p-4 text-sm">
+      <p class="text-slate-500">👆 Tocá cualquier dispositivo del esquema para descubrir su historia.</p>
+    </div>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-violet-300 bg-violet-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-violet-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m1"></div>
+  </div>
+  <div class="flex justify-end mt-8"><button class="bg-slate-900 hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m2">Siguiente módulo →</button></div>
+</section>
+
+<!-- ================= MÓDULO 2 ================= -->
+<section class="tab-panel hidden" data-panel="m2">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">☁️</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-sky-600">Módulo 2</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Tecnología Web, Cloud Computing, Webstoring y Portable Apps</h2>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <span class="text-2xl">🧩</span><h3 class="font-display font-bold text-slate-900 mt-2">Tecnología Web</h3>
+      <p class="text-xs text-slate-500 mt-1 leading-relaxed">Lenguajes y protocolos que hacen posible la WWW: <b>HTML</b> (estructura), <b>CSS</b> (diseño), <b>JavaScript</b> (interacción) y <b>HTTP</b> (pedido/respuesta entre navegador y servidor).</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <span class="text-2xl">☁️</span><h3 class="font-display font-bold text-slate-900 mt-2">Cloud Computing y SaaS</h3>
+      <p class="text-xs text-slate-500 mt-1 leading-relaxed"><b>Software como Servicio</b>: apps que se ejecutan en servidores remotos y usás desde el navegador, sin instalar nada. Ej: Google Docs, Canva, Spotify.</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <span class="text-2xl">🗂️</span><h3 class="font-display font-bold text-slate-900 mt-2">Webstoring (guardado en la nube)</h3>
+      <p class="text-xs text-slate-500 mt-1 leading-relaxed">Guardar archivos en servidores de Internet (Drive, OneDrive, Dropbox) y abrirlos desde cualquier lugar con conexión. Chau pendrive olvidado. 😉</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <span class="text-2xl">🔌</span><h3 class="font-display font-bold text-slate-900 mt-2">Software Portable</h3>
+      <p class="text-xs text-slate-500 mt-1 leading-relaxed">Programas que <b>no requieren instalación</b>: se ejecutan directo desde un pendrive en cualquier compu. ¡Ideal para netbooks sin permisos de administrador!</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Simulador: ¿Local, Nube o Portable?</h3>
+    <p class="text-sm text-slate-500 mb-4">Elegí un escenario de la vida escolar y cambiá el modo para comparar cómo viajan y se guardan los datos.</p>
+    <div id="sim-pills" class="flex flex-wrap gap-2 mb-4"></div>
+    <div class="flex flex-wrap gap-2 mb-5">
+      <button class="sim-mode font-extrabold text-sm px-4 py-2.5 rounded-xl border-2 transition" data-mode="local">💾 Local</button>
+      <button class="sim-mode font-extrabold text-sm px-4 py-2.5 rounded-xl border-2 transition" data-mode="nube">☁️ Nube</button>
+      <button class="sim-mode font-extrabold text-sm px-4 py-2.5 rounded-xl border-2 transition" data-mode="portable">🔌 Portable</button>
+    </div>
+    <p id="sim-desc" class="text-sm font-semibold bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mb-4"></p>
+    <div id="sim-flow" class="rounded-2xl bg-slate-50 border border-slate-200 p-5 mb-4"></div>
+    <p id="sim-type" class="inline-block text-xs font-extrabold px-3 py-1.5 rounded-full mb-4"></p>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="rounded-2xl border border-slate-200 p-4"><h4 class="font-bold text-sm text-slate-700 mb-2">🔧 ¿Qué necesitás?</h4><ul id="sim-need" class="text-xs space-y-1.5 text-slate-600"></ul></div>
+      <div class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4"><h4 class="font-bold text-sm text-emerald-700 mb-2">✅ Ventajas</h4><ul id="sim-pros" class="text-xs space-y-1.5 text-emerald-800"></ul></div>
+      <div class="rounded-2xl border border-amber-200 bg-amber-50/50 p-4"><h4 class="font-bold text-sm text-amber-700 mb-2">⚠️ Desventajas</h4><ul id="sim-cons" class="text-xs space-y-1.5 text-amber-800"></ul></div>
+    </div>
+    <p id="sim-ex" class="mt-4 text-sm font-bold bg-sky-50 border border-sky-200 text-sky-800 rounded-xl px-4 py-3"></p>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-sky-300 bg-sky-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-sky-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m2"></div>
+  </div>
+  <div class="flex justify-between mt-8">
+    <button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m1">← Anterior</button>
+    <button class="bg-slate-900 hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m3">Siguiente módulo →</button>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 3 ================= -->
+<section class="tab-panel hidden" data-panel="m3">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">🪆</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-amber-600">Módulo 3</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Página, Sitio, Portal y Campus Virtual</h2>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border-t-4 border-emerald-400 shadow-sm p-5"><span class="text-2xl">📄</span><h3 class="font-display font-bold mt-2">Página Web</h3><p class="text-xs text-slate-500 mt-1">Documento individual en HTML que ves en el navegador. Es la “hoja” suelta del mundo web.</p></div>
+    <div class="bg-white rounded-2xl border-t-4 border-sky-400 shadow-sm p-5"><span class="text-2xl">🕸️</span><h3 class="font-display font-bold mt-2">Sitio Web</h3><p class="text-xs text-slate-500 mt-1">Conjunto de páginas interconectadas bajo un mismo dominio. Es el “libro” completo.</p></div>
+    <div class="bg-white rounded-2xl border-t-4 border-amber-400 shadow-sm p-5"><span class="text-2xl">🚪</span><h3 class="font-display font-bold mt-2">Portal Web</h3><p class="text-xs text-slate-500 mt-1">Puerta de entrada que integra servicios, enlaces y recursos: correo, noticias, trámites, buscador.</p></div>
+    <div class="bg-white rounded-2xl border-t-4 border-indigo-400 shadow-sm p-5"><span class="text-2xl">🎓</span><h3 class="font-display font-bold mt-2">Campus Virtual (LMS)</h3><p class="text-xs text-slate-500 mt-1">Plataforma educativa con aulas, tareas, foros y notas: Moodle, Classroom, Juana Manso.</p></div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Matrioska web: tocá cada capa</h3>
+    <p class="text-sm text-slate-500 mb-4">Como las muñecas rusas, cada nivel contiene al anterior. Hacé clic en cada capa para explorar su nivel de jerarquía con ejemplos escolares reales.</p>
+    <div class="grid lg:grid-cols-2 gap-6 items-start">
+      <div class="mtr-box bg-indigo-100/70 border-indigo-400 p-3 sm:p-4 md:p-5" data-level="campus">
+        <span class="inline-flex items-center gap-2 font-extrabold text-sm px-3 py-1 rounded-full bg-white/90 shadow-sm text-indigo-700 mb-3">🎓 Nivel 4 · Campus Virtual</span>
+        <div class="mtr-box bg-amber-50 border-amber-400 p-3 sm:p-4" data-level="portal">
+          <span class="inline-flex items-center gap-2 font-extrabold text-sm px-3 py-1 rounded-full bg-white/90 shadow-sm text-amber-700 mb-3">🚪 Nivel 3 · Portal</span>
+          <div class="mtr-box bg-sky-50 border-sky-400 p-3 sm:p-4" data-level="sitio">
+            <span class="inline-flex items-center gap-2 font-extrabold text-sm px-3 py-1 rounded-full bg-white/90 shadow-sm text-sky-700 mb-3">🕸️ Nivel 2 · Sitio Web</span>
+            <div class="mtr-box bg-emerald-50 border-emerald-400 p-4 text-center" data-level="pagina">
+              <span class="inline-flex items-center gap-2 font-extrabold text-sm px-3 py-1 rounded-full bg-white/90 shadow-sm text-emerald-700">📄 Nivel 1 · Página Web</span>
+              <p class="text-xs text-emerald-800 mt-2 font-semibold">“consigna_tp_nticx.html”</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="mtr-info" class="rounded-2xl bg-slate-50 border border-slate-200 p-5 text-sm min-h-[220px]">
+        <p class="text-slate-500">👆 Tocá cada capa de la matrioska para ver su definición, la clave y ejemplos argentinos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-amber-300 bg-amber-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-amber-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m3"></div>
+  </div>
+  <div class="flex justify-between mt-8">
+    <button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m2">← Anterior</button>
+    <button class="bg-slate-900 hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m4">Siguiente módulo →</button>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 4 ================= -->
+<section class="tab-panel hidden" data-panel="m4">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">🧭</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-rose-600">Módulo 4</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Navegadores de Internet (Browsers)</h2>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-rose-700 mb-2">️ ¿Qué es un navegador?</h3>
+      <p class="text-sm leading-relaxed">Es el <b>software cliente</b> que interpreta el código de las páginas web (HTML, CSS y JavaScript) y lo <b>renderiza</b> (dibuja) en tu pantalla. Sin navegador, la web sería solo texto y código crudo.</p>
+      <div class="flex flex-wrap gap-1.5 mt-3 text-[11px] font-bold text-slate-600">
+        <span class="bg-slate-100 px-2.5 py-1 rounded-full">Motor de renderizado</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Pestañas</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Marcadores</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Historial</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Modo incógnito</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Extensiones</span><span class="bg-slate-100 px-2.5 py-1 rounded-full">Cookies y privacidad</span>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-rose-700 mb-3">🏁 Los principales del mercado</h3>
+      <ul class="text-xs space-y-2">
+        <li class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-yellow-400 text-white font-extrabold flex items-center justify-center">C</span><b>Google Chrome</b>· motor Blink · el más usado del mundo.</li>
+        <li class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-orange-500 text-white font-extrabold flex items-center justify-center">F</span><b>Mozilla Firefox</b>· motor Gecko · libre y de código abierto.</li>
+        <li class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-teal-500 text-white font-extrabold flex items-center justify-center">E</span><b>Microsoft Edge</b>· motor Blink · viene con Windows.</li>
+        <li class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-sky-500 text-white font-extrabold flex items-center justify-center">S</span><b>Safari</b>· motor WebKit · el de iPhone y Mac.</li>
+        <li class="flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-orange-600 text-white font-extrabold flex items-center justify-center">B</span><b>Brave</b>· motor Blink · bloquea publicidad y rastreadores.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Diseccioná un navegador</h3>
+    <p class="text-sm text-slate-500 mb-4">Esta es una réplica simulada. Hacé clic en los puntos numerados <span class="inline-flex w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-extrabold items-center justify-center">1</span> para aprender qué hace cada parte y qué seguridad te da.</p>
+    <div class="grid lg:grid-cols-5 gap-6 items-start">
+      <div class="lg:col-span-3">
+        <div class="rounded-2xl overflow-hidden border border-slate-300 shadow-xl bg-white">
+          <div class="bg-slate-800 px-3 pt-2 flex items-end gap-2">
+            <div class="hotspot bg-slate-100 rounded-t-xl px-4 py-2 flex items-center gap-2 text-sm font-semibold text-slate-800" data-hot="1">📚 Aula NTiCx 4° <span class="text-slate-400 ml-1">×</span><span class="hot-badge">1</span></div>
+            <div class="text-slate-400 text-lg px-2 pb-1 leading-none">+</div>
+          </div>
+          <div class="bg-slate-100 border-b border-slate-200 px-3 py-2 flex items-center gap-2">
+            <span class="text-slate-400 text-lg">←</span><span class="text-slate-300 text-lg">→</span>
+            <button class="hotspot w-9 h-9 rounded-full hover:bg-slate-200 text-slate-600 text-lg" data-hot="3">⟳<span class="hot-badge">3</span></button>
+            <div class="hotspot flex-1 flex items-center gap-2 bg-white border border-slate-300 rounded-full px-3 py-2 text-xs md:text-sm" data-hot="2">🔒 <span class="text-slate-700 truncate font-semibold">https://aula.escuela4.edu.ar/nticx</span><span class="hot-badge">2</span></div>
+            <button class="hotspot w-9 h-9 rounded-lg hover:bg-slate-200" data-hot="5" title="Extensiones">🧩<span class="hot-badge">5</span></button>
+            <div class="relative">
+              <button id="menu-btn" class="hotspot w-9 h-9 rounded-lg hover:bg-slate-200 font-extrabold text-slate-600" data-hot="6">⋮<span class="hot-badge">6</span></button>
+              <div id="menu-drop" class="hidden absolute right-0 top-10 w-60 bg-white rounded-xl shadow-xl border border-slate-200 p-2 text-sm z-20">
+                <button class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 font-semibold" data-hot="6">🕶️ Nueva ventana de incógnito</button>
+                <div class="px-3 py-2 text-slate-500">📜 Historial</div>
+                <div class="px-3 py-2 text-slate-500">⬇️ Descargas</div>
+              </div>
+            </div>
+          </div>
+          <div class="hotspot bg-slate-50 border-b border-slate-200 px-3 py-2 flex gap-3 text-xs text-slate-600 font-semibold" data-hot="4">
+            <span>⭐ Aula Virtual</span><span>⭐ Diario</span><span>⭐ Diccionario</span><span>⭐ Campus</span><span class="hot-badge">4</span>
+          </div>
+          <div class="p-6 bg-slate-50 min-h-[170px]">
+            <div class="max-w-sm mx-auto space-y-3">
+              <div class="h-5 w-2/3 bg-slate-200 rounded"></div>
+              <div class="h-3 bg-slate-200 rounded"></div>
+              <div class="h-3 bg-slate-200 rounded"></div>
+              <div class="h-3 w-5/6 bg-slate-200 rounded"></div>
+              <div class="flex gap-2 pt-1"><div class="h-8 w-24 bg-rose-200 rounded-lg"></div><div class="h-8 w-24 bg-slate-200 rounded-lg"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="binfo" class="lg:col-span-2 rounded-2xl bg-rose-50 border border-rose-200 p-5 text-sm min-h-[200px]">
+        <p class="text-slate-500">👆 Hacé clic en cualquier punto numerado del navegador simulado.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-rose-300 bg-rose-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-rose-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m4"></div>
+  </div>
+  <div class="flex justify-between mt-8">
+    <button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m3">← Anterior</button>
+    <button class="bg-slate-900 hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m5">Siguiente módulo →</button>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 5 ================= -->
+<section class="tab-panel hidden" data-panel="m5">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">🔗</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-emerald-600">Módulo 5</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Formato de una Dirección Electrónica Web (URL)</h2>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6 mb-6">
+    <h3 class="font-display font-bold text-lg text-emerald-700 mb-2">🧬 ¿Qué es una URL?</h3>
+    <p class="text-sm leading-relaxed">La <b>URL (Uniform Resource Locator)</b> es la “dirección postal” de un recurso en Internet. Cada parte cumple una función: el <b>protocolo</b> (https:// con cifrado SSL 🔒), el <b>subdominio</b> (www), el <b>dominio</b> (el nombre del sitio), el <b>TLD</b> (.com, .org, .edu, .gob), el <b>código de país</b> (.ar, .cl, .es) y la <b>ruta</b> interna (/carpeta/archivo.html).</p>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Desglosador de URL</h3>
+    <p class="text-sm text-slate-500 mb-4">Pasá el mouse o tocá cada bloque de color para ver su ficha didáctica.</p>
+    <div id="url-blocks" class="flex flex-wrap items-center gap-1.5 text-base md:text-lg mb-5"></div>
+    <div id="url-card" class="rounded-2xl bg-slate-50 border border-slate-200 p-5 text-sm min-h-[110px]">
+      <p class="text-slate-500">👆 Explorá los bloques de la dirección <span class="font-mono font-bold">https://www.abc.gob.ar/secretaria/nticx.html</span></p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🛠️ Armador de URL: ¡poné las piezas en orden!</h3>
+    <p class="text-sm text-slate-500 mb-4">Tocá las piezas del cajón para colocarlas en los casilleros (y tocá un casillero lleno para devolver la pieza). Después comprobá.</p>
+    <div id="arm-slots" class="flex flex-wrap gap-2 mb-4"></div>
+    <div id="arm-tray" class="flex flex-wrap gap-2 rounded-2xl bg-slate-100 border border-slate-200 p-4 mb-4"></div>
+    <div class="flex flex-wrap gap-2 items-center">
+      <button id="btn-arm-check" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm px-5 py-2.5 rounded-xl shadow transition">✔ Comprobar</button>
+      <button id="btn-arm-shuffle" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-sm px-5 py-2.5 rounded-xl transition">🔀 Mezclar de nuevo</button>
+    </div>
+    <p id="arm-msg" class="mt-3 text-sm font-bold hidden"></p>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-emerald-300 bg-emerald-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-emerald-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m5"></div>
+  </div>
+  <div class="flex justify-between mt-8">
+    <button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m4">← Anterior</button>
+    <button class="bg-slate-900 hover:bg-slate-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m6">Siguiente módulo →</button>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 6 ================= -->
+<section class="tab-panel hidden" data-panel="m6">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-3xl shadow-sm shrink-0 floaty">✉️</div>
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-indigo-600">Módulo 6</p>
+      <h2 class="font-display text-2xl md:text-3xl font-extrabold text-slate-900">Correo Electrónico y Webmail</h2>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-indigo-700 mb-2">📨 ¿Qué es el correo electrónico?</h3>
+      <p class="text-sm leading-relaxed mb-3">Un servicio de red <b>asincrónico</b> (no hace falta que ambos estén conectados a la vez) para intercambiar mensajes digitales. Su dirección tiene 3 partes:</p>
+      <div class="flex flex-wrap gap-1.5 font-mono font-bold text-sm">
+        <span class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg">nombre_usuario</span><span class="bg-rose-500 text-white px-3 py-1.5 rounded-lg">@</span><span class="bg-sky-600 text-white px-3 py-1.5 rounded-lg">servidor.com</span>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">La arroba significa “en” (at): el usuario <i>está en</i> ese servidor.</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+      <h3 class="font-display font-bold text-lg text-indigo-700 mb-2">🌐 Webmail vs. Cliente local</h3>
+      <ul class="text-xs space-y-2 text-slate-600">
+        <li><b class="text-indigo-700">Webmail ☁️:</b> se usa desde el navegador, sin instalar nada (Gmail, Outlook.com, Yahoo). Ideal para la netbook del aula.</li>
+        <li><b class="text-indigo-700">Cliente local 💻:</b> programa instalado que descarga los correos (Thunderbird, Outlook de escritorio).</li>
+      </ul>
+      <h4 class="font-bold text-sm text-indigo-700 mt-4 mb-1">🧠 Netiqueta (buenos modales digitales)</h4>
+      <ul class="text-xs space-y-1 text-slate-600">
+        <li>• Asunto claro y específico.</li>
+        <li>• Usá <b>CCO</b> para varios destinatarios y proteger su privacidad.</li>
+        <li>• NO escribas todo en MAYÚSCULAS: equivale a gritar.</li>
+        <li>• Desconfiá de adjuntos o enlaces sospechosos (phishing).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7 mb-6">
+    <h3 class="font-display font-bold text-lg text-slate-900 mb-1">🧪 Simulador de Webmail: misión escolar</h3>
+    <div class="rounded-2xl bg-indigo-50 border border-indigo-200 p-4 text-sm mb-4">
+      <p class="font-bold text-indigo-800 mb-2">🎯 Misión: entregar el TP de NTiCx por correo.</p>
+      <p class="text-indigo-900 mb-2">Destinatario principal (Para): el profe → <button onclick="copyTxt('profe.nticx@escuela4.edu.ar')" class="font-mono font-bold underline decoration-dotted">profe.nticx@escuela4.edu.ar 📋</button></p>
+      <p class="text-indigo-900 mb-2">Copiar a tus 3 compañeros <b>sin exponer sus direcciones entre sí</b> (pista: CCO 😉):</p>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="copyTxt('ana.lopez@gmail.com')" class="font-mono text-xs bg-white border border-indigo-200 px-2.5 py-1 rounded-full hover:bg-indigo-100">ana.lopez@gmail.com 📋</button>
+        <button onclick="copyTxt('sol.perez@hotmail.com')" class="font-mono text-xs bg-white border border-indigo-200 px-2.5 py-1 rounded-full hover:bg-indigo-100">sol.perez@hotmail.com 📋</button>
+        <button onclick="copyTxt('mati.garcia@yahoo.com.ar')" class="font-mono text-xs bg-white border border-indigo-200 px-2.5 py-1 rounded-full hover:bg-indigo-100">mati.garcia@yahoo.com.ar 📋</button>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-300 overflow-hidden shadow-lg">
+      <div class="bg-indigo-600 text-white px-4 py-2.5 flex items-center justify-between text-sm font-bold"><span>✉️ AulaMail · Redactar</span><span class="text-indigo-200 text-xs">webmail simulado</span></div>
+      <div class="p-4 md:p-5 space-y-3 bg-white text-sm">
+        <div>
+          <label class="block font-bold text-slate-600 mb-1" for="mail-para">Para:</label>
+          <input id="mail-para" class="w-full border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="correo del destinatario principal">
+          <div class="mt-1 flex gap-3 text-xs font-bold text-indigo-600">
+            <button id="btn-show-cc" class="hover:underline">+ Agregar CC</button>
+            <button id="btn-show-cco" class="hover:underline">+ Agregar CCO</button>
+          </div>
+        </div>
+        <div id="row-cc" class="hidden"><label class="block font-bold text-slate-600 mb-1" for="mail-cc">CC (copia visible):</label><input id="mail-cc" class="w-full border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="copias que todos ven"></div>
+        <div id="row-cco" class="hidden"><label class="block font-bold text-slate-600 mb-1" for="mail-cco">CCO (copia oculta):</label><input id="mail-cco" class="w-full border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="copias que NADIE más ve 🔒"></div>
+        <div><label class="block font-bold text-slate-600 mb-1" for="mail-asunto">Asunto:</label><input id="mail-asunto" class="w-full border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="resumen claro del mensaje"></div>
+        <div><label class="block font-bold text-slate-600 mb-1" for="mail-cuerpo">Cuerpo del mensaje:</label><textarea id="mail-cuerpo" rows="5" class="w-full border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Saludo, mensaje y despedida. Recordá la netiqueta 🙂"></textarea></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btn-attach" class="bg-slate-100 hover:bg-slate-200 border border-slate-300 font-bold text-xs px-3 py-2 rounded-xl transition">📎 Adjuntar TP_NTICX_Grupo4.pdf</button>
+          <div id="mail-attach" class="hidden text-xs font-bold bg-emerald-50 border border-emerald-300 text-emerald-800 px-3 py-2 rounded-xl">📄 TP_NTICX_Grupo4.pdf <button id="btn-unattach" class="ml-1 text-rose-600 font-extrabold">✕</button></div>
+        </div>
+        <button id="btn-send" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-8 py-3 rounded-xl shadow transition">📨 Enviar</button>
+      </div>
+    </div>
+    <div id="mail-result" class="mt-4 hidden"></div>
+  </div>
+
+  <div class="rounded-3xl border-2 border-dashed border-indigo-300 bg-indigo-50/60 p-5 md:p-6">
+    <h3 class="font-display font-bold text-lg text-indigo-800 mb-4">🎯 Mini-desafío del módulo</h3>
+    <div id="quiz-m6"></div>
+  </div>
+  <div class="flex justify-start mt-8"><button class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm px-5 py-2.5 rounded-xl" data-goto="m5">← Anterior</button></div>
+</section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 text-xs mt-6">
+  <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row gap-2 items-center justify-between">
+    <p>📘 <b class="text-slate-200">NTiCx · 4° año</b> — Internet, Convergencia, Nube y Comunicación Web · Secundaria Argentina 🇦🇷</p>
+    <p>Guardá este archivo como <span class="font-mono text-slate-200">index.html</span> y abrilo en cualquier navegador o netbook del aula.</p>
+  </div>
+</footer>
+
+<script>
+/* ================= UTILIDADES GLOBALES ================= */
+function copyTxt(t){ if(navigator.clipboard){ navigator.clipboard.writeText(t).catch(()=>{}); } }
+function el(id){ return document.getElementById(id); }
+
+/* ---- Tabs ---- */
+const tabs = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.tab-panel');
+function showTab(id){
+  tabs.forEach(b=>{ const a=b.dataset.tab===id; b.classList.toggle('tab-active',a); b.setAttribute('aria-selected',a); });
+  panels.forEach(p=>p.classList.toggle('hidden', p.dataset.panel!==id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+tabs.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.goto)));
+
+/* ---- Progreso ---- */
+let completed = new Set();
+try{ completed = new Set(JSON.parse(localStorage.getItem('nticx-progress')||'[]')); }catch(e){}
+function saveDone(){ try{ localStorage.setItem('nticx-progress', JSON.stringify([...completed])); }catch(e){} updateProgress(); }
+function updateProgress(){
+  const n = completed.size;
+  el('prog-count').textContent = n;
+  el('prog-bar').style.width = (n/6*100)+'%';
+  tabs.forEach(b=>{ const d=b.querySelector('.done-dot'); if(d) d.classList.toggle('hidden', !completed.has(b.dataset.tab)); });
+  if(n===6 && !window.__celebrated){ window.__celebrated=true; confetti(); }
+}
+function confetti(){
+  const em=['🎉','⭐','📱','️','💾','️',''];
+  for(let i=0;i<44;i++){
+    const s=document.createElement('span');
+    s.className='confetti'; s.textContent=em[i%em.length];
+    s.style.left=Math.random()*100+'vw';
+    s.style.animationDelay=(Math.random()*0.9)+'s';
+    s.style.fontSize=(14+Math.random()*18)+'px';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),4500);
+  }
+}
+
+/* ---- Motor de trivias ---- */
+const QUIZ = {
+ m1:[
+  {q:'¿Qué es la convergencia tecnológica?',options:['La integración de tecnologías antes independientes (teléfono, cámara, TV, música) en un mismo dispositivo o plataforma','Cuando los dispositivos tecnológicos se vuelven más caros','Cuando un aparato cumple una sola función toda su vida','La unión de dos empresas de telefonía'],a:0,why:'Tu celu reúne cámara, GPS, música, tele y teléfono: eso es convergencia.'},
+  {q:'¿Cuál de estos es el mejor ejemplo de convergencia?',options:['Una máquina de escribir sin conexión','Un smartphone con el que sacás fotos, escuchás radio, mirás series y chateás','Una radio a pilas de una sola banda','Un teléfono fijo de disco'],a:1,why:'Un solo dispositivo concentra funciones que antes exigían aparatos separados.'},
+  {q:'Internet unificó en un mismo canal digital…',options:['solamente las llamadas telefónicas','solamente el correo postal','la voz, los datos, la música y el video','únicamente los textos'],a:2,why:'Todo se transforma en datos que viajan por la red de redes.'}
+ ],
+ m2:[
+  {q:'SaaS (Software como Servicio) significa que…',options:['el programa se instala desde un CD','usás aplicaciones que se ejecutan en servidores remotos, sin instalarlas en tu equipo','es un tipo de antivirus','hay que comprar una licencia en caja'],a:1,why:'Google Docs o Canva funcionan en el navegador: el “motor” está en la nube.'},
+  {q:'Para NO perder las fotos del curso y poder verlas desde cualquier lado, lo mejor es…',options:['guardarlas solo en el disco de una compu','imprimirlas y pegarlas en un álbum','subirlas a la nube (Drive, Google Fotos, OneDrive)','mandarlas por Bluetooth'],a:2,why:'El webstoring da copia de seguridad y acceso desde cualquier dispositivo con conexión.'},
+  {q:'Una ventaja clave del software portable es que…',options:['se ejecuta desde un pendrive sin necesidad de instalación','requiere Internet permanente','solo funciona en una única computadora','necesita permisos de administrador'],a:0,why:'Ideal para las netbooks del aula donde no se puede instalar programas.'}
+ ],
+ m3:[
+  {q:'Un sitio web es…',options:['un único documento HTML','un conjunto de páginas interconectadas bajo un mismo dominio','un programa para dibujar','el cable que conecta el servidor'],a:1,why:'El sitio es el “libro”; cada página es una “hoja”.'},
+  {q:'¿Cuál de estos es un campus / entorno virtual de aprendizaje (LMS)?',options:['Google Classroom y la Plataforma Juana Manso','Un reproductor de video','Una calculadora científica','Un editor de imágenes'],a:0,why:'Organizan aulas, tareas, entregas y comunicación docente-alumno.'},
+  {q:'Un portal web funciona como…',options:['una puerta de entrada que integra servicios, enlaces y recursos','una impresora en red','un pendrive virtual','un tipo de virus informático'],a:0,why:'Ej: argentina.gob.ar reúne trámites, noticias y servicios en un solo lugar.'}
+ ],
+ m4:[
+  {q:'El candado 🔒 de la barra de direcciones indica que…',options:['la página es gratuita','la conexión está cifrada con HTTPS','la página carga más rápido','el sitio no tiene publicidad'],a:1,why:'HTTPS protege los datos que enviás para que nadie los “espíe” en el camino.'},
+  {q:'El modo incógnito NO guarda al cerrar la ventana…',options:['los archivos que descargaste','el historial de navegación ni las cookies','los marcadores que creaste','las capturas de pantalla'],a:1,why:'Ojo: no te hace invisible ante el proveedor de Internet ni ante los sitios.'},
+  {q:'El motor de renderizado de un navegador es…',options:['la parte que interpreta HTML, CSS y JS y dibuja la página en pantalla','un antivirus integrado','el monitor de la computadora','el teclado virtual'],a:0,why:'Chrome usa Blink, Firefox Gecko y Safari WebKit.'}
+ ],
+ m5:[
+  {q:'En https://www.abc.gob.ar/nticx.html, el dominio es…',options:['https','www','abc','.ar'],a:2,why:'“abc” es el nombre de fantasía del sitio; .gob es el TLD y .ar el país.'},
+  {q:'El https:// garantiza que…',options:['los datos viajen cifrados con SSL/TLS','el sitio sea del gobierno','la página no tenga virus','sea más linda visualmente'],a:0,why:'La “S” es de seguro: cifrado entre tu navegador y el servidor.'},
+  {q:'El código .ar dentro de una URL indica…',options:['el protocolo de transferencia','el país de registro del dominio (Argentina)','la ruta del archivo','un subdominio'],a:1,why:'Es el ccTLD administrado por NIC Argentina.'}
+ ],
+ m6:[
+  {q:'CCO significa…',options:['Copia Carbónica Oculta: los destinatarios no ven las direcciones de los demás','Correo Con Orientación','Copia Completa Oficial','Código de Correo Online'],a:0,why:'Protegé la privacidad de tus contactos usándola al enviar a varios.'},
+  {q:'Escribir todo en MAYÚSCULAS en un correo equivale a…',options:['escribir más rápido','gritar: es mala netiqueta','dar más formalidad','cifrar el mensaje'],a:1,why:'En la etiqueta digital, las mayúsculas sostenidas se leen como grito.'},
+  {q:'¿Cuál de estos es un servicio de webmail?',options:['Un programa instalado en la compu','Gmail abierto en el navegador','Un pendrive con correos','Una planilla de cálculo'],a:1,why:'El webmail se usa 100% desde el navegador, sin instalar nada.'}
+ ]
+};
+function mountQuiz(cid, mid){
+  const data = QUIZ[mid]; const c = el(cid);
+  let answered=0, score=0;
+  const wrap=document.createElement('div'); wrap.className='space-y-4';
+  data.forEach((q,qi)=>{
+    const box=document.createElement('div'); box.className='rounded-2xl border border-slate-200 bg-white p-4 md:p-5';
+    box.innerHTML='<p class="font-semibold text-slate-800 mb-3 text-sm md:text-base"><span class="text-slate-400 mr-1">'+(qi+1)+'.</span>'+q.q+'</p>';
+    const opts=document.createElement('div'); opts.className='grid gap-2 md:grid-cols-2';
+    q.options.forEach((opt,oi)=>{
+      const b=document.createElement('button');
+      b.className='opt-btn text-left px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:border-violet-400 hover:bg-violet-50 transition font-medium text-slate-700 text-sm';
+      b.textContent=opt;
+      b.onclick=()=>{
+        if(box.dataset.done) return;
+        box.dataset.done='1'; answered++;
+        [...opts.children].forEach((x,i)=>{ x.disabled=true; if(i===q.a) x.classList.add('opt-correct'); else if(i===oi) x.classList.add('opt-wrong'); });
+        if(oi===q.a) score++;
+        const w=document.createElement('p');
+        w.className='mt-3 text-xs md:text-sm rounded-xl px-3 py-2 '+(oi===q.a?'bg-emerald-50 text-emerald-800':'bg-amber-50 text-amber-800');
+        w.innerHTML=(oi===q.a?'✅ ¡Correcto! ':'💡 Casi. ')+q.why;
+        box.appendChild(w);
+        if(answered===data.length) finish();
+      };
+      opts.appendChild(b);
+    });
+    box.appendChild(opts); wrap.appendChild(box);
+  });
+  const res=document.createElement('div'); res.className='mt-4 hidden';
+  c.innerHTML=''; c.appendChild(wrap); c.appendChild(res);
+  function finish(){
+    res.classList.remove('hidden');
+    const passed = score>=Math.ceil(data.length*0.66);
+    res.innerHTML='<div class="rounded-2xl px-5 py-4 flex flex-wrap items-center gap-3 '+(passed?'bg-emerald-600':'bg-slate-800')+' text-white">'
+      +'<span class="text-2xl">'+(passed?'🏆':'')+'</span>'
+      +'<p class="font-extrabold">Resultado: '+score+'/'+data.length+'</p>'
+      +'<p class="text-sm opacity-90">'+(passed?'¡Módulo superado! Se marcó como completado en tu progreso.':'Revisá el contenido del módulo y volvé a intentarlo.')+'</p>'
+      +'<button class="ml-auto text-sm font-extrabold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg" onclick="rebuildQuiz(\''+cid+'\',\''+mid+'\')">🔄 Reintentar</button></div>';
+    if(passed){ completed.add(mid); saveDone(); }
+  }
+}
+function rebuildQuiz(cid,mid){ mountQuiz(cid,mid); }
+
+/* ================= MÓDULO 1: CONVERGENCIA ================= */
+const DEVICES=[
+ {id:'radio',emoji:'📻',name:'Radio',x:14,y:16,before:'Transistor o radio de mesa: noticias, música y los relatos del fútbol por ondas AM/FM.',after:'Hoy la radio se escucha por streaming y podcasts: la señal analógica se convirtió en datos de Internet.'},
+ {id:'tel',emoji:'☎️',name:'Teléfono fijo',x:86,y:14,before:'El teléfono de línea de casa, atado a la pared y al cable.',after:'Hoy llamás por VoIP y videollamada (WhatsApp, Meet): la voz también viaja como datos.'},
+ {id:'mapa',emoji:'🗺️',name:'Mapa de papel',x:10,y:66,before:'El mapa rutero desplegable o la guía de calles para orientarse.',after:'Hoy usás mapas interactivos con GPS y tráfico en tiempo real en tu celu.'},
+ {id:'cam',emoji:'📷',name:'Cámara de fotos',x:90,y:64,before:'La cámara con rollo: había que revelar las fotos y esperar días.',after:'Hoy tu celu tiene varias cámaras y subís las fotos a la nube al instante.'},
+ {id:'mp3',emoji:'🎧',name:'Reproductor MP3',x:30,y:88,before:'El walkman, el discman y el reproductor de MP3 con su memoria propia.',after:'Hoy la música va por streaming (Spotify) o en archivos dentro del mismo teléfono.'},
+ {id:'tv',emoji:'📺',name:'Televisor',x:70,y:88,before:'La tele de tubo con pocos canales y horario fijo.',after:'Hoy mirás series y videos por streaming en plataformas, incluso desde el celu.'}
+];
+let converged=false;
+function centerOf(node, ref){ const r=node.getBoundingClientRect(), s=ref.getBoundingClientRect(); return {x:r.left-s.left+r.width/2, y:r.top-s.top+r.height/2}; }
+function drawBeam(x1,y1,x2,y2){
+  const svg=el('conv-svg');
+  const L=document.createElementNS('http://www.w3.org/2000/svg','line');
+  L.setAttribute('x1',x1);L.setAttribute('y1',y1);L.setAttribute('x2',x2);L.setAttribute('y2',y2);
+  L.setAttribute('class','beam');
+  svg.appendChild(L);
+  setTimeout(()=>L.remove(),1400);
+}
+function buildConv(){
+  const stage=el('conv-stage');
+  DEVICES.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='conv-node'; b.dataset.dev=d.id;
+    b.style.left=d.x+'%'; b.style.top=d.y+'%';
+    b.innerHTML='<span class="text-2xl md:text-3xl">'+d.emoji+'</span><span class="block text-[10px] md:text-[11px] font-extrabold mt-1 leading-none text-slate-700">'+d.name+'</span>';
+    b.onclick=()=>{
+      document.querySelectorAll('.conv-node').forEach(n=>n.classList.remove('conv-sel'));
+      b.classList.add('conv-sel');
+      const pc=centerOf(el('conv-phone'),stage), dc=centerOf(b,stage);
+      drawBeam(dc.x,dc.y,pc.x,pc.y);
+      el('conv-info').innerHTML='<p class="font-extrabold text-violet-700 mb-1">'+d.emoji+' '+d.name+'</p>'
+        +'<p class="mb-1"><b class="text-slate-700">Antes:</b> '+d.before+'</p>'
+        +'<p><b class="text-slate-700">Hoy:</b> '+d.after+'</p>';
+    };
+    stage.appendChild(b);
+  });
+  el('btn-converge').onclick=()=>{
+    if(converged) return; converged=true;
+    const stage=el('conv-stage'), pc=centerOf(el('conv-phone'),stage);
+    document.querySelectorAll('.conv-node').forEach((n,i)=>{
+      const c=centerOf(n,stage);
+      setTimeout(()=>{
+        n.style.transition='transform .9s cubic-bezier(.5,-0.2,.6,1), opacity .9s';
+        n.style.transform='translate('+(pc.x-c.x)+'px,'+(pc.y-c.y)+'px) scale(.12)';
+        n.style.opacity='0';
+      }, i*130);
+    });
+    setTimeout(()=>{ el('conv-phone').classList.add('phone-boom'); el('conv-msg').classList.remove('hidden'); }, 900+DEVICES.length*130);
+  };
+  el('btn-conv-reset').onclick=()=>{
+    converged=false;
+    document.querySelectorAll('.conv-node').forEach(n=>{ n.style.transition=''; n.style.transform=''; n.style.opacity=''; });
+    el('conv-phone').classList.remove('phone-boom');
+    el('conv-msg').classList.add('hidden');
+  };
+}
+
+/* ================= MÓDULO 2: SIMULADOR ================= */
+const SIM=[
+ {id:'doc',emoji:'📝',title:'Informe grupal de NTiCx',desc:'Tenés que escribir un informe con 3 compañeros, cada uno desde su casa.',modes:{
+  local:{need:['Una compu con procesador de texto instalado','Espacio en el disco rígido','Pasarse el archivo por mail o pendrive en cada cambio'],pros:['No necesitás Internet para escribir','El archivo es 100% tuyo y privado'],cons:['Edita una persona por vez','Si se rompe la compu, se pierde','Aparecen versiones “final_final_v3” 🙃'],ex:'💡 Ejemplo: Word instalado + archivo adjunto por correo.'},
+  nube:{need:['Conexión a Internet','Cuenta gratuita (Google / Microsoft)','Cualquier dispositivo: celu, tablet, netbook'],pros:['Todos editan a la vez y en vivo','Autoguardado e historial de versiones','Accedés desde cualquier lugar'],cons:['Sin conexión no trabajás','Tus datos viven en servidores de una empresa'],ex:'💡 Ejemplo: Google Docs / Documentos en Classroom.'},
+  portable:{need:['Un pendrive','Compu con puerto USB','Versión portable del programa (LibreOffice Portable)'],pros:['No necesita permisos de administrador','El programa viaja con vos','Funciona sin Internet'],cons:['Si perdés el pendrive, perdés todo','Capacidad limitada y actualización manual'],ex:'💡 Ejemplo: LibreOffice Portable en el pendrive.'}}},
+ {id:'fotos',emoji:'📸',title:'Las fotos del acto',desc:'El curso quiere guardar 300 fotos del acto sin perderlas.',modes:{
+  local:{need:['Disco rígido con espacio','Cable o lector para pasarlas del celu'],pros:['No dependés de Internet','Control total de tus fotos'],cons:['Si muere el disco, chau fotos','Compartirlas es lento'],ex:'💡 Ejemplo: carpeta “Imágenes” de la compu del aula.'},
+  nube:{need:['Internet','Cuenta en Drive, OneDrive o Google Fotos'],pros:['Copia de seguridad automática','Acceso desde cualquier dispositivo','Compartís con un solo link'],cons:['Dependés de la conexión','El espacio gratis tiene límite','Revisá la privacidad de lo que subís'],ex:'💡 Ejemplo: álbum compartido de Google Fotos del curso.'},
+  portable:{need:['Pendrive o disco externo USB'],pros:['Las llevás a lo de un amigo sin Internet','No se suben a ningún servidor'],cons:['Es el único respaldo: si se pierde, se pierden','Los pendrives se dañan fácil'],ex:'💡 Ejemplo: carpeta de fotos en el pendrive del curso.'}}},
+ {id:'musica',emoji:'🎵',title:'Música en el recreo',desc:'Querés escuchar tu playlist en el recreo o en el viaje a la escuela.',modes:{
+  local:{need:['Archivos MP3 descargados','Reproductor en el celu o la compu'],pros:['No gastás datos ni necesitás señal','Calidad asegurada'],cons:['Ocupa memoria del dispositivo','Hay que descargar tema por tema'],ex:'💡 Ejemplo: MP3 descargados en el celu.'},
+  nube:{need:['Internet o datos móviles','Cuenta en Spotify o YouTube Music'],pros:['Millones de temas al instante','La misma playlist en todos tus dispositivos'],cons:['Sin datos no suena (plan gratis)','Consumo de datos y batería + publicidad'],ex:'💡 Ejemplo: Spotify / YouTube Music.'},
+  portable:{need:['Pendrive con música','Parlante, estéreo o compu con USB'],pros:['Suena en cualquier equipo con USB','Sin Internet ni cuentas'],cons:['Capacidad limitada','Hay que pasar los temas a mano'],ex:'💡 Ejemplo: pendrive con MP3 para el parlante del aula.'}}},
+ {id:'prog',emoji:'💽',title:'Programa en las netbooks',desc:'El profe quiere usar un editor de mapas mentales en las netbooks, pero NO tiene permisos para instalar nada.',modes:{
+  local:{need:['Permisos de administrador','Instalador (.exe)','Espacio en cada compu'],pros:['Máxima velocidad','Funciona sin Internet'],cons:['Instalar máquina por máquina','Sin permisos de administrador: imposible'],ex:'💡 Ejemplo: instalador tradicional de un programa.'},
+  nube:{need:['Internet en el aula','Navegador'],pros:['Se abre en el navegador: cero instalación','Todos con la misma versión'],cons:['Si se cae el Internet del aula, no hay caso','Algunas funciones piden cuenta paga'],ex:'💡 Ejemplo: Canva / Coggle online.'},
+  portable:{need:['El programa en versión portable','Un pendrive'],pros:['¡No requiere instalación! Ideal para netbooks sin permisos','Se ejecuta directo desde el pendrive'],cons:['Va más lento que uno instalado','No guarda configuración en la PC'],ex:'💡 Ejemplo: PortableApps.com en el pendrive del profe.'}}}
+];
+let simS=0, simM='nube';
+const MODECOLOR={local:'#475569',nube:'#0ea5e9',portable:'#10b981'};
+const MODETYPE={local:'💾 Software local (instalado en tu equipo)',nube:'☁️ Cloud Computing: SaaS + Webstoring',portable:'🔌 Software portable (sin instalación)'};
+function flowHTML(mode,color){
+  const F={
+   local:[['💻','Tu dispositivo','compu o notebook'],['🗄️','Disco rígido','memoria local']],
+   nube:[['📱','Tu dispositivo','celu, compu o tablet'],['🌐','Internet','conexión de datos'],['🏢','Servidores remotos','la “nube” (data centers)']],
+   portable:[['🔌','Pendrive','almacenamiento USB'],['💻','Cualquier compu','sin instalar nada']]
+  }[mode];
+  const CAP={local:'Los datos nunca salen de tu equipo.',nube:'La información viaja por la red y vive en servidores remotos.',portable:'El archivo o programa viaja con vos, listo para usarse.'}[mode];
+  let h='<div class="flex flex-wrap items-center justify-center gap-3">';
+  F.forEach((n,i)=>{
+    h+='<div class="flex flex-col items-center text-center gap-1 shrink-0 w-28"><div class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white border-2 shadow-sm flex items-center justify-center text-2xl md:text-3xl" style="border-color:'+color+'">'+n[0]+'</div><p class="font-bold text-sm text-slate-800 leading-tight">'+n[1]+'</p><p class="text-[11px] text-slate-500 leading-tight">'+n[2]+'</p></div>';
+    if(i<F.length-1) h+='<div class="w-12 md:w-20 h-1.5 rounded-full bg-slate-200 relative overflow-hidden shrink-0"><span class="packet" style="background:'+color+'"></span></div>';
+  });
+  h+='</div><p class="text-center text-xs font-bold text-slate-500 mt-4">'+CAP+'</p>';
+  return h;
+}
+function lis(arr,icon){ return arr.map(x=>'<li class="flex gap-1.5"><span>'+icon+'</span><span>'+x+'</span></li>').join(''); }
+function renderSim(){
+  const s=SIM[simS], m=s.modes[simM], col=MODECOLOR[simM];
+  document.querySelectorAll('#sim-pills button').forEach((b,i)=>{
+    b.className='text-xs md:text-sm font-extrabold px-3.5 py-2 rounded-full border-2 transition '+(i===simS?'bg-sky-600 border-sky-600 text-white shadow':'bg-white border-slate-200 text-slate-600 hover:border-sky-400');
+  });
+  document.querySelectorAll('.sim-mode').forEach(b=>{
+    const on=b.dataset.mode===simM;
+    b.style.borderColor=on?MODECOLOR[b.dataset.mode]:'#e2e8f0';
+    b.style.background=on?MODECOLOR[b.dataset.mode]:'#fff';
+    b.style.color=on?'#fff':'#334155';
+  });
+  el('sim-desc').innerHTML='<span class="text-base mr-1">'+s.emoji+'</span> <b>'+s.title+':</b> '+s.desc;
+  el('sim-flow').innerHTML=flowHTML(simM,col);
+  const t=el('sim-type'); t.textContent=MODETYPE[simM]; t.style.background=col+'22'; t.style.color=col;
+  el('sim-need').innerHTML=lis(m.need,'🔹');
+  el('sim-pros').innerHTML=lis(m.pros,'✔');
+  el('sim-cons').innerHTML=lis(m.cons,'⚠️');
+  el('sim-ex').textContent=m.ex;
+}
+function buildSim(){
+  const pills=el('sim-pills');
+  SIM.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.textContent=s.emoji+' '+s.title;
+    b.onclick=()=>{ simS=i; renderSim(); };
+    pills.appendChild(b);
+  });
+  document.querySelectorAll('.sim-mode').forEach(b=>b.onclick=()=>{ simM=b.dataset.mode; renderSim(); });
+  renderSim();
+}
+
+/* ================= MÓDULO 3: MATRIOSKA ================= */
+const MTR={
+ pagina:{emoji:'📄',name:'Página Web',color:'#10b981',def:'Documento individual formateado en HTML, accesible mediante un navegador. Tiene su propia dirección (URL).',clave:'Es la unidad mínima de la web: una sola “hoja”.',ej:['La consigna del TP de NTiCx publicada en el aula virtual','Una noticia del diario digital','La receta en un sitio de cocina'],cant:'Muchas páginas forman un sitio web.'},
+ sitio:{emoji:'🕸️',name:'Sitio Web',color:'#0ea5e9',def:'Conjunto de páginas web interconectadas bajo un mismo dominio, con un diseño y menú comunes.',clave:'Es el “libro” completo: portada, capítulos y hojas.',ej:['El sitio de tu escuela (www.escuela4.edu.ar)','El sitio completo de un periódico digital'],cant:'Un sitio puede tener desde pocas hasta millones de páginas.'},
+ portal:{emoji:'🚪',name:'Portal Web',color:'#f59e0b',def:'Punto de entrada centralizado que integra múltiples servicios, enlaces y recursos para el usuario: correo, buscador, noticias, trámites.',clave:'Es la “puerta de entrada” a muchos sitios y servicios.',ej:['argentina.gob.ar (Portal del Estado)','Educ.ar / ABC portal educativo de la Provincia de Bs. As.'],cant:'Un portal agrupa muchos sitios y servicios distintos.'},
+ campus:{emoji:'🎓',name:'Campus / Entorno Virtual',color:'#4f46e5',def:'Plataforma educativa estructurada (LMS/VLE) para el aprendizaje: clases, entrega de tareas, foros, notas y comunicación docente-alumno.',clave:'Es el nivel más completo: contiene portales, sitios, páginas y personas.',ej:['Google Classroom','Plataforma Juana Manso','Moodle de una universidad'],cant:'Un campus reúne aulas que a su vez contienen sitios, portales y páginas.'}
+};
+function buildMatrio(){
+  document.querySelectorAll('.mtr-box').forEach(box=>{
+    box.addEventListener('click',e=>{
+      e.stopPropagation();
+      document.querySelectorAll('.mtr-box').forEach(b=>b.classList.remove('mtr-sel'));
+      box.classList.add('mtr-sel');
+      const d=MTR[box.dataset.level];
+      el('mtr-info').innerHTML=
+        '<p class="font-extrabold mb-2" style="color:'+d.color+'">'+d.emoji+' '+d.name+'</p>'
+        +'<p class="mb-2 text-slate-700">'+d.def+'</p>'
+        +'<p class="mb-2 text-slate-700"><b>🔑 La clave:</b> '+d.clave+'</p>'
+        +'<p class="font-bold text-slate-700 mb-1">🇦 Ejemplos escolares:</p>'
+        +'<ul class="list-disc ml-5 space-y-1 text-slate-600 mb-2">'+d.ej.map(x=>'<li>'+x+'</li>').join('')+'</ul>'
+        +'<p class="text-xs font-bold text-slate-500">📏 '+d.cant+'</p>';
+    });
+  });
+}
+
+/* ================= MÓDULO 4: NAVEGADORES ================= */
+const HOT=[
+ {n:1,name:'Pestañas',fn:'Permiten tener varias páginas abiertas al mismo tiempo y saltar entre ellas sin perder ninguna.',sec:'Cerrá las que no uses: cada pestaña consume memoria RAM y puede seguir rastreando tu actividad.'},
+ {n:2,name:'Barra de direcciones',fn:'Muestra y permite escribir la URL del sitio. El candado 🔒 indica conexión cifrada (HTTPS).',sec:'Revisá siempre el candado antes de poner contraseñas: sin HTTPS, cualquiera podría espiar lo que enviás.'},
+ {n:3,name:'Botón Recargar',fn:'Vuelve a pedir la página al servidor y la dibuja de nuevo. Útil si algo quedó a medias.',sec:'Si falló el envío de un formulario, recargá con cuidado para no duplicar envíos (inscripciones, pagos, entregas).'},
+ {n:4,name:'Marcadores / Favoritos',fn:'Guardan accesos directos a tus sitios preferidos para no tipear la dirección cada vez.',sec:'Entrar por tus favoritos evita caer en sitios truchos que imitan a los reales (phishing).'},
+ {n:5,name:'Extensiones',fn:'Mini-programas que agregan funciones: bloqueadores de avisos, traductores, correctores.',sec:'Instalalas solo de tiendas oficiales y mirá qué permisos piden: algunas espían tu navegación.'},
+ {n:6,name:'Modo Incógnito',fn:'Abre una ventana que al cerrarse no guarda historial, cookies ni datos de formularios.',sec:'Ojo: NO te hace invisible. Tu escuela, tu proveedor de Internet y los sitios siguen viendo tu actividad.'}
+];
+function buildBrowser(){
+  document.querySelectorAll('.hotspot').forEach(h=>{
+    h.addEventListener('click',e=>{
+      e.stopPropagation();
+      const n=parseInt(h.dataset.hot,10);
+      document.querySelectorAll('.hotspot').forEach(x=>x.classList.remove('hot-on'));
+      document.querySelectorAll('.hotspot[data-hot="'+n+'"]').forEach(x=>x.classList.add('hot-on'));
+      const d=HOT.find(x=>x.n===n);
+      el('binfo').innerHTML='<p class="font-extrabold text-rose-600 mb-1">'+n+'. '+d.name+'</p><p class="mb-2 text-slate-700"><b>¿Para qué sirve?</b> '+d.fn+'</p><p class="text-slate-700"><b>🛡️ Seguridad:</b> '+d.sec+'</p>';
+      if(n===6) el('menu-drop').classList.toggle('hidden');
+    });
+  });
+  el('menu-btn').addEventListener('click',e=>{ e.stopPropagation(); el('menu-drop').classList.toggle('hidden'); });
+  document.addEventListener('click',()=>el('menu-drop').classList.add('hidden'));
+}
+
+/* ================= MÓDULO 5: URL ================= */
+const URLBLOCKS=[
+ {txt:'https://',color:'#f43f5e',name:'Protocolo',info:'HTTPS = HTTP + cifrado SSL/TLS 🔒. La información viaja “en código secreto”: imprescindible para contraseñas y datos personales.'},
+ {txt:'www.',color:'#f59e0b',name:'Subdominio',info:'Indicaba que el recurso estaba en la World Wide Web. Hoy es opcional: muchos sitios funcionan sin él.'},
+ {txt:'abc',color:'#0ea5e9',name:'Nombre de Dominio',info:'El nombre “de fantasía” que identifica a la organización. En este ejemplo, el portal educativo ABC de la Provincia de Buenos Aires.'},
+ {txt:'.gob',color:'#8b5cf6',name:'TLD temático',info:'Dominio de primer nivel que indica el tipo de organización: .gob gobierno, .edu educación, .org entidades, .com comercial.'},
+ {txt:'.ar',color:'#10b981',name:'ccTLD (código de país)',info:'Identifica el país de registro: .ar = Argentina, .cl = Chile, .es = España. En Argentina lo administra NIC.'},
+ {txt:'/secretaria/nticx.html',color:'#64748b',name:'Ruta / Path',info:'El “camino” interno hasta el recurso exacto: una carpeta (secretaria) y el archivo (nticx.html).'}
+];
+function buildURL(){
+  const wrap=el('url-blocks');
+  URLBLOCKS.forEach((b,i)=>{
+    const btn=document.createElement('button');
+    btn.className='url-blk'; btn.style.background=b.color; btn.textContent=b.txt;
+    const show=()=>{ el('url-card').innerHTML='<p class="font-extrabold mb-1" style="color:'+b.color+'">'+b.name+' <span class="font-mono text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">'+b.txt+'</span></p><p class="text-slate-700">'+b.info+'</p>'; };
+    btn.addEventListener('mouseenter',show); btn.addEventListener('click',show); btn.addEventListener('focus',show);
+    wrap.appendChild(btn);
+  });
+}
+/* Armador */
+const ARM_TARGET=['https://','www.','juanamanso','.edu','.ar','/aula/tarea.html'];
+const ARM_COLORS=['#f43f5e','#f59e0b','#0ea5e9','#8b5cf6','#10b981','#64748b'];
+let armSlots=Array(6).fill(null), armPool=[], armBad=new Set();
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function renderArm(){
+  const slots=el('arm-slots'), tray=el('arm-tray');
+  slots.innerHTML=''; tray.innerHTML='';
+  armSlots.forEach((pid,i)=>{
+    const d=document.createElement('button');
+    if(pid===null){ d.className='arm-slot arm-empty flex-1 min-w-[90px]'; d.textContent='casillero '+(i+1); }
+    else{ d.className='arm-slot text-white '+(armBad.has(i)?'arm-bad':''); d.style.background=armBad.has(i)?'':'#'+ARM_COLORS[pid].slice(1); d.style.flex='1'; d.style.minWidth='90px'; d.textContent=ARM_TARGET[pid]; }
+    d.onclick=()=>{ if(pid!==null){ armSlots[i]=null; armPool.push(pid); armBad.clear(); hideArmMsg(); renderArm(); } };
+    slots.appendChild(d);
+  });
+  armPool.forEach(pid=>{
+    const b=document.createElement('button');
+    b.className='url-blk text-sm'; b.style.background=ARM_COLORS[pid]; b.textContent=ARM_TARGET[pid];
+    b.onclick=()=>{ const idx=armSlots.indexOf(null); if(idx===-1) return; armSlots[idx]=pid; armPool=armPool.filter(x=>x!==pid); armBad.clear(); hideArmMsg(); renderArm(); };
+    tray.appendChild(b);
+  });
+  if(!armPool.length) tray.innerHTML='<p class="text-xs text-slate-400 font-bold">Cajón vacío: ¡todas las piezas colocadas! Tocá “Comprobar”.</p>';
+}
+function hideArmMsg(){ el('arm-msg').classList.add('hidden'); }
+function buildArmar(){
+  armPool=shuffle([0,1,2,3,4,5]); renderArm();
+  el('btn-arm-shuffle').onclick=()=>{ armSlots=Array(6).fill(null); armPool=shuffle([0,1,2,3,4,5]); armBad.clear(); hideArmMsg(); renderArm(); };
+  el('btn-arm-check').onclick=()=>{
+    const msg=el('arm-msg'); msg.classList.remove('hidden');
+    if(armSlots.includes(null)){ msg.className='mt-3 text-sm font-bold text-amber-700'; msg.textContent='⚠️ Todavía te faltan bloques por colocar.'; return; }
+    armBad.clear();
+    let ok=true;
+    armSlots.forEach((pid,i)=>{ if(pid!==i){ ok=false; armBad.add(i); } });
+    if(ok){ msg.className='mt-3 text-sm font-bold text-emerald-700'; msg.textContent='🎉 ¡Perfecto! Armaste https://www.juanamanso.edu.ar/aula/tarea.html — protocolo, subdominio, dominio, TLD, país y ruta en orden.'; }
+    else{ msg.className='mt-3 text-sm font-bold text-rose-700'; msg.textContent='❌ Hay bloques fuera de lugar (marcados en rojo). Tocá un casillero rojo para devolver la pieza y reordenar.'; el('arm-slots').classList.add('shake'); setTimeout(()=>el('arm-slots').classList.remove('shake'),450); }
+    renderArm();
+  };
+}
+
+/* ================= MÓDULO 6: WEBMAIL ================= */
+let attached=false;
+const PROFE='profe.nticx@escuela4.edu.ar';
+const COMPAS=['ana.lopez@gmail.com','sol.perez@hotmail.com','mati.garcia@yahoo.com.ar'];
+function parseMails(t){ return t.split(/[,;\s]+/).map(x=>x.trim()).filter(Boolean); }
+function validMail(m){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m); }
+function shouty(t){ const letters=t.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g,''); if(letters.length<8) return false; const up=(t.match(/[A-ZÁÉÍÓÚÜÑ]/g)||[]).length; return up/letters.length>0.6; }
+function buildMail(){
+  el('btn-show-cc').onclick=()=>el('row-cc').classList.toggle('hidden');
+  el('btn-show-cco').onclick=()=>el('row-cco').classList.toggle('hidden');
+  el('btn-attach').onclick=()=>{ attached=true; el('mail-attach').classList.remove('hidden'); };
+  el('btn-unattach').onclick=()=>{ attached=false; el('mail-attach').classList.add('hidden'); };
+  el('btn-send').onclick=()=>{
+    const btn=el('btn-send'); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Enviando…';
+    setTimeout(()=>{ btn.disabled=false; btn.innerHTML='📨 Enviar'; evalMail(); },900);
+  };
+}
+function evalMail(){
+  const para=parseMails(el('mail-para').value), cc=parseMails(el('mail-cc').value), cco=parseMails(el('mail-cco').value);
+  const asunto=el('mail-asunto').value.trim(), cuerpo=el('mail-cuerpo').value.trim();
+  const all=[...para,...cc,...cco];
+  const compasEnCCO=COMPAS.filter(c=>cco.includes(c)).length;
+  const compasExpuestos=COMPAS.filter(c=>para.includes(c)||cc.includes(c)).length;
+  const checks=[
+    {ok:para.includes(PROFE)&&para.length===1,label:'Destinatario principal correcto',tip:'En “Para” debe ir solo el profe ('+PROFE+').'},
+    {ok:compasEnCCO>=2&&compasExpuestos===0,label:'Compañeros protegidos con CCO',tip:'Los compañeros van en CCO: así nadie ve las direcciones ajenas. ¡Privacidad ante todo! 🔒'},
+    {ok:all.length>0&&all.every(validMail),label:'Direcciones de correo válidas',tip:'Toda dirección necesita usuario + @ + servidor con punto (ej: alguien@servidor.com).'},
+    {ok:asunto.length>=10&&!shouty(asunto),label:'Asunto claro y descriptivo',tip:'Un buen asunto resume el motivo: “Entrega TP NTiCx – Grupo 4”.'},
+    {ok:cuerpo.length>=40&&!shouty(cuerpo),label:'Cuerpo con buena netiqueta',tip:'Saludo, mensaje completo y despedida. Sin MAYÚSCULAS sostenidas: equivalen a gritar.'},
+    {ok:attached,label:'Archivo adjunto listo',tip:'El TP debe viajar como adjunto: 📎 TP_NTICX_Grupo4.pdf.'}
+  ];
+  const score=checks.filter(c=>c.ok).length;
+  const box=el('mail-result'); box.classList.remove('hidden');
+  box.innerHTML='<div class="rounded-2xl border '+(score>=5?'border-emerald-300 bg-emerald-50':'border-amber-300 bg-amber-50')+' p-5">'
+    +'<p class="font-extrabold text-slate-800 mb-3">📬 Resultado del envío simulado: '+score+'/6 controles superados '+(score>=5?'🏆':'')+'</p>'
+    +'<ul class="space-y-2 text-sm">'+checks.map(c=>'<li class="flex gap-2 '+(c.ok?'text-emerald-800':'text-rose-700')+'"><span>'+(c.ok?'✅':'❌')+'</span><span><b>'+c.label+'.</b> '+(c.ok?'¡Bien hecho!':c.tip)+'</span></li>').join('')+'</ul>'
+    +(score>=5?'<p class="mt-3 text-sm font-bold text-emerald-800"> ¡Correo enviado como un profesional de la comunicación web!</p>':'<p class="mt-3 text-sm font-bold text-amber-800">Corregí lo marcado y volvé a enviar. ¡Vos podés! 💪</p>')
+    +'</div>';
+  if(score<5){ box.classList.add('shake'); setTimeout(()=>box.classList.remove('shake'),450); }
+}
+
+/* ================= INIT ================= */
+buildConv(); buildSim(); buildMatrio(); buildBrowser(); buildURL(); buildArmar(); buildMail();
+['m1','m2','m3','m4','m5','m6'].forEach(m=>mountQuiz('quiz-'+m,m));
+updateProgress();
+</script>
+</body>
+</html>
+
