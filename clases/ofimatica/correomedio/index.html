@@ -1,1 +1,1915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Simulador educativo de Gmail para estudiantes de 4to año de secundaria. 100% offline, accesible y sin dependencias externas.">
+<title>Gmail — Simulador Educativo</title>
+
+<style>
+/* ==========================================================================
+   CAPA 0 & 8: RESET, VARIABLES Y TIPOGRAFÍA (Sin dependencias externas)
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Paleta oficial Google */
+  --g-blue: #1a73e8; --g-red: #ea4335; --g-yellow: #fbbc04; --g-green: #34a853;
+  /* Superficies y texto */
+  --surface: #ffffff; --surface-dim: #f6f8fc; --surface-hover: #e8eaed; --surface-active: #d3e3fd;
+  --border: #e0e0e0; --text-primary: #202124; --text-secondary: #5f6368; --text-hint: #80868b;
+  --star-active: #f4b400; --unread-bg: #ffffff; --read-bg: #f2f6fc;
+  /* Dimensiones */
+  --sidebar-width: 256px; --header-height: 64px; --toolbar-height: 48px;
+  --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px;
+  /* Sombras y transiciones */
+  --shadow-1: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+  --shadow-2: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+  --shadow-composer: 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12), 0 5px 5px -3px rgba(0,0,0,.2);
+  --transition: 200ms cubic-bezier(.4,0,.2,1);
+  /* Tipografía del sistema (sin llamadas externas) */
+  --font-base: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --ls-base: normal; --lh-base: 1.5; --ws-base: normal;
+}
+
+html {
+  font-family: var(--font-base); font-size: 14px; line-height: var(--lh-base);
+  color: var(--text-primary); background: var(--surface-dim);
+  -webkit-font-smoothing: antialiased; letter-spacing: var(--ls-base); word-spacing: var(--ws-base);
+}
+body { min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Accesibilidad: Foco visible */
+:focus-visible { outline: 2px solid var(--g-blue); outline-offset: 2px; border-radius: 4px; }
+
+/* Skip link para navegación por teclado */
+.skip-link {
+  position: absolute; top: -100%; left: 16px; background: var(--g-blue); color: #fff;
+  padding: 8px 16px; border-radius: var(--radius-sm); z-index: 9999; font-weight: 500; text-decoration: none;
+}
+.skip-link:focus { top: 8px; }
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; }
+
+/* Utilidad para lectores de pantalla */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ==========================================================================
+   CAPA 2: ESTRUCTURA VISUAL (Header, Sidebar, Main)
+   ========================================================================== */
+.header {
+  position: sticky; top: 0; z-index: 100; display: flex; align-items: center;
+  height: var(--header-height); padding: 0 8px; background: var(--surface-dim); gap: 4px;
+}
+.header__menu-btn {
+  width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+  transition: background var(--transition); flex-shrink: 0;
+}
+.header__menu-btn:hover { background: var(--surface-hover); }
+.header__menu-btn svg { width: 24px; height: 24px; fill: var(--text-secondary); }
+
+.header__logo {
+  display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px;
+  min-width: 180px; flex-shrink: 0; text-decoration: none; color: inherit;
+}
+.header__logo-icon { width: 40px; height: 40px; }
+.header__logo-text { font-size: 22px; font-weight: 400; color: var(--text-secondary); letter-spacing: -.5px; }
+.header__logo-text .l1 { color: var(--g-red); } .header__logo-text .l2 { color: var(--g-blue); }
+.header__logo-text .l3 { color: var(--g-yellow); } .header__logo-text .l4 { color: var(--g-blue); }
+.header__logo-text .l5 { color: var(--g-green); } .header__logo-text .l6 { color: var(--g-red); }
+
+.header__search { flex: 1; max-width: 720px; position: relative; }
+.header__search-form {
+  display: flex; align-items: center; height: 48px; background: var(--surface);
+  border-radius: var(--radius-lg); padding: 0 16px; gap: 12px; transition: box-shadow var(--transition);
+}
+.header__search-form:focus-within { box-shadow: var(--shadow-2); }
+.header__search-icon { width: 20px; height: 20px; fill: var(--text-secondary); flex-shrink: 0; }
+.header__search-input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: var(--text-primary); }
+.header__search-input::placeholder { color: var(--text-secondary); }
+
+.header__actions { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-shrink: 0; }
+.header__icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  transition: background var(--transition);
+}
+.header__icon-btn:hover { background: var(--surface-hover); }
+.header__icon-btn svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+
+.header__account {
+  display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px;
+  border-radius: 20px; margin-left: 4px; cursor: pointer; transition: background var(--transition);
+}
+.header__account:hover { background: var(--surface-hover); }
+.header__avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--g-blue); color: #fff;
+  font-size: 13px; font-weight: 500; display: grid; place-items: center; flex-shrink: 0;
+}
+.header__account-info { display: flex; flex-direction: column; line-height: 1.2; text-align: left; }
+.header__account-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.header__account-email { font-size: 11px; color: var(--text-secondary); }
+
+.app-layout { display: flex; flex: 1; overflow: hidden; height: calc(100vh - var(--header-height)); }
+
+.sidebar {
+  width: var(--sidebar-width); background: var(--surface-dim); padding: 12px 0 12px 12px;
+  overflow-y: auto; overflow-x: hidden; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: thin; scrollbar-color: transparent transparent;
+}
+.sidebar:hover { scrollbar-color: var(--surface-hover) transparent; }
+.sidebar__compose {
+  display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 24px 0 16px;
+  background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow-1);
+  font-size: 14px; font-weight: 500; color: var(--text-primary); letter-spacing: .25px;
+  transition: box-shadow var(--transition), background var(--transition); margin-bottom: 12px; width: fit-content;
+}
+.sidebar__compose:hover { box-shadow: var(--shadow-2); background: var(--surface-dim); }
+.sidebar__compose svg { width: 24px; height: 24px; }
+
+.sidebar__nav { list-style: none; display: flex; flex-direction: column; gap: 1px; }
+.sidebar__item {
+  display: flex; align-items: center; gap: 16px; height: 32px; padding: 0 12px 0 16px;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0; font-size: 13px; font-weight: 500;
+  color: var(--text-primary); cursor: pointer; transition: background var(--transition);
+  text-decoration: none; white-space: nowrap; position: relative;
+}
+.sidebar__item:hover { background: var(--surface-hover); }
+.sidebar__item--active { background: var(--surface-active); font-weight: 700; }
+.sidebar__item svg { width: 20px; height: 20px; fill: var(--text-secondary); flex-shrink: 0; }
+.sidebar__item--active svg { fill: var(--text-primary); }
+.sidebar__count { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.sidebar__divider { height: 1px; background: var(--border); margin: 8px 16px; }
+.sidebar__section-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 12px 16px 4px; letter-spacing: .3px; }
+.sidebar__label-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+.main {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--surface); border-radius: var(--radius-md) 0 0 0; min-width: 0;
+}
+.toolbar {
+  display: flex; align-items: center; height: var(--toolbar-height); padding: 0 8px;
+  border-bottom: 1px solid var(--border); gap: 2px; flex-shrink: 0;
+}
+.toolbar__checkbox { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; transition: background var(--transition); }
+.toolbar__checkbox:hover { background: var(--surface-hover); }
+.toolbar__checkbox input { width: 18px; height: 18px; accent-color: var(--g-blue); cursor: pointer; }
+.toolbar__btn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; transition: background var(--transition); }
+.toolbar__btn:hover { background: var(--surface-hover); }
+.toolbar__btn svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+.toolbar__divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+.toolbar__pagination { margin-left: auto; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+
+.tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.tab {
+  flex: 1; max-width: 260px; display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+  font-size: 13px; font-weight: 500; color: var(--text-secondary); border-bottom: 3px solid transparent;
+  cursor: pointer; transition: background var(--transition), color var(--transition); position: relative;
+}
+.tab:hover { background: var(--surface-hover); }
+.tab--active { color: var(--g-blue); border-bottom-color: var(--g-blue); font-weight: 600; }
+.tab--active svg { fill: var(--g-blue); }
+.tab svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+.tab__badge { background: var(--g-green); color: #fff; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-left: auto; }
+
+/* ==========================================================================
+   CAPA 2 & 3: LISTA DE CORREOS Y DETALLE
+   ========================================================================== */
+.mail-list { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.mail-row {
+  display: grid; grid-template-columns: 44px 36px 200px 1fr 80px; align-items: center;
+  min-height: 40px; padding: 0 8px 0 0; border-bottom: 1px solid #f0f0f0;
+  cursor: pointer; transition: background var(--transition), box-shadow var(--transition); position: relative;
+}
+.mail-row:hover { box-shadow: inset 0 -1px 0 0 #dadce0, inset 0 1px 0 0 #dadce0; z-index: 1; }
+.mail-row--unread { background: var(--unread-bg); font-weight: 700; }
+.mail-row--read { background: var(--read-bg); font-weight: 400; }
+
+.mail-row__check { width: 44px; height: 40px; display: grid; place-items: center; }
+.mail-row__check input { width: 16px; height: 16px; accent-color: var(--g-blue); cursor: pointer; }
+.mail-row__star { width: 36px; height: 40px; display: grid; place-items: center; }
+.mail-row__star svg {
+  width: 20px; height: 20px; fill: none; stroke: var(--text-hint); stroke-width: 1.5;
+  cursor: pointer; transition: fill var(--transition), stroke var(--transition);
+}
+.mail-row__star--active svg { fill: var(--star-active); stroke: var(--star-active); }
+.mail-row__sender { padding: 0 8px; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); }
+.mail-row__content { display: flex; align-items: baseline; gap: 4px; min-width: 0; padding: 0 8px; font-size: 13px; color: var(--text-secondary); overflow: hidden; }
+.mail-row__subject { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); flex-shrink: 1; }
+.mail-row--unread .mail-row__subject { font-weight: 700; }
+.mail-row__snippet { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); font-weight: 400; flex: 1; min-width: 0; }
+.mail-row__snippet::before { content: " — "; color: var(--text-secondary); }
+.mail-row__date { text-align: right; font-size: 12px; color: var(--text-secondary); padding-right: 8px; white-space: nowrap; }
+.mail-row--unread .mail-row__date { font-weight: 700; color: var(--text-primary); }
+.mail-row__label { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 6px; border-radius: 4px; margin-right: 4px; flex-shrink: 0; line-height: 1.5; }
+.mail-row__label--inbox { background: #e8f0fe; color: var(--g-blue); }
+.mail-row__label--social { background: #e6f4ea; color: var(--g-green); }
+.mail-row__label--promo { background: #fef7e0; color: #e37400; }
+.mail-row__actions {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  display: none; gap: 2px; background: inherit; padding: 4px; border-radius: 4px; box-shadow: -4px 0 8px rgba(255,255,255,.8);
+}
+.mail-row:hover .mail-row__actions { display: flex; }
+.mail-row:hover .mail-row__date { display: none; }
+.mail-row__action-btn { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; transition: background var(--transition); }
+.mail-row__action-btn:hover { background: var(--surface-hover); }
+.mail-row__action-btn svg { width: 16px; height: 16px; fill: var(--text-secondary); }
+
+.mail-detail { flex: 1; overflow-y: auto; padding: 24px; display: none; }
+.mail-detail--active { display: block; }
+.mail-detail__back {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; color: var(--g-blue); margin-bottom: 16px; transition: background var(--transition);
+}
+.mail-detail__back:hover { background: var(--surface-hover); }
+.mail-detail__back svg { width: 18px; height: 18px; fill: var(--g-blue); }
+.mail-detail__header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.mail-detail__subject { font-size: 22px; font-weight: 400; color: var(--text-primary); flex: 1; }
+.mail-detail__actions { display: flex; gap: 4px; }
+.mail-detail__from { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.mail-detail__avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--g-blue); color: #fff; display: grid; place-items: center; font-size: 16px; font-weight: 500; flex-shrink: 0; }
+.mail-detail__sender-info { flex: 1; }
+.mail-detail__sender-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.mail-detail__sender-email { font-size: 12px; color: var(--text-secondary); }
+.mail-detail__date { font-size: 12px; color: var(--text-secondary); }
+.mail-detail__recipients { font-size: 12px; color: var(--text-secondary); margin-bottom: 16px; padding-left: 52px; }
+.mail-detail__body { font-size: 14px; line-height: 1.6; color: var(--text-primary); white-space: pre-wrap; margin-bottom: 24px; }
+.mail-detail__attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.mail-detail__attachment { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--surface-dim); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-primary); }
+.mail-detail__reply-buttons { display: flex; gap: 8px; margin-top: 24px; }
+.mail-detail__reply-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--text-primary);
+  transition: background var(--transition), border-color var(--transition);
+}
+.mail-detail__reply-btn:hover { background: var(--surface-hover); border-color: var(--text-secondary); }
+.mail-detail__reply-btn svg { width: 16px; height: 16px; fill: var(--text-secondary); }
+
+/* ==========================================================================
+   CAPA 2 & 3: COMPOSITOR Y SELECTOR DE ARCHIVOS
+   ========================================================================== */
+.composer {
+  position: fixed; bottom: 0; right: 24px; width: min(560px, calc(100vw - 32px));
+  max-height: calc(100vh - 120px); background: var(--surface); border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: var(--shadow-composer); display: flex; flex-direction: column; z-index: 300; overflow: hidden;
+}
+.composer[hidden] { display: none; }
+.composer__header {
+  display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 16px;
+  background: var(--text-primary); color: #fff; border-radius: var(--radius-md) var(--radius-md) 0 0; flex-shrink: 0;
+}
+.composer__title { font-size: 14px; font-weight: 500; }
+.composer__header-actions { display: flex; gap: 2px; }
+.composer__header-btn { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; transition: background var(--transition); color: #fff; }
+.composer__header-btn:hover { background: rgba(255,255,255,.15); }
+.composer__header-btn svg { width: 18px; height: 18px; fill: #fff; }
+.composer__body { display: flex; flex-direction: column; overflow-y: auto; flex: 1; }
+.composer__field { display: grid; grid-template-columns: 72px 1fr; align-items: center; border-bottom: 1px solid var(--border); min-height: 40px; }
+.composer__field-label { font-size: 13px; color: var(--text-secondary); padding: 0 8px 0 16px; display: flex; align-items: center; gap: 4px; }
+.composer__field-input { flex: 1; border: none; outline: none; padding: 8px 8px 8px 0; font-size: 13px; background: transparent; color: var(--text-primary); width: 100%; }
+.composer__field-input::placeholder { color: var(--text-hint); }
+.composer__field--hidden { display: none; }
+.composer__cc-toggle { font-size: 12px; color: var(--g-blue); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; margin-right: 8px; }
+.composer__cc-toggle:hover { background: var(--surface-hover); }
+.composer__subject { border-bottom: 1px solid var(--border); }
+.composer__subject .composer__field-input { padding: 10px 8px 10px 0; font-size: 14px; }
+.composer__editor {
+  min-height: 220px; padding: 12px 16px; border: none; outline: none; font-size: 14px; line-height: 1.5;
+  resize: none; width: 100%; background: transparent; color: var(--text-primary); font-family: inherit;
+}
+.composer__editor::placeholder { color: var(--text-hint); }
+.composer__footer { display: flex; align-items: center; gap: 4px; padding: 8px 12px; border-top: 1px solid var(--border); background: var(--surface); flex-shrink: 0; flex-wrap: wrap; }
+.composer__btn-send {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 24px;
+  background: var(--g-blue); color: #fff; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+.composer__btn-send:hover { background: #1557b0; box-shadow: var(--shadow-1); }
+.composer__btn-send svg { width: 18px; height: 18px; fill: #fff; }
+.composer__icon-btn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; transition: background var(--transition); position: relative; }
+.composer__icon-btn:hover { background: var(--surface-hover); }
+.composer__icon-btn svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+.composer__icon-btn--active svg { fill: var(--g-blue); }
+.composer__icon-btn[data-tooltip]:hover::after {
+  content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  background: var(--text-primary); color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 4px;
+  white-space: nowrap; margin-bottom: 4px; pointer-events: none; z-index: 10;
+}
+.composer__spacer { flex: 1; }
+.composer__btn-delete { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; transition: background var(--transition); }
+.composer__btn-delete:hover { background: var(--surface-hover); }
+.composer__btn-delete svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+.composer__attachments { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 16px; border-top: 1px solid var(--border); }
+.composer__attachments[hidden] { display: none; }
+.composer__attachment { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--surface-dim); border-radius: var(--radius-sm); font-size: 12px; color: var(--text-primary); }
+.composer__attachment-remove { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-hover); cursor: pointer; }
+.composer__attachment-remove:hover { background: var(--g-red); color: #fff; }
+.composer__attachment-remove svg { width: 12px; height: 12px; fill: currentColor; }
+.composer__label-menu {
+  position: absolute; bottom: 100%; left: 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow-2); padding: 8px 0; min-width: 200px; display: none; z-index: 10;
+}
+.composer__label-menu--open { display: block; }
+.composer__label-option { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: background var(--transition); }
+.composer__label-option:hover { background: var(--surface-hover); }
+.composer__label-option input { accent-color: var(--g-blue); }
+
+.file-picker {
+  position: fixed; bottom: 80px; right: 24px; width: 320px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-2);
+  padding: 8px 0; display: none; z-index: 310;
+}
+.file-picker--open { display: block; }
+.file-picker__title { padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+.file-picker__item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background var(--transition); font-size: 13px; }
+.file-picker__item:hover { background: var(--surface-hover); }
+.file-picker__item svg { width: 20px; height: 20px; fill: var(--text-secondary); }
+.file-picker__item-info { flex: 1; display: flex; flex-direction: column; }
+.file-picker__item-name { font-weight: 500; color: var(--text-primary); }
+.file-picker__item-size { font-size: 11px; color: var(--text-secondary); }
+
+/* ==========================================================================
+   CAPA 4: PANEL DE MISIONES
+   ========================================================================== */
+.missions-panel {
+  position: fixed; top: 80px; right: 16px; width: 360px; max-width: calc(100vw - 32px);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2); z-index: 150; overflow: hidden; transition: transform var(--transition), opacity var(--transition);
+}
+.missions-panel[hidden] { display: none; }
+.missions-panel__header {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+  background: linear-gradient(135deg, var(--g-blue), #1557b0); color: #fff;
+}
+.missions-panel__title { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.missions-panel__title svg { width: 20px; height: 20px; fill: #fff; }
+.missions-panel__progress { font-size: 12px; font-weight: 500; opacity: .9; }
+.missions-panel__close { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; transition: background var(--transition); }
+.missions-panel__close:hover { background: rgba(255,255,255,.2); }
+.missions-panel__close svg { width: 16px; height: 16px; fill: #fff; }
+.missions-panel__body { padding: 12px 16px; max-height: 60vh; overflow-y: auto; }
+.mission { padding: 12px; border-radius: var(--radius-sm); margin-bottom: 8px; border: 2px solid var(--border); transition: border-color var(--transition), background var(--transition); }
+.mission--active { border-color: var(--g-blue); background: #f8fbff; }
+.mission--completed { border-color: var(--g-green); background: #f0fdf4; }
+.mission--locked { opacity: .5; }
+.mission__header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.mission__icon { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; font-size: 12px; font-weight: 700; color: #fff; background: var(--text-hint); }
+.mission--active .mission__icon { background: var(--g-blue); }
+.mission--completed .mission__icon { background: var(--g-green); }
+.mission__icon svg { width: 14px; height: 14px; fill: #fff; }
+.mission__title { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
+.mission--completed .mission__title { color: var(--g-green); }
+.mission__status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+.mission--active .mission__status { background: var(--g-blue); color: #fff; }
+.mission--completed .mission__status { background: var(--g-green); color: #fff; }
+.mission--locked .mission__status { background: var(--surface-hover); color: var(--text-hint); }
+.mission__desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
+.mission__feedback { font-size: 12px; padding: 8px 10px; border-radius: var(--radius-sm); margin-top: 8px; line-height: 1.4; display: none; }
+.mission__feedback--visible { display: block; }
+.mission__feedback--error { background: #fce8e6; color: #c5221f; border-left: 3px solid var(--g-red); }
+.mission__feedback--success { background: #e6f4ea; color: #137333; border-left: 3px solid var(--g-green); }
+.mission__feedback strong { font-weight: 600; }
+.missions-toggle {
+  position: fixed; top: 80px; right: 16px; width: 48px; height: 48px; border-radius: 50%;
+  background: var(--g-blue); color: #fff; display: grid; place-items: center; box-shadow: var(--shadow-2);
+  z-index: 140; transition: background var(--transition);
+}
+.missions-toggle:hover { background: #1557b0; }
+.missions-toggle svg { width: 24px; height: 24px; fill: #fff; }
+.missions-toggle__badge {
+  position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; background: var(--g-red);
+  color: #fff; font-size: 11px; font-weight: 700; border-radius: 10px; display: grid; place-items: center;
+  padding: 0 6px; border: 2px solid var(--surface);
+}
+
+/* ==========================================================================
+   CAPA 5: AYUDA CONTEXTUAL
+   ========================================================================== */
+.help-trigger {
+  position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--g-blue); color: #fff;
+  font-size: 11px; font-weight: 700; font-style: italic; font-family: Georgia, serif; display: none;
+  place-items: center; cursor: pointer; z-index: 50; box-shadow: 0 2px 4px rgba(0,0,0,.2);
+  transition: transform var(--transition), background var(--transition); border: 2px solid #fff; line-height: 1;
+}
+.help-trigger:hover, .help-trigger:focus-visible { background: #1557b0; transform: scale(1.15); }
+.help-trigger--visible { display: grid; animation: helpFadeIn 150ms ease-out; }
+@keyframes helpFadeIn { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+[data-help].help-target-active { outline: 2px dashed var(--g-blue); outline-offset: 2px; border-radius: 4px; }
+
+.help-popover {
+  position: fixed; width: 320px; max-width: calc(100vw - 24px); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-2);
+  z-index: 500; overflow: hidden; opacity: 0; transform: translateY(8px);
+  transition: opacity 180ms ease-out, transform 180ms ease-out; pointer-events: none;
+}
+.help-popover--visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.help-popover__header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: linear-gradient(135deg, var(--g-blue), #4285f4); color: #fff; }
+.help-popover__title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.help-popover__title-icon { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.25); display: grid; place-items: center; font-size: 12px; font-weight: 700; font-style: italic; font-family: Georgia, serif; flex-shrink: 0; }
+.help-popover__close { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: #fff; transition: background var(--transition); }
+.help-popover__close:hover { background: rgba(255,255,255,.2); }
+.help-popover__close svg { width: 14px; height: 14px; fill: #fff; }
+.help-popover__body { padding: 14px; font-size: 13px; line-height: 1.55; color: var(--text-primary); max-height: 50vh; overflow-y: auto; }
+.help-popover__body p { margin-bottom: 8px; }
+.help-popover__body p:last-child { margin-bottom: 0; }
+.help-popover__body strong { color: var(--g-blue); font-weight: 600; }
+.help-popover__body ul { margin: 6px 0 8px 18px; }
+.help-popover__body li { margin-bottom: 4px; }
+.help-popover__body code { background: var(--surface-dim); padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: Consolas, Monaco, monospace; color: var(--g-red); }
+.help-popover__footer { padding: 8px 14px; background: var(--surface-dim); border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.help-popover__footer svg { width: 12px; height: 12px; fill: var(--text-secondary); flex-shrink: 0; }
+.help-popover__arrow { position: absolute; width: 12px; height: 12px; background: var(--surface); border: 1px solid var(--border); transform: rotate(45deg); z-index: -1; }
+.help-popover__arrow--top { top: -7px; border-bottom: none; border-right: none; }
+.help-popover__arrow--bottom { bottom: -7px; border-top: none; border-left: none; }
+
+/* ==========================================================================
+   CAPA 6: ACCESIBILIDAD GLOBAL Y BARRA FLOTANTE
+   ========================================================================== */
+.a11y-bar {
+  position: fixed; bottom: 44px; left: 16px; display: flex; align-items: center; gap: 6px;
+  padding: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px;
+  box-shadow: var(--shadow-2); z-index: 250;
+}
+.a11y-bar__label { font-size: 11px; font-weight: 600; color: var(--text-secondary); padding: 0 8px 0 10px; letter-spacing: .3px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.a11y-bar__label svg { width: 16px; height: 16px; fill: var(--g-blue); }
+.a11y-toggle {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 500; color: var(--text-primary); background: var(--surface-dim);
+  border: 1px solid var(--border); cursor: pointer; transition: background var(--transition), border-color var(--transition), color var(--transition); white-space: nowrap;
+}
+.a11y-toggle:hover { background: var(--surface-hover); }
+.a11y-toggle svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+.a11y-toggle[aria-pressed="true"] { background: var(--g-blue); color: #fff; border-color: var(--g-blue); }
+.a11y-toggle[aria-pressed="true"]:hover { background: #1557b0; }
+
+body.body--dyslexia {
+  --font-base: Verdana, Tahoma, 'Comic Sans MS', 'Open Sans', Arial, sans-serif;
+  --ls-base: 0.06em; --lh-base: 1.85; --ws-base: 0.1em; font-size: 15px;
+}
+body.body--dyslexia .mail-row__subject, body.body--dyslexia .mail-row__snippet, body.body--dyslexia .mail-row__sender,
+body.body--dyslexia .mail-detail__body, body.body--dyslexia .composer__editor, body.body--dyslexia .help-popover__body,
+body.body--dyslexia .mission__desc, body.body--dyslexia .mission__feedback {
+  letter-spacing: 0.05em; line-height: 1.8; word-spacing: 0.1em;
+}
+body.body--dyslexia .help-popover__body p { margin-bottom: 12px; }
+body.body--dyslexia .help-popover__body li { margin-bottom: 6px; }
+body.body--dyslexia em, body.body--dyslexia i { font-style: normal; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+
+body.body--high-contrast {
+  --surface: #000000 !important; --surface-dim: #000000 !important; --surface-hover: #1a1a1a !important;
+  --surface-active: #333300 !important; --border: #FFFF00 !important; --text-primary: #FFFF00 !important;
+  --text-secondary: #FFFFFF !important; --text-hint: #CCCCCC !important; --unread-bg: #000000 !important;
+  --read-bg: #0a0a0a !important; --g-blue: #FFFFFF !important; --g-red: #FF6666 !important;
+  --g-yellow: #FFFF00 !important; --g-green: #66FF66 !important; --star-active: #FFFF00 !important;
+  background: #000000 !important; color: #FFFF00 !important;
+}
+body.body--high-contrast * { border-color: inherit; }
+body.body--high-contrast .header, body.body--high-contrast .sidebar, body.body--high-contrast .main,
+body.body--high-contrast .mail-row, body.body--high-contrast .toolbar, body.body--high-contrast .tabs,
+body.body--high-contrast .composer, body.body--high-contrast .missions-panel, body.body--high-contrast .help-popover,
+body.body--high-contrast .file-picker, body.body--high-contrast .a11y-bar, body.body--high-contrast .edu-banner {
+  background: #000000 !important; color: #FFFF00 !important; border-color: #FFFF00 !important;
+}
+body.body--high-contrast .header__search-form, body.body--high-contrast .header__search-input,
+body.body--high-contrast .composer__field-input, body.body--high-contrast .composer__editor,
+body.body--high-contrast .mail-row__sender, body.body--high-contrast .mail-row__subject,
+body.body--high-contrast .mail-row__snippet, body.body--high-contrast .mail-detail__body,
+body.body--high-contrast .mail-detail__subject, body.body--high-contrast .mission__title,
+body.body--high-contrast .mission__desc, body.body--high-contrast .help-popover__body,
+body.body--high-contrast .help-popover__body strong, body.body--high-contrast .sidebar__item,
+body.body--high-contrast .sidebar__count, body.body--high-contrast .tab, body.body--high-contrast .tab--active,
+body.body--high-contrast .header__account-name, body.body--high-contrast .header__account-email,
+body.body--high-contrast .header__logo-text, body.body--high-contrast .composer__title,
+body.body--high-contrast .a11y-bar__label, body.body--high-contrast .a11y-toggle { color: #FFFF00 !important; }
+body.body--high-contrast .header__logo-text .l1, body.body--high-contrast .header__logo-text .l2,
+body.body--high-contrast .header__logo-text .l3, body.body--high-contrast .header__logo-text .l4,
+body.body--high-contrast .header__logo-text .l5, body.body--high-contrast .header__logo-text .l6 { color: #FFFFFF !important; }
+body.body--high-contrast svg { fill: #FFFF00 !important; stroke: #FFFF00 !important; }
+body.body--high-contrast .mail-row__star--active svg { fill: #FFFF00 !important; stroke: #FFFF00 !important; }
+body.body--high-contrast .header__avatar, body.body--high-contrast .mail-detail__avatar { background: #FFFF00 !important; color: #000000 !important; border: 2px solid #FFFFFF !important; }
+body.body--high-contrast .composer__header, body.body--high-contrast .missions-panel__header,
+body.body--high-contrast .help-popover__header, body.body--high-contrast .edu-banner { background: #FFFF00 !important; color: #000000 !important; }
+body.body--high-contrast .composer__header svg, body.body--high-contrast .missions-panel__header svg,
+body.body--high-contrast .help-popover__header svg, body.body--high-contrast .edu-banner svg { fill: #000000 !important; }
+body.body--high-contrast .composer__header *, body.body--high-contrast .missions-panel__header *,
+body.body--high-contrast .help-popover__header *, body.body--high-contrast .edu-banner * { color: #000000 !important; }
+body.body--high-contrast .composer__btn-send { background: #FFFF00 !important; color: #000000 !important; border: 2px solid #FFFFFF !important; }
+body.body--high-contrast .composer__btn-send svg { fill: #000000 !important; }
+body.body--high-contrast .sidebar__item--active { background: #333300 !important; outline: 2px solid #FFFF00 !important; }
+body.body--high-contrast .tab--active { border-bottom-color: #FFFFFF !important; color: #FFFFFF !important; }
+body.body--high-contrast .mail-row--unread { outline: 1px solid #FFFF00 !important; }
+body.body--high-contrast .mission--active { border-color: #FFFFFF !important; background: #1a1a00 !important; }
+body.body--high-contrast .mission--completed { border-color: #66FF66 !important; background: #002200 !important; }
+body.body--high-contrast .mission__feedback--error { background: #330000 !important; color: #FF9999 !important; border-left-color: #FF6666 !important; }
+body.body--high-contrast .mission__feedback--success { background: #002200 !important; color: #66FF66 !important; border-left-color: #66FF66 !important; }
+body.body--high-contrast .help-popover__body code { background: #1a1a1a !important; color: #FF9999 !important; border: 1px solid #FFFF00 !important; }
+body.body--high-contrast .help-popover__footer { background: #1a1a1a !important; color: #FFFFFF !important; border-top-color: #FFFF00 !important; }
+body.body--high-contrast .help-popover__footer svg { fill: #FFFFFF !important; }
+body.body--high-contrast .help-trigger { background: #FFFF00 !important; color: #000000 !important; border-color: #FFFFFF !important; }
+body.body--high-contrast .a11y-toggle[aria-pressed="true"] { background: #FFFFFF !important; color: #000000 !important; border-color: #FFFFFF !important; }
+body.body--high-contrast .toast { background: #FFFF00 !important; color: #000000 !important; border: 2px solid #FFFFFF !important; }
+body.body--high-contrast .toast--success { background: #66FF66 !important; }
+body.body--high-contrast .toast--error { background: #FF6666 !important; }
+body.body--high-contrast .missions-toggle { background: #FFFF00 !important; color: #000000 !important; border: 2px solid #FFFFFF !important; }
+body.body--high-contrast .missions-toggle svg { fill: #000000 !important; }
+body.body--high-contrast .missions-toggle__badge { background: #FF6666 !important; color: #000000 !important; border-color: #000000 !important; }
+body.body--high-contrast :focus-visible { outline: 3px solid #FFFFFF !important; outline-offset: 2px; }
+body.body--high-contrast .mail-row__label { background: #000000 !important; color: #FFFFFF !important; border: 1px solid #FFFF00 !important; }
+body.body--high-contrast .file-picker__item:hover, body.body--high-contrast .sidebar__item:hover, body.body--high-contrast .composer__label-option:hover { background: #333300 !important; }
+body.body--high-contrast .mail-row:hover { box-shadow: inset 0 0 0 2px #FFFF00 !important; }
+
+/* ==========================================================================
+   CAPA 7: MODAL DE TRIVIA
+   ========================================================================== */
+.trivia-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 600; display: none;
+  place-items: center; padding: 20px; animation: triviaFadeIn 300ms ease-out;
+}
+.trivia-overlay--visible { display: grid; }
+@keyframes triviaFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.trivia-modal {
+  width: min(640px, 100%); max-height: 90vh; background: var(--surface); border-radius: var(--radius-md);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
+  display: flex; flex-direction: column; overflow: hidden; animation: triviaSlideIn 400ms cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes triviaSlideIn { from { transform: translateY(30px) scale(.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+.trivia-header { padding: 20px 24px; background: linear-gradient(135deg, var(--g-blue), #4285f4); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.trivia-header__content { display: flex; align-items: center; gap: 12px; flex: 1; }
+.trivia-header__icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.2); display: grid; place-items: center; flex-shrink: 0; }
+.trivia-header__icon svg { width: 24px; height: 24px; fill: #fff; }
+.trivia-header__title { font-size: 18px; font-weight: 600; margin: 0; }
+.trivia-header__subtitle { font-size: 13px; opacity: .9; margin-top: 2px; }
+.trivia-header__close { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #fff; transition: background var(--transition); }
+.trivia-header__close:hover { background: rgba(255,255,255,.2); }
+.trivia-header__close svg { width: 18px; height: 18px; fill: #fff; }
+.trivia-progress { padding: 12px 24px; background: var(--surface-dim); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.trivia-progress__label { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; }
+.trivia-progress__bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.trivia-progress__fill { height: 100%; background: var(--g-blue); transition: width var(--transition); border-radius: 3px; }
+.trivia-body { padding: 24px; overflow-y: auto; flex: 1; }
+.trivia-question { display: none; }
+.trivia-question--active { display: block; animation: triviaQuestionIn 300ms ease-out; }
+@keyframes triviaQuestionIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.trivia-question__number { font-size: 12px; font-weight: 600; color: var(--g-blue); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.trivia-question__text { font-size: 16px; font-weight: 500; color: var(--text-primary); line-height: 1.5; margin-bottom: 20px; }
+.trivia-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.trivia-option {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 2px solid var(--border);
+  border-radius: var(--radius-sm); cursor: pointer; transition: border-color var(--transition), background var(--transition);
+  font-size: 14px; color: var(--text-primary); text-align: left; width: 100%; background: var(--surface);
+}
+.trivia-option:hover:not(:disabled) { border-color: var(--g-blue); background: var(--surface-dim); }
+.trivia-option:disabled { cursor: not-allowed; opacity: .7; }
+.trivia-option__radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: grid; place-items: center; transition: border-color var(--transition), background var(--transition); }
+.trivia-option__radio::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: transparent; transition: background var(--transition); }
+.trivia-option:hover:not(:disabled) .trivia-option__radio { border-color: var(--g-blue); }
+.trivia-option--correct { border-color: var(--g-green); background: #e6f4ea; }
+.trivia-option--correct .trivia-option__radio { border-color: var(--g-green); background: var(--g-green); }
+.trivia-option--correct .trivia-option__radio::after { background: #fff; }
+.trivia-option--incorrect { border-color: var(--g-red); background: #fce8e6; }
+.trivia-option--incorrect .trivia-option__radio { border-color: var(--g-red); background: var(--g-red); }
+.trivia-option--incorrect .trivia-option__radio::after { background: #fff; }
+.trivia-option__text { flex: 1; line-height: 1.4; }
+.trivia-option__icon { width: 20px; height: 20px; flex-shrink: 0; display: none; }
+.trivia-option--correct .trivia-option__icon, .trivia-option--incorrect .trivia-option__icon { display: block; }
+.trivia-option--correct .trivia-option__icon svg { fill: var(--g-green); }
+.trivia-option--incorrect .trivia-option__icon svg { fill: var(--g-red); }
+.trivia-feedback { padding: 16px; border-radius: var(--radius-sm); margin-bottom: 16px; display: none; animation: triviaFeedbackIn 300ms ease-out; }
+@keyframes triviaFeedbackIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.trivia-feedback--visible { display: block; }
+.trivia-feedback--correct { background: #e6f4ea; border-left: 4px solid var(--g-green); color: #137333; }
+.trivia-feedback--incorrect { background: #fce8e6; border-left: 4px solid var(--g-red); color: #c5221f; }
+.trivia-feedback__header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+.trivia-feedback__header svg { width: 20px; height: 20px; }
+.trivia-feedback--correct .trivia-feedback__header svg { fill: var(--g-green); }
+.trivia-feedback--incorrect .trivia-feedback__header svg { fill: var(--g-red); }
+.trivia-feedback__text { font-size: 13px; line-height: 1.5; }
+.trivia-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--surface); }
+.trivia-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; transition: background var(--transition), box-shadow var(--transition); }
+.trivia-btn--primary { background: var(--g-blue); color: #fff; }
+.trivia-btn--primary:hover { background: #1557b0; box-shadow: var(--shadow-1); }
+.trivia-btn--primary:disabled { background: var(--border); color: var(--text-hint); cursor: not-allowed; }
+.trivia-result { display: none; text-align: center; padding: 20px 0; }
+.trivia-result--visible { display: block; animation: triviaResultIn 500ms ease-out; }
+@keyframes triviaResultIn { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+.trivia-result__icon { width: 80px; height: 80px; border-radius: 50%; background: var(--g-green); display: grid; place-items: center; margin: 0 auto 20px; animation: triviaIconPop 600ms cubic-bezier(.34,1.56,.64,1); }
+@keyframes triviaIconPop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+.trivia-result__icon svg { width: 48px; height: 48px; fill: #fff; }
+.trivia-result__title { font-size: 24px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.trivia-result__score { font-size: 16px; color: var(--text-secondary); margin-bottom: 24px; }
+.trivia-result__score strong { color: var(--g-green); font-size: 20px; }
+.trivia-result__message { font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+
+/* ==========================================================================
+   FIX CAPA 8: TOAST Y BANNER EDUCATIVO
+   (Reglas que faltaban en la consolidación: sin ellas, el SVG del banner
+   se escalaba al 100% del ancho y el toast quedaba en el flujo del documento)
+   ========================================================================== */
+.toast {
+  position: fixed; bottom: 60px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--text-primary); color: #fff;
+  padding: 12px 20px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; box-shadow: var(--shadow-2);
+  z-index: 400; opacity: 0;
+  transition: transform var(--transition), opacity var(--transition);
+  pointer-events: none; max-width: 90vw; text-align: center;
+}
+.toast--visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast--success { background: var(--g-green); }
+.toast--error { background: var(--g-red); }
+
+.edu-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 36px;
+  background: var(--g-blue); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500; gap: 8px;
+  z-index: 200; letter-spacing: .2px;
+}
+.edu-banner svg { width: 16px; height: 16px; fill: #fff; flex-shrink: 0; }
+
+/* ==========================================================================
+   CAPA 8: RESPONSIVE Y ACCESIBILIDAD FORZADA
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .sidebar { width: 72px; padding: 12px 0 12px 8px; }
+  .sidebar__compose span, .sidebar__item span:not(.sidebar__count), .sidebar__count, .sidebar__section-label { display: none; }
+  .sidebar__compose { padding: 0; width: 56px; height: 56px; justify-content: center; border-radius: var(--radius-md); }
+  .sidebar__item { justify-content: center; padding: 0; width: 56px; height: 56px; border-radius: 50%; }
+  .header__logo-text { display: none; } .header__logo { min-width: auto; }
+  .header__account-info { display: none; }
+  .mail-row { grid-template-columns: 44px 36px 140px 1fr 70px; }
+  .missions-panel { width: 320px; }
+  .a11y-bar__label { display: none; }
+}
+@media (max-width: 640px) {
+  .sidebar { display: none; }
+  .header { padding: 0 4px; gap: 2px; } .header__search { margin: 0 4px; }
+  .header__search-form { height: 40px; padding: 0 12px; }
+  .header__icon-btn { width: 36px; height: 36px; } .header__icon-btn svg { width: 18px; height: 18px; }
+  .header__avatar { width: 28px; height: 28px; font-size: 12px; } .header__account { padding: 2px 4px 2px 2px; }
+  .main { border-radius: 0; }
+  .mail-row { grid-template-columns: 36px 28px 90px 1fr 50px; min-height: 48px; }
+  .mail-row__check { width: 36px; height: 48px; } .mail-row__star { width: 28px; height: 48px; }
+  .mail-row__sender { font-size: 12px; padding: 0 4px; } .mail-row__content { padding: 0 4px; font-size: 12px; }
+  .mail-row__date { font-size: 11px; padding-right: 4px; } .mail-row__label { font-size: 10px; padding: 0 4px; }
+  .tab { padding: 10px 8px; font-size: 12px; } .tab span:not(.tab__badge) { display: none; } .tab { justify-content: center; }
+  .composer { right: 0; left: 0; width: 100%; max-height: 100vh; border-radius: 0; }
+  .toolbar { padding: 0 4px; } .toolbar__pagination { font-size: 11px; }
+  .mail-detail { padding: 16px; } .mail-detail__subject { font-size: 18px; } .mail-detail__recipients { padding-left: 0; }
+  .missions-panel { top: auto; bottom: 44px; right: 8px; left: 8px; width: auto; max-height: 70vh; }
+  .missions-toggle { top: auto; bottom: 52px; right: 16px; }
+  .file-picker { right: 8px; left: 8px; width: auto; bottom: 100px; }
+  .help-popover { width: calc(100vw - 24px); max-width: 360px; }
+  .a11y-bar { left: 8px; right: 8px; bottom: 44px; justify-content: center; }
+  .a11y-toggle { font-size: 11px; padding: 0 10px; height: 30px; }
+  .trivia-modal { width: 100%; max-height: 100vh; border-radius: 0; }
+  .trivia-header { padding: 16px; } .trivia-body { padding: 16px; }
+  .trivia-question__text { font-size: 15px; } .trivia-option { padding: 10px 12px; font-size: 13px; }
+  .trivia-footer { padding: 12px 16px; }
+}
+@media (max-height: 800px) { .composer__editor { min-height: 160px; } }
+@media (forced-colors: active) {
+  .mail-row--unread { border-left: 3px solid LinkText; } .tab--active { border-bottom-color: LinkText; }
+  .composer__btn-send { border: 1px solid ButtonText; } .mission--active { border-color: Highlight; }
+  .mission--completed { border-color: LinkText; } .help-trigger { border: 1px solid ButtonText; }
+  .trivia-option--correct { border: 2px solid LinkText; } .trivia-option--incorrect { border: 2px solid LinkText; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<a href="#mail-list" class="skip-link">Saltar a la bandeja de entrada</a>
+
+<!-- HEADER -->
+<header class="header" role="banner">
+  <button class="header__menu-btn" aria-label="Menú principal" title="Menú principal">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  </button>
+  <a href="#" class="header__logo" aria-label="Gmail — Simulador educativo">
+    <svg class="header__logo-icon" viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="2" y="8" width="36" height="26" rx="3" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+      <path d="M2 11l18 12 18-12" fill="none" stroke="#ea4335" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 11v20" stroke="#4285f4" stroke-width="2" stroke-linecap="round"/>
+      <path d="M38 11v20" stroke="#34a853" stroke-width="2" stroke-linecap="round"/>
+      <path d="M2 31l12-10" stroke="#fbbc04" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M38 31L26 21" stroke="#ea4335" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span class="header__logo-text" aria-hidden="true">
+      <span class="l1">G</span><span class="l2">m</span><span class="l3">a</span><span class="l4">i</span><span class="l5">l</span><span class="l6"></span>
+    </span>
+  </a>
+  <div class="header__search" role="search">
+    <form class="header__search-form" action="#" onsubmit="return false;">
+      <svg class="header__search-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <label for="search-input" class="sr-only">Buscar en el correo</label>
+      <input id="search-input" class="header__search-input" type="search" placeholder="Buscar en el correo" autocomplete="off" aria-label="Buscar en el correo">
+    </form>
+  </div>
+  <div class="header__actions">
+    <button class="header__icon-btn" aria-label="Ayuda" title="Ayuda">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+    </button>
+    <button class="header__icon-btn" aria-label="Configuración" title="Configuración">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1115.6 12 3.61 3.61 0 0112 15.6z"/></svg>
+    </button>
+    <button class="header__icon-btn" aria-label="Aplicaciones de Google" title="Aplicaciones de Google">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 14c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 20c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>
+    </button>
+    <div class="header__account" role="button" tabindex="0" id="user-account" aria-label="Cuenta de usuario">
+      <div class="header__avatar" id="user-avatar" aria-hidden="true"></div>
+      <div class="header__account-info">
+        <span class="header__account-name" id="user-name"></span>
+        <span class="header__account-email" id="user-email"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- LAYOUT PRINCIPAL -->
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Navegación de carpetas">
+    <button class="sidebar__compose" id="btn-compose" aria-label="Redactar nuevo correo" data-help="compose">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--g-blue)" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      <span>Redactar</span>
+    </button>
+    <ul class="sidebar__nav" id="sidebar-folders" role="list" aria-label="Carpetas del sistema"></ul>
+    <div class="sidebar__divider" role="separator"></div>
+    <span class="sidebar__section-label">Etiquetas</span>
+    <ul class="sidebar__nav" id="sidebar-labels" role="list" aria-label="Etiquetas personalizadas"></ul>
+    <div class="sidebar__divider" role="separator"></div>
+  </nav>
+
+  <main class="main" id="main-content" role="main" aria-label="Bandeja de entrada">
+    <div class="toolbar" role="toolbar" aria-label="Acciones de la bandeja">
+      <div class="toolbar__checkbox"><input type="checkbox" id="select-all" aria-label="Seleccionar todos los correos"></div>
+      <button class="toolbar__btn" aria-label="Actualizar" title="Actualizar" data-help="refresh">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+      </button>
+      <button class="toolbar__btn" aria-label="Más opciones" title="Más opciones">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+      <div class="toolbar__divider" role="separator"></div>
+      <div class="toolbar__pagination" aria-label="Paginación">
+        <span id="pagination-text">1–10 de 10</span>
+        <button class="toolbar__btn" aria-label="Página anterior" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="toolbar__btn" aria-label="Página siguiente" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Categorías de correo">
+      <button class="tab tab--active" role="tab" aria-selected="true" data-category="primary" data-help="tab-primary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
+        <span>Principal</span>
+        <span class="tab__badge" id="badge-primary">0</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-category="social" data-help="tab-social">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span>Social</span>
+      </button>
+      <button class="tab" role="tab" aria-selected="false" data-category="promo" data-help="tab-promo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+        <span>Promociones</span>
+      </button>
+    </div>
+
+    <div class="mail-list" id="mail-list" role="list" aria-label="Lista de correos"></div>
+    <div class="mail-detail" id="mail-detail" aria-label="Detalle del correo"></div>
+  </main>
+</div>
+
+<!-- COMPOSITOR -->
+<section class="composer" id="composer" hidden aria-labelledby="composer-title" role="dialog">
+  <header class="composer__header">
+    <span class="composer__title" id="composer-title">Nuevo mensaje</span>
+    <div class="composer__header-actions">
+      <button class="composer__header-btn" id="composer-minimize" aria-label="Minimizar" title="Minimizar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19h12v2H6z"/></svg>
+      </button>
+      <button class="composer__header-btn" id="composer-close" aria-label="Cerrar" title="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="composer__body">
+    <div class="composer__field">
+      <label class="composer__field-label" for="composer-to">
+        Para
+        <button type="button" class="composer__cc-toggle" id="toggle-cc" aria-expanded="false" aria-controls="composer-cc-row" data-help="cc">Cc</button>
+        <button type="button" class="composer__cc-toggle" id="toggle-bcc" aria-expanded="false" aria-controls="composer-bcc-row" data-help="bcc">Cco</button>
+      </label>
+      <input type="text" id="composer-to" class="composer__field-input" placeholder="Destinatarios" autocomplete="off" aria-label="Destinatarios" data-help="to">
+    </div>
+    <div class="composer__field composer__field--hidden" id="composer-cc-row">
+      <label class="composer__field-label" for="composer-cc">Cc</label>
+      <input type="text" id="composer-cc" class="composer__field-input" placeholder="Con copia" autocomplete="off" aria-label="Con copia">
+    </div>
+    <div class="composer__field composer__field--hidden" id="composer-bcc-row">
+      <label class="composer__field-label" for="composer-bcc">Cco</label>
+      <input type="text" id="composer-bcc" class="composer__field-input" placeholder="Con copia oculta" autocomplete="off" aria-label="Con copia oculta">
+    </div>
+    <div class="composer__field composer__subject">
+      <label class="composer__field-label" for="composer-subject">Asunto</label>
+      <input type="text" id="composer-subject" class="composer__field-input" placeholder="Asunto" autocomplete="off" aria-label="Asunto del correo" data-help="subject">
+    </div>
+    <label for="composer-body" class="sr-only">Cuerpo del mensaje</label>
+    <textarea id="composer-body" class="composer__editor" placeholder="Escribí tu mensaje…" aria-label="Cuerpo del mensaje" data-help="body"></textarea>
+  </div>
+  <div class="composer__attachments" id="composer-attachments" hidden></div>
+  <footer class="composer__footer">
+    <button type="button" class="composer__btn-send" id="btn-send" aria-label="Enviar correo" data-help="send">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      <span>Enviar</span>
+    </button>
+    <button type="button" class="composer__icon-btn" data-tooltip="Negrita" aria-label="Negrita" aria-pressed="false" data-help="bold">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.07 0 3.71-1.66 3.71-3.71 0-1.54-.83-2.85-2.15-3.5zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+    </button>
+    <button type="button" class="composer__icon-btn" data-tooltip="Itálica" aria-label="Itálica" aria-pressed="false" data-help="italic">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
+    </button>
+    <div class="toolbar__divider" role="separator"></div>
+    <button type="button" class="composer__icon-btn" id="btn-attach" data-tooltip="Adjuntar archivo" aria-label="Adjuntar archivo" data-help="attach">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5V6H9v9.5a3 3 0 006 0V5c0-2.21 1.79-4 4-4s4 1.79 4 4v9.5a2.5 2.5 0 01-5 0V5h-1.5z"/></svg>
+    </button>
+    <button type="button" class="composer__icon-btn" data-tooltip="Insertar enlace" aria-label="Insertar enlace">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+    </button>
+    <button type="button" class="composer__icon-btn" data-tooltip="Emoticones" aria-label="Insertar emoticón">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+    </button>
+    <div class="composer__spacer"></div>
+    <button type="button" class="composer__icon-btn" id="btn-labels" data-tooltip="Etiquetas" aria-label="Aplicar etiquetas" aria-expanded="false" data-help="labels">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+    </button>
+    <button type="button" class="composer__icon-btn" id="btn-save-draft" data-tooltip="Guardar borrador" aria-label="Guardar borrador" data-help="save-draft">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+    </button>
+    <button type="button" class="composer__btn-delete" id="btn-discard" data-tooltip="Descartar" aria-label="Descartar borrador" data-help="discard">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+    </button>
+  </footer>
+  <div class="composer__label-menu" id="label-menu" role="menu" aria-label="Seleccionar etiquetas"></div>
+</section>
+
+<!-- SELECTOR DE ARCHIVOS -->
+<div class="file-picker" id="file-picker" role="dialog" aria-label="Seleccionar archivo para adjuntar">
+  <div class="file-picker__title">Adjuntar archivo</div>
+  <div id="file-picker-list"></div>
+</div>
+
+<!-- TOGGLE MISIONES -->
+<button class="missions-toggle" id="missions-toggle" aria-label="Abrir panel de misiones" title="Misiones" data-help="missions">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
+  <span class="missions-toggle__badge" id="missions-badge">4</span>
+</button>
+
+<!-- PANEL DE MISIONES -->
+<aside class="missions-panel" id="missions-panel" hidden role="region" aria-label="Panel de misiones guiadas">
+  <header class="missions-panel__header">
+    <div class="missions-panel__title">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>
+      <span>Misiones guiadas</span>
+    </div>
+    <span class="missions-panel__progress" id="missions-progress">0 / 4</span>
+    <button class="missions-panel__close" id="missions-close" aria-label="Cerrar panel de misiones">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </header>
+  <div class="missions-panel__body" id="missions-body" aria-live="polite"></div>
+</aside>
+
+<!-- POPOVER DE AYUDA -->
+<div class="help-popover" id="help-popover" role="dialog" aria-modal="false" aria-labelledby="help-popover-title" hidden>
+  <div class="help-popover__arrow" id="help-popover-arrow"></div>
+  <header class="help-popover__header">
+    <div class="help-popover__title">
+      <span class="help-popover__title-icon" aria-hidden="true">?</span>
+      <span id="help-popover-title">Ayuda</span>
+    </div>
+    <button class="help-popover__close" id="help-popover-close" aria-label="Cerrar ayuda">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    </button>
+  </header>
+  <div class="help-popover__body" id="help-popover-body"></div>
+  <div class="help-popover__footer">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    <span>Consejo: presioná <kbd style="background:#fff;padding:1px 4px;border-radius:3px;border:1px solid #ccc;font-family:inherit;font-size:10px">Esc</kbd> para cerrar</span>
+  </div>
+</div>
+
+<!-- MODAL DE TRIVIA (CAPA 7) -->
+<div class="trivia-overlay" id="trivia-overlay" role="dialog" aria-modal="true" aria-labelledby="trivia-title">
+  <div class="trivia-modal">
+    <header class="trivia-header">
+      <div class="trivia-header__content">
+        <div class="trivia-header__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div>
+          <h2 class="trivia-header__title" id="trivia-title">Trivia final</h2>
+          <div class="trivia-header__subtitle">Poné a prueba lo que aprendiste</div>
+        </div>
+      </div>
+      <button class="trivia-header__close" id="trivia-close" aria-label="Cerrar trivia">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </header>
+    <div class="trivia-progress">
+      <span class="trivia-progress__label" id="trivia-progress-label">Pregunta 1 de 3</span>
+      <div class="trivia-progress__bar">
+        <div class="trivia-progress__fill" id="trivia-progress-fill" style="width:33.33%"></div>
+      </div>
+    </div>
+    <div class="trivia-body" id="trivia-body"></div>
+    <footer class="trivia-footer" id="trivia-footer">
+      <button type="button" class="trivia-btn trivia-btn--primary" id="trivia-next" disabled>
+        Siguiente pregunta
+        <svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- BARRA DE ACCESIBILIDAD (CAPA 6) -->
+<div class="a11y-bar" role="toolbar" aria-label="Opciones de accesibilidad">
+  <span class="a11y-bar__label" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+    Accesibilidad
+  </span>
+  <button type="button" class="a11y-toggle" id="toggle-dyslexia" aria-pressed="false" aria-label="Activar modo dislexia: tipografía amigable y mayor espaciado">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.87 13.09l-1.79-5.12h-.03c-.03.1-.05.21-.08.31l-1.79 5.12-.04.11h-.95l-2.19-6.5h.96l1.69 5.28 1.8-5.28h.88l1.8 5.28 1.69-5.28h.96l-2.19 6.5h-.92l-.04-.11zM3 19h18v-2H3v2zM3 5v2h18V5H3z"/></svg>
+    Modo dislexia
+  </button>
+  <button type="button" class="a11y-toggle" id="toggle-contrast" aria-pressed="false" aria-label="Activar modo alto contraste: fondo negro con texto amarillo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+    Alto contraste
+  </button>
+</div>
+
+<!-- TOAST Y BANNER -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="edu-banner" role="status" aria-label="Aviso educativo">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+  Simulador educativo — Capa 8 activa (Restricciones técnicas transversales aplicadas)
+</div>
+
+<!-- ==========================================================================
+     CAPA 1: MODELO DE DATOS (Estado en memoria, sin localStorage)
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  const user=Object.freeze({id:'user-lucia',name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar',initials:'LM',avatarColor:'#1a73e8'});
+  const folders=Object.freeze([
+    {id:'inbox',name:'Recibidos',icon:'inbox',system:true},{id:'starred',name:'Destacados',icon:'star',system:true},
+    {id:'snoozed',name:'Pospuestos',icon:'clock',system:true},{id:'important',name:'Importantes',icon:'label',system:true},
+    {id:'sent',name:'Enviados',icon:'send',system:true},{id:'drafts',name:'Borradores',icon:'file',system:true},
+    {id:'spam',name:'Spam',icon:'warning',system:true},{id:'trash',name:'Papelera',icon:'trash',system:true}
+  ]);
+  const labels=Object.freeze([{id:'label-escuela',name:'Escuela',color:'#1a73e8'},{id:'label-proyectos',name:'Proyectos',color:'#34a853'}]);
+  const attachments=Object.freeze([
+    {id:'att-1',name:'trabajo_practico.pdf',type:'application/pdf',size:1240000,sizeHuman:'1.2 MB',icon:'pdf'},
+    {id:'att-2',name:'foto.jpg',type:'image/jpeg',size:845000,sizeHuman:'845 KB',icon:'image'},
+    {id:'att-3',name:'notas.docx',type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',size:52000,sizeHuman:'52 KB',icon:'doc'}
+  ]);
+  const mails=[
+    {id:'mail-001',from:{name:'Prof. García',email:'garcia.historia@escuela.edu.ar'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'},{name:'4to B',email:'4to-b@escuela.edu.ar'}],cc:[],bcc:[],subject:'Entrega del trabajo práctico de Historia',body:'Estimados alumnos de 4to B:\n\nLes recuerdo que la fecha límite para la entrega del trabajo práctico sobre la Revolución Francesa es el viernes 20 de junio a las 23:59 hs.\n\nRequisitos:\n• Formato PDF\n• Extensión máxima: 5 carillas\n• Enviar por correo con asunto: "TP Historia - [Apellido]"\n\nCualquier duda, me escriben.\n\nSaludos,\nProf. García',folder:'inbox',isRead:false,isStarred:false,labels:['label-escuela'],attachments:[],date:'2025-06-18T10:32:00',snippet:'Recuerden que la fecha límite es el viernes 20 a las 23:59. El formato debe ser PDF y se envía por este medio…',category:'primary'},
+    {id:'mail-002',from:{name:'Campus Virtual',email:'no-reply@campus.escuela.edu.ar'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'Nueva calificación publicada en Matemática',body:'Hola Lucía,\n\nSe publicó la nota del examen parcial de Matemática del 12/06. Ingresá al campus para ver el detalle de tu desempeño y la corrección del profesor.\n\nMateria: Matemática - 4to año\nEvaluación: Parcial N° 2\n\nEquipo del Campus Virtual',folder:'inbox',isRead:false,isStarred:true,labels:['label-escuela'],attachments:[],date:'2025-06-18T09:15:00',snippet:'Se publicó la nota del examen parcial del 12/06. Ingresá al campus para ver el detalle de tu desempeño…',category:'primary'},
+    {id:'mail-003',from:{name:'Martina López',email:'martina.lopez@escuela.edu.ar'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'},{name:'Tomás Ruiz',email:'tomas.ruiz@escuela.edu.ar'}],cc:[{name:'Sofía Pérez',email:'sofia.perez@escuela.edu.ar'},{name:'Joaquín Díaz',email:'joaquin.diaz@escuela.edu.ar'}],bcc:[],subject:'Grupo para el proyecto de Biología',body:'¡Hola Lu!\n\nYa somos 3 en el grupo (Tomás, Sofi y yo). ¿Te sumás? Nos falta definir el tema del ecosistema. Pensé en humedales porque hay mucha info y podemos sacar fotos en la reserva.\n\nContame si podés y pasamos los datos de contacto del grupo.\n\nAbrazo,\nMarti',folder:'inbox',isRead:false,isStarred:false,labels:['label-escuela','label-proyectos'],attachments:[],date:'2025-06-18T08:47:00',snippet:'¡Hola Lu! Ya somos 3 en el grupo. ¿Te sumás? Nos falta definir el tema del ecosistema. Pensé en humedales…',category:'primary'},
+    {id:'mail-004',from:{name:'Preceptoría 4to B',email:'preceptoria.4b@escuela.edu.ar'},to:[{name:'4to B',email:'4to-b@escuela.edu.ar'}],cc:[],bcc:[],subject:'Cambio de aula para el jueves',body:'Se informa a los alumnos de 4to B que el jueves 19 de junio las clases de Química y Física se dictarán en el laboratorio 2 por obras en el aula habitual.\n\nTraer guardapolvo y elementos de laboratorio.\n\nPreceptoría 4to B',folder:'inbox',isRead:false,isStarred:false,labels:['label-escuela'],attachments:[],date:'2025-06-17T18:20:00',snippet:'Se informa que el jueves 19 las clases de Química y Física se dictarán en el laboratorio 2 por obras en…',category:'primary'},
+    {id:'mail-005',from:{name:'Google Drive',email:'drive-shares-dm@google.com'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'"TP Historia - Revolución Francesa" compartido contigo',body:'Tomás Ruiz te compartió un documento.\n\n"Acá está la parte que me tocó, revisá si está bien la bibliografía y el formato de citas APA."\n\nArchivo: TP_Historia_Revolucion_Francesa.docx',folder:'inbox',isRead:true,isStarred:false,labels:['label-escuela'],attachments:['att-3'],date:'2025-06-17T16:05:00',snippet:'Tomás Ruiz te compartió un documento. "Acá está la parte que me tocó, revisá si está bien la bibliografía"…',category:'primary'},
+    {id:'mail-006',from:{name:'Biblioteca Escolar',email:'biblioteca@escuela.edu.ar'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'Recordatorio: devolución de libro pendiente',body:'Estimada Lucía:\n\nTenés un préstamo vencido: "Cien años de soledad" de G. García Márquez.\nPor favor devolvelo antes del 22/06 para evitar la suspensión del servicio.\n\nBiblioteca Escolar',folder:'inbox',isRead:true,isStarred:false,labels:[],attachments:[],date:'2025-06-17T11:30:00',snippet:'Tenés un préstamo vencido: "Cien años de soledad" de G. García Márquez. Por favor devolvelo antes del 22/06…',category:'primary'},
+    {id:'mail-007',from:{name:'Spotify',email:'no-reply@spotify.com'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'Tu resumen semanal está listo 🎵',body:'Descubrí las canciones más escuchadas de tu semana.\n\nEste mes escuchaste 1.240 minutos de música.\nTu artista top: Dua Lipa.\nTu canción top: "Dance The Night".\n\nSpotify',folder:'inbox',isRead:true,isStarred:false,labels:[],attachments:[],date:'2025-06-16T09:00:00',snippet:'Descubrí las canciones más escuchadas de tu semana. Este mes escuchaste 1.240 minutos de música…',category:'promo'},
+    {id:'mail-008',from:{name:'Instagram',email:'no-reply@mail.instagram.com'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'A 3 personas les gustó tu publicación',body:'A marti_lopez, tomas.r y 1 persona más les gustó tu foto.\n\nMirá quién más interactuó con tu perfil esta semana.\n\nInstagram',folder:'inbox',isRead:true,isStarred:false,labels:[],attachments:[],date:'2025-06-15T22:14:00',snippet:'A marti_lopez, tomas.r y 1 persona más les gustó tu foto. Mirá quién más interactuó con tu perfil…',category:'social'},
+    {id:'mail-009',from:{name:'Centro de Estudiantes',email:'centro.estudiantes@escuela.edu.ar'},to:[{name:'Todos los alumnos',email:'alumnos@escuela.edu.ar'}],cc:[],bcc:[],subject:'¡Kermesse solidaria el 28 de junio!',body:'¡Hola a todos!\n\nSe viene la kermesse anual del 28 de junio. Necesitamos voluntarios para el stand de 4to año. Anotate respondiendo a este correo.\n\n¡Los esperamos!\n\nCentro de Estudiantes',folder:'inbox',isRead:true,isStarred:true,labels:['label-escuela'],attachments:[],date:'2025-06-15T14:00:00',snippet:'Se viene la kermesse anual. Necesitamos voluntarios para el stand de 4to. Anotate respondiendo a este correo…',category:'primary'},
+    {id:'mail-010',from:{name:'Duolingo',email:'info@duolingo.com'},to:[{name:'Lucía Méndez',email:'lucia.mendez@escuela.edu.ar'}],cc:[],bcc:[],subject:'🔥 ¡Tu racha de 12 días está en peligro!',body:'No pierdas tu racha. Practicá inglés hoy y mantené tu progreso.\n\nSolo 5 minutos son suficientes.\n\nDuolingo',folder:'inbox',isRead:true,isStarred:false,labels:[],attachments:[],date:'2025-06-14T08:00:00',snippet:'No pierdas tu racha. Practicá inglés hoy y mantené tu progreso. Solo 5 minutos son suficientes…',category:'promo'}
+  ];
+  const missions=[
+    {id:'mission-1',title:'Misión 1: Archivar un correo',description:'El correo del <strong>Prof. García</strong> ya lo leíste. Archivá ese correo para mantener tu bandeja ordenada. (Pista: pasá el mouse sobre el correo y usá el botón de archivar 📥).',status:'pending',targetMailId:'mail-001'},
+    {id:'mission-2',title:'Misión 2: Etiquetar un correo',description:'El correo del <strong>Campus Virtual</strong> es importante. Aplicale la etiqueta <strong>"Escuela"</strong> para encontrarlo rápido después. (Pista: abrilo y usá el botón de etiquetas 🏷️).',status:'pending',targetMailId:'mail-002'},
+    {id:'mission-3',title:'Misión 3: Responder a todos',description:'Respondé al correo de <strong>Martina López</strong> usando <strong>"Responder a todos"</strong> para que todos los compañeros del grupo reciban tu mensaje. Escribí al menos una línea en el cuerpo.',status:'pending',targetMailId:'mail-003'},
+    {id:'mission-4',title:'Misión 4: Enviar con adjunto',description:'Redactá un correo nuevo dirigido a <strong>preceptoria.4b@escuela.edu.ar</strong> con el archivo <strong>trabajo_practico.pdf</strong> adjuntado. Escribí un asunto y cuerpo.',status:'pending'}
+  ];
+  const ui={currentFolder:'inbox',currentMailId:null,selectedMailIds:[],searchQuery:'',activeTab:'primary',composerOpen:false,composerMode:'new',composerReplyToId:null,composerAttachments:[],composerLabels:[],missionsPanelOpen:true};
+
+  window.GmailApp=Object.freeze({
+    user:user,folders:folders,labels:labels,attachments:attachments,
+    state:{mails:mails,missions:missions,ui:ui},
+    getMailById:function(id){return mails.find(function(m){return m.id===id})},
+    getMailsInFolder:function(folderId){return mails.filter(function(m){return m.folder===folderId})},
+    getUnreadCount:function(folderId){return mails.filter(function(m){return m.folder===folderId&&!m.isRead}).length},
+    getMissionById:function(id){return missions.find(function(m){return m.id===id})}
+  });
+})();
+</script>
+
+<!-- ==========================================================================
+     CAPA 5: DICCIONARIO DE AYUDA CONTEXTUAL (Separado para fácil edición)
+     ========================================================================== -->
+<script>
+window.HELP_CONTENT = {
+  'compose':{title:'Botón Redactar',body:'<p>Abre el <strong>compositor de correo</strong>, donde podés escribir un mensaje nuevo.</p><p>Todo correo necesita al menos:</p><ul><li>Un <strong>destinatario</strong> (campo "Para")</li><li>Un <strong>asunto</strong> (breve descripción del tema)</li><li>Un <strong>cuerpo</strong> (el mensaje en sí)</li></ul>'},
+  'to':{title:'Campo "Para"',body:'<p>Acá va la dirección de correo del <strong>destinatario principal</strong>, es decir, la persona a quien va dirigido el mensaje.</p><p>Podés agregar varios separándolos con coma: <code>ana@mail.com, juan@mail.com</code></p><p><strong>Importante:</strong> todos los que estén en "Para" verán las direcciones de los demás.</p>'},
+  'cc':{title:'Campo "Cc" (Con copia)',body:'<p><strong>Cc</strong> significa <em>"Con copia"</em> (del inglés <em>Carbon Copy</em>).</p><p>Se usa para enviar el correo a personas que deben <strong>estar informadas</strong> pero no son las destinatarias principales.</p><p>Todos los destinatarios (Para y Cc) <strong>pueden ver</strong> las direcciones de los demás.</p>'},
+  'bcc':{title:'Campo "Cco" (Con copia oculta)',body:'<p><strong>Cco</strong> significa <em>"Con copia oculta"</em> (<em>Blind Carbon Copy</em>).</p><p>Los destinatarios en Cco <strong>reciben el correo pero nadie más puede ver sus direcciones</strong>.</p><p>Útil para proteger la privacidad cuando enviás a muchas personas que no se conocen entre sí.</p>'},
+  'subject':{title:'Asunto del correo',body:'<p>Es un <strong>resumen breve</strong> (idealmente 5-10 palabras) del contenido del mensaje.</p><p>Un buen asunto ayuda al destinatario a:</p><ul><li>Entender de qué se trata antes de abrirlo</li><li>Encontrarlo después con el buscador</li><li>Decidir si es urgente o no</li></ul><p><strong>Evitá</strong> asuntos vacíos o demasiado genéricos como "Hola" o "Consulta".</p>'},
+  'body':{title:'Cuerpo del mensaje',body:'<p>Es el <strong>contenido principal</strong> del correo, donde desarrollás tu mensaje.</p><p>Consejos para un buen correo:</p><ul><li><strong>Saludo</strong> inicial (Hola, Estimado/a, etc.)</li><li><strong>Cuerpo</strong> claro y organizado</li><li><strong>Despedida</strong> (Saludos, Atentamente, etc.)</li><li><strong>Firma</strong> con tu nombre</li></ul>'},
+  'send':{title:'Botón Enviar',body:'<p>Envía el correo a todos los destinatarios indicados.</p><p>Antes de enviar, verificá:</p><ul><li>Destinatario correcto</li><li>Asunto completo</li><li>Ortografía del cuerpo</li><li>Archivos adjuntos (si corresponde)</li></ul><p><strong>Una vez enviado, no se puede "desenviar".</strong> Podés eliminarlo de "Enviados", pero el destinatario ya lo recibió.</p>'},
+  'bold':{title:'Negrita',body:'<p>Aplica <strong>negrita</strong> al texto seleccionado para <strong>resaltarlo visualmente</strong>.</p><p>Úsala con moderación: demasiada negrita hace que nada destaque.</p><p>Ideal para: fechas límite, nombres propios, puntos clave.</p>'},
+  'italic':{title:'Itálica',body:'<p>Aplica <em>itálica</em> al texto seleccionado.</p><p>Se usa para:</p><ul><li>Palabras en otro idioma</li><li>Títulos de libros, películas, obras</li><li>Énfasis suave (menos fuerte que la negrita)</li></ul>'},
+  'attach':{title:'Adjuntar archivo',body:'<p>Permite <strong>adjuntar un archivo</strong> al correo (PDF, imagen, documento, etc.).</p><p>Cuando adjuntás algo:</p><ul><li>El archivo viaja junto con el correo</li><li>El destinatario podrá descargarlo</li><li>Hay límites de tamaño (generalmente 25 MB)</li></ul><p><strong>Consejo:</strong> si el archivo es muy pesado, usá un enlace a Drive en su lugar.</p>'},
+  'labels':{title:'Etiquetas',body:'<p>Las <strong>etiquetas</strong> son categorías personalizables que podés aplicar a los correos para organizarlos.</p><p>A diferencia de las carpetas, un correo puede tener <strong>varias etiquetas a la vez</strong>.</p><p>Ejemplos útiles: "Escuela", "Proyectos", "Urgente", "Personal".</p>'},
+  'save-draft':{title:'Guardar borrador',body:'<p>Guarda el correo actual como <strong>borrador</strong> para terminarlo más tarde.</p><p>Los borradores se guardan en la carpeta "Borradores" y no se envían.</p><p>Útil cuando:</p><ul><li>Necesitás más tiempo para escribir</li><li>Esperás información para completar el mensaje</li><li>Querés revisar antes de enviar</li></ul>'},
+  'discard':{title:'Descartar borrador',body:'<p><strong>Elimina</strong> el correo que estás escribiendo sin enviarlo.</p><p>⚠️ <strong>Esta acción no se puede deshacer.</strong> Todo lo escrito se perderá.</p><p>Si no estás seguro, usá "Guardar borrador" en su lugar.</p>'},
+  'folder-inbox':{title:'Recibidos (Inbox)',body:'<p>Es tu <strong>bandeja de entrada principal</strong>, donde llegan todos los correos nuevos.</p><p>Los correos no leídos aparecen en <strong>negrita</strong>.</p><p>Consejo: revisá tu bandeja regularmente y archivé o eliminá lo que ya no necesites.</p>'},
+  'folder-starred':{title:'Destacados',body:'<p>Muestra los correos que marcaste con una <strong>estrella ⭐</strong>.</p><p>Es útil para señalar correos importantes que querés encontrar rápido después, sin moverlos de su carpeta original.</p>'},
+  'folder-snoozed':{title:'Pospuestos',body:'<p>Los correos <strong>pospuestos</strong> desaparecen de tu bandeja y <strong>vuelven automáticamente</strong> en la fecha que elijas.</p><p>Ideal para: "No puedo responder ahora, recordámelo mañana".</p>'},
+  'folder-important':{title:'Importantes',body:'<p>Gmail marca automáticamente algunos correos como importantes según patrones (remitentes frecuentes, palabras clave, etc.).</p><p>También podés marcarlos manualmente con el ícono de etiqueta.</p>'},
+  'folder-sent':{title:'Enviados',body:'<p>Aquí se guardan <strong>todos los correos que enviaste</strong>.</p><p>Es útil para:</p><ul><li>Recordar qué enviaste y a quién</li><li>Reenviar un correo anterior</li><li>Verificar que un mensaje salió correctamente</li></ul>'},
+  'folder-drafts':{title:'Borradores',body:'<p>Contiene los correos que <strong>empezaste a escribir pero aún no enviaste</strong>.</p><p>Podés abrirlos, terminarlos y enviarlos cuando quieras.</p><p>Los borradores se guardan automáticamente mientras escribís.</p>'},
+  'folder-spam':{title:'Spam (correo no deseado)',body:'<p>Aquí llegan los correos <strong>publicitarios, sospechosos o no solicitados</strong>.</p><p>Gmail los filtra automáticamente, pero a veces algún correo legítimo puede caer acá (falso positivo).</p><p><strong>Revisá periódicamente</strong> por si hay algo importante.</p>'},
+  'folder-trash':{title:'Papelera',body:'<p>Los correos eliminados van acá y se <strong>borran automáticamente después de 30 días</strong>.</p><p>Si borraste algo por error, podés recuperarlo desde la Papelera antes de que se elimine definitivamente.</p>'},
+  'label-label-escuela':{title:'Etiqueta "Escuela"',body:'<p>Etiqueta personalizada para agrupar todos los correos relacionados con la <strong>escuela</strong>: tareas, avisos de profesores, notas, etc.</p><p>Podés aplicarla a cualquier correo haciendo clic en el ícono de etiqueta 🏷️.</p>'},
+  'label-label-proyectos':{title:'Etiqueta "Proyectos"',body:'<p>Etiqueta personalizada para marcar correos relacionados con <strong>proyectos grupales</strong> o trabajos de largo plazo.</p><p>Ideal para no perder de vista los trabajos en equipo.</p>'},
+  'action-archive':{title:'Archivar correo',body:'<p><strong>Archivar</strong> quita el correo de tu bandeja de entrada <strong>sin eliminarlo</strong>.</p><p>El correo sigue existiendo: podés encontrarlo con el buscador o en "Todos".</p><p>Es la mejor forma de mantener tu bandeja limpia sin perder nada importante.</p>'},
+  'action-delete':{title:'Eliminar correo',body:'<p>Mueve el correo a la <strong>Papelera</strong>, donde permanecerá 30 días antes de borrarse definitivamente.</p><p>Usalo para correos que <strong>seguramente no vas a necesitar</strong> más (publicidad, avisos viejos, etc.).</p>'},
+  'action-toggleRead':{title:'Marcar como leído / no leído',body:'<p>Cambia el estado del correo entre <strong>leído</strong> y <strong>no leído</strong>.</p><p>Los correos no leídos aparecen en <strong>negrita</strong> y con contador en la carpeta.</p><p>Útil si querés marcar un correo para recordarte que tenés que responderlo.</p>'},
+  'action-star':{title:'Destacar con estrella',body:'<p>Marca el correo con una <strong>estrella ⭐</strong> para destacarlo visualmente.</p><p>Los correos destacados aparecen en la carpeta "Destacados" y son fáciles de encontrar.</p><p>Ideal para: tareas pendientes, correos importantes, recordatorios.</p>'},
+  'tab-primary':{title:'Pestaña Principal',body:'<p>Muestra los correos <strong>personales y importantes</strong>: mensajes de compañeros, profesores, avisos de la escuela, etc.</p><p>Es la pestaña por defecto y donde deberías prestar más atención.</p>'},
+  'tab-social':{title:'Pestaña Social',body:'<p>Agrupa correos de <strong>redes sociales y mensajería</strong>: notificaciones de Instagram, WhatsApp, Facebook, etc.</p><p>Suelen ser menos urgentes que los de la pestaña Principal.</p>'},
+  'tab-promo':{title:'Pestaña Promociones',body:'<p>Contiene correos <strong>publicitarios y promocionales</strong>: ofertas, newsletters, descuentos.</p><p>En general podés ignorarlos o darte de baja si no te interesan.</p>'},
+  'missions':{title:'Panel de misiones',body:'<p>Este panel te guía paso a paso para aprender a usar Gmail.</p><p>Cada misión se <strong>desbloquea</strong> cuando completás la anterior.</p><p>Los íconos indican el estado:</p><ul><li>🔵 <strong>Azul</strong>: misión actual</li><li>🟢 <strong>Verde</strong>: completada</li><li>⚫ <strong>Gris</strong>: bloqueada</li></ul><p>Si te trabás, hacé clic en el <strong>?</strong> de cualquier botón para recibir ayuda contextual.</p>'},
+  'refresh':{title:'Actualizar bandeja',body:'<p>Vuelve a cargar la lista de correos para ver si llegaron mensajes nuevos.</p><p>En este simulador educativo los correos son estáticos, pero en Gmail real esta acción es clave para no perderte nada.</p>'}
+};
+</script>
+
+<!-- ==========================================================================
+     CAPA 7: PREGUNTAS DE TRIVIA (Separado para fácil edición)
+     ========================================================================== -->
+<script>
+window.TRIVIA_QUESTIONS = [
+  {
+    id: 'q1',
+    question: '¿Cuál es la diferencia principal entre archivar y eliminar un correo?',
+    options: [
+      { id: 'a', text: 'Archivar lo borra permanentemente, eliminar lo guarda' },
+      { id: 'b', text: 'Archivar lo quita de la bandeja pero lo guarda; eliminar lo mueve a la Papelera' },
+      { id: 'c', text: 'Son exactamente lo mismo, solo cambia el nombre del botón' },
+      { id: 'd', text: 'Archivar lo envía a Spam, eliminar lo borra para siempre' }
+    ],
+    correct: 'b',
+    explanation: '<strong>Archivar</strong> es como "guardar en una caja": el correo se quita de tu bandeja de entrada pero sigue existiendo. Podés encontrarlo usando el buscador o yendo a "Todos". <strong>Eliminar</strong>, en cambio, mueve el correo a la Papelera, donde permanece 30 días antes de borrarse definitivamente. Archivar es ideal para mantener tu bandeja ordenada sin perder información importante.'
+  },
+  {
+    id: 'q2',
+    question: 'Si recibís un correo grupal con 5 compañeros en CC y querés que todos sepan tu respuesta, ¿qué botón debés usar?',
+    options: [
+      { id: 'a', text: 'Responder (envía solo al remitente original)' },
+      { id: 'b', text: 'Responder a todos (envía al remitente y a todos los que estaban en Para y CC)' },
+      { id: 'c', text: 'Reenviar (envía el correo a nuevas personas)' },
+      { id: 'd', text: 'Nuevo mensaje (escribo desde cero y agrego a todos manualmente)' }
+    ],
+    correct: 'b',
+    explanation: '<strong>"Responder"</strong> solo envía tu mensaje al remitente original del correo. <strong>"Responder a todos"</strong> incluye al remitente Y a todos los que estaban en los campos "Para" y "CC", asegurando que todo el grupo reciba tu respuesta. Es la opción correcta cuando querés mantener informados a todos los participantes de una conversación grupal, como un trabajo en equipo o una consulta con varios compañeros.'
+  },
+  {
+    id: 'q3',
+    question: '¿Por qué es importante revisar el archivo adjunto antes de enviar un correo?',
+    options: [
+      { id: 'a', text: 'Solo importa si el archivo es muy grande (más de 10 MB)' },
+      { id: 'b', text: 'Para asegurarte de que es el archivo correcto, que se adjuntó bien y que el destinatario pueda abrirlo' },
+      { id: 'c', text: 'No es importante, Gmail verifica todo automáticamente' },
+      { id: 'd', text: 'Solo importa si el destinatario es tu profesor' }
+    ],
+    correct: 'b',
+    explanation: 'Antes de enviar un correo con adjuntos, siempre debés verificar tres cosas: <strong>1)</strong> ¿Es el archivo correcto? (no la versión vieja o un archivo distinto). <strong>2)</strong> ¿Se adjuntó correctamente? (aparece en la lista de adjuntos del compositor). <strong>3)</strong> ¿El formato es legible para el destinatario? (un PDF se puede abrir en cualquier dispositivo, pero un archivo de Word puede dar problemas si el destinatario no tiene el programa). Un error muy común es olvidar adjuntar el archivo o adjuntar la versión equivocada. ¡Revisar antes de enviar te ahorra problemas!'
+  }
+];
+</script>
+
+<!-- ==========================================================================
+     CAPAS 2, 3, 4: RENDERIZADO, INTERACCIONES Y MISIONES
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  const App=window.GmailApp;
+  const ICONS={
+    inbox:'<path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/>',
+    star:'<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>',
+    clock:'<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>',
+    label:'<path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>',
+    send:'<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>',
+    file:'<path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>',
+    warning:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+    trash:'<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>',
+    archive:'<path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.82-1h12l.94 1H5.12z"/>',
+    markRead:'<path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 11l-4-4 1.41-1.41L11 10.17l6.59-6.59L19 5l-8 8z"/>',
+    markUnread:'<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>',
+    back:'<path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>',
+    reply:'<path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>',
+    replyAll:'<path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>',
+    check:'<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>'
+  };
+
+  function svgIcon(name){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[name]||ICONS.inbox)+'</svg>'}
+  function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+  function formatDate(iso){
+    const d=new Date(iso),now=new Date();
+    if(d.toDateString()===now.toDateString())return d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    const diff=(now-d)/(1000*60*60*24);
+    if(diff<7)return d.toLocaleDateString('es-AR',{weekday:'short'});
+    return d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'});
+  }
+  function formatDateTime(iso){return new Date(iso).toLocaleString('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+  function getInitials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+  function nextId(){return 'mail-'+Date.now()+'-'+Math.floor(Math.random()*1000)}
+
+  let toastTimer=null;
+  function showToast(msg,type){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast toast--visible'+(type?' toast--'+type:'');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{t.classList.remove('toast--visible')},3000);
+  }
+
+  function renderUserInfo(){
+    const u=App.user;
+    const av=document.getElementById('user-avatar');
+    const nm=document.getElementById('user-name');
+    const em=document.getElementById('user-email');
+    const ac=document.getElementById('user-account');
+    if(av){av.textContent=u.initials;av.style.background=u.avatarColor}
+    if(nm)nm.textContent=u.name;
+    if(em)em.textContent=u.email;
+    if(ac)ac.setAttribute('aria-label','Cuenta de usuario: '+u.name);
+  }
+
+  function renderSidebar(){
+    const fE=document.getElementById('sidebar-folders');
+    const lE=document.getElementById('sidebar-labels');
+    if(!fE||!lE)return;
+    fE.innerHTML=App.folders.map(f=>{
+      const isA=f.id===App.state.ui.currentFolder;
+      const un=App.getUnreadCount(f.id);
+      const cH=un>0?'<span class="sidebar__count" aria-label="'+un+' no leídos">'+un+'</span>':'';
+      return '<li><a href="#" class="sidebar__item'+(isA?' sidebar__item--active':'')+'" data-folder="'+escapeHtml(f.id)+'" data-help="folder-'+escapeHtml(f.id)+'" role="menuitem"'+(isA?' aria-current="page"':'')+' aria-label="'+escapeHtml(f.name)+(un>0?', '+un+' no leídos':'')+'">'+svgIcon(f.icon)+'<span>'+escapeHtml(f.name)+'</span>'+cH+'</a></li>';
+    }).join('');
+    lE.innerHTML=App.labels.map(l=>'<li><a href="#" class="sidebar__item" data-label="'+escapeHtml(l.id)+'" data-help="label-'+escapeHtml(l.id)+'" role="menuitem" aria-label="Etiqueta '+escapeHtml(l.name)+'"><span class="sidebar__label-dot" style="background:'+escapeHtml(l.color)+'" aria-hidden="true"></span><span>'+escapeHtml(l.name)+'</span></a></li>').join('');
+  }
+
+  function renderMailList(){
+    const lE=document.getElementById('mail-list');
+    const dE=document.getElementById('mail-detail');
+    if(!lE)return;
+    if(App.state.ui.currentMailId){
+      lE.style.display='none';
+      dE.classList.add('mail-detail--active');
+      renderMailDetail(App.state.ui.currentMailId);
+      return;
+    }
+    dE.classList.remove('mail-detail--active');
+    lE.style.display='';
+    const mails=App.getMailsInFolder(App.state.ui.currentFolder);
+    if(!mails.length){lE.innerHTML='<div style="padding:48px 24px;text-align:center;color:var(--text-secondary)"><p style="font-size:16px;font-weight:500">No hay correos en esta carpeta.</p></div>';return}
+    lE.innerHTML=mails.map(m=>{
+      const rc=m.isRead?'mail-row--read':'mail-row--unread';
+      const sc=m.isStarred?'mail-row__star--active':'';
+      const sl=m.isStarred?'Destacado':'No destacado';
+      const sn=escapeHtml(m.from.name);
+      const su=escapeHtml(m.subject);
+      const sp=escapeHtml(m.snippet);
+      const dt=formatDate(m.date);
+      const di=m.date.slice(0,10);
+      let lb='';
+      if(m.folder==='inbox'){
+        if(m.category==='social')lb='<span class="mail-row__label mail-row__label--social">Social</span>';
+        else if(m.category==='promo')lb='<span class="mail-row__label mail-row__label--promo">Promo</span>';
+      }
+      return '<article class="mail-row '+rc+'" role="listitem" data-mail-id="'+escapeHtml(m.id)+'" aria-label="Correo '+(m.isRead?'leído':'no leído')+' de '+sn+'"><div class="mail-row__check"><input type="checkbox" aria-label="Seleccionar correo de '+sn+'"></div><div class="mail-row__star '+sc+'" role="button" tabindex="0" aria-label="'+sl+'" aria-pressed="'+(m.isStarred?'true':'false')+'" data-help="action-star"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div><div class="mail-row__sender">'+sn+'</div><div class="mail-row__content">'+lb+'<span class="mail-row__subject">'+su+'</span><span class="mail-row__snippet">'+sp+'</span></div><time class="mail-row__date" datetime="'+di+'">'+dt+'</time><div class="mail-row__actions"><button class="mail-row__action-btn" data-action="archive" data-mail-id="'+escapeHtml(m.id)+'" aria-label="Archivar" title="Archivar" data-help="action-archive">'+svgIcon('archive')+'</button><button class="mail-row__action-btn" data-action="delete" data-mail-id="'+escapeHtml(m.id)+'" aria-label="Eliminar" title="Eliminar" data-help="action-delete">'+svgIcon('trash')+'</button><button class="mail-row__action-btn" data-action="toggleRead" data-mail-id="'+escapeHtml(m.id)+'" aria-label="'+(m.isRead?'Marcar no leído':'Marcar leído')+'" title="'+(m.isRead?'Marcar no leído':'Marcar leído')+'" data-help="action-toggleRead">'+svgIcon(m.isRead?'markUnread':'markRead')+'</button></div></article>';
+    }).join('');
+    const p=document.getElementById('pagination-text');
+    if(p)p.textContent='1–'+mails.length+' de '+mails.length;
+    const bp=document.getElementById('badge-primary');
+    if(bp){const up=mails.filter(m=>m.category==='primary'&&!m.isRead).length;bp.textContent=up;bp.setAttribute('aria-label',up+' nuevos')}
+  }
+
+  function renderMailDetail(id){
+    const dE=document.getElementById('mail-detail');
+    const m=App.getMailById(id);
+    if(!m||!dE)return;
+    const ini=getInitials(m.from.name);
+    const toStr=m.to.map(t=>escapeHtml(t.name)+' &lt;'+escapeHtml(t.email)+'&gt;').join(', ');
+    const ccStr=m.cc.length?'para '+m.cc.map(c=>escapeHtml(c.name)).join(', '):'';
+    const attsHtml=m.attachments.length?'<div class="mail-detail__attachments">'+m.attachments.map(aId=>{const a=App.attachments.find(x=>x.id===aId);return a?'<div class="mail-detail__attachment">'+svgIcon('file')+'<span>'+escapeHtml(a.name)+'</span><span style="color:var(--text-secondary);font-size:11px">('+a.sizeHuman+')</span></div>':''}).join('')+'</div>':'';
+    dE.innerHTML='<button class="mail-detail__back" id="btn-back">'+svgIcon('back')+'<span>Volver a '+escapeHtml(App.folders.find(f=>f.id===m.folder)?.name||'Recibidos')+'</span></button><div class="mail-detail__header"><h2 class="mail-detail__subject">'+escapeHtml(m.subject)+'</h2><div class="mail-detail__actions"><button class="toolbar__btn" data-action="archive" data-mail-id="'+escapeHtml(m.id)+'" aria-label="Archivar" title="Archivar" data-help="action-archive">'+svgIcon('archive')+'</button><button class="toolbar__btn" data-action="delete" data-mail-id="'+escapeHtml(m.id)+'" aria-label="Eliminar" title="Eliminar" data-help="action-delete">'+svgIcon('trash')+'</button></div></div><div class="mail-detail__from"><div class="mail-detail__avatar">'+escapeHtml(ini)+'</div><div class="mail-detail__sender-info"><div class="mail-detail__sender-name">'+escapeHtml(m.from.name)+'</div><div class="mail-detail__sender-email">&lt;'+escapeHtml(m.from.email)+'&gt;</div></div><time class="mail-detail__date" datetime="'+m.date.slice(0,10)+'">'+formatDateTime(m.date)+'</time></div><div class="mail-detail__recipients">para '+toStr+(ccStr?' '+ccStr:'')+'</div><div class="mail-detail__body">'+escapeHtml(m.body)+'</div>'+attsHtml+'<div class="mail-detail__reply-buttons"><button class="mail-detail__reply-btn" data-action="reply" data-mail-id="'+escapeHtml(m.id)+'">'+svgIcon('reply')+'<span>Responder</span></button><button class="mail-detail__reply-btn" data-action="replyAll" data-mail-id="'+escapeHtml(m.id)+'">'+svgIcon('replyAll')+'<span>Responder a todos</span></button></div>';
+  }
+
+  function openComposer(mode,replyToId){
+    const c=document.getElementById('composer');
+    const t=document.getElementById('composer-title');
+    App.state.ui.composerOpen=true;
+    App.state.ui.composerMode=mode||'new';
+    App.state.ui.composerReplyToId=replyToId||null;
+    App.state.ui.composerAttachments=[];
+    App.state.ui.composerLabels=[];
+    if(mode==='reply'||mode==='replyAll'){
+      const m=App.getMailById(replyToId);
+      if(m){
+        t.textContent='Re: '+m.subject;
+        document.getElementById('composer-subject').value='Re: '+m.subject;
+        if(mode==='reply'){
+          document.getElementById('composer-to').value=m.from.email;
+        }else{
+          const toAddrs=[m.from,...m.to.filter(x=>x.email!==App.user.email)];
+          const ccAddrs=m.cc.filter(x=>x.email!==App.user.email);
+          document.getElementById('composer-to').value=toAddrs.map(a=>a.email).join(', ');
+          if(ccAddrs.length){
+            document.getElementById('composer-cc').value=ccAddrs.map(a=>a.email).join(', ');
+            document.getElementById('composer-cc-row').classList.remove('composer__field--hidden');
+            document.getElementById('toggle-cc').setAttribute('aria-expanded','true');
+          }
+        }
+        document.getElementById('composer-body').value='\n\n---------- Mensaje original ----------\nDe: '+m.from.name+' <'+m.from.email+'>\nAsunto: '+m.subject+'\n\n'+m.body;
+      }
+    }else{
+      t.textContent='Nuevo mensaje';
+      document.getElementById('composer-to').value='';
+      document.getElementById('composer-cc').value='';
+      document.getElementById('composer-bcc').value='';
+      document.getElementById('composer-subject').value='';
+      document.getElementById('composer-body').value='';
+      document.getElementById('composer-cc-row').classList.add('composer__field--hidden');
+      document.getElementById('composer-bcc-row').classList.add('composer__field--hidden');
+      document.getElementById('toggle-cc').setAttribute('aria-expanded','false');
+      document.getElementById('toggle-bcc').setAttribute('aria-expanded','false');
+    }
+    renderComposerAttachments();
+    c.hidden=false;
+    setTimeout(()=>document.getElementById('composer-to').focus(),100);
+  }
+
+  function closeComposer(){
+    document.getElementById('composer').hidden=true;
+    App.state.ui.composerOpen=false;
+    App.state.ui.composerMode='new';
+    App.state.ui.composerReplyToId=null;
+    App.state.ui.composerAttachments=[];
+    App.state.ui.composerLabels=[];
+  }
+
+  function renderComposerAttachments(){
+    const c=document.getElementById('composer-attachments');
+    const atts=App.state.ui.composerAttachments;
+    if(!atts.length){c.hidden=true;c.innerHTML='';return}
+    c.hidden=false;
+    c.innerHTML=atts.map(id=>{
+      const a=App.attachments.find(x=>x.id===id);
+      return a?'<div class="composer__attachment"><span>'+svgIcon('file')+'</span><span>'+escapeHtml(a.name)+'</span><span style="color:var(--text-secondary);font-size:11px">('+a.sizeHuman+')</span><button class="composer__attachment-remove" data-remove-att="'+escapeHtml(id)+'" aria-label="Quitar '+escapeHtml(a.name)+'">'+svgIcon('trash')+'</button></div>':'';
+    }).join('');
+  }
+
+  function renderLabelMenu(){
+    const m=document.getElementById('label-menu');
+    m.innerHTML=App.labels.map(l=>{
+      const checked=App.state.ui.composerLabels.includes(l.id)?'checked':'';
+      return '<label class="composer__label-option"><input type="checkbox" data-label-id="'+escapeHtml(l.id)+'" '+checked+'><span class="sidebar__label-dot" style="background:'+escapeHtml(l.color)+'"></span><span>'+escapeHtml(l.name)+'</span></label>';
+    }).join('');
+  }
+
+  function openFilePicker(){
+    const fp=document.getElementById('file-picker');
+    const list=document.getElementById('file-picker-list');
+    list.innerHTML=App.attachments.map(a=>'<div class="file-picker__item" data-attach-id="'+escapeHtml(a.id)+'"><span>'+svgIcon('file')+'</span><div class="file-picker__item-info"><span class="file-picker__item-name">'+escapeHtml(a.name)+'</span><span class="file-picker__item-size">'+a.sizeHuman+'</span></div></div>').join('');
+    fp.classList.add('file-picker--open');
+  }
+
+  function closeFilePicker(){document.getElementById('file-picker').classList.remove('file-picker--open')}
+
+  function renderMissions(){
+    const body=document.getElementById('missions-body');
+    const prog=document.getElementById('missions-progress');
+    const badge=document.getElementById('missions-badge');
+    if(!body)return;
+    const completed=App.state.missions.filter(m=>m.status==='completed').length;
+    const pending=App.state.missions.filter(m=>m.status==='pending').length;
+    prog.textContent=completed+' / '+App.state.missions.length;
+    badge.textContent=pending;
+    badge.style.display=pending>0?'':'none';
+    let firstPending=true;
+    body.innerHTML=App.state.missions.map(m=>{
+      let cls='mission';
+      let statusLabel='Pendiente';
+      let iconContent=m.id.split('-')[1];
+      if(m.status==='completed'){cls+=' mission--completed';statusLabel='✓ Completada';iconContent=svgIcon('check')}
+      else if(firstPending){cls+=' mission--active';statusLabel='En curso';firstPending=false}
+      else{cls+=' mission--locked';statusLabel='Bloqueada';firstPending=false}
+      const fb=m._feedback||'';
+      const fbClass=m._feedbackType==='success'?'mission__feedback--success':m._feedbackType==='error'?'mission__feedback--error':'';
+      const fbVisible=fb?'mission__feedback--visible':'';
+      return '<div class="'+cls+'" data-mission="'+escapeHtml(m.id)+'"><div class="mission__header"><div class="mission__icon">'+iconContent+'</div><div class="mission__title">'+escapeHtml(m.title)+'</div><span class="mission__status">'+statusLabel+'</span></div><div class="mission__desc">'+m.description+'</div><div class="mission__feedback '+fbClass+' '+fbVisible+'">'+fb+'</div></div>';
+    }).join('');
+  }
+
+  function setMissionFeedback(missionId,msg,type){
+    const m=App.getMissionById(missionId);
+    if(!m)return;
+    m._feedback=msg;
+    m._feedbackType=type;
+    renderMissions();
+  }
+
+  function completeMission(missionId){
+    const m=App.getMissionById(missionId);
+    if(!m||m.status==='completed')return;
+    m.status='completed';
+    m._feedback='¡Excelente! Completaste esta misión. 🎉';
+    m._feedbackType='success';
+    showToast('¡Misión completada! '+m.title,'success');
+    renderMissions();
+    renderSidebar();
+    renderMailList();
+    checkAllMissionsComplete();
+  }
+
+  function validateMissions(){
+    const m1=App.getMissionById('mission-1');
+    if(m1&&m1.status==='pending'){
+      const target=App.getMailById(m1.targetMailId);
+      if(target&&target.folder!=='inbox')completeMission('mission-1');
+    }
+    const m2=App.getMissionById('mission-2');
+    if(m2&&m2.status==='pending'){
+      const m1=App.getMissionById('mission-1');
+      if(m1&&m1.status==='completed'){
+        const target=App.getMailById(m2.targetMailId);
+        if(target&&target.labels.includes('label-escuela'))completeMission('mission-2');
+      }
+    }
+  }
+
+  function validateMission3(replyToId,toVal,ccVal,subjectVal,bodyVal){
+    const m3=App.getMissionById('mission-3');
+    if(!m3||m3.status==='completed')return{valid:true,errors:[]};
+    const m2=App.getMissionById('mission-2');
+    if(m2&&m2.status!=='completed')return{valid:true,errors:[]};
+    if(replyToId!==m3.targetMailId)return{valid:true,errors:[]};
+    const original=App.getMailById(replyToId);
+    if(!original)return{valid:true,errors:[]};
+    const errors=[];
+    const expectedTo=[original.from.email];
+    const expectedCc=original.cc.map(c=>c.email);
+    const toList=toVal.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const ccList=ccVal.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const allRecipients=[...toList,...ccList];
+    const missingTo=expectedTo.filter(e=>!allRecipients.includes(e.toLowerCase()));
+    const missingCc=expectedCc.filter(e=>!allRecipients.includes(e.toLowerCase()));
+    if(missingTo.length||missingCc.length){
+      let msg='<strong>Destinatarios incompletos.</strong> ';
+      if(missingTo.length)msg+='Falta el remitente original ('+missingTo.join(', ')+'). ';
+      if(missingCc.length)msg+='Faltan los CC originales: '+missingCc.join(', ')+'. ';
+      msg+='Usá "Responder a todos" para incluirlos automáticamente.';
+      errors.push(msg);
+    }
+    if(!subjectVal.trim().toLowerCase().startsWith('re:'))errors.push('<strong>Asunto incorrecto.</strong> El asunto debe comenzar con <strong>"Re:"</strong> para indicar que es una respuesta.');
+    if(!bodyVal.trim())errors.push('<strong>Cuerpo vacío.</strong> Escribí al menos una línea en el cuerpo del mensaje.');
+    return{valid:errors.length===0,errors:errors};
+  }
+
+  function validateMission4(toVal,subjectVal,bodyVal,attachments){
+    const m4=App.getMissionById('mission-4');
+    if(!m4||m4.status==='completed')return{valid:true,errors:[]};
+    const m3=App.getMissionById('mission-3');
+    if(m3&&m3.status!=='completed')return{valid:true,errors:[]};
+    const errors=[];
+    const toList=toVal.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const expectedEmail='preceptoria.4b@escuela.edu.ar';
+    if(!toList.includes(expectedEmail))errors.push('<strong>Destinatario incorrecto.</strong> El correo debe enviarse a <strong>'+expectedEmail+'</strong>.');
+    const expectedAtt=App.attachments.find(a=>a.name==='trabajo_practico.pdf');
+    if(!attachments.includes(expectedAtt.id))errors.push('<strong>Falta el archivo adjunto.</strong> Debés adjuntar <strong>trabajo_practico.pdf</strong>.');
+    if(!subjectVal.trim())errors.push('<strong>Asunto vacío.</strong> Escribí un asunto para el correo.');
+    if(!bodyVal.trim())errors.push('<strong>Cuerpo vacío.</strong> Escribí el contenido del mensaje.');
+    return{valid:errors.length===0,errors:errors};
+  }
+
+  function archiveMail(id){
+    const m=App.getMailById(id);
+    if(!m)return;
+    m.folder='important';
+    m.isRead=true;
+    showToast('Correo archivado','success');
+    if(App.state.ui.currentMailId===id)App.state.ui.currentMailId=null;
+    renderMailList();
+    renderSidebar();
+    validateMissions();
+  }
+
+  function deleteMail(id){
+    const m=App.getMailById(id);
+    if(!m)return;
+    m.folder='trash';
+    showToast('Correo movido a Papelera');
+    if(App.state.ui.currentMailId===id)App.state.ui.currentMailId=null;
+    renderMailList();
+    renderSidebar();
+  }
+
+  function toggleRead(id){
+    const m=App.getMailById(id);
+    if(!m)return;
+    m.isRead=!m.isRead;
+    renderMailList();
+    renderSidebar();
+  }
+
+  function toggleStar(id){
+    const m=App.getMailById(id);
+    if(!m)return;
+    m.isStarred=!m.isStarred;
+    renderMailList();
+  }
+
+  function openMail(id){
+    const m=App.getMailById(id);
+    if(!m)return;
+    m.isRead=true;
+    App.state.ui.currentMailId=id;
+    renderMailList();
+    renderSidebar();
+    validateMissions();
+  }
+
+  function closeMail(){
+    App.state.ui.currentMailId=null;
+    renderMailList();
+  }
+
+  function changeFolder(folderId){
+    App.state.ui.currentFolder=folderId;
+    App.state.ui.currentMailId=null;
+    renderSidebar();
+    renderMailList();
+  }
+
+  function sendMail(){
+    const toVal=document.getElementById('composer-to').value.trim();
+    const ccVal=document.getElementById('composer-cc').value.trim();
+    const bccVal=document.getElementById('composer-bcc').value.trim();
+    const subjectVal=document.getElementById('composer-subject').value.trim();
+    const bodyVal=document.getElementById('composer-body').value;
+    const mode=App.state.ui.composerMode;
+    const replyToId=App.state.ui.composerReplyToId;
+    const attachments=App.state.ui.composerAttachments.slice();
+
+    if(mode==='replyAll'&&replyToId){
+      const v3=validateMission3(replyToId,toVal,ccVal,subjectVal,bodyVal);
+      if(!v3.valid){
+        setMissionFeedback('mission-3',v3.errors.join('<br><br>'),'error');
+        showToast('Corregí los errores de la Misión 3','error');
+        return;
+      }
+    }
+
+    if(mode==='new'){
+      const v4=validateMission4(toVal,subjectVal,bodyVal,attachments);
+      if(!v4.valid){
+        setMissionFeedback('mission-4',v4.errors.join('<br><br>'),'error');
+        showToast('Corregí los errores de la Misión 4','error');
+        return;
+      }
+    }
+
+    if(!toVal){showToast('Agregá al menos un destinatario','error');return}
+
+    const parseAddrs=s=>s.split(',').map(x=>x.trim()).filter(Boolean).map(e=>({name:e.split('@')[0],email:e}));
+    const newMail={
+      id:nextId(),
+      from:{name:App.user.name,email:App.user.email},
+      to:parseAddrs(toVal),
+      cc:ccVal?parseAddrs(ccVal):[],
+      bcc:bccVal?parseAddrs(bccVal):[],
+      subject:subjectVal||'(Sin asunto)',
+      body:bodyVal,
+      folder:'sent',
+      isRead:true,
+      isStarred:false,
+      labels:App.state.ui.composerLabels.slice(),
+      attachments:attachments,
+      date:new Date().toISOString(),
+      snippet:bodyVal.slice(0,100),
+      category:'primary'
+    };
+    App.state.mails.unshift(newMail);
+
+    if(mode==='replyAll'&&replyToId){
+      const m3=App.getMissionById('mission-3');
+      if(m3&&m3.status==='pending'&&replyToId===m3.targetMailId)completeMission('mission-3');
+    }
+    if(mode==='new'){
+      const m4=App.getMissionById('mission-4');
+      if(m4&&m4.status==='pending')completeMission('mission-4');
+    }
+
+    closeComposer();
+    showToast('Correo enviado','success');
+    renderMailList();
+    renderSidebar();
+  }
+
+  function attachEvents(){
+    document.getElementById('sidebar-folders').addEventListener('click',e=>{
+      const a=e.target.closest('[data-folder]');
+      if(a){e.preventDefault();changeFolder(a.dataset.folder)}
+    });
+    document.getElementById('btn-compose').addEventListener('click',()=>openComposer('new'));
+    document.getElementById('mail-list').addEventListener('click',e=>{
+      const star=e.target.closest('.mail-row__star');
+      if(star){e.stopPropagation();toggleStar(star.closest('.mail-row').dataset.mailId);return}
+      const act=e.target.closest('.mail-row__action-btn');
+      if(act){e.stopPropagation();const id=act.dataset.mailId;const a=act.dataset.action;if(a==='archive')archiveMail(id);else if(a==='delete')deleteMail(id);else if(a==='toggleRead')toggleRead(id);return}
+      const row=e.target.closest('.mail-row');
+      if(row&&!e.target.closest('input[type="checkbox"]'))openMail(row.dataset.mailId);
+    });
+    document.getElementById('mail-detail').addEventListener('click',e=>{
+      if(e.target.closest('#btn-back')){closeMail();return}
+      const act=e.target.closest('[data-action]');
+      if(act){const id=act.dataset.mailId;const a=act.dataset.action;if(a==='archive')archiveMail(id);else if(a==='delete')deleteMail(id);else if(a==='reply')openComposer('reply',id);else if(a==='replyAll')openComposer('replyAll',id)}
+    });
+    document.getElementById('composer-close').addEventListener('click',closeComposer);
+    document.getElementById('composer-minimize').addEventListener('click',()=>{showToast('Compositor minimizado (simulado)')});
+    document.getElementById('toggle-cc').addEventListener('click',e=>{const r=document.getElementById('composer-cc-row');r.classList.toggle('composer__field--hidden');e.target.setAttribute('aria-expanded',!r.classList.contains('composer__field--hidden'))});
+    document.getElementById('toggle-bcc').addEventListener('click',e=>{const r=document.getElementById('composer-bcc-row');r.classList.toggle('composer__field--hidden');e.target.setAttribute('aria-expanded',!r.classList.contains('composer__field--hidden'))});
+    document.getElementById('btn-send').addEventListener('click',sendMail);
+    document.getElementById('btn-discard').addEventListener('click',()=>{closeComposer();showToast('Borrador descartado')});
+    document.getElementById('btn-save-draft').addEventListener('click',()=>{showToast('Borrador guardado (simulado)','success')});
+    document.getElementById('btn-attach').addEventListener('click',e=>{e.stopPropagation();openFilePicker()});
+    document.getElementById('file-picker').addEventListener('click',e=>{
+      const it=e.target.closest('.file-picker__item');
+      if(it){
+        const id=it.dataset.attachId;
+        if(!App.state.ui.composerAttachments.includes(id)){
+          App.state.ui.composerAttachments.push(id);
+          renderComposerAttachments();
+          const a=App.attachments.find(x=>x.id===id);
+          showToast('"'+a.name+'" adjuntado','success');
+        }
+        closeFilePicker();
+      }
+    });
+    document.getElementById('composer-attachments').addEventListener('click',e=>{
+      const b=e.target.closest('[data-remove-att]');
+      if(b){
+        const id=b.dataset.removeAtt;
+        App.state.ui.composerAttachments=App.state.ui.composerAttachments.filter(x=>x!==id);
+        renderComposerAttachments();
+      }
+    });
+    document.getElementById('btn-labels').addEventListener('click',e=>{
+      e.stopPropagation();
+      const m=document.getElementById('label-menu');
+      renderLabelMenu();
+      m.classList.toggle('composer__label-menu--open');
+      e.currentTarget.setAttribute('aria-expanded',m.classList.contains('composer__label-menu--open'));
+    });
+    document.getElementById('label-menu').addEventListener('change',e=>{
+      if(e.target.matches('input[type="checkbox"]')){
+        const id=e.target.dataset.labelId;
+        if(e.target.checked){
+          if(!App.state.ui.composerLabels.includes(id))App.state.ui.composerLabels.push(id);
+        }else{
+          App.state.ui.composerLabels=App.state.ui.composerLabels.filter(x=>x!==id);
+        }
+      }
+    });
+    document.addEventListener('click',e=>{
+      if(!e.target.closest('#file-picker')&&!e.target.closest('#btn-attach'))closeFilePicker();
+      if(!e.target.closest('#label-menu')&&!e.target.closest('#btn-labels')){
+        document.getElementById('label-menu').classList.remove('composer__label-menu--open');
+        document.getElementById('btn-labels').setAttribute('aria-expanded','false');
+      }
+    });
+    document.getElementById('missions-toggle').addEventListener('click',()=>{
+      const p=document.getElementById('missions-panel');
+      p.hidden=!p.hidden;
+      App.state.ui.missionsPanelOpen=!p.hidden;
+    });
+    document.getElementById('missions-close').addEventListener('click',()=>{
+      document.getElementById('missions-panel').hidden=true;
+      App.state.ui.missionsPanelOpen=false;
+    });
+    document.querySelectorAll('.tab').forEach(t=>{
+      t.addEventListener('click',()=>{
+        document.querySelectorAll('.tab').forEach(x=>{x.classList.remove('tab--active');x.setAttribute('aria-selected','false')});
+        t.classList.add('tab--active');
+        t.setAttribute('aria-selected','true');
+        App.state.ui.activeTab=t.dataset.category;
+      });
+    });
+  }
+
+  function init(){
+    renderUserInfo();
+    renderSidebar();
+    renderMailList();
+    renderMissions();
+    attachEvents();
+    if(window.HelpSystem&&window.HelpSystem.init)window.HelpSystem.init();
+    if(window.TriviaSystem&&window.TriviaSystem.init)window.TriviaSystem.init();
+    if(window.A11ySystem&&window.A11ySystem.init)window.A11ySystem.init();
+    console.info('%c[GmailApp] Capas 1 a 8 cargadas exitosamente. 100% offline, sin dependencias externas.','color:#34a853;font-weight:bold');
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+
+<!-- ==========================================================================
+     CAPA 5: LÓGICA DE AYUDA CONTEXTUAL
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  const HELP=window.HELP_CONTENT||{};
+  let activeTrigger=null,activeTarget=null,popoverOpen=false,currentHelpKey=null;
+  const popover=document.getElementById('help-popover');
+  const popoverArrow=document.getElementById('help-popover-arrow');
+  const popoverTitle=document.getElementById('help-popover-title');
+  const popoverBody=document.getElementById('help-popover-body');
+  const popoverClose=document.getElementById('help-popover-close');
+  const trigger=document.createElement('button');
+  trigger.className='help-trigger';
+  trigger.type='button';
+  trigger.textContent='?';
+  trigger.setAttribute('aria-label','Ver ayuda sobre este elemento');
+  trigger.setAttribute('title','Ver ayuda');
+  trigger.hidden=true;
+  document.body.appendChild(trigger);
+
+  function showTrigger(target){
+    if(!target||target===activeTarget)return;
+    hideTrigger();
+    activeTarget=target;
+    const rect=target.getBoundingClientRect();
+    const top=rect.top+window.scrollY;
+    const left=rect.right+window.scrollX+4;
+    trigger.style.top=top+'px';
+    trigger.style.left=left+'px';
+    trigger.hidden=false;
+    trigger.classList.add('help-trigger--visible');
+    target.classList.add('help-target-active');
+    activeTrigger=trigger;
+  }
+  function hideTrigger(){
+    if(activeTrigger){activeTrigger.hidden=true;activeTrigger.classList.remove('help-trigger--visible')}
+    if(activeTarget){activeTarget.classList.remove('help-target-active')}
+    activeTrigger=null;
+    activeTarget=null;
+  }
+  function openPopover(helpKey,anchorEl){
+    const content=HELP[helpKey];
+    if(!content)return;
+    currentHelpKey=helpKey;
+    popoverTitle.textContent=content.title;
+    popoverBody.innerHTML=content.body;
+    popover.hidden=false;
+    popoverOpen=true;
+    positionPopover(anchorEl);
+    void popover.offsetHeight;
+    popover.classList.add('help-popover--visible');
+    setTimeout(()=>popoverClose.focus(),50);
+  }
+  function closePopover(){
+    if(!popoverOpen)return;
+    popover.classList.remove('help-popover--visible');
+    popoverOpen=false;
+    currentHelpKey=null;
+    if(activeTrigger&&!activeTrigger.hidden)setTimeout(()=>activeTrigger.focus(),50);
+    setTimeout(()=>{if(!popoverOpen)popover.hidden=true},200);
+  }
+  function positionPopover(anchorEl){
+    const anchorRect=anchorEl.getBoundingClientRect();
+    const popWidth=320;
+    const popHeight=popover.offsetHeight||200;
+    const margin=12,gap=10;
+    const vw=window.innerWidth,vh=window.innerHeight;
+    let left=anchorRect.right+gap;
+    let top=anchorRect.top+(anchorRect.height/2)-(popHeight/2);
+    let arrowSide='left';
+    if(left+popWidth+margin>vw){left=anchorRect.left-popWidth-gap;arrowSide='right'}
+    if(left<margin){left=Math.max(margin,(vw-popWidth)/2);top=anchorRect.bottom+gap;arrowSide='top'}
+    if(top<margin)top=margin;
+    if(top+popHeight+margin>vh)top=vh-popHeight-margin;
+    popover.style.left=left+'px';
+    popover.style.top=top+'px';
+    popover.style.width=popWidth+'px';
+    popoverArrow.className='help-popover__arrow';
+    if(arrowSide==='left'){popoverArrow.classList.add('help-popover__arrow--top');popoverArrow.style.left='-7px';popoverArrow.style.top='20px';popoverArrow.style.right='auto';popoverArrow.style.bottom='auto'}
+    else if(arrowSide==='right'){popoverArrow.classList.add('help-popover__arrow--top');popoverArrow.style.right='-7px';popoverArrow.style.left='auto';popoverArrow.style.top='20px';popoverArrow.style.bottom='auto'}
+    else{popoverArrow.classList.add('help-popover__arrow--bottom');popoverArrow.style.left='20px';popoverArrow.style.top='auto';popoverArrow.style.right='auto';popoverArrow.style.bottom='-7px'}
+  }
+  let hoverTimer=null;
+  document.addEventListener('mouseover',e=>{
+    const target=e.target.closest('[data-help]');
+    if(target){clearTimeout(hoverTimer);hoverTimer=setTimeout(()=>showTrigger(target),300)}
+  });
+  document.addEventListener('mouseout',e=>{
+    const target=e.target.closest('[data-help]');
+    if(target){
+      clearTimeout(hoverTimer);
+      hoverTimer=setTimeout(()=>{
+        const related=e.relatedTarget;
+        if(related!==trigger&&!trigger.contains(related))hideTrigger();
+      },100);
+    }
+  });
+  trigger.addEventListener('mouseenter',()=>clearTimeout(hoverTimer));
+  trigger.addEventListener('mouseleave',()=>{hoverTimer=setTimeout(()=>{if(!popoverOpen)hideTrigger()},200)});
+  trigger.addEventListener('click',e=>{e.stopPropagation();if(activeTarget){const key=activeTarget.getAttribute('data-help');openPopover(key,activeTarget)}});
+  trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(activeTarget){const key=activeTarget.getAttribute('data-help');openPopover(key,activeTarget)}}});
+  popoverClose.addEventListener('click',e=>{e.stopPropagation();closePopover()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&popoverOpen){e.preventDefault();closePopover()}});
+  document.addEventListener('click',e=>{if(popoverOpen&&!popover.contains(e.target)&&e.target!==trigger)closePopover()});
+  let resizeTimer=null;
+  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(popoverOpen&&activeTarget)positionPopover(activeTarget);hideTrigger()},150)});
+  let scrollTimer=null;
+  window.addEventListener('scroll',()=>{if(popoverOpen||activeTrigger){clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{if(popoverOpen&&activeTarget)positionPopover(activeTarget)},50)}},{passive:true});
+
+  window.HelpSystem={
+    init:function(){console.info('%c[HelpSystem] Capa 5 activa — '+Object.keys(HELP).length+' entradas de ayuda disponibles','color:#1a73e8;font-weight:bold')},
+    open:function(key){const el=document.querySelector('[data-help="'+key+'"]');if(el){showTrigger(el);setTimeout(()=>openPopover(key,el),100)}},
+    list:function(){console.table(Object.keys(HELP).map(k=>({key:k,title:HELP[k].title})))}
+  };
+})();
+</script>
+
+<!-- ==========================================================================
+     CAPA 6: LÓGICA DE ACCESIBILIDAD
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  const body=document.body;
+  const toggleDyslexia=document.getElementById('toggle-dyslexia');
+  const toggleContrast=document.getElementById('toggle-contrast');
+  const state={dyslexia:false,highContrast:false};
+
+  function showToast(msg,type){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.className='toast toast--visible'+(type?' toast--'+type:'');setTimeout(()=>{t.classList.remove('toast--visible')},3000)}
+
+  function enableDyslexia(){state.dyslexia=true;body.classList.add('body--dyslexia');toggleDyslexia.setAttribute('aria-pressed','true');showToast('Modo dislexia activado: tipografía amigable y mayor espaciado','success')}
+  function disableDyslexia(){state.dyslexia=false;body.classList.remove('body--dyslexia');toggleDyslexia.setAttribute('aria-pressed','false');showToast('Modo dislexia desactivado')}
+  function enableHighContrast(){state.highContrast=true;body.classList.add('body--high-contrast');toggleContrast.setAttribute('aria-pressed','true');showToast('Modo alto contraste activado: fondo negro, texto amarillo','success')}
+  function disableHighContrast(){state.highContrast=false;body.classList.remove('body--high-contrast');toggleContrast.setAttribute('aria-pressed','false');showToast('Modo alto contraste desactivado')}
+
+  toggleDyslexia.addEventListener('click',()=>{if(state.dyslexia)disableDyslexia();else enableDyslexia()});
+  toggleContrast.addEventListener('click',()=>{if(state.highContrast)disableHighContrast();else enableHighContrast()});
+
+  document.addEventListener('keydown',e=>{
+    const tag=(e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea')return;
+    if(e.altKey&&(e.key==='d'||e.key==='D')){e.preventDefault();if(state.dyslexia)disableDyslexia();else enableDyslexia()}
+    if(e.altKey&&(e.key==='c'||e.key==='C')){e.preventDefault();if(state.highContrast)disableHighContrast();else enableHighContrast()}
+  });
+
+  window.A11ySystem={
+    init:function(){console.info('%c[A11y] Capa 6 activa — Toggles: Dislexia (Alt+D) y Alto Contraste (Alt+C)','color:#1a73e8;font-weight:bold')},
+    getState:function(){return{dyslexia:state.dyslexia,highContrast:state.highContrast}},
+    setDyslexia:function(v){v?enableDyslexia():disableDyslexia()},
+    setHighContrast:function(v){v?enableHighContrast():disableHighContrast()}
+  };
+})();
+</script>
+
+<!-- ==========================================================================
+     CAPA 7: LÓGICA DE TRIVIA FINAL
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  const App=window.GmailApp;
+  const QUESTIONS=window.TRIVIA_QUESTIONS||[];
+  const state={currentQuestion:0,answers:[],isOpen:false,hasShown:false};
+  const overlay=document.getElementById('trivia-overlay');
+  const body=document.getElementById('trivia-body');
+  const progressLabel=document.getElementById('trivia-progress-label');
+  const progressFill=document.getElementById('trivia-progress-fill');
+  const nextBtn=document.getElementById('trivia-next');
+  const closeBtn=document.getElementById('trivia-close');
+
+  function checkAllMissionsComplete(){
+    if(state.hasShown)return;
+    const allComplete=App.state.missions.every(m=>m.status==='completed');
+    if(allComplete){
+      state.hasShown=true;
+      setTimeout(()=>{
+        showToast('🎉 ¡Todas las misiones completadas! Desbloqueaste la trivia final','success');
+        setTimeout(()=>openTrivia(),2000);
+      },500);
+    }
+  }
+  window.checkAllMissionsComplete=checkAllMissionsComplete;
+
+  function openTrivia(){
+    state.isOpen=true;
+    state.currentQuestion=0;
+    state.answers=[];
+    overlay.classList.add('trivia-overlay--visible');
+    renderQuestion();
+    setTimeout(()=>nextBtn.focus(),100);
+  }
+
+  function closeTrivia(){
+    state.isOpen=false;
+    overlay.classList.remove('trivia-overlay--visible');
+    showToast('Trivia cerrada. ¡Podés volver a intentarla cuando quieras!','success');
+  }
+
+  function renderQuestion(){
+    const q=QUESTIONS[state.currentQuestion];
+    if(!q)return;
+    progressLabel.textContent='Pregunta '+(state.currentQuestion+1)+' de '+QUESTIONS.length;
+    progressFill.style.width=((state.currentQuestion+1)/QUESTIONS.length*100)+'%';
+    body.innerHTML='<div class="trivia-question trivia-question--active"><div class="trivia-question__number">Pregunta '+(state.currentQuestion+1)+'</div><div class="trivia-question__text">'+escapeHtml(q.question)+'</div><div class="trivia-options" role="radiogroup" aria-label="Opciones de respuesta">'+q.options.map(opt=>'<button type="button" class="trivia-option" data-option-id="'+opt.id+'" role="radio" aria-checked="false"><span class="trivia-option__radio"></span><span class="trivia-option__text">'+escapeHtml(opt.text)+'</span><span class="trivia-option__icon" aria-hidden="true"></span></button>').join('')+'</div><div class="trivia-feedback" id="trivia-feedback" aria-live="polite"></div></div>';
+    nextBtn.disabled=true;
+    nextBtn.innerHTML=state.currentQuestion<QUESTIONS.length-1?'Siguiente pregunta <svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>':'Ver resultado <svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    body.querySelectorAll('.trivia-option').forEach(opt=>{opt.addEventListener('click',()=>selectOption(opt.dataset.optionId))});
+  }
+
+  function selectOption(optionId){
+    const q=QUESTIONS[state.currentQuestion];
+    const isCorrect=optionId===q.correct;
+    state.answers.push({questionId:q.id,selectedOption:optionId,isCorrect:isCorrect});
+    body.querySelectorAll('.trivia-option').forEach(opt=>{
+      opt.disabled=true;
+      const optId=opt.dataset.optionId;
+      if(optId===q.correct){
+        opt.classList.add('trivia-option--correct');
+        opt.querySelector('.trivia-option__icon').innerHTML='<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+      }else if(optId===optionId&&!isCorrect){
+        opt.classList.add('trivia-option--incorrect');
+        opt.querySelector('.trivia-option__icon').innerHTML='<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+      }
+    });
+    const feedback=document.getElementById('trivia-feedback');
+    if(isCorrect){
+      feedback.className='trivia-feedback trivia-feedback--correct trivia-feedback--visible';
+      feedback.innerHTML='<div class="trivia-feedback__header"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>¡Correcto!</span></div><div class="trivia-feedback__text">'+q.explanation+'</div>';
+    }else{
+      feedback.className='trivia-feedback trivia-feedback--incorrect trivia-feedback--visible';
+      feedback.innerHTML='<div class="trivia-feedback__header"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span>Respuesta incorrecta</span></div><div class="trivia-feedback__text">'+q.explanation+'</div>';
+    }
+    nextBtn.disabled=false;
+    nextBtn.focus();
+  }
+
+  function nextQuestion(){
+    if(state.currentQuestion<QUESTIONS.length-1){state.currentQuestion++;renderQuestion();}
+    else showResult();
+  }
+
+  function showResult(){
+    const correctCount=state.answers.filter(a=>a.isCorrect).length;
+    const totalCount=QUESTIONS.length;
+    const percentage=Math.round((correctCount/totalCount)*100);
+    let message='';
+    if(percentage===100)message='¡Perfecto! Respondiste todas las preguntas correctamente. Dominás los conceptos básicos de Gmail. 🎉';
+    else if(percentage>=67)message='¡Muy bien! Tenés un buen dominio de los conceptos. Revisá las explicaciones de las preguntas que fallaste para reforzar tu aprendizaje.';
+    else message='Buen intento. Te recomendamos revisar las explicaciones de cada pregunta para fortalecer tu comprensión. ¡Podés volver a intentar la trivia cuando quieras!';
+    body.innerHTML='<div class="trivia-result trivia-result--visible"><div class="trivia-result__icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><h3 class="trivia-result__title">¡Trivia completada!</h3><div class="trivia-result__score">Respondiste correctamente <strong>'+correctCount+' de '+totalCount+'</strong> preguntas ('+percentage+'%)</div><div class="trivia-result__message">'+message+'</div></div>';
+    progressLabel.textContent='Trivia completada';
+    progressFill.style.width='100%';
+    nextBtn.innerHTML='Cerrar trivia <svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+    nextBtn.disabled=false;
+    nextBtn.onclick=closeTrivia;
+  }
+
+  function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+  function showToast(msg,type){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.className='toast toast--visible'+(type?' toast--'+type:'');setTimeout(()=>{t.classList.remove('toast--visible')},3000)}
+
+  nextBtn.addEventListener('click',nextQuestion);
+  closeBtn.addEventListener('click',closeTrivia);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.isOpen){e.preventDefault();closeTrivia()}});
+
+  window.TriviaSystem={
+    init:function(){console.info('%c[Trivia] Capa 7 activa — '+QUESTIONS.length+' preguntas disponibles','color:#34a853;font-weight:bold')},
+    open:openTrivia,
+    close:closeTrivia,
+    getState:function(){return{currentQuestion:state.currentQuestion,answers:state.answers,isOpen:state.isOpen,hasShown:state.hasShown}}
+  };
+})();
+</script>
+
+</body>
+</html>
 
